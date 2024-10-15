@@ -80,5 +80,7 @@ module.exports = {
 		'no-case-declarations':0,
 		"vue/no-deprecated-v-on-native-modifier":0,
 		"no-prototype-builtins":0,
+		"no-return-await":0,
+		"no-await-in-loop":0,
 	},
 }

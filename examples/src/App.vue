@@ -1,3 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { h } from 'vue';
 
-<template>1</template>
+const a = () => h('div', { class: 'iii' });
+</script>
+
+<template>
+	<div>
+		<component :is="a"></component>
+	</div>
+</template>

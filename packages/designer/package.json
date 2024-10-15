@@ -1,0 +1,13 @@
+{
+	"name": "@arvin/microcode-designer",
+	"version": "1.0.0",
+	"description": "",
+	"main": "src/index.ts",
+	"dependencies": {
+		"@arvin/microcode-editor-core": "workspace:^",
+		"semver": "^7.6.3"
+	},
+	"devDependencies": {
+		"@types/semver": "^7.5.8"
+	}
+}

@@ -1,0 +1,14 @@
+{
+	"name": "@arvin/microcode-shell",
+	"version": "1.0.0",
+	"description": "",
+	"main": "src/index.ts",
+	"scripts": {},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@arvin/microcode-designer": "workspace:^",
+		"@arvin/microcode-editor-skeleton": "workspace:^"
+	}
+}
