@@ -96,7 +96,7 @@ export class EngineConfig implements IEngineConfig {
 					this.set(key, (engineOptions as any)[key]);
 				} else {
 					logger.warn(
-						`无法将${key}配置为engineConfig,在严格模式下只能设置预定义选项,预定义选项:`,
+						`failed to config ${key} to engineConfig, only predefined options can be set under strict mode, predefined options: `,
 						VALID_ENGINE_OPTIONS
 					);
 				}
@@ -163,6 +163,7 @@ export class EngineConfig implements IEngineConfig {
 
 	/**
 	 * 获取指定 key 的值，函数回调模式，若多次被赋值，回调会被多次调用
+	 *
 	 * @param key
 	 * @param fn
 	 * @returns

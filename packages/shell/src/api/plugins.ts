@@ -6,6 +6,7 @@ import {
 	IPublicTypePluginRegisterOptions,
 	IPublicTypePreferenceValueType,
 } from '@arvin/microcode-types';
+import { globalContext } from '@arvin/microcode-editor-core';
 import { pluginsSymbol } from '../symbols';
 import { PluginInstance as ShellPluginInstance } from '../model';
 
@@ -17,6 +18,10 @@ export class Plugins implements IPublicApiPlugins {
 	get [pluginsSymbol](): IMicrocodePluginManager {
 		if (this.workspaceMode) {
 			return this[innerPluginsSymbol];
+		}
+		const workspace = globalContext.get('workspace');
+		if (workspace.isActive) {
+			return workspace.window.innerPlugins;
 		}
 		return this[innerPluginsSymbol];
 	}

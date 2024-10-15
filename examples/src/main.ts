@@ -45,12 +45,15 @@ const testPlungin1 = (
 		logger.info('exports');
 	},
 });
+
 testPlungin1.pluginName = 'testPlungin-2';
 
 plugins.register(testPlungin);
+
 plugins.register(testPlungin1);
 
 const preference = new Map();
+
 preference.set('EditorInitPlugin', {
 	theme: '1111',
 });

@@ -105,7 +105,7 @@ export class MicrocodePluginManager implements IMicrocodePluginManager {
 		if (isReservedPrefix) {
 			meta.eventPrefix = undefined;
 			logger.warn(
-				`插件 ${pluginName} 正试图使用 ${eventPrefix} 作为事件前缀，这是一个保留的事件前缀，请使用另一个`
+				`plugin ${pluginName} is trying to use ${eventPrefix} as event prefix, which is a reserved event prefix, please use another one`
 			);
 		}
 		const ctx = this._getMicrocodePluginContext({ pluginName, meta });

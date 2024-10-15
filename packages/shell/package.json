@@ -9,6 +9,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"@arvin/microcode-designer": "workspace:^",
+		"@arvin/microcode-editor-core": "workspace:^",
 		"@arvin/microcode-editor-skeleton": "workspace:^"
 	}
 }
