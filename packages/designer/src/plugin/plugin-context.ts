@@ -1,6 +1,9 @@
 import {
 	IPluginPreferenceMananger,
+	IPublicApiEvent,
+	IPublicApiLogger,
 	IPublicApiPlugins,
+	IPublicModelEngineConfig,
 	IPublicModelPluginContext,
 	IPublicTypePluginDeclaration,
 	IPublicTypePreferenceValueType,
@@ -18,9 +21,17 @@ import {
 export default class PluginContext
 	implements IPublicModelPluginContext, IMicrocodeContextPrivate
 {
+	preference: IPluginPreferenceMananger;
+
 	plugins: IPublicApiPlugins;
 
-	preference: IPluginPreferenceMananger;
+	config: IPublicModelEngineConfig;
+
+	event: IPublicApiEvent;
+
+	pluginEvent: IPublicApiEvent;
+
+	logger: IPublicApiLogger;
 
 	constructor(
 		options: IPluginContextOptions,
@@ -30,6 +41,12 @@ export default class PluginContext
 		contextApiAssembler.assembleApis(this, pluginName, meta);
 	}
 
+	/**
+	 * 全局设置的偏好设置
+	 *
+	 * @param pluginName
+	 * @param preferenceDeclaration
+	 */
 	setPreference(
 		pluginName: string,
 		preferenceDeclaration: IPublicTypePluginDeclaration
@@ -38,7 +55,7 @@ export default class PluginContext
 			key: string,
 			defaultValue?: IPublicTypePreferenceValueType
 		): IPublicTypePreferenceValueType | undefined => {
-			// 先判断插件有没有定义
+			// 先判断插件有没有定义key类型
 			if (!isValidPreferenceKey(key, preferenceDeclaration)) {
 				return undefined;
 			}

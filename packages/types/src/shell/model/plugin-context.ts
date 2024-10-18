@@ -1,4 +1,10 @@
-import { IPluginPreferenceMananger, IPublicApiPlugins } from '../api';
+import {
+	IPluginPreferenceMananger,
+	IPublicApiEvent,
+	IPublicApiLogger,
+	IPublicApiPlugins,
+} from '../api';
+import { IPublicModelEngineConfig } from './engine-config';
 
 export interface IPublicModelPluginContext {
 	/**
@@ -6,5 +12,28 @@ export interface IPublicModelPluginContext {
 	 */
 	preference: IPluginPreferenceMananger;
 
+	/**
+	 * plugins api
+	 */
 	get plugins(): IPublicApiPlugins;
+
+	/**
+	 * config api
+	 */
+	get config(): IPublicModelEngineConfig;
+
+	/**
+	 * 此事件在全局范围内工作，可以在插件和引擎之间使用。
+	 */
+	get event(): IPublicApiEvent;
+
+	/**
+	 * 此事件在当前插件中工作，在本地发出。
+	 */
+	get pluginEvent(): IPublicApiEvent;
+
+	/**
+	 * logger api
+	 */
+	get logger(): IPublicApiLogger;
 }

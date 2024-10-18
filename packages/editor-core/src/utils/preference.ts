@@ -3,7 +3,7 @@ import { getLogger } from '@arvin/microcode-utils';
 import store from 'store';
 
 const logger = getLogger({ level: 'warn', bizName: 'Preference' });
-const STORAGE_KEY_PREFIX = 'sw';
+const STORAGE_KEY_PREFIX = 'arvin';
 
 export default class Preference implements IPublicModelPreference {
 	getStorageKey(key: string, module?: string): string {

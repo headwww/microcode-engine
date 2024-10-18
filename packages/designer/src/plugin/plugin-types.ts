@@ -1,6 +1,8 @@
 import {
+	IPublicApiEvent,
 	IPublicApiLogger,
 	IPublicApiPlugins,
+	IPublicModelEngineConfig,
 	IPublicTypePlugin,
 	IPublicTypePluginConfig,
 	IPublicTypePluginMeta,
@@ -65,6 +67,10 @@ export type PluginPreference = Map<
 
 export interface IMicrocodeContextPrivate {
 	set plugins(plugins: IPublicApiPlugins);
+	set config(config: IPublicModelEngineConfig);
+	set event(event: IPublicApiEvent);
+	set logger(event: IPublicApiLogger);
+	set pluginEvent(event: IPublicApiEvent);
 }
 
 export interface IPluginContextOptions {

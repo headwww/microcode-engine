@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import { plugins } from '@arvin/microcode-engine';
+import { init, plugins } from '@arvin/microcode-engine';
 import {
 	IPublicModelPluginContext,
 	IPublicTypePluginConfig,
@@ -19,6 +19,7 @@ const testPlungin = (
 ): IPublicTypePluginConfig => ({
 	init() {
 		logger.info('init');
+		logger.info(ctx.preference.getPreferenceValue('scenarioName'), options);
 		logger.info(ctx, options);
 	},
 	destroy() {
@@ -29,33 +30,53 @@ const testPlungin = (
 	},
 });
 testPlungin.pluginName = 'testPlungin-1';
+testPlungin.meta = {
+	preferenceDeclaration: {
+		title: '保存插件配置',
+		properties: [
+			{
+				key: 'scenarioName',
+				type: 'string',
+				description: '用于localstorage存储key',
+			},
+		],
+	},
+};
 
-const testPlungin1 = (
-	ctx: IPublicModelPluginContext,
-	options: any
-): IPublicTypePluginConfig => ({
-	init() {
-		logger.info('init');
-		logger.info(ctx, options);
-	},
-	destroy() {
-		logger.info('destroy');
-	},
-	exports() {
-		logger.info('exports');
-	},
-});
+// const testPlungin1 = (
+// 	ctx: IPublicModelPluginContext,
+// 	options: any
+// ): IPublicTypePluginConfig => ({
+// 	init() {
+// 		logger.info('init');
+// 		logger.info(ctx, options);
+// 	},
+// 	destroy() {
+// 		logger.info('destroy');
+// 	},
+// 	exports() {
+// 		logger.info('exports');
+// 	},
+// });
 
-testPlungin1.pluginName = 'testPlungin-2';
+// testPlungin1.pluginName = 'testPlungin-2';
 
 plugins.register(testPlungin);
 
-plugins.register(testPlungin1);
+// plugins.register(testPlungin1);
 
 const preference = new Map();
 
-preference.set('EditorInitPlugin', {
-	theme: '1111',
+preference.set('testPlungin-1', {
+	scenarioName: '01010101',
 });
 
-plugins.init(preference);
+init(preference);
+
+// const preference = new Map();
+
+// preference.set('EditorInitPlugin', {
+// 	theme: '1111',
+// });
+
+// plugins.init(preference);
