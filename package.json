@@ -36,10 +36,12 @@
 		"vue": "^3.5.8"
 	},
 	"dependencies": {
+		"@ant-design/icons-vue": "^7.0.1",
 		"@arvin/microcode-types": "workspace:^",
 		"@arvin/microcode-utils": "workspace:^",
 		"@types/lodash": "^4.17.9",
 		"@types/lodash-es": "^4.17.12",
+		"ant-design-vue": "^4.2.5",
 		"eventemitter2": "^6.4.9",
 		"lodash": "^4.17.21",
 		"lodash-es": "^4.17.21"

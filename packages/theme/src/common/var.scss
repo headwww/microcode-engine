@@ -1,0 +1,164 @@
+// 基础的 SCSS 定义
+
+// ==========================================================
+// ==================== Font Family ==========================
+// ==========================================================
+$font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', helvetica,
+	arial, sans-serif;
+$font-family-code: monaco, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+	helvetica, arial, sans-serif;
+
+// ==========================================================
+// ===================== Color SCSS =========================
+// ==========================================================
+$brand-color-1: rgb(0 108 255 / 100%);
+$brand-color-2: rgb(25 122 255 / 100%);
+$brand-color-3: rgb(0 96 229 / 100%);
+
+$brand-color-1-3: rgb(0 108 255 / 60%);
+$brand-color-1-4: rgb(0 108 255 / 40%);
+$brand-color-1-5: rgb(0 108 255 / 30%);
+$brand-color-1-6: rgb(0 108 255 / 20%);
+$brand-color-1-7: rgb(0 108 255 / 10%);
+
+$brand-color: $brand-color-1;
+
+$white-alpha-1: rgb(255 255 255); // W-1
+$white-alpha-2: rgb(255 255 255 / 80%); // W-2 A80
+$white-alpha-3: rgb(255 255 255 / 60%); // W-3 A60
+$white-alpha-4: rgb(255 255 255 / 40%); // W-4 A40
+$white-alpha-5: rgb(255 255 255 / 30%); // W-5 A30
+$white-alpha-6: rgb(255 255 255 / 20%); // W-6 A20
+$white-alpha-7: rgb(255 255 255 / 10%); // W-7 A10
+$white-alpha-8: rgb(255 255 255 / 6%); // W-8 A6
+
+$dark-alpha-1: rgb(0 0 0 / 100%); // D-1 A100
+$dark-alpha-2: rgb(0 0 0 / 80%); // D-2 A80
+$dark-alpha-3: rgb(0 0 0 / 60%); // D-3 A60
+$dark-alpha-4: rgb(0 0 0 / 40%); // D-4 A40
+$dark-alpha-5: rgb(0 0 0 / 30%); // D-5 A30
+$dark-alpha-6: rgb(0 0 0 / 20%); // D-6 A20
+$dark-alpha-7: rgb(0 0 0 / 10%); // D-7 A10
+$dark-alpha-8: rgb(0 0 0 / 6%); // D-8 A6
+$dark-alpha-9: rgb(0 0 0 / 4%); // D-9 A4
+
+$normal-alpha-1: rgb(31 56 88 / 100%); // N-1 A100
+$normal-alpha-2: rgb(31 56 88 / 80%); // N-2 A80
+$normal-alpha-3: rgb(31 56 88 / 60%); // N-3 A60
+$normal-alpha-4: rgb(31 56 88 / 40%); // N-4 A40
+$normal-alpha-5: rgb(31 56 88 / 30%); // N-5 A30
+$normal-alpha-6: rgb(31 56 88 / 20%); // N-6 A20
+$normal-alpha-7: rgb(31 56 88 / 10%); // N-7 A10
+$normal-alpha-8: rgb(31 56 88 / 6%); // N-8 A6
+$normal-alpha-9: rgb(31 56 88 / 4%); // N-9 A4
+
+$normal-3: #77879c;
+$normal-4: #a3aebd;
+$normal-5: #bac3cc;
+$normal-6: #d1d7de;
+
+$gray-dark: #333; // N2_4
+$gray: #666; // N2_3
+$gray-light: #999; // N2_2
+$gray-lighter: #ccc; // N2_1
+
+$brand-secondary: #2c2f33; // B2_3
+$brand-complement: #00b3e8; // B3_1
+$brand-comosite: #00c587; // B3_2
+$brand-deep: #73461d; // B3_3
+
+$brand-danger: rgb(240 70 49);
+$brand-danger-hover: rgb(240 70 49 / 90%);
+$brand-danger-focus: rgb(240 70 49 / 95%);
+
+$brand-warning: rgb(250 189 14);
+$brand-success: rgb(102 188 92);
+$brand-link: rgb(102 188 92);
+$brand-link-hover: #2e76a6;
+
+$brand-danger-alpha-7: rgb(240 70 49 / 10%);
+$brand-danger-alpha-8: rgb(240 70 49 / 80%);
+$brand-warning-alpha-2: rgb(250 189 14 / 80%);
+$brand-warning-alpha-7: rgb(250 189 14 / 10%);
+$brand-success-alpha-2: rgb(102 188 92 / 80%);
+$brand-success-alpha-7: rgb(102 188 92 / 10%);
+$brand-link-alpha-7: rgb(102 188 92 / 10%);
+
+// 文本色
+$text-primary-color: $dark-alpha-3;
+$text-secondary-color: $normal-alpha-3;
+$text-thirdary-color: $dark-alpha-4;
+$text-disabled-color: $normal-alpha-5;
+$text-helper-color: $dark-alpha-4;
+$text-danger-color: $brand-danger;
+$text-ali-color: #ec6c00;
+
+// ==========================================================
+// =================== Shadow Box ============================
+// ==========================================================
+$box-shadow-1: 0 1px 4px 0 rgb(31 56 88 / 15%);
+$box-shadow-2: 0 2px 10px 0 rgb(31 56 88 / 15%);
+$box-shadow-3: 0 4px 15px 0 rgb(31 56 88 / 15%);
+
+// ==========================================================
+// ================= FontSize of Level =======================
+// ==========================================================
+$fontSize-1: 26px;
+$fontSize-2: 20px;
+$fontSize-3: 16px;
+$fontSize-4: 14px;
+$fontSize-5: 12px;
+
+$fontLineHeight-1: 38px;
+$fontLineHeight-2: 30px;
+$fontLineHeight-3: 26px;
+$fontLineHeight-4: 24px;
+$fontLineHeight-5: 20px;
+
+/**
+  * ===========================================================
+  * ================= FontSize of Level =======================
+  * ===========================================================
+  */
+
+$global-border-radius: 3px;
+$input-border-radius: 3px;
+$popup-border-radius: 6px;
+
+// ==========================================================
+// ===================== Global Configurations =================
+// ==========================================================
+$topPaneHeight: 48px;
+$actionpane-height: 48px;
+$tabPaneWidth: 260px;
+$input-standard-height: 32px;
+$dockpane-width: 48px;
+
+// ==========================================================
+// =================== Deprecated Items ======================
+// ==========================================================
+$head-bgcolor: $white-alpha-1;
+$pane-bgcolor: $white-alpha-1;
+$pane-dark-bgcolor: $white-alpha-1;
+$pane-bdcolor: $normal-4;
+$blank-bgcolor: $normal-5;
+$title-bgcolor: $white-alpha-1;
+$title-bdcolor: transparent;
+$section-bgcolor: transparent;
+$section-bdcolor: $white-alpha-1;
+$button-bgcolor: $white-alpha-1;
+$button-bdcolor: transparent;
+$button-blue-color: $brand-color;
+$button-blue-hover-color: $brand-color;
+$sub-title-bgcolor: $white-alpha-1;
+$sub-title-bdcolor: transparent;
+$text-color: $text-primary-color;
+$icon-color: $gray;
+$icon-color-active: $gray-light;
+$ghost-bgcolor: $dark-alpha-3;
+$input-bgcolor: transparent;
+$input-bdcolor: $normal-alpha-5;
+$hover-color: #5a99cc;
+$active-color: #5a99cc;
+$disabled-color: #666;
+$setter-popup-bg: rgb(80 86 109);

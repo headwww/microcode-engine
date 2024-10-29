@@ -8,5 +8,9 @@
 	},
 	"keywords": [],
 	"author": "",
-	"license": "ISC"
+	"license": "ISC",
+	"dependencies": {
+		"@arvin/microcode-editor-core": "workspace:^",
+		"@arvin/microcode-shell": "workspace:^"
+	}
 }

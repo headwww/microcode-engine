@@ -1,4 +1,4 @@
-import { IEventBus } from '@arvin/microcode-editor-core';
+import { IEditor, IEventBus } from '@arvin/microcode-editor-core';
 import { IPublicApiEvent, IPublicTypeDisposable } from '@arvin/microcode-types';
 import { getLogger, isPluginEventName } from '@arvin/microcode-utils';
 
@@ -93,4 +93,8 @@ export class Event implements IPublicApiEvent {
 	__internalEmit__(event: string, ...args: unknown[]) {
 		this[eventBusSymbol].emit(event, ...args);
 	}
+}
+
+export function getEvent(editor: IEditor, options: any = { prefix: 'common' }) {
+	return new Event(editor.eventBus, options);
 }

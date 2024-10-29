@@ -10,6 +10,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"intl-messageformat": "^10.7.3",
 		"power-di": "^2.4.41",
 		"store": "^2.0.12"
 	},

@@ -1,0 +1,37 @@
+.mtc-title {
+	display: inline-flex;
+	align-items: center;
+	color: var(--color-text);
+
+	.mtc-title-icon {
+		display: flex;
+		align-items: center;
+		margin-right: 4px;
+
+		img {
+			width: 16px;
+			height: 16px;
+			filter: brightness(0) invert(1);
+		}
+	}
+
+	&.only-icon {
+		.mtc-title-icon {
+			margin-right: 0;
+		}
+	}
+
+	&.has-tip {
+		cursor: help;
+		text-decoration-line: underline;
+		text-decoration-style: dashed;
+		text-decoration-color: var(--color-text-light, rgb(31 56 88 / 30%));
+	}
+
+	line-height: initial !important;
+	word-break: break-all;
+}
+
+.actived .mtc-title {
+	color: var(--color-actived);
+}

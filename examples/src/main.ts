@@ -6,6 +6,9 @@ import {
 } from '@arvin/microcode-types';
 import { getLogger } from '@arvin/microcode-utils';
 import App from './App.vue';
+import '@arvin/microcode-theme/src/index.scss';
+import './a.scss';
+import 'ant-design-vue/dist/reset.css';
 
 const app = createApp(App);
 
@@ -18,9 +21,11 @@ const testPlungin = (
 	options: any
 ): IPublicTypePluginConfig => ({
 	init() {
-		logger.info('init');
-		logger.info(ctx.preference.getPreferenceValue('scenarioName'), options);
-		logger.info(ctx, options);
+		ctx;
+		options;
+		// logger.info('init');
+		// logger.info(ctx.preference.getPreferenceValue('scenarioName'), options);
+		// logger.info(ctx, options);
 	},
 	destroy() {
 		logger.info('destroy');
