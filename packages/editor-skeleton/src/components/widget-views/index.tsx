@@ -1,8 +1,9 @@
 import { defineComponent, onMounted, onUpdated, PropType, ref } from 'vue';
-import { Title } from '@arvin/microcode-editor-core';
+import { HelpTip, Title } from '@arvin/microcode-editor-core';
 import { SkeletonEvents } from '../../skeleton';
 import { composeTitle, IWidget, Panel, PanelDock } from '../../widget';
 import { DockProps } from '../../types';
+import { PanelOperationRow } from './panel-operation-row';
 
 export function DockView(props: DockProps) {
 	const { title, onClick, className, size, description, icon } = props;
@@ -83,10 +84,42 @@ export const TitledPanelView = defineComponent({
 		area: String,
 	},
 	setup(props) {
+		let lastVisible = false;
+
+		onMounted(() => {
+			checkVisible();
+		});
+
+		onUpdated(() => {
+			checkVisible();
+		});
+
+		function checkVisible() {
+			const { panel } = props;
+			if (panel) {
+				const currentVisible = panel.inited.value && panel.visible.value;
+				if (currentVisible !== lastVisible) {
+					lastVisible = currentVisible;
+					if (lastVisible) {
+						panel.skeleton.postEvent(
+							SkeletonEvents.PANEL_SHOW,
+							panel.name,
+							panel
+						);
+					} else {
+						panel.skeleton.postEvent(
+							SkeletonEvents.PANEL_HIDE,
+							panel.name,
+							panel
+						);
+					}
+				}
+			}
+		}
 		return () => {
 			const { panel, area } = props;
 
-			if (!props.panel?.inited.value) {
+			if (!panel?.inited.value) {
 				return <></>;
 			}
 			const panelName = area ? `${area}-${panel?.name}` : panel?.name;
@@ -99,13 +132,110 @@ export const TitledPanelView = defineComponent({
 						hidden: !panel?.visible.value,
 					}}
 				>
-					{props.panel?.body}
+					<PanelOperationRow panel={panel}></PanelOperationRow>
+					<PanelTitle panel={panel}></PanelTitle>
+					<div className="mtc-panel-body">{panel?.body}</div>
 				</div>
 			);
 		};
 	},
 });
 
+export const PanelView = defineComponent({
+	name: 'PanelView',
+	props: {
+		panel: Object as PropType<Panel>,
+		area: String,
+		hideOperationRow: Boolean,
+		hideDragLine: Boolean,
+	},
+	setup(props) {
+		let lastVisible = false;
+
+		onMounted(() => {
+			checkVisible();
+		});
+
+		onUpdated(() => {
+			checkVisible();
+		});
+
+		function checkVisible() {
+			const { panel } = props;
+			if (panel) {
+				const currentVisible = panel.inited.value && panel.visible.value;
+				if (currentVisible !== lastVisible) {
+					lastVisible = currentVisible;
+					if (lastVisible) {
+						panel.skeleton.postEvent(
+							SkeletonEvents.PANEL_SHOW,
+							panel.name,
+							panel
+						);
+					} else {
+						panel.skeleton.postEvent(
+							SkeletonEvents.PANEL_HIDE,
+							panel.name,
+							panel
+						);
+					}
+				}
+			}
+		}
+
+		return () => {
+			const { panel, area, hideOperationRow } = props;
+			if (!panel?.inited.value) {
+				return <></>;
+			}
+			const editor = panel?.skeleton.editor;
+			const panelName = area ? `${area}-${panel?.name}` : panel?.name;
+			editor?.eventBus.emit('skeleton.panel.toggle', {
+				name: panelName || '',
+				status: panel.visible ? 'show' : 'hide',
+			});
+
+			return (
+				<div
+					id={panelName}
+					class={{
+						'mtc-panel': true,
+						hidden: !panel?.visible.value,
+					}}
+				>
+					{!hideOperationRow && <PanelOperationRow panel={panel} />}
+					{panel.body}
+				</div>
+			);
+		};
+	},
+});
+
+export const PanelTitle = defineComponent({
+	name: 'PanelTitle',
+	props: {
+		className: String,
+		panel: Object as PropType<Panel>,
+	},
+	setup(props) {
+		return () => {
+			const { className, panel } = props;
+			return (
+				<div
+					class={{
+						'mtc-panel-title': true,
+						[className || '']: !!className,
+						actived: panel?.active,
+					}}
+					data-name={panel?.name}
+				>
+					<Title title={panel?.title || panel?.name}></Title>
+					{panel?.help ? <HelpTip help={panel.help} /> : <></>}
+				</div>
+			);
+		};
+	},
+});
 export const WidgetView = defineComponent({
 	name: 'WidgetView',
 	props: {
@@ -119,7 +249,7 @@ export const WidgetView = defineComponent({
 		return () => {
 			const { widget } = props;
 			if (!widget?.visible.value) {
-				return null;
+				return <></>;
 			}
 			if (widget.disabled) {
 				return <div class="mtc-widget-disabled">{widget.body}</div>;

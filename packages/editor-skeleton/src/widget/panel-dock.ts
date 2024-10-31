@@ -39,13 +39,15 @@ export class PanelDock implements IWidget {
 		return this._body;
 	}
 
-	private _shell = ref(null);
+	private _shell = ref();
 
 	get content(): VNode {
 		return h(WidgetView, {
 			widget: this,
-			ref: this._shell,
 			key: this.id,
+			onVnodeMounted: (vnode) => {
+				this._shell.value = vnode;
+			},
 		});
 	}
 

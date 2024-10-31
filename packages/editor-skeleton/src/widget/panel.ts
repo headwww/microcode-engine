@@ -5,10 +5,11 @@ import {
 	IPublicTypePanelConfig,
 	IPublicTypeTitleContent,
 } from '@arvin/microcode-types';
-import { uniqueId } from '@arvin/microcode-utils';
+import { createContent, uniqueId } from '@arvin/microcode-utils';
+import { getEvent } from '@arvin/microcode-shell';
 import { WidgetContainer } from './widget-container';
 import { composeTitle, ISkeleton, isPanelDock, IWidget, PanelDock } from '..';
-import { TitledPanelView } from '../components/widget-views';
+import { PanelView, TitledPanelView } from '../components/widget-views';
 
 export class Panel implements IWidget {
 	readonly isWidget = true;
@@ -37,14 +38,29 @@ export class Panel implements IWidget {
 	});
 
 	get body() {
-		const { content } = this.config;
-		return h(content!);
+		const { content, contentProps } = this.config;
+
+		return createContent(content!, {
+			...contentProps,
+			editor: getEvent(this.skeleton.editor),
+			config: this.config,
+			panel: this,
+			pane: this,
+		});
 	}
 
 	get content() {
 		const area = this.config?.area || this.parent.value?.name;
+		if (this.plain) {
+			return h(PanelView, {
+				panel: this,
+				key: this.id,
+				area,
+			});
+		}
 		return h(TitledPanelView, {
 			panel: this,
+			key: this.id,
 			area,
 		});
 	}
@@ -97,11 +113,11 @@ export class Panel implements IWidget {
 	}
 
 	setParent(parent: WidgetContainer) {
-		if (parent === this.parent.value) {
+		if (parent === toRaw(this.parent.value)) {
 			return;
 		}
 		if (this.parent.value) {
-			this.parent.value.remove(this);
+			toRaw(this.parent.value).remove(this);
 		}
 
 		this.parent.value = parent;
@@ -164,7 +180,7 @@ export class Panel implements IWidget {
 		if (flag) {
 			// 对于 Area 的直接 Child，要专门处理 Float & Fixed 分组切换, 其他情况不需要
 			if (this.isChildOfFloatArea()) {
-				// this.skeleton.leftFixedArea.container.unactiveAll();
+				this.skeleton.leftFixedArea.container.unactiveAll();
 			} else if (this.isChildOfFixedArea()) {
 				this.skeleton.leftFloatArea.container.unactiveAll();
 			}
@@ -174,6 +190,7 @@ export class Panel implements IWidget {
 			if (!this.inited.value) {
 				this.inited.value = true;
 			}
+			this.emitter.emit('activechange', true);
 		} else {
 			if (
 				this.parent.value?.name &&
@@ -183,12 +200,11 @@ export class Panel implements IWidget {
 			}
 			this._actived.value = false;
 			toRaw(this.parent.value)?.unactive(this);
+			this.emitter.emit('activechange', false);
 		}
 	}
 
 	toggle() {
-		console.log(this);
-
 		this.setActive(!this._actived.value);
 	}
 

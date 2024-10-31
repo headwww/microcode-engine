@@ -6,6 +6,9 @@ import { LeftArea } from './left-area';
 import { MainArea } from './main-area';
 import { RightArea } from './right-area';
 import { LeftFloatPane } from './left-float-pane';
+import { LeftFixedPane } from './left-fixed-pane';
+import { Toolbar } from './toolbar';
+import { BottomArea } from './bottom-area';
 
 export const Workbench = defineComponent({
 	name: 'Workbench',
@@ -26,10 +29,13 @@ export const Workbench = defineComponent({
 					<div class="mtc-workbench-body">
 						<LeftArea area={skeleton?.leftArea}></LeftArea>
 						<LeftFloatPane area={skeleton?.leftFloatArea}></LeftFloatPane>
+						<LeftFixedPane area={skeleton?.leftFixedArea}></LeftFixedPane>
 						<div class="mtc-workbench-center">
+							<Toolbar area={skeleton?.toolbar} />
 							<MainArea></MainArea>
+							<BottomArea area={skeleton?.bottomArea}></BottomArea>
 						</div>
-						<RightArea></RightArea>
+						<RightArea area={skeleton?.rightArea}></RightArea>
 					</div>
 					<TipContainer></TipContainer>
 				</div>

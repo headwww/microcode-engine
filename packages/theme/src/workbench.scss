@@ -6,6 +6,47 @@
 	&.hidden {
 		display: none;
 	}
+
+	.mtc-panel-title {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		padding: 0 15px;
+
+		.mtc-help-tip {
+			margin-left: 4px;
+			color: var(--color-icon-normal, rgb(0 0 0 / 40%));
+			cursor: pointer;
+		}
+	}
+
+	> .mtc-panel-title {
+		height: var(--pane-title-height, 48px);
+		font-size: var(--pane-title-font-size, 16px);
+		padding: var(--pane-title-padding, 0 15px);
+		color: var(--color-title, #0f1726);
+		font-weight: bold;
+	}
+
+	.mtc-panel-body {
+		position: absolute;
+		inset: var(--pane-title-height, 48px) 0 0 0;
+		overflow: visible;
+	}
+
+	.mtc-outline-tree-container {
+		border-top: 1px solid var(--color-line-normal, rgb(31 56 88 / 10%));
+	}
+}
+
+.mtc-panel {
+	height: 100%;
+	width: 100%;
+	position: relative;
+
+	&.hidden {
+		display: none;
+	}
 }
 
 .mtc-workbench {
@@ -138,6 +179,27 @@
 			}
 		}
 
+		.mtc-pane-icon-close {
+			position: absolute;
+			right: 16px;
+			top: calc(var(--pane-title-height, 48px) / 2 - 10px);
+			height: auto;
+			z-index: 2;
+
+			.next-icon {
+				line-height: 1;
+				color: var(--color-icon-pane);
+			}
+		}
+
+		.mtc-pane-icon-fix {
+			position: absolute;
+			right: 42px;
+			top: calc(var(--pane-title-height, 48px) / 2 - 10px);
+			height: auto;
+			z-index: 2;
+		}
+
 		.mtc-left-float-pane {
 			position: absolute;
 			top: 0;
@@ -160,14 +222,63 @@
 			}
 		}
 
+		.mtc-left-fixed-pane {
+			width: var(--dock-fixed-pane-width);
+			background-color: var(--color-pane-background);
+			height: 100%;
+			display: none;
+			flex-shrink: 0;
+			position: relative;
+			z-index: 820;
+
+			&.mtc-area-visible {
+				display: block;
+			}
+		}
+
+		.mtc-left-area.mtc-area-visible ~ .mtc-left-fixed-pane {
+			margin-left: 1px;
+		}
+
+		.mtc-left-area.mtc-area-visible ~ .mtc-workbench-center {
+			margin-left: 2px;
+		}
+
 		.mtc-workbench-center {
 			flex: 1;
 			display: flex;
 			flex-direction: column;
 
+			.mtc-toolbar {
+				display: flex;
+				height: var(--toolbar-height);
+				background-color: var(
+					--color-toolbar-background,
+					var(--color-pane-background)
+				);
+				padding: var(--toolbar-padding, 8px 16px);
+
+				.mtc-toolbar-center {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					flex: 1;
+				}
+			}
+
 			.mtc-main-area {
 				flex: 1;
 				background-color: var(--color-background);
+			}
+
+			.mtc-bottom-area {
+				height: var(--bottom-area-height);
+				background-color: var(--color-pane-background);
+				display: none;
+
+				&.mtc-area-visible {
+					display: block;
+				}
 			}
 		}
 

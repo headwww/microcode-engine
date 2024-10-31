@@ -7,7 +7,11 @@ import {
 import { isPlainObject, Logger } from '@arvin/microcode-utils';
 import { isVNode } from 'vue';
 import { Divider } from 'ant-design-vue';
-import { IEditor } from '@arvin/microcode-editor-core';
+import {
+	engineConfig,
+	FocusTracker,
+	IEditor,
+} from '@arvin/microcode-editor-core';
 import { Area } from './area';
 import {
 	Dock,
@@ -67,16 +71,29 @@ export interface ISkeleton
 	readonly topArea: Area<
 		DockConfig | DividerConfig | PanelDockConfig | DialogDockConfig
 	>;
+	readonly toolbar: Area<
+		DockConfig | DividerConfig | PanelDockConfig | DialogDockConfig
+	>;
 
 	readonly leftArea: Area<DockConfig | PanelDockConfig | DialogDockConfig>;
 
 	readonly leftFloatArea: Area<IPublicTypePanelConfig, Panel>;
+
+	readonly leftFixedArea: Area<IPublicTypePanelConfig, Panel>;
+
+	readonly rightArea: Area<IPublicTypePanelConfig, Panel>;
+
+	readonly bottomArea: Area<IPublicTypePanelConfig, Panel>;
 
 	readonly widgets: IWidget[];
 
 	postEvent(event: SkeletonEvents, ...args: any[]): void;
 
 	getPanel(name: string): Panel | undefined;
+
+	toggleFloatStatus(panel: Panel): void;
+
+	readonly focusTracker: FocusTracker;
 
 	/**
 	 * 创建并返回一个 WidgetContainer 对象
@@ -114,11 +131,26 @@ export class Skeleton implements ISkeleton {
 		DockConfig | DividerConfig | PanelDockConfig | DialogDockConfig
 	>;
 
+	readonly toolbar: Area<
+		DockConfig | DividerConfig | PanelDockConfig | DialogDockConfig
+	>;
+
 	readonly leftFloatArea: Area<IPublicTypePanelConfig, Panel>;
+
+	readonly leftFixedArea: Area<IPublicTypePanelConfig, Panel>;
+
+	readonly rightArea: Area<IPublicTypePanelConfig, Panel>;
+
+	readonly bottomArea: Area<IPublicTypePanelConfig, Panel>;
 
 	readonly widgets: IWidget[] = [];
 
-	constructor(readonly editor: IEditor) {
+	readonly focusTracker = new FocusTracker();
+
+	constructor(
+		readonly editor: IEditor,
+		readonly viewName: string = 'global'
+	) {
 		this.leftArea = new Area(
 			this,
 			'leftArea',
@@ -141,6 +173,17 @@ export class Skeleton implements ISkeleton {
 			},
 			false
 		);
+		this.toolbar = new Area(
+			this,
+			'toolbar',
+			(config) => {
+				if (isWidget(config)) {
+					return config;
+				}
+				return this.createWidget(config);
+			},
+			false
+		);
 		this.leftFloatArea = new Area(
 			this,
 			'leftFloatArea',
@@ -152,6 +195,80 @@ export class Skeleton implements ISkeleton {
 			},
 			true
 		);
+
+		this.leftFixedArea = new Area(
+			this,
+			'leftFixedArea',
+			(config) => {
+				if (isPanel(config)) {
+					return config;
+				}
+				return this.createPanel(config);
+			},
+			true
+		);
+
+		this.rightArea = new Area(
+			this,
+			'rightArea',
+			(config) => {
+				if (isPanel(config)) {
+					return config;
+				}
+				return this.createPanel(config);
+			},
+			false,
+			true
+		);
+		this.bottomArea = new Area(
+			this,
+			'bottomArea',
+			(config) => {
+				if (isPanel(config)) {
+					return config;
+				}
+				return this.createPanel(config);
+			},
+			true
+		);
+
+		this.setupEvents();
+		this.focusTracker.mount(window);
+	}
+
+	setupEvents() {
+		this.editor.eventBus.on(SkeletonEvents.PANEL_SHOW, (panelName, panel) => {
+			const panelNameKey = `${panelName}-pinned-status-isFloat`;
+			const isInFloatAreaPreferenceExists = engineConfig
+				.getPreference()
+				?.contains(panelNameKey, 'skeleton');
+
+			if (isInFloatAreaPreferenceExists) {
+				const isInFloatAreaFromPreference = engineConfig
+					.getPreference()
+					?.get(panelNameKey, 'skeleton');
+				const isCurrentInFloatArea = panel?.isChildOfFloatArea();
+				if (isInFloatAreaFromPreference !== isCurrentInFloatArea) {
+					this.toggleFloatStatus(panel);
+				}
+			}
+		});
+	}
+
+	toggleFloatStatus(panel: Panel) {
+		const isFloat = panel?.parent?.value?.name === 'leftFloatArea';
+		if (isFloat) {
+			this.leftFloatArea.remove(panel);
+			this.leftFixedArea.add(panel);
+			this.leftFixedArea.container.active(panel);
+		} else {
+			this.leftFixedArea.remove(panel);
+			this.leftFloatArea.add(panel);
+			this.leftFloatArea.container.active(panel);
+		}
+		engineConfig
+			.getPreference()
+			.set(`${panel.name}-pinned-status-isFloat`, !isFloat, 'skeleton');
 	}
 
 	createContainer(
@@ -242,11 +359,21 @@ export class Skeleton implements ISkeleton {
 			case 'leftArea':
 			case 'left':
 				return this.leftArea.add(parsedConfig as PanelDockConfig);
+			case 'rightArea':
+			case 'right':
+				return this.rightArea.add(parsedConfig as IPublicTypePanelConfig);
 			case 'topArea':
 			case 'top':
 				return this.topArea.add(parsedConfig as PanelDockConfig);
+			case 'toolbar':
+				return this.toolbar.add(parsedConfig as PanelDockConfig);
+			case 'leftFixedArea':
+				return this.leftFixedArea.add(parsedConfig as IPublicTypePanelConfig);
 			case 'leftFloatArea':
 				return this.leftFloatArea.add(parsedConfig as IPublicTypePanelConfig);
+			case 'bottomArea':
+			case 'bottom':
+				return this.bottomArea.add(parsedConfig as IPublicTypePanelConfig);
 		}
 	}
 

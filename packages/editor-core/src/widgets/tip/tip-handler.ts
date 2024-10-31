@@ -97,8 +97,6 @@ function findTip(target: HTMLElement | null): TipOptions | null {
 	while (target && loopupLimit-- > 0) {
 		// get tip from target node
 		if (target.dataset && target.dataset.tip) {
-			console.log('=====');
-
 			return {
 				children: target.dataset.tip as any,
 				direction: (target.dataset.direction || target.dataset.dir) as any,

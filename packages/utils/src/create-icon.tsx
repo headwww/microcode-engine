@@ -11,7 +11,7 @@ export function createIcon(
 	props?: Record<string, unknown>
 ) {
 	if (!icon) {
-		return null;
+		return <></>;
 	}
 	if (isESModule(icon)) {
 		icon = icon.default;

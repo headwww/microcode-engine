@@ -42,7 +42,7 @@ export class WidgetContainer<
 		private checkVisible: () => boolean = () => true,
 		private defaultSetCurrent: boolean = false
 	) {
-		// eslint-disable-next-line no-constructor-return
+		//
 	}
 
 	visible = computed(() => this.checkVisible());

@@ -1,4 +1,4 @@
-import { CiOutlined, DeleteFilled } from '@ant-design/icons-vue';
+import { CiOutlined, PayCircleOutlined } from '@ant-design/icons-vue';
 import {
 	IMicroodePluginContextApiAssembler,
 	MicrocodePluginManager,
@@ -110,14 +110,84 @@ skeleton.add({
 			type: 'primary',
 		},
 		{
-			default: () => [h('span', 'ant按钮')],
+			default: () => [h('span', '保存')],
 		}
 	),
+});
+
+skeleton.add({
+	name: 'topArea42222',
+	area: 'topArea',
+	type: 'PanelDock',
 	props: {
-		title: 'center',
+		title: 'sdsa',
+	},
+	content: h(
+		Button,
+		{
+			type: 'primary',
+		},
+		{
+			default: () => [h('span', '保存')],
+		}
+	),
+});
+
+skeleton.add({
+	name: 'sdadsa',
+	area: 'topArea',
+	type: 'PanelDock',
+	props: {
+		title: 'sdssssa',
+	},
+	content: h(
+		Button,
+		{
+			type: 'primary',
+		},
+		{
+			default: () => [h('span', '1保存')],
+		}
+	),
+});
+
+skeleton.add({
+	name: 'topArssea4',
+	area: 'toolbar',
+	type: 'Widget',
+	content: 'cehsi',
+	props: {
+		align: 'right',
 	},
 });
 
+skeleton.add({
+	name: 'topArss11ea4',
+	area: 'toolbar',
+	type: 'Widget',
+	content: 'cehs11i',
+});
+
+skeleton.add({
+	name: '11ea4',
+	area: 'bottomArea',
+	type: 'Widget',
+	content: 'cehs11i',
+});
+
+skeleton.add({
+	name: '11ea4-PanelDock3',
+	area: 'bottomArea',
+	type: 'PanelDock',
+	props: {
+		icon: h(PayCircleOutlined),
+	},
+	content: h('div', 3),
+	panelProps: {
+		title: '数据源',
+		// hideTitleBar: true,
+	},
+});
 // skeleton.add({
 // 	name: 'topArea55',
 // 	area: 'topArea',
@@ -156,17 +226,32 @@ skeleton.add({
 	props: {
 		icon: h(CiOutlined),
 	},
+	panelProps: {
+		title: '标题',
+		description: '标题',
+		help: '辅助提示文本',
+	},
 	content: h('div', 1),
 });
 
 skeleton.add({
-	name: 'leftTest-PanelDock2',
 	area: 'leftArea',
 	type: 'PanelDock',
+	name: 'test1111',
 	props: {
-		icon: h(DeleteFilled),
+		icon: 'CodeOutlined',
+		description: '如何使111111111用',
 	},
-	content: h('div', 2),
+	panelProps: {
+		title: {
+			type: 'i18n',
+			zh_CN: '组件库',
+			en_US: 'zujianku',
+		},
+		// hideTitleBar: true,
+		// help: '1321',
+	},
+	content: 'sdsds',
 });
 
 skeleton.add({
@@ -174,19 +259,15 @@ skeleton.add({
 	area: 'leftArea',
 	type: 'PanelDock',
 	props: {
-		icon: h(DeleteFilled),
+		icon: h(PayCircleOutlined),
 	},
 	content: h('div', 3),
+	panelProps: {
+		title: '数据源',
+		// hideTitleBar: true,
+	},
 });
-// skeleton.add({
-// 	name: 'pane-1',
-// 	area: 'left',
-// 	type: 'Panel',
-// 	content: [
-// 		{ type: 'Panel', content: h('div', 'div1') },
-// 		{ type: 'Panel', content: h('div', 'div2') },
-// 	],
-// });
+
 const Workbench = h(W, {
 	skeleton,
 });

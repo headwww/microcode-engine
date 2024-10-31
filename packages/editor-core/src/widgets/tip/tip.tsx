@@ -16,7 +16,6 @@ export const Tip = defineComponent({
 	},
 	setup(props: IPublicTypeTipConfig) {
 		const id = uniqueId('tips$');
-
 		onUnmounted(() => {
 			postTip(id, null);
 		});

@@ -12,7 +12,7 @@ export const TopArea = defineComponent({
 		return () => {
 			const { area, itemClassName, className } = props;
 			if (area?.isEmpty()) {
-				return null;
+				return <></>;
 			}
 			return (
 				<div

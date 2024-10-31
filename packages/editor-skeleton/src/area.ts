@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, toRaw } from 'vue';
 import { Logger } from '@arvin/microcode-utils';
 import { IPublicTypeWidgetBaseConfig } from '@arvin/microcode-types';
 import { ISkeleton } from './skeleton';
@@ -23,7 +23,7 @@ export class Area<
 	private _visible = ref(true);
 
 	/**
-	 * 控制区域的显示隐藏
+	 * 控制区域的显示隐藏，有选中的widget则显示反之隐藏
 	 */
 	visible = computed(() => {
 		// 如果是独占模式则当有选中的激活的widget的时候才会显示否则隐藏，一般是leftFloatArea是这种模式
@@ -38,13 +38,16 @@ export class Area<
 	/**
 	 * 当前区域选中的widget
 	 */
-	get current() {
+	current = computed(() => {
 		if (this.exclusive) {
 			return this.container.current;
 		}
 		return null;
-	}
+	});
 
+	/**
+	 * 当前区域的widget容器
+	 */
 	readonly container: WidgetContainer<T, C>;
 
 	private lastCurrent: T | null = null;
@@ -79,17 +82,23 @@ export class Area<
 	}
 
 	remove(config: string | T): number {
+		this.container.unactive(config);
 		return this.container.remove(config);
 	}
 
+	/**
+	 * 直接控制整个区域的显示隐藏，如果是exclusive模式的话则根据情况来判断是否使用上次打开的widget
+	 * @param flag
+	 * @returns
+	 */
 	setVisible(flag: boolean): void {
 		if (this.exclusive) {
 			const { current } = this.container;
 			if (flag && !current) {
 				this.container.active(this.lastCurrent || this.container.getAt(0));
 			} else if (current) {
-				this.lastCurrent = current;
-				this.container.unactive(current);
+				this.lastCurrent = toRaw(current);
+				this.container.unactive(toRaw(current));
 			}
 			return;
 		}

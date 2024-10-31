@@ -11,7 +11,7 @@ export const LeftArea = defineComponent({
 		return () => {
 			const { className = 'mtc-left-area', area } = props;
 			if (area?.isEmpty()) {
-				return null;
+				return <></>;
 			}
 
 			return (
