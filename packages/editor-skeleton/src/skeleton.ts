@@ -1,8 +1,11 @@
 import {
+	EditorConfig,
 	IPublicApiSkeleton,
 	IPublicTypePanelConfig,
 	IPublicTypeSkeletonConfig,
 	IPublicTypeWidgetBaseConfig,
+	IPublicTypeWidgetConfigArea,
+	PluginClassSet,
 } from '@arvin/microcode-types';
 import { isPlainObject, Logger } from '@arvin/microcode-utils';
 import { isVNode } from 'vue';
@@ -94,6 +97,8 @@ export interface ISkeleton
 	toggleFloatStatus(panel: Panel): void;
 
 	readonly focusTracker: FocusTracker;
+
+	buildFromConfig(config?: EditorConfig, components?: PluginClassSet): void;
 
 	/**
 	 * 创建并返回一个 WidgetContainer 对象
@@ -247,7 +252,8 @@ export class Skeleton implements ISkeleton {
 				const isInFloatAreaFromPreference = engineConfig
 					.getPreference()
 					?.get(panelNameKey, 'skeleton');
-				const isCurrentInFloatArea = panel?.isChildOfFloatArea();
+				const isCurrentInFloatArea =
+					isPanel(panel) && panel?.isChildOfFloatArea();
 				if (isInFloatAreaFromPreference !== isCurrentInFloatArea) {
 					this.toggleFloatStatus(panel);
 				}
@@ -269,6 +275,65 @@ export class Skeleton implements ISkeleton {
 		engineConfig
 			.getPreference()
 			.set(`${panel.name}-pinned-status-isFloat`, !isFloat, 'skeleton');
+	}
+
+	buildFromConfig(config?: EditorConfig, components: PluginClassSet = {}) {
+		if (config) {
+			this.editor.init(config, components);
+		}
+		this.setupPlugins();
+	}
+
+	private setupPlugins() {
+		const { config, components = {} } = this.editor;
+		if (!config) {
+			return;
+		}
+
+		const { plugins } = config;
+		if (!plugins) {
+			return;
+		}
+		Object.keys(plugins).forEach((area) => {
+			plugins[area].forEach((item) => {
+				const { pluginKey, type, props = {}, pluginProps } = item;
+				const config: IPublicTypeWidgetBaseConfig = {
+					area: area as IPublicTypeWidgetConfigArea,
+					type: 'Widget',
+					name: pluginKey,
+					contentProps: pluginProps,
+				};
+				const {
+					dialogProps,
+					balloonProps,
+					panelProps,
+					linkProps,
+					...restProps
+				} = props;
+				config.props = restProps;
+				if (dialogProps) {
+					config.dialogProps = dialogProps;
+				}
+				if (balloonProps) {
+					config.balloonProps = balloonProps;
+				}
+				if (panelProps) {
+					config.panelProps = panelProps;
+				}
+				if (linkProps) {
+					config.linkProps = linkProps;
+				}
+				if (type === 'TabPanel') {
+					config.type = 'Panel';
+				} else if (/Icon$/.test(type)) {
+					config.type = type.replace('Icon', 'Dock');
+				}
+				if (pluginKey in components) {
+					config.content = components[pluginKey];
+				}
+				this.add(config);
+			});
+		});
 	}
 
 	createContainer(

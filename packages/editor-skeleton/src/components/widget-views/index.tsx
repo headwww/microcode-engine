@@ -123,6 +123,12 @@ export const TitledPanelView = defineComponent({
 				return <></>;
 			}
 			const panelName = area ? `${area}-${panel?.name}` : panel?.name;
+			const editor = panel?.skeleton.editor;
+
+			editor?.eventBus.emit('skeleton.panel.toggle', {
+				name: panelName || '',
+				status: panel.visible ? 'show' : 'hide',
+			});
 
 			return (
 				<div
@@ -236,15 +242,71 @@ export const PanelTitle = defineComponent({
 		};
 	},
 });
+
 export const WidgetView = defineComponent({
 	name: 'WidgetView',
 	props: {
 		widget: Object as PropType<IWidget>,
 	},
 	setup(props) {
-		onMounted(() => {});
+		let lastVisible = false;
+		let lastDisabled: boolean | undefined = false;
 
-		onUpdated(() => {});
+		onMounted(() => {
+			checkVisible();
+			checkDisabled();
+		});
+
+		onUpdated(() => {
+			checkVisible();
+			checkDisabled();
+		});
+
+		function checkVisible() {
+			const { widget } = props;
+			if (widget) {
+				const currentVisible = widget.visible.value;
+				if (currentVisible !== lastVisible) {
+					lastVisible = currentVisible;
+					if (lastVisible) {
+						widget.skeleton.postEvent(
+							SkeletonEvents.WIDGET_SHOW,
+							widget.name,
+							widget
+						);
+					} else {
+						widget.skeleton.postEvent(
+							SkeletonEvents.WIDGET_SHOW,
+							widget.name,
+							widget
+						);
+					}
+				}
+			}
+		}
+
+		function checkDisabled() {
+			const { widget } = props;
+			if (widget) {
+				const currentDisabled = widget.disabled;
+				if (currentDisabled !== lastDisabled) {
+					lastDisabled = currentDisabled;
+					if (lastDisabled) {
+						widget.skeleton.postEvent(
+							SkeletonEvents.WIDGET_DISABLE,
+							widget.name,
+							widget
+						);
+					} else {
+						widget.skeleton.postEvent(
+							SkeletonEvents.WIDGET_ENABLE,
+							widget.name,
+							widget
+						);
+					}
+				}
+			}
+		}
 
 		return () => {
 			const { widget } = props;
@@ -254,7 +316,7 @@ export const WidgetView = defineComponent({
 			if (widget.disabled) {
 				return <div class="mtc-widget-disabled">{widget.body}</div>;
 			}
-			return widget.body;
+			return <>{widget.body}</>;
 		};
 	},
 });

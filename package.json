@@ -44,7 +44,8 @@
 		"ant-design-vue": "^4.2.5",
 		"eventemitter2": "^6.4.9",
 		"lodash": "^4.17.21",
-		"lodash-es": "^4.17.21"
+		"lodash-es": "^4.17.21",
+		"strict-event-emitter-types": "^2.0.0"
 	},
 	"lint-staged": {
 		"*.{js,jsx,vue,ts,tsx}": [

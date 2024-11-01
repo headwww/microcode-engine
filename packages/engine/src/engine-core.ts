@@ -55,6 +55,9 @@ const editor = new Editor();
 
 const skeleton = new Skeleton(editor);
 
+editor.set('innerPlugins', innerPlugins);
+editor.set('plugins', plugins);
+
 // s.add({
 // 	name: 'topArea1',
 // 	area: 'topArea',
@@ -134,11 +137,11 @@ skeleton.add({
 });
 
 skeleton.add({
-	name: 'sdadsa',
+	name: 'topArea422222222',
 	area: 'topArea',
 	type: 'PanelDock',
 	props: {
-		title: 'sdssssa',
+		title: 'sdsa',
 	},
 	content: h(
 		Button,
@@ -146,7 +149,7 @@ skeleton.add({
 			type: 'primary',
 		},
 		{
-			default: () => [h('span', '1保存')],
+			default: () => [h('span', '保存')],
 		}
 	),
 });

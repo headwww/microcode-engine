@@ -1,5 +1,6 @@
 import { defineComponent, PropType } from 'vue';
 import { TipContainer } from '@arvin/microcode-editor-core';
+import { EditorConfig, PluginClassSet } from '@arvin/microcode-types';
 import { ISkeleton } from '../skeleton';
 import { TopArea } from './top-area';
 import { LeftArea } from './left-area';
@@ -13,11 +14,15 @@ import { BottomArea } from './bottom-area';
 export const Workbench = defineComponent({
 	name: 'Workbench',
 	props: {
-		className: String,
 		skeleton: Object as PropType<ISkeleton>,
+		config: Object as PropType<EditorConfig>,
+		components: Object as PropType<PluginClassSet>,
+		className: String,
 		topAreaItemClassName: String,
 	},
 	setup(props) {
+		props.skeleton?.buildFromConfig(props.config, props.components);
+
 		return () => {
 			const { className, skeleton, topAreaItemClassName } = props;
 			return (

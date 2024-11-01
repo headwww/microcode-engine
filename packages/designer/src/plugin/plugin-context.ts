@@ -9,6 +9,10 @@ import {
 	IPublicTypePreferenceValueType,
 } from '@arvin/microcode-types';
 import {
+	createModuleEventBus,
+	engineConfig,
+} from '@arvin/microcode-editor-core';
+import {
 	IMicrocodeContextPrivate,
 	IMicroodePluginContextApiAssembler,
 	IPluginContextOptions,
@@ -39,6 +43,13 @@ export default class PluginContext
 	) {
 		const { pluginName = 'anonymous', meta } = options;
 		contextApiAssembler.assembleApis(this, pluginName, meta);
+		this.pluginEvent = createModuleEventBus(pluginName, 200);
+		const enhancePluginContextHook = engineConfig.get(
+			'enhancePluginContextHook'
+		);
+		if (enhancePluginContextHook) {
+			enhancePluginContextHook(this);
+		}
 	}
 
 	/**
