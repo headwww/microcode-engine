@@ -2,6 +2,7 @@ import {
 	IPublicApiEvent,
 	IPublicApiLogger,
 	IPublicApiPlugins,
+	IPublicApiSkeleton,
 	IPublicModelEngineConfig,
 	IPublicTypePlugin,
 	IPublicTypePluginConfig,
@@ -66,6 +67,7 @@ export type PluginPreference = Map<
 >;
 
 export interface IMicrocodeContextPrivate {
+	set skeleton(skeleton: IPublicApiSkeleton);
 	set plugins(plugins: IPublicApiPlugins);
 	set config(config: IPublicModelEngineConfig);
 	set event(event: IPublicApiEvent);

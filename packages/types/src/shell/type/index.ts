@@ -24,3 +24,4 @@ export * from './editor-get-options';
 export * from './editor-register-options';
 export * from './assets-json';
 export * from './npm-info';
+export * from './config-transducer';

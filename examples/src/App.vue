@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Workbench } from '@arvin/microcode-engine';
+import { MicrocodeWorkbench } from '@arvin/microcode-engine';
 import { EditorConfig } from '@arvin/microcode-types';
 
 const config: EditorConfig = {
@@ -31,5 +31,8 @@ const config: EditorConfig = {
 </script>
 
 <template>
-	<Workbench :config="config" className="engine-main"></Workbench>
+	<MicrocodeWorkbench
+		:config="config"
+		className="engine-main"
+	></MicrocodeWorkbench>
 </template>

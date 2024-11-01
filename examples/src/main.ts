@@ -7,12 +7,11 @@ import {
 import { getLogger } from '@arvin/microcode-utils';
 import App from './App.vue';
 import '@arvin/microcode-theme/src/index.scss';
-import './a.scss';
+import './rest.scss';
 import 'ant-design-vue/dist/reset.css';
+import InitSkeleton from './plugins/plugin-init-skeleton';
 
 const app = createApp(App);
-
-app.mount('#app');
 
 const logger = getLogger({ level: 'log', bizName: 'main' });
 
@@ -68,6 +67,8 @@ testPlungin.meta = {
 
 plugins.register(testPlungin);
 
+await plugins.register(InitSkeleton);
+
 // plugins.register(testPlungin1);
 
 const preference = new Map();
@@ -76,7 +77,9 @@ preference.set('testPlungin-1', {
 	scenarioName: '01010101',
 });
 
-init(preference);
+await init(preference);
+
+app.mount('#app');
 
 // const preference = new Map();
 

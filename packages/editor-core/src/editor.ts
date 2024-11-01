@@ -11,6 +11,7 @@ import {
 import { shallowRef } from 'vue';
 import { EventBus, IEventBus } from './event-bus';
 import { engineConfig } from './config';
+import { globalLocale } from './inti/global-locale';
 
 const keyBlacklist = [
 	'designer',
@@ -37,6 +38,10 @@ export class Editor extends EventEmitter implements IEditor {
 	private context = shallowRef<Map<IPublicTypeEditorValueKey, any>>(
 		new Map<IPublicTypeEditorValueKey, any>()
 	);
+
+	get locale() {
+		return globalLocale.getLocale();
+	}
 
 	config?: EditorConfig;
 

@@ -1,6 +1,6 @@
 import {} from './model';
-import { Config, Plugins, Event, getEvent } from './api';
+import { Config, Plugins, Event, getEvent, Skeleton } from './api';
 
 export * from './symbols';
 
-export { Config, Plugins, Event, getEvent };
+export { Config, Plugins, Event, getEvent, Skeleton };

@@ -1,6 +1,9 @@
 import {
 	EditorConfig,
 	IPublicApiSkeleton,
+	IPublicModelSkeletonItem,
+	IPublicTypeConfigTransducer,
+	IPublicTypeDisposable,
 	IPublicTypePanelConfig,
 	IPublicTypeSkeletonConfig,
 	IPublicTypeWidgetBaseConfig,
@@ -68,6 +71,7 @@ export interface ISkeleton
 		| 'remove'
 		| 'hideArea'
 		| 'add'
+		| 'getPanel'
 	> {
 	editor: IEditor;
 
@@ -88,17 +92,36 @@ export interface ISkeleton
 
 	readonly bottomArea: Area<IPublicTypePanelConfig, Panel>;
 
+	readonly subTopArea: Area<
+		DockConfig | DividerConfig | PanelDockConfig | DialogDockConfig
+	>;
+
+	readonly mainArea: Area<
+		WidgetConfig | IPublicTypePanelConfig,
+		Widget | Panel
+	>;
+
+	readonly stages: Area;
+
 	readonly widgets: IWidget[];
+
+	readonly focusTracker: FocusTracker;
 
 	postEvent(event: SkeletonEvents, ...args: any[]): void;
 
 	getPanel(name: string): Panel | undefined;
 
+	getWidget(name: string): IWidget | undefined;
+
 	toggleFloatStatus(panel: Panel): void;
 
-	readonly focusTracker: FocusTracker;
-
 	buildFromConfig(config?: EditorConfig, components?: PluginClassSet): void;
+
+	registerConfigTransducer(
+		transducer: IPublicTypeConfigTransducer,
+		level: number,
+		id?: string
+	): void;
 
 	/**
 	 * 创建并返回一个 WidgetContainer 对象
@@ -128,6 +151,8 @@ export interface ISkeleton
 export class Skeleton implements ISkeleton {
 	private panels = new Map<string, Panel>();
 
+	private configTransducers: IPublicTypeConfigTransducer[] = [];
+
 	private containers = new Map<string, WidgetContainer<any>>();
 
 	readonly leftArea: Area<DockConfig | PanelDockConfig | DialogDockConfig>;
@@ -140,6 +165,11 @@ export class Skeleton implements ISkeleton {
 		DockConfig | DividerConfig | PanelDockConfig | DialogDockConfig
 	>;
 
+	readonly mainArea: Area<
+		WidgetConfig | IPublicTypePanelConfig,
+		Widget | Panel
+	>;
+
 	readonly leftFloatArea: Area<IPublicTypePanelConfig, Panel>;
 
 	readonly leftFixedArea: Area<IPublicTypePanelConfig, Panel>;
@@ -148,7 +178,13 @@ export class Skeleton implements ISkeleton {
 
 	readonly bottomArea: Area<IPublicTypePanelConfig, Panel>;
 
+	readonly subTopArea: Area<
+		DockConfig | DividerConfig | PanelDockConfig | DialogDockConfig
+	>;
+
 	readonly widgets: IWidget[] = [];
+
+	readonly stages: Area;
 
 	readonly focusTracker = new FocusTracker();
 
@@ -239,6 +275,24 @@ export class Skeleton implements ISkeleton {
 
 		this.setupEvents();
 		this.focusTracker.mount(window);
+	}
+
+	getAreaItems(
+		areaName: IPublicTypeWidgetConfigArea
+	): IPublicModelSkeletonItem[] | undefined {
+		throw new Error(`Method not implemented.${areaName}`);
+	}
+
+	onDisableWidget(
+		listener: (paneName?: string, panel?: IPublicModelSkeletonItem) => void
+	): IPublicTypeDisposable {
+		throw new Error(`Method not implemented.${listener}`);
+	}
+
+	onEnableWidget(
+		listener: (paneName?: string, panel?: IPublicModelSkeletonItem) => void
+	): IPublicTypeDisposable {
+		throw new Error(`Method not implemented.${listener}`);
 	}
 
 	setupEvents() {
@@ -362,6 +416,10 @@ export class Skeleton implements ISkeleton {
 		return this.panels.get(name);
 	}
 
+	getWidget(name: string): IWidget | undefined {
+		return this.widgets.find((widget) => widget.name === name);
+	}
+
 	createWidget(config: IPublicTypeWidgetBaseConfig | IWidget) {
 		if (isWidget(config)) {
 			return config;
@@ -403,11 +461,37 @@ export class Skeleton implements ISkeleton {
 		return panel;
 	}
 
+	registerConfigTransducer(
+		transducer: IPublicTypeConfigTransducer,
+		level = 100,
+		id?: string
+	) {
+		transducer.level = level;
+		transducer.id = id;
+		const i = this.configTransducers.findIndex(
+			(item) => item.level != null && item.level > level
+		);
+		if (i < 0) {
+			this.configTransducers.push(transducer);
+		} else {
+			this.configTransducers.splice(i, 0, transducer);
+		}
+	}
+
+	getRegisteredConfigTransducers(): IPublicTypeConfigTransducer[] {
+		return this.configTransducers;
+	}
+
 	add(config: IPublicTypeSkeletonConfig, extraConfig?: Record<string, any>) {
-		const parsedConfig = {
-			...config,
-			...extraConfig,
-		};
+		const registeredTransducers = this.getRegisteredConfigTransducers();
+
+		const parsedConfig = registeredTransducers.reduce(
+			(prevConfig, current) => current(prevConfig),
+			{
+				...this.parseConfig(config),
+				...extraConfig,
+			}
+		);
 		let { area } = parsedConfig;
 		// 如果仅设置了type位置设置所属area则根据type来分配所属area
 		if (!area) {

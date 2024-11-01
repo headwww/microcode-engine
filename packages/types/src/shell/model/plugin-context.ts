@@ -3,6 +3,7 @@ import {
 	IPublicApiEvent,
 	IPublicApiLogger,
 	IPublicApiPlugins,
+	IPublicApiSkeleton,
 } from '../api';
 import { IPublicModelEngineConfig } from './engine-config';
 
@@ -11,6 +12,11 @@ export interface IPublicModelPluginContext {
 	 * 可通过该对象读取插件初始化配置
 	 */
 	preference: IPluginPreferenceMananger;
+
+	/**
+	 * skeleton API
+	 */
+	get skeleton(): IPublicApiSkeleton;
 
 	/**
 	 * plugins api
