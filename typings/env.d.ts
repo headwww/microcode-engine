@@ -1,4 +1,7 @@
 declare global {
+	interface Window {
+		ArvinMicrocodeEngine: any;
+	}
 	namespace JSX {
 		type Element = VNode;
 		type ElementClass = DefineComponent;

@@ -2,6 +2,7 @@ import {
 	IPluginPreferenceMananger,
 	IPublicApiEvent,
 	IPublicApiLogger,
+	IPublicApiMaterial,
 	IPublicApiPlugins,
 	IPublicApiSkeleton,
 	IPublicModelEngineConfig,
@@ -39,6 +40,8 @@ export default class PluginContext
 	pluginEvent: IPublicApiEvent;
 
 	logger: IPublicApiLogger;
+
+	material: IPublicApiMaterial;
 
 	constructor(
 		options: IPluginContextOptions,

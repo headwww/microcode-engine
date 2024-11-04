@@ -14,7 +14,13 @@ import {
 	Skeleton as InnerSkeleton,
 	Workbench,
 } from '@arvin/microcode-editor-skeleton';
-import { Config, Plugins, Event, Skeleton } from '@arvin/microcode-shell';
+import {
+	Config,
+	Plugins,
+	Event,
+	Skeleton,
+	Material,
+} from '@arvin/microcode-shell';
 import { IPublicTypePluginMeta } from '@arvin/microcode-types';
 import { Logger } from '@arvin/microcode-utils';
 import { h } from 'vue';
@@ -30,6 +36,9 @@ editor.set('skeleton' as any, innerSkeleton);
 
 const skeleton = new Skeleton(innerSkeleton, 'any', false);
 
+const material = new Material(editor);
+editor.set('material', material);
+
 const config = new Config(engineConfig);
 const event = new Event(commonEvent, { prefix: 'common' });
 
@@ -43,6 +52,7 @@ const pluginContextApiAssembler: IMicroodePluginContextApiAssembler = {
 		context.skeleton = new Skeleton(innerSkeleton, pluginName, false);
 		context.plugins = plugins;
 		context.config = config;
+		context.material = material;
 		const eventPrefix = meta?.eventPrefix || 'common';
 		context.event = new Event(commonEvent, { prefix: eventPrefix });
 		context.logger = new Logger({
@@ -61,10 +71,14 @@ editor.set('plugins', plugins);
 
 export async function init(pluginPreference?: PluginPreference) {
 	await plugins.init(pluginPreference);
+	// TODO 先模拟环境
+	window.ArvinMicrocodeEngine = innerPlugins._getMicrocodePluginContext(
+		{} as any
+	);
 }
 
 const MicrocodeWorkbench = h(Workbench, {
 	skeleton: innerSkeleton,
 });
 
-export { skeleton, plugins, config, event, MicrocodeWorkbench };
+export { skeleton, plugins, config, event, material, MicrocodeWorkbench };

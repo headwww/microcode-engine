@@ -1,6 +1,7 @@
 import {
 	IPublicApiEvent,
 	IPublicApiLogger,
+	IPublicApiMaterial,
 	IPublicApiPlugins,
 	IPublicApiSkeleton,
 	IPublicModelEngineConfig,
@@ -69,6 +70,7 @@ export type PluginPreference = Map<
 export interface IMicrocodeContextPrivate {
 	set skeleton(skeleton: IPublicApiSkeleton);
 	set plugins(plugins: IPublicApiPlugins);
+	set material(material: IPublicApiMaterial);
 	set config(config: IPublicModelEngineConfig);
 	set event(event: IPublicApiEvent);
 	set logger(event: IPublicApiLogger);

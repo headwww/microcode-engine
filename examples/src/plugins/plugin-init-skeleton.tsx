@@ -5,6 +5,7 @@ import {
 } from '@ant-design/icons-vue';
 import { IPublicModelPluginContext } from '@arvin/microcode-types';
 import { Button } from 'ant-design-vue';
+import { ComponentPane } from './ComponentPane';
 
 const InitSkeleton = (ctx: IPublicModelPluginContext) => ({
 	async init() {
@@ -35,7 +36,7 @@ const InitSkeleton = (ctx: IPublicModelPluginContext) => ({
 			props: {
 				icon: <SlackOutlined />,
 			},
-			content: <div>组件</div>,
+			content: <ComponentPane></ComponentPane>,
 			panelProps: {
 				title: '组件',
 			},

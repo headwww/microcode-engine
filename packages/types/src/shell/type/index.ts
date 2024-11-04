@@ -25,3 +25,5 @@ export * from './editor-register-options';
 export * from './assets-json';
 export * from './npm-info';
 export * from './config-transducer';
+export * from './component-description';
+export * from './component-metadata';

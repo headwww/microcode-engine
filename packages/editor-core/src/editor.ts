@@ -4,6 +4,7 @@ import {
 	HookConfig,
 	IPublicModelEditor,
 	IPublicTypeAssetsJson,
+	IPublicTypeComponentDescription,
 	IPublicTypeEditorGetResult,
 	IPublicTypeEditorValueKey,
 	PluginClassSet,
@@ -92,7 +93,22 @@ export class Editor extends EventEmitter implements IEditor {
 	}
 
 	async setAssets(assets: IPublicTypeAssetsJson) {
-		console.log(assets);
+		const { components } = assets;
+		if (components && components.length) {
+			const componentDescriptions: IPublicTypeComponentDescription[] = [];
+
+			components.forEach((component) => {
+				if (!component) {
+					return;
+				}
+				componentDescriptions.push(component);
+			});
+			assets.components = componentDescriptions;
+		}
+
+		const innerAssets = assets;
+		this.context.value.set('assets', innerAssets);
+		this.notifyGot('assets');
 	}
 
 	/**

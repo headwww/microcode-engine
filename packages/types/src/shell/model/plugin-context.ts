@@ -2,6 +2,7 @@ import {
 	IPluginPreferenceMananger,
 	IPublicApiEvent,
 	IPublicApiLogger,
+	IPublicApiMaterial,
 	IPublicApiPlugins,
 	IPublicApiSkeleton,
 } from '../api';
@@ -42,4 +43,9 @@ export interface IPublicModelPluginContext {
 	 * logger api
 	 */
 	get logger(): IPublicApiLogger;
+
+	/**
+	 * material api
+	 */
+	get material(): IPublicApiMaterial;
 }
