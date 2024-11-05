@@ -5,7 +5,8 @@ import { EditorConfig } from '@arvin/microcode-types';
 const config: EditorConfig = {
 	lifeCycles: {
 		init: (e: any) => {
-			console.log('init', e.context.value);
+			e;
+			// console.log('init', e.context.value);
 		},
 		destroy: (e: any) => {
 			console.log('destroy', e);

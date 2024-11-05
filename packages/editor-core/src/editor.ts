@@ -7,9 +7,11 @@ import {
 	IPublicTypeComponentDescription,
 	IPublicTypeEditorGetResult,
 	IPublicTypeEditorValueKey,
+	IPublicTypeRemoteComponentDescription,
 	PluginClassSet,
 } from '@arvin/microcode-types';
 import { shallowRef } from 'vue';
+import { AssetLoader } from '@arvin/microcode-utils';
 import { EventBus, IEventBus } from './event-bus';
 import { engineConfig } from './config';
 import { globalLocale } from './inti/global-locale';
@@ -25,6 +27,10 @@ const keyBlacklist = [
 	'innerHotkey',
 	'innerPlugins',
 ];
+
+const AssetsCache: {
+	[key: string]: IPublicTypeRemoteComponentDescription;
+} = {};
 
 export interface IEditor extends IPublicModelEditor {
 	config?: EditorConfig;
@@ -96,16 +102,106 @@ export class Editor extends EventEmitter implements IEditor {
 		const { components } = assets;
 		if (components && components.length) {
 			const componentDescriptions: IPublicTypeComponentDescription[] = [];
-
+			const remoteComponentDescriptions: IPublicTypeRemoteComponentDescription[] =
+				[];
 			components.forEach((component) => {
 				if (!component) {
 					return;
 				}
-				componentDescriptions.push(component);
+				if (component.exportName && component.url) {
+					remoteComponentDescriptions.push(component);
+				} else {
+					componentDescriptions.push(
+						component as IPublicTypeComponentDescription
+					);
+				}
 			});
 			assets.components = componentDescriptions;
-		}
 
+			if (remoteComponentDescriptions && remoteComponentDescriptions.length) {
+				await Promise.all(
+					remoteComponentDescriptions.map(
+						async (component: IPublicTypeRemoteComponentDescription) => {
+							const { exportName, url, npm } = component;
+							if (!url || !exportName) {
+								return;
+							}
+							if (
+								!AssetsCache[exportName] ||
+								!npm?.version ||
+								AssetsCache[exportName].npm?.version !== npm.version
+							) {
+								await new AssetLoader().load(url);
+							}
+							AssetsCache[exportName] = component;
+
+							function setAssetsComponent(
+								component: any,
+								extraNpmInfo: any = {}
+							) {
+								const { components } = component;
+								if (Array.isArray(components)) {
+									components.forEach((d) => {
+										assets.components = assets.components.concat(
+											{
+												npm: {
+													...npm,
+													...extraNpmInfo,
+												},
+												...d,
+											} || []
+										);
+									});
+									return;
+								}
+								if (component.components) {
+									assets.components = assets.components.concat(
+										{
+											npm: {
+												...npm,
+												...extraNpmInfo,
+											},
+											...component.components,
+										} || []
+									);
+								}
+							}
+
+							function setArrayAssets(
+								value: any[],
+								preExportName: string = '',
+								preSubName: string = ''
+							) {
+								value.forEach((d: any, i: number) => {
+									const exportName = [preExportName, i.toString()]
+										.filter((d) => !!d)
+										.join('.');
+									const subName = [preSubName, i.toString()]
+										.filter((d) => !!d)
+										.join('.');
+									Array.isArray(d)
+										? setArrayAssets(d, exportName, subName)
+										: setAssetsComponent(d, {
+												exportName,
+												subName,
+											});
+								});
+							}
+
+							if ((window as any)[exportName]) {
+								if (Array.isArray((window as any)[exportName])) {
+									setArrayAssets((window as any)[exportName] as any);
+								} else {
+									setAssetsComponent((window as any)[exportName] as any);
+								}
+							}
+							return (window as any)[exportName];
+						}
+					)
+				);
+			}
+		}
+		// TODO 转换成符合标准格式的资源对象没有完成
 		const innerAssets = assets;
 		this.context.value.set('assets', innerAssets);
 		this.notifyGot('assets');

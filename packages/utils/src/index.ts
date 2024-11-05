@@ -9,3 +9,6 @@ export * from './has-own-property';
 export * from './check-types';
 export * from './create-icon';
 export * from './is-es-module';
+export * from './is-css-url';
+export * from './asset';
+export * from './script';

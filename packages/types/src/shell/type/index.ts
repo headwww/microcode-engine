@@ -27,3 +27,7 @@ export * from './npm-info';
 export * from './config-transducer';
 export * from './component-description';
 export * from './component-metadata';
+export * from './package';
+export * from './component-sort';
+export * from './remote-component-description';
+export * from './reference';
