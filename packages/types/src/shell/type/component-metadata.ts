@@ -1,5 +1,6 @@
 import { IPublicTypeIconType } from './icon-type';
 import { IPublicTypeNpmInfo } from './npm-info';
+import { IPublicTypePropConfig } from './prop-config';
 import { IPublicTypeTitleContent } from './title-content';
 
 /**
@@ -60,4 +61,9 @@ export interface IPublicTypeComponentMetadata {
 	 * npm 源引入完整描述对象
 	 */
 	npm?: IPublicTypeNpmInfo;
+
+	/**
+	 * 组件属性信息
+	 */
+	props?: IPublicTypePropConfig[];
 }

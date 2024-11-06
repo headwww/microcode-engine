@@ -31,3 +31,6 @@ export * from './package';
 export * from './component-sort';
 export * from './remote-component-description';
 export * from './reference';
+
+export * from './prop-config';
+export * from './prop-types';

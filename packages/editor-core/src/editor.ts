@@ -15,6 +15,7 @@ import { AssetLoader } from '@arvin/microcode-utils';
 import { EventBus, IEventBus } from './event-bus';
 import { engineConfig } from './config';
 import { globalLocale } from './inti/global-locale';
+import { assetsTransform } from './utils';
 
 const keyBlacklist = [
 	'designer',
@@ -202,7 +203,7 @@ export class Editor extends EventEmitter implements IEditor {
 			}
 		}
 		// TODO 转换成符合标准格式的资源对象没有完成
-		const innerAssets = assets;
+		const innerAssets = assetsTransform(assets);
 		this.context.value.set('assets', innerAssets);
 		this.notifyGot('assets');
 	}

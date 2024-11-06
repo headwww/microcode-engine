@@ -5,35 +5,24 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 		const { material } = ctx;
 		material.setAssets({
 			version: '1.0.0',
+			packages: [
+				{
+					package: 'moment',
+					version: '2.24.0',
+					urls: ['https://g.alicdn.com/mylib/moment/2.24.0/min/moment.min.js'],
+					library: 'moment',
+				},
+				{
+					package: 'lodash',
+					library: '_',
+					version: '4.6.1',
+					urls: ['https://g.alicdn.com/platform/c/lodash/4.6.1/lodash.min.js'],
+				},
+			],
 			components: [
 				{
 					componentName: 'button',
 				},
-				// {
-				// 	exportName: 'AlilcLowcodeMaterialsMeta',
-				// 	npm: {
-				// 		package: '@alilc/lowcode-materials',
-				// 	},
-				// 	url: 'http://192.168.1.59:8080/index1.js',
-				// 	urls: {
-				// 		default:
-				// 			'https://alifd.alicdn.com/npm/@alilc/lowcode-materials@1.0.7/build/lowcode/meta.js',
-				// 		design:
-				// 			'https://alifd.alicdn.com/npm/@alilc/lowcode-materials@1.0.7/build/lowcode/meta.design.js',
-				// 	},
-				// },
-				// {
-				// 	exportName: 'Test1',
-				// 	npm: {
-				// 		package: '@alilc/Test2',
-				// 	},
-				// 	url: {
-				// 		id: 'chaojis',
-				// 		type: 'cssUrl',
-				// 		content:
-				// 			'https://cdn.jsdelivr.net/npm/ant-design-vue@4.2.5/dist/reset.min.css',
-				// 	},
-				// },
 			],
 		});
 	},
