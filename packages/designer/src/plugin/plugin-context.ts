@@ -1,5 +1,6 @@
 import {
 	IPluginPreferenceMananger,
+	IPublicApiCanvas,
 	IPublicApiEvent,
 	IPublicApiLogger,
 	IPublicApiMaterial,
@@ -38,6 +39,8 @@ export default class PluginContext
 	event: IPublicApiEvent;
 
 	pluginEvent: IPublicApiEvent;
+
+	canvas: IPublicApiCanvas;
 
 	logger: IPublicApiLogger;
 

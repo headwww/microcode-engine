@@ -37,7 +37,7 @@ export const Workbench = defineComponent({
 						<LeftFixedPane area={skeleton?.leftFixedArea}></LeftFixedPane>
 						<div class="mtc-workbench-center">
 							<Toolbar area={skeleton?.toolbar} />
-							<MainArea></MainArea>
+							<MainArea area={skeleton?.mainArea}></MainArea>
 							<BottomArea area={skeleton?.bottomArea}></BottomArea>
 						</div>
 						<RightArea area={skeleton?.rightArea}></RightArea>

@@ -1,5 +1,5 @@
 import { IEditor } from '@arvin/microcode-editor-core';
-import { defineComponent, onMounted, PropType } from 'vue';
+import { defineComponent, onMounted, PropType, ref } from 'vue';
 
 export const ComponentPane = defineComponent({
 	name: 'ComponentPane',
@@ -7,11 +7,27 @@ export const ComponentPane = defineComponent({
 		editor: Object as PropType<IEditor>,
 	},
 	setup(props) {
-		const { material } = window.ArvinMicrocodeEngine;
+		const { material, canvas } = window.ArvinMicrocodeEngine;
+
+		const shell = ref<HTMLDivElement>();
 
 		const isNewEngineVersion = !!material;
 
 		onMounted(() => {
+			// 绑定布局
+			canvas.dragon.from(shell.value, (e: Event) => {
+				console.log('ComponentPane e.taget = ', e.target);
+				return {
+					type: 'nodedata',
+					data: {
+						componentName: 'Button',
+						props: {
+							type: 'primary',
+						},
+					},
+				};
+			});
+
 			const { editor } = props;
 			if (!editor) {
 				initComponentList();
@@ -40,6 +56,6 @@ export const ComponentPane = defineComponent({
 			console.log(rawData);
 		}
 
-		return () => <div>组件</div>;
+		return () => <div ref={shell}>组件</div>;
 	},
 });

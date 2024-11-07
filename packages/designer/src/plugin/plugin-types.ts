@@ -1,4 +1,5 @@
 import {
+	IPublicApiCanvas,
 	IPublicApiEvent,
 	IPublicApiLogger,
 	IPublicApiMaterial,
@@ -71,6 +72,7 @@ export interface IMicrocodeContextPrivate {
 	set skeleton(skeleton: IPublicApiSkeleton);
 	set plugins(plugins: IPublicApiPlugins);
 	set material(material: IPublicApiMaterial);
+	set canvas(material: IPublicApiCanvas);
 	set config(config: IPublicModelEngineConfig);
 	set event(event: IPublicApiEvent);
 	set logger(event: IPublicApiLogger);

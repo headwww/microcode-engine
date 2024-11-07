@@ -1,8 +1,21 @@
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
+import { Area } from '../area';
+import { Panel, Widget } from '..';
 
 export const MainArea = defineComponent({
 	name: 'MainArea',
-	setup() {
-		return () => <div class="mtc-main-area engine-workspacepane"></div>;
+	props: {
+		area: Object as PropType<Area<any, Panel | Widget>>,
+	},
+	setup(props) {
+		return () => {
+			const { area } = props;
+
+			return (
+				<div class="mtc-main-area engine-workspacepane">
+					{area?.container.items.value.map((item) => item.content)}
+				</div>
+			);
+		};
 	},
 });

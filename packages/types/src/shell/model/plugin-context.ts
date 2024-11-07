@@ -1,5 +1,6 @@
 import {
 	IPluginPreferenceMananger,
+	IPublicApiCanvas,
 	IPublicApiEvent,
 	IPublicApiLogger,
 	IPublicApiMaterial,
@@ -48,4 +49,9 @@ export interface IPublicModelPluginContext {
 	 * material api
 	 */
 	get material(): IPublicApiMaterial;
+
+	/**
+	 * canvas API
+	 */
+	get canvas(): IPublicApiCanvas;
 }

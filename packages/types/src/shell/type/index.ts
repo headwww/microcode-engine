@@ -31,6 +31,15 @@ export * from './package';
 export * from './component-sort';
 export * from './remote-component-description';
 export * from './reference';
-
+export * from './drag-node-data-object';
 export * from './prop-config';
 export * from './prop-types';
+export * from './snippet';
+export * from './node-schema';
+export * from './value-type';
+export * from './composite-value';
+export * from './node-data';
+export * from './dom-text';
+export * from './props-map';
+export * from './container-schema';
+export * from './component-schema';

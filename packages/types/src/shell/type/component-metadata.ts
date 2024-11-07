@@ -1,6 +1,9 @@
+import { IPublicTypeComponentSchema } from './component-schema';
+import { IPublicTypeI18nData } from './i8n-data';
 import { IPublicTypeIconType } from './icon-type';
 import { IPublicTypeNpmInfo } from './npm-info';
 import { IPublicTypePropConfig } from './prop-config';
+import { IPublicTypeSnippet } from './snippet';
 import { IPublicTypeTitleContent } from './title-content';
 
 /**
@@ -66,4 +69,34 @@ export interface IPublicTypeComponentMetadata {
 	 * 组件属性信息
 	 */
 	props?: IPublicTypePropConfig[];
+
+	/**
+	 * 编辑体验增强 自定义属性设置器
+	 */
+	// configure?: IPublicTypeFieldConfig[] | IPublicTypeConfigure;
+
+	/**
+	 * @todo 待补充文档
+	 */
+	schema?: IPublicTypeComponentSchema;
+
+	/**
+	 * 可用片段
+	 */
+	snippets?: IPublicTypeSnippet[];
+
+	/**
+	 * 一级分组
+	 */
+	group?: string | IPublicTypeI18nData;
+
+	/**
+	 * 二级分组
+	 */
+	category?: string | IPublicTypeI18nData;
+
+	/**
+	 * 组件优先级排序
+	 */
+	priority?: number;
 }

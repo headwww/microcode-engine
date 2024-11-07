@@ -261,6 +261,19 @@ export class Skeleton implements ISkeleton {
 			false,
 			true
 		);
+
+		this.mainArea = new Area(
+			this,
+			'mainArea',
+			(config) => {
+				if (isWidget(config)) {
+					return config as Widget;
+				}
+				return this.createWidget(config) as Widget;
+			},
+			true,
+			true
+		);
 		this.bottomArea = new Area(
 			this,
 			'bottomArea',
@@ -520,6 +533,11 @@ export class Skeleton implements ISkeleton {
 				return this.leftFixedArea.add(parsedConfig as IPublicTypePanelConfig);
 			case 'leftFloatArea':
 				return this.leftFloatArea.add(parsedConfig as IPublicTypePanelConfig);
+			case 'mainArea':
+			case 'main':
+			case 'center':
+			case 'centerArea':
+				return this.mainArea.add(parsedConfig as IPublicTypePanelConfig);
 			case 'bottomArea':
 			case 'bottom':
 				return this.bottomArea.add(parsedConfig as IPublicTypePanelConfig);

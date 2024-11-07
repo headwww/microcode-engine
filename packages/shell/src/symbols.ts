@@ -4,3 +4,5 @@ export const configSymbol = Symbol('configSymbol');
 export const skeletonSymbol = Symbol('skeleton');
 export const skeletonItemSymbol = Symbol('skeletonItem');
 export const editorSymbol = Symbol('editor');
+export const dragonSymbol = Symbol('dragon');
+export const designerSymbol = Symbol('designer');
