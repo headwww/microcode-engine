@@ -1,0 +1,15 @@
+.mtc-designer {
+	position: relative;
+	font-family: var(--font-family);
+	font-size: var(--font-size-text);
+	box-sizing: border-box;
+
+	* {
+		box-sizing: border-box;
+	}
+}
+
+.microcode-plugin-designer {
+	width: 100%;
+	height: 100%;
+}

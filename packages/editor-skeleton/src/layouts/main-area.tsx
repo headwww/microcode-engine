@@ -13,7 +13,7 @@ export const MainArea = defineComponent({
 
 			return (
 				<div class="mtc-main-area engine-workspacepane">
-					{area?.container.items.value.map((item) => item.content)}
+					{area?.container.items.map((item) => item.content)}
 				</div>
 			);
 		};

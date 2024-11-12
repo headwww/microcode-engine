@@ -5,6 +5,7 @@ import {
 	IPublicApiLogger,
 	IPublicApiMaterial,
 	IPublicApiPlugins,
+	IPublicApiProject,
 	IPublicApiSkeleton,
 } from '../api';
 import { IPublicModelEngineConfig } from './engine-config';
@@ -54,4 +55,9 @@ export interface IPublicModelPluginContext {
 	 * canvas API
 	 */
 	get canvas(): IPublicApiCanvas;
+
+	/**
+	 * project API
+	 */
+	get project(): IPublicApiProject;
 }

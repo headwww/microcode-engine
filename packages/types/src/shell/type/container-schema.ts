@@ -53,12 +53,6 @@ export interface IPublicTypeContainerSchema extends IPublicTypeNodeSchema {
 	css?: string;
 
 	/**
-	 *  异步数据源配置
-	 *  @todo 没有声明
-	 */
-	// dataSource?: DataSource;
-
-	/**
 	 * 低代码业务组件默认属性
 	 */
 	defaultProps?: IPublicTypeCompositeObject;

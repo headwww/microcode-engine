@@ -22,11 +22,13 @@ import {
 	Skeleton,
 	Material,
 	Canvas,
+	Project,
 } from '@arvin/microcode-shell';
 import { IPublicTypePluginMeta } from '@arvin/microcode-types';
 import { Logger } from '@arvin/microcode-utils';
 import { h } from 'vue';
 import defaultPanelRegistry from './inner-plugins/default-panel-registry';
+import { componentMetaParser } from './inner-plugins/component-meta-parser';
 
 const editor = new Editor();
 
@@ -40,9 +42,15 @@ editor.set('skeleton' as any, innerSkeleton);
 const designer = new Designer();
 editor.set('designer', designer);
 
+const { project: innerProject } = designer;
+
+const project = new Project(innerProject);
+
 const skeleton = new Skeleton(innerSkeleton, 'any', false);
 
 const material = new Material(editor);
+
+editor.set('project', project);
 editor.set('material', material);
 
 const config = new Config(engineConfig);
@@ -62,6 +70,7 @@ const pluginContextApiAssembler: IMicroodePluginContextApiAssembler = {
 		context.config = config;
 		context.material = material;
 		context.canvas = canvas;
+		context.project = project;
 		const eventPrefix = meta?.eventPrefix || 'common';
 		context.event = new Event(commonEvent, { prefix: eventPrefix });
 		context.logger = new Logger({
@@ -80,14 +89,26 @@ editor.set('plugins', plugins);
 
 // TODO 先模拟环境
 const defaultPanelRegistryPlugin = defaultPanelRegistry(editor);
+const componentMetaParserPlugin = componentMetaParser(designer);
 await plugins.register(defaultPanelRegistryPlugin);
-
+await plugins.register(componentMetaParserPlugin);
 export async function init(pluginPreference?: PluginPreference) {
 	await plugins.init(pluginPreference);
 	// TODO 先模拟环境
 	window.ArvinMicrocodeEngine = innerPlugins._getMicrocodePluginContext(
 		{} as any
 	);
+	project.importSchema({
+		version: '1.0.0',
+		id: 'sdasgusgau',
+		componentsMap: [{ componentName: 'Page', devMode: 'microCode' }],
+		componentsTree: [
+			{
+				componentName: 'Page',
+				fileName: '/',
+			},
+		],
+	});
 }
 
 const MicrocodeWorkbench = h(Workbench, {

@@ -1,5 +1,5 @@
 import { IEditor } from '@arvin/microcode-editor-core';
-import { defineComponent, onMounted, PropType, ref } from 'vue';
+import { CSSProperties, defineComponent, onMounted, PropType, ref } from 'vue';
 
 export const ComponentPane = defineComponent({
 	name: 'ComponentPane',
@@ -16,7 +16,7 @@ export const ComponentPane = defineComponent({
 		onMounted(() => {
 			// 绑定布局
 			canvas.dragon.from(shell.value, (e: Event) => {
-				console.log('ComponentPane e.taget = ', e.target);
+				e;
 				return {
 					type: 'nodedata',
 					data: {
@@ -56,6 +56,19 @@ export const ComponentPane = defineComponent({
 			console.log(rawData);
 		}
 
-		return () => <div ref={shell}>组件</div>;
+		return () => (
+			<div ref={shell}>
+				<div
+					style={
+						{
+							background: '#989898',
+							height: '130px',
+							width: '130px',
+							cursor: 'pointer',
+						} as CSSProperties
+					}
+				></div>
+			</div>
+		);
 	},
 });

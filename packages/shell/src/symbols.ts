@@ -1,3 +1,4 @@
+export const projectSymbol = Symbol('project');
 export const pluginsSymbol = Symbol('plugins');
 export const pluginInstanceSymbol = Symbol('plugin-instance');
 export const configSymbol = Symbol('configSymbol');

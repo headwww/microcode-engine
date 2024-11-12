@@ -1,0 +1,51 @@
+$scope: 'mtc-simulator';
+
+.#{$scope} {
+	position: relative;
+	height: 100%;
+	width: 100%;
+	overflow: auto;
+
+	&-canvas {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		overflow: hidden;
+
+		&-viewport {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+		}
+	}
+
+	&-device-default {
+		inset: var(--simulator-top-distance, 16px)
+			var(--simulator-right-distance, 16px)
+			var(--simulator-bottom-distance, 16px)
+			var(--simulator-left-distance, 16px);
+		width: auto;
+		box-shadow: 0 1px 4px 0
+			var(--color-block-background-shallow, rgb(31 50 88 / 12.5%));
+	}
+
+	&-content {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		overflow: hidden;
+
+		&-frame {
+			border: none;
+			transform-origin: 0 0;
+			height: 100%;
+			width: 100%;
+		}
+	}
+}

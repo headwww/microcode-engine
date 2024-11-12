@@ -18,7 +18,7 @@ export const RightArea = defineComponent({
 						'mtc-area-visible': area?.visible.value,
 					}}
 				>
-					{area?.container.items.value
+					{area?.container.items
 						.slice()
 						.sort((a, b) => {
 							const index1 = a.config?.index || 0;

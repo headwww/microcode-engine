@@ -6,3 +6,6 @@ export * from './skeleton-item';
 export * from './editor';
 export * from './dragon';
 export * from './drag-object';
+export * from './node';
+export * from './document-model';
+export * from './component-meta';

@@ -69,7 +69,7 @@ export class Area<
 	}
 
 	isEmpty(): boolean {
-		return this.container.items.value.length < 1;
+		return this.container.items.length < 1;
 	}
 
 	add(config: C | T): T {

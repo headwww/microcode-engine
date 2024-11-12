@@ -17,7 +17,7 @@ export const Toolbar = defineComponent({
 			const center: any[] = [];
 			const right: any[] = [];
 
-			area?.container.items.value.forEach((item) => {
+			area?.container.items.forEach((item) => {
 				if (item.align === 'center') {
 					center.push(item.content);
 				} else if (item.align === 'right') {

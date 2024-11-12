@@ -2,6 +2,7 @@ import {
 	IPublicApiMaterial,
 	IPublicModelEditor,
 	IPublicTypeAssetsJson,
+	IPublicTypeDisposable,
 } from '@arvin/microcode-types';
 import { globalContext } from '@arvin/microcode-editor-core';
 import { getLogger } from '@arvin/microcode-utils';
@@ -43,5 +44,21 @@ export class Material implements IPublicApiMaterial {
 
 	getAssets(): IPublicTypeAssetsJson | undefined {
 		return this[editorSymbol].get('assets');
+	}
+
+	/**
+	 * 监听 assets 变化的事件
+	 * @param fn
+	 */
+	onChangeAssets(fn: () => void): IPublicTypeDisposable {
+		const disable = [
+			// 设置 assets，经过 setAssets 赋值
+			this[editorSymbol].onChange('assets', fn),
+			// 增量设置 assets，经过 loadIncrementalAssets 赋值
+			this[editorSymbol].eventBus.on('designer.incrementalAssetsReady', fn),
+		];
+		return () => {
+			disable.forEach((d) => d && d());
+		};
 	}
 }

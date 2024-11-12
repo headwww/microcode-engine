@@ -36,7 +36,7 @@ const Contents = defineComponent({
 			const { area } = props;
 			const top: any[] = [];
 			const bottom: any[] = [];
-			area?.container.items.value
+			area?.container.items
 				.slice()
 				.sort((a, b) => {
 					const index1 = a.config?.index || 0;

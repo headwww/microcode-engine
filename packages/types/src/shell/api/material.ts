@@ -1,4 +1,7 @@
-import { IPublicTypeAssetsJson } from '@arvin/microcode-types';
+import {
+	IPublicTypeAssetsJson,
+	IPublicTypeDisposable,
+} from '@arvin/microcode-types';
 
 export interface IPublicApiMaterial {
 	/**
@@ -14,4 +17,11 @@ export interface IPublicApiMaterial {
 	 * @returns IPublicTypeAssetsJson
 	 */
 	getAssets(): IPublicTypeAssetsJson | undefined;
+
+	/**
+	 * 监听 assets 变化的事件
+	 * add callback for assets changed event
+	 * @param fn
+	 */
+	onChangeAssets(fn: () => void): IPublicTypeDisposable;
 }

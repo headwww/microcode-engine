@@ -4,3 +4,4 @@ export * from './event';
 export * from './skeleton';
 export * from './material';
 export * from './canvas';
+export * from './project';

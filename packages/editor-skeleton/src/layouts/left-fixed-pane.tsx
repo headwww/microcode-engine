@@ -27,7 +27,7 @@ export const LeftFixedPane = defineComponent({
 					}}
 					style={style}
 				>
-					{area?.container.items.value.map((panel) => panel.content)}
+					{area?.container.items.map((panel) => panel.content)}
 				</div>
 			);
 		};

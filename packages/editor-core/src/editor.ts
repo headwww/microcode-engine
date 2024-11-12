@@ -10,7 +10,7 @@ import {
 	IPublicTypeRemoteComponentDescription,
 	PluginClassSet,
 } from '@arvin/microcode-types';
-import { shallowRef } from 'vue';
+import { shallowReactive } from 'vue';
 import { AssetLoader } from '@arvin/microcode-utils';
 import { EventBus, IEventBus } from './event-bus';
 import { engineConfig } from './config';
@@ -43,7 +43,7 @@ export class Editor extends EventEmitter implements IEditor {
 	/**
 	 * 存储全局状态和资源
 	 */
-	private context = shallowRef<Map<IPublicTypeEditorValueKey, any>>(
+	private context = shallowReactive<Map<IPublicTypeEditorValueKey, any>>(
 		new Map<IPublicTypeEditorValueKey, any>()
 	);
 
@@ -79,23 +79,23 @@ export class Editor extends EventEmitter implements IEditor {
 	get<T = undefined, KeyOrType = any>(
 		keyOrType: KeyOrType
 	): IPublicTypeEditorGetResult<T, KeyOrType> | undefined {
-		return this.context.value.get(keyOrType as any);
+		return this.context.get(keyOrType as any);
 	}
 
 	has(keyOrType: IPublicTypeEditorValueKey): boolean {
-		return this.context.value.has(keyOrType);
+		return this.context.has(keyOrType);
 	}
 
 	set(key: IPublicTypeEditorValueKey, data: any): void | Promise<void> {
 		if (key === 'assets') {
 			return this.setAssets(data);
 		}
-		this.context.value.set(key, data);
+		this.context.set(key, data);
 		// 不应存储在配置中的内部实例
 		if (!keyBlacklist.includes(key as string)) {
 			engineConfig.set(key as string, data);
 		}
-		this.context.value.set(key, data);
+		this.context.set(key, data);
 		this.notifyGot(key);
 	}
 
@@ -143,28 +143,24 @@ export class Editor extends EventEmitter implements IEditor {
 								const { components } = component;
 								if (Array.isArray(components)) {
 									components.forEach((d) => {
-										assets.components = assets.components.concat(
-											{
-												npm: {
-													...npm,
-													...extraNpmInfo,
-												},
-												...d,
-											} || []
-										);
-									});
-									return;
-								}
-								if (component.components) {
-									assets.components = assets.components.concat(
-										{
+										assets.components = assets.components.concat({
 											npm: {
 												...npm,
 												...extraNpmInfo,
 											},
-											...component.components,
-										} || []
-									);
+											...d,
+										});
+									});
+									return;
+								}
+								if (component.components) {
+									assets.components = assets.components.concat({
+										npm: {
+											...npm,
+											...extraNpmInfo,
+										},
+										...component.components,
+									});
 								}
 							}
 
@@ -204,7 +200,7 @@ export class Editor extends EventEmitter implements IEditor {
 		}
 		// TODO 转换成符合标准格式的资源对象没有完成
 		const innerAssets = assetsTransform(assets);
-		this.context.value.set('assets', innerAssets);
+		this.context.set('assets', innerAssets);
 		this.notifyGot('assets');
 	}
 
@@ -226,7 +222,7 @@ export class Editor extends EventEmitter implements IEditor {
 	}
 
 	register(data: any, key?: IPublicTypeEditorValueKey): void {
-		this.context.value.set(key || data, data);
+		this.context.set(key || data, data);
 		this.notifyGot(key || data);
 	}
 
@@ -278,7 +274,7 @@ export class Editor extends EventEmitter implements IEditor {
 	onceGot<T = undefined, KeyOrType extends IPublicTypeEditorValueKey = any>(
 		keyOrType: KeyOrType
 	): Promise<IPublicTypeEditorGetResult<T, KeyOrType>> {
-		const x = this.context.value.get(keyOrType);
+		const x = this.context.get(keyOrType);
 		if (x !== undefined) {
 			return Promise.resolve(x);
 		}
@@ -291,7 +287,7 @@ export class Editor extends EventEmitter implements IEditor {
 		keyOrType: KeyOrType,
 		fn: (data: IPublicTypeEditorGetResult<T, KeyOrType>) => void
 	): () => void {
-		const x = this.context.value.get(keyOrType);
+		const x = this.context.get(keyOrType);
 		if (x !== undefined) {
 			fn(x);
 		}

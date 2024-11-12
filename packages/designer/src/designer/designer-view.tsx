@@ -1,5 +1,6 @@
 import { defineComponent, PropType } from 'vue';
 import { Designer } from './designer';
+import { ProjectView } from '../project';
 
 export const DesignerView = defineComponent({
 	name: 'DesignerView',
@@ -16,6 +17,10 @@ export const DesignerView = defineComponent({
 		}
 
 		designer;
-		return () => <div class="mtc-designer">超级面板</div>;
+		return () => (
+			<div class="mtc-designer">
+				<ProjectView designer={designer} />
+			</div>
+		);
 	},
 });

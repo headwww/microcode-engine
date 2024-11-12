@@ -5,6 +5,7 @@ import {
 	IPublicApiLogger,
 	IPublicApiMaterial,
 	IPublicApiPlugins,
+	IPublicApiProject,
 	IPublicApiSkeleton,
 	IPublicModelEngineConfig,
 	IPublicModelPluginContext,
@@ -45,6 +46,8 @@ export default class PluginContext
 	logger: IPublicApiLogger;
 
 	material: IPublicApiMaterial;
+
+	project: IPublicApiProject;
 
 	constructor(
 		options: IPluginContextOptions,

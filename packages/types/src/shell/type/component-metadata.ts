@@ -7,7 +7,7 @@ import { IPublicTypeSnippet } from './snippet';
 import { IPublicTypeTitleContent } from './title-content';
 
 /**
- * 组件的meta配置
+ * 组件的meta配置//引入时候可以支持的规范
  */
 export interface IPublicTypeComponentMetadata {
 	/**

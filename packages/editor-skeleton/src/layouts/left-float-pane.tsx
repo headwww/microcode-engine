@@ -107,7 +107,7 @@ export const LeftFloatPane = defineComponent({
 					}}
 					style={style}
 				>
-					{area?.container.items.value.map((panel) => panel.content)}
+					{area?.container.items.map((panel) => panel.content)}
 				</div>
 			);
 		};
