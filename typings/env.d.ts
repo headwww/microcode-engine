@@ -1,6 +1,8 @@
 declare global {
 	interface Window {
 		ArvinMicrocodeEngine: any;
+		Vue: any;
+		SimulatorRenderer: any;
 	}
 	namespace JSX {
 		type Element = VNode;

@@ -21,6 +21,7 @@
 	"dependencies": {
 		"@arvin/microcode-engine": "workspace:^",
 		"@arvin/microcode-theme": "workspace:^",
+		"@arvin/microcode-vue-simulator-renderer": "workspace:^",
 		"vue-router": "^4.4.5"
 	}
 }

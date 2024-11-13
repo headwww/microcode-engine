@@ -10,13 +10,13 @@ export const ProjectView = defineComponent({
 	setup(props) {
 		return () => {
 			const { designer } = props;
-			designer;
+
 			const Simulator = BuiltinSimulatorHostView;
 
 			return (
 				<div class="mtc-project">
 					<div class="mtc-simulator-shell">
-						<Simulator></Simulator>
+						<Simulator designer={designer}></Simulator>
 					</div>
 				</div>
 			);

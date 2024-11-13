@@ -1,24 +1,26 @@
 import { defineComponent, PropType } from 'vue';
-import { Designer } from './designer';
+import { Designer, designerProps } from './designer';
 import { ProjectView } from '../project';
 
 export const DesignerView = defineComponent({
 	name: 'DesignerView',
 	props: {
+		...designerProps,
 		designer: Object as PropType<Designer>,
 	},
 	setup(props) {
-		let designer;
-		const { designer: propsDesigner } = props;
-		if (propsDesigner) {
-			designer = propsDesigner;
+		let { designer } = props;
+		console.log(props);
+
+		const { ...designerProps } = props;
+		if (designer) {
+			designer.setProps(designerProps);
 		} else {
-			designer = new Designer();
+			designer = new Designer(designerProps);
 		}
 
-		designer;
 		return () => (
-			<div class="mtc-designer">
+			<div class={['mtc-designer', props.className]}>
 				<ProjectView designer={designer} />
 			</div>
 		);

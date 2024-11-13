@@ -1,6 +1,6 @@
 import { DesignerView } from '@arvin/microcode-designer';
 import { Editor } from '@arvin/microcode-editor-core';
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, onMounted, PropType, reactive } from 'vue';
 
 export const DesignerPlugin = defineComponent({
 	name: 'DesignerPlugin',
@@ -8,14 +8,24 @@ export const DesignerPlugin = defineComponent({
 		engineEditor: Object as PropType<Editor>,
 	},
 	setup(props) {
-		return () => {
-			const { engineEditor } = props;
-			return (
-				<DesignerView
-					designer={engineEditor?.get('designer')}
-					class="microcode-plugin-designer"
-				></DesignerView>
-			);
-		};
+		const { engineEditor: editor } = props;
+
+		const simulatorProps = reactive({
+			library: null,
+		});
+
+		onMounted(() => {
+			editor?.onceGot('assets').then(({ packages }) => {
+				simulatorProps.library = packages;
+			});
+		});
+
+		return () => (
+			<DesignerView
+				designer={editor?.get('designer')}
+				className="microcode-plugin-designer"
+				simulatorProps={simulatorProps}
+			></DesignerView>
+		);
 	},
 });

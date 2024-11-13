@@ -1,4 +1,4 @@
-import { createApp } from 'vue';
+import * as Vue from 'vue';
 import { init, plugins } from '@arvin/microcode-engine';
 import App from './App.vue';
 import '@arvin/microcode-theme/src/index.scss';
@@ -7,7 +7,10 @@ import 'ant-design-vue/dist/reset.css';
 import InitSkeleton from './plugins/plugin-init-skeleton';
 import InitMaterial from './plugins/plugin-material';
 
-const app = createApp(App);
+import '@arvin/microcode-vue-simulator-renderer';
+
+window.Vue = Vue;
+const app = Vue.createApp(App);
 
 await plugins.register(InitMaterial);
 await plugins.register(InitSkeleton);

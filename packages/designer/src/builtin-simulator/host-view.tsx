@@ -1,22 +1,36 @@
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
+import { Project } from '../project';
+import { BuiltinSimulatorHost } from './host';
+import { Designer } from '../designer';
 
 export const BuiltinSimulatorHostView = defineComponent({
 	name: 'BuiltinSimulatorHostView',
-	setup() {
+	props: {
+		project: Object as PropType<Project>,
+		designer: Object as PropType<Designer>,
+	},
+	setup(props) {
+		const { project, designer } = props;
+		const host = new BuiltinSimulatorHost(project!, designer!);
+
 		return () => (
 			<div className="mtc-simulator">
-				<Canvas />
+				<Canvas host={host} />
 			</div>
 		);
 	},
 });
 
 export const Canvas = defineComponent({
-	setup() {
+	props: {
+		host: Object as PropType<BuiltinSimulatorHost>,
+	},
+	setup(props) {
+		const sim = props.host;
 		return () => (
 			<div class="mtc-simulator-canvas">
 				<div class="mtc-simulator-canvas-viewport mtc-simulator-device-default">
-					<Content></Content>
+					<Content host={sim}></Content>
 				</div>
 			</div>
 		);
@@ -24,11 +38,24 @@ export const Canvas = defineComponent({
 });
 
 export const Content = defineComponent({
-	setup() {
-		return () => (
-			<div class="mtc-simulator-content">
-				<iframe class="mtc-simulator-content-frame" />
-			</div>
-		);
+	props: {
+		host: Object as PropType<BuiltinSimulatorHost>,
+	},
+	setup(props) {
+		return () => {
+			const { host } = props;
+
+			return (
+				<div class="mtc-simulator-content">
+					<iframe
+						class="mtc-simulator-content-frame"
+						onload={(event: any) => {
+							const frame = event.target as HTMLIFrameElement;
+							host?.mountContentFrame(frame);
+						}}
+					/>
+				</div>
+			);
+		};
 	},
 });

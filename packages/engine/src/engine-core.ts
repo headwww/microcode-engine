@@ -39,7 +39,7 @@ globalContext.register({}, 'workspace');
 const innerSkeleton = new InnerSkeleton(editor);
 editor.set('skeleton' as any, innerSkeleton);
 
-const designer = new Designer();
+const designer = new Designer({ editor });
 editor.set('designer', designer);
 
 const { project: innerProject } = designer;

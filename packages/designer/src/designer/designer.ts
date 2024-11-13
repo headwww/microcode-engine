@@ -1,9 +1,30 @@
-import { IPublicTypeComponentMetadata } from '@arvin/microcode-types';
-import { ref } from 'vue';
+import {
+	IPublicModelEditor,
+	IPublicTypeComponentMetadata,
+} from '@arvin/microcode-types';
+import { computed, CSSProperties, ExtractPropTypes, PropType, ref } from 'vue';
 import { insertChildren } from '../document';
 import { IProject, Project } from '../project';
 import { Dragon, IDragon } from './dragon';
 import { ComponentMeta, IComponentMeta } from '../component-meta';
+
+export const designerProps = {
+	editor: {
+		type: Object as PropType<IPublicModelEditor>,
+		required: true,
+	},
+	className: {
+		type: String,
+	},
+	style: {
+		type: Object as PropType<CSSProperties>,
+	},
+	simulatorProps: {
+		type: Object as PropType<Record<string, any>>,
+	},
+};
+
+export type DesignerProps = ExtractPropTypes<typeof designerProps>;
 
 export interface IDesigner {
 	get dragon(): IDragon;
@@ -12,6 +33,7 @@ export interface IDesigner {
 		data: IPublicTypeComponentMetadata
 	): IComponentMeta | null;
 }
+
 export class Designer implements IDesigner {
 	// 拖拽实例
 	dragon: IDragon;
@@ -25,14 +47,32 @@ export class Designer implements IDesigner {
 	// 组件元数据映射表
 	private _componentMetasMap = ref(new Map<string, IComponentMeta>());
 
-	constructor() {
+	constructor(props: DesignerProps) {
 		this.dragon = new Dragon(this);
 		this.project = new Project(this);
-
+		this.setProps(props);
 		this.dragon.onDragend(() => {
 			// 插入
 			insertChildren;
 		});
+	}
+
+	simulatorProps = computed(() => ({}));
+
+	/**
+	 * 提供给模拟器使用的属性
+	 */
+	projectSimulatorProps = computed(() => ({
+		...this.simulatorProps.value,
+		project: this.project,
+		designer: this,
+		onMount: (simulator: any) => {
+			console.log(simulator);
+		},
+	}));
+
+	setProps(props: DesignerProps) {
+		console.log(props);
 	}
 
 	/**
