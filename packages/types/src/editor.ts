@@ -2,17 +2,16 @@ import { Component, VNode } from 'vue';
 import { IPublicModelEditor, IPublicTypeNpmInfo } from './shell';
 
 export interface EditorConfig {
-	skeleton?: SkeletonConfig;
-	theme?: ThemeConfig;
-	plugins?: PluginsConfig;
-	hooks?: HooksConfig;
-	shortCuts?: ShortCutsConfig;
-	utils?: UtilsConfig;
-	constants?: ConstantsConfig;
-	lifeCycles?: LifeCyclesConfig;
-	i18n?: I18nConfig;
+	skeleton?: SkeletonConfig; // 骨架配置
+	theme?: ThemeConfig; // 主题配置
+	plugins?: PluginsConfig; // 插件配置
+	hooks?: HooksConfig; // 钩子配置
+	shortCuts?: ShortCutsConfig; // 快捷键配置
+	utils?: UtilsConfig; // 工具配置
+	constants?: ConstantsConfig; // 常量配置
+	lifeCycles?: LifeCyclesConfig; // 生命周期配置
+	i18n?: I18nConfig; // 国际化配置
 }
-
 export interface SkeletonConfig {
 	config: IPublicTypeNpmInfo;
 	props?: Record<string, unknown>;

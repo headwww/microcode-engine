@@ -15,9 +15,14 @@ export interface IEventBus extends IPublicApiEvent {
 	removeAllListeners(event?: string | symbol): any;
 }
 
+/**
+ * 事件总线
+ */
 export class EventBus implements IEventBus {
+	// 事件发射器
 	private readonly eventEmitter: EventEmitter;
 
+	// 模块名称
 	private readonly name?: string;
 
 	constructor(emitter: EventEmitter, name?: string) {
@@ -78,6 +83,11 @@ export class EventBus implements IEventBus {
 		);
 	}
 
+	/**
+	 * 移除事件监听
+	 * @param event 事件名称
+	 * @param listener 事件回调
+	 */
 	removeListener(
 		event: string | symbol,
 		listener: (...args: any[]) => void
@@ -85,18 +95,36 @@ export class EventBus implements IEventBus {
 		return this.eventEmitter.removeListener(event, listener);
 	}
 
+	/**
+	 * 添加事件监听
+	 * @param event 事件名称
+	 * @param listener 事件回调
+	 */
 	addListener(event: string | symbol, listener: (...args: any[]) => void): any {
 		return this.eventEmitter.addListener(event, listener);
 	}
 
+	/**
+	 * 设置事件监听的最大数量
+	 * @param n 最大数量
+	 */
 	setMaxListeners(n: number): any {
 		return this.eventEmitter.setMaxListeners(n);
 	}
 
+	/**
+	 * 移除所有事件监听
+	 * @param event 事件名称
+	 */
 	removeAllListeners(event?: string | symbol): any {
 		return this.eventEmitter.removeAllListeners(event);
 	}
 
+	/**
+	 * 获取消息前缀
+	 * @param type 类型
+	 * @returns 消息前缀
+	 */
 	private getMsgPrefix(type: string): string {
 		if (this.name && this.name.length > 0) {
 			return `[${this.name}][event-${type}]`;
@@ -104,6 +132,10 @@ export class EventBus implements IEventBus {
 		return `[*][event-${type}]`;
 	}
 
+	/**
+	 * 获取日志器
+	 * @returns 日志器
+	 */
 	private getLogger(): Logger {
 		if (this.name && this.name.length > 0) {
 			return moduleLogger;
@@ -112,6 +144,12 @@ export class EventBus implements IEventBus {
 	}
 }
 
+/**
+ * 创建模块事件总线
+ * @param moduleName 模块名称
+ * @param maxListeners 最大监听数量
+ * @returns 事件总线
+ */
 export const createModuleEventBus = (
 	moduleName: string,
 	maxListeners?: number

@@ -67,16 +67,17 @@ export class Designer implements IDesigner {
 		project: this.project,
 		designer: this,
 		onMount: (simulator: any) => {
-			console.log(simulator);
+			simulator;
 		},
 	}));
 
 	setProps(props: DesignerProps) {
-		console.log(props);
+		props;
 	}
 
 	/**
 	 * 构建组件元数据映射表
+	 * 方法再内置插件中进行调用，监听通过material来assets变化通过designer的实例进行调用
 	 * @param metas 组件元数据
 	 */
 	buildComponentMetasMap(metas: IPublicTypeComponentMetadata[]) {

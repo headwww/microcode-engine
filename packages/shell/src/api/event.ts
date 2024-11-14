@@ -10,6 +10,9 @@ type EventOptions = {
 
 const eventBusSymbol = Symbol('eventBus');
 
+/**
+ * Event是EventBus外观类
+ */
 export class Event implements IPublicApiEvent {
 	private readonly [eventBusSymbol]: IEventBus;
 
@@ -95,6 +98,15 @@ export class Event implements IPublicApiEvent {
 	}
 }
 
+/**
+ * 获取事件实例，在插件面板注册的时候处理editor的实例带的eventBus的
+ * 不给用户直接使用this.skeleton.editor.eventBus,
+ * 给用户使用的是Event外观类需要提供options配置的，这样面板组件之间通信更加规范
+ *
+ * @param editor 实例是editor提供的eventBus
+ * @param options 事件配置
+ * @returns 事件实例
+ */
 export function getEvent(editor: IEditor, options: any = { prefix: 'common' }) {
 	return new Event(editor.eventBus, options);
 }

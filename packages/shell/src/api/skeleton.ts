@@ -85,9 +85,9 @@ export class Skeleton implements IPublicApiSkeleton {
 	getAreaItems(
 		areaName: IPublicTypeWidgetConfigArea
 	): IPublicModelSkeletonItem[] {
-		return this[skeletonSymbol][
-			normalizeArea(areaName)
-		].container.items.value?.map((d) => new SkeletonItem(d));
+		return this[skeletonSymbol][normalizeArea(areaName)].container.items?.map(
+			(d) => new SkeletonItem(d)
+		);
 	}
 
 	getPanel(name: string) {

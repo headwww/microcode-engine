@@ -78,6 +78,12 @@ export class EngineConfig implements IEngineConfig {
 		this.preference = new Preference();
 	}
 
+	/**
+	 * // TODO IPublicTypeEngineOptions还没有明确哪些配置需要设置
+	 * 设置引擎配置
+	 *
+	 * @param engineOptions 引擎配置对象
+	 */
 	setEngineOptions(engineOptions: IPublicTypeEngineOptions): void {
 		// 不是一个有效的纯对象
 		if (engineOptions || !isPlainObject(engineOptions)) {
@@ -179,6 +185,10 @@ export class EngineConfig implements IEngineConfig {
 		};
 	}
 
+	/**
+	 * 通知获取指定键的值
+	 * @param key 键
+	 */
 	notifyGot(key: string): void {
 		let waits = this.waits.get(key);
 		if (!waits) {
@@ -199,6 +209,12 @@ export class EngineConfig implements IEngineConfig {
 		}
 	}
 
+	/**
+	 * 设置等待获取指定键的值
+	 * @param key 键
+	 * @param resolve 回调函数
+	 * @param once 是否只执行一次
+	 */
 	setWait(key: string, resolve: (data: any) => void, once?: boolean) {
 		const waits = this.waits.get(key);
 		if (waits) {
@@ -208,6 +224,11 @@ export class EngineConfig implements IEngineConfig {
 		}
 	}
 
+	/**
+	 * 删除等待获取指定键的值
+	 * @param key 键
+	 * @param fn 回调函数
+	 */
 	delWait(key: string, fn: any) {
 		const waits = this.waits.get(key);
 		if (!waits) {
@@ -224,6 +245,10 @@ export class EngineConfig implements IEngineConfig {
 		}
 	}
 
+	/**
+	 * 获取偏好设置
+	 * @returns 偏好设置对象
+	 */
 	getPreference(): IPublicModelPreference {
 		return this.preference;
 	}

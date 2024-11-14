@@ -6,7 +6,8 @@ import {
 } from '@arvin/microcode-types';
 import { globalContext } from '@arvin/microcode-editor-core';
 import { getLogger } from '@arvin/microcode-utils';
-import { editorSymbol } from '../symbols';
+import { IDesigner } from '@arvin/microcode-designer';
+import { designerSymbol, editorSymbol } from '../symbols';
 
 const innerEditorSymbol = Symbol('editor');
 
@@ -38,10 +39,25 @@ export class Material implements IPublicApiMaterial {
 		this[innerEditorSymbol] = editor;
 	}
 
+	/**
+	 * 获取设计器实例
+	 * 设计器实例在引擎注册初始化的时候构建的存储在editor中的
+	 */
+	get [designerSymbol](): IDesigner {
+		return this[editorSymbol].get('designer')!;
+	}
+
+	/**
+	 * 设置「资产包」结构
+	 * @param assets
+	 */
 	async setAssets(assets: IPublicTypeAssetsJson): Promise<void> {
 		return await this[editorSymbol].setAssets(assets);
 	}
 
+	/**
+	 * 获取「资产包」结构
+	 */
 	getAssets(): IPublicTypeAssetsJson | undefined {
 		return this[editorSymbol].get('assets');
 	}

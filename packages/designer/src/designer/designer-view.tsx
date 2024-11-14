@@ -10,7 +10,6 @@ export const DesignerView = defineComponent({
 	},
 	setup(props) {
 		let { designer } = props;
-		console.log(props);
 
 		const { ...designerProps } = props;
 		if (designer) {
