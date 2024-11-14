@@ -40,4 +40,38 @@
 
 设计思路 利用Editor实例带的特性（详见Editor介绍）来管理物料资产
 
-入料流程：在自定义插件中通过material来注册物料，因为内置插件**componentMetaParser**中设置了material.onChangeAssets这个监听，它监听了assets的变化，当自定义插件物料完成注册则通知内置插件来完成designer物料元数据实例的组装。
+入料流程：资产包协议，在自定义插件中通过material来注册物料，因为内置插件**componentMetaParser**中设置了material.onChangeAssets这个监听，它监听了assets的变化，当自定义插件物料完成注册则通知内置插件来完成designer物料元数据实例ComponentMeta的组装。
+
+```typescript
+
+/**
+ * 资产包协议
+ */
+export interface IPublicTypeAssetsJson {
+	/**
+	 * 资产包协议版本号
+	 */
+	version: string;
+
+	/**
+	 *  低代码编辑器中加载的资源列表，packages中的资源是在渲染器中加载的
+	 */
+	packages?: IPublicTypePackage[];
+
+	/**
+	 * 所有组件的描述协议列表所有组件的列表,本地协议和远程协议
+	 * 通过editor.setAssets解析，解析完格式IPublicTypeComponentMetadata用于ComponentMeta实例的构建
+	 */
+	components: Array<
+		IPublicTypeComponentDescription | IPublicTypeRemoteComponentDescription
+	>;
+
+	/**
+	 * 用于描述组件面板中的 tab 和 category
+	 */
+	sort?: IPublicTypeComponentSort;
+}
+```
+
+ComponentMeta职责：
+

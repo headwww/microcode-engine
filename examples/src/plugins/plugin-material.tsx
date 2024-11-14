@@ -1,3 +1,11 @@
+/*
+ * @Author: shuwen 1243889238@qq.com
+ * @Date: 2024-11-04 09:56:33
+ * @LastEditors: shuwen 1243889238@qq.com
+ * @LastEditTime: 2024-11-14 16:12:17
+ * @FilePath: /microcode-engine/examples/src/plugins/plugin-material.tsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import { IPublicModelPluginContext } from '@arvin/microcode-types';
 
 const InitMaterial = (ctx: IPublicModelPluginContext) => ({
@@ -50,7 +58,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 						{
 							title: '按钮',
 							screenshot:
-								'https://img.alicdn.com/imgextra/i2/O1CN01uv6vu822RBCSYLro2_!!6000000007116-55-tps-139-26.svg',
+								'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
 							schema: {
 								componentName: 'Button',
 								props: {

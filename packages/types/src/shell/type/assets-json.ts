@@ -13,12 +13,13 @@ export interface IPublicTypeAssetsJson {
 	version: string;
 
 	/**
-	 *  低代码编辑器中加载的资源列表
+	 *  低代码编辑器中加载的资源列表，packages中的资源是在渲染器中加载的
 	 */
 	packages?: IPublicTypePackage[];
 
 	/**
 	 * 所有组件的描述协议列表所有组件的列表,本地协议和远程协议
+	 * 通过editor.setAssets解析，解析完格式IPublicTypeComponentMetadata用于后期组件元数据实例的构建
 	 */
 	components: Array<
 		IPublicTypeComponentDescription | IPublicTypeRemoteComponentDescription
