@@ -1,12 +1,13 @@
 {
-    "name": "@arvin/microcode-renderer-core",
-    "version": "1.0.0",
-    "description": "",
-    "main": "src/index.ts",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC"
+	"name": "@arvin/microcode-renderer-core",
+	"version": "1.0.0",
+	"description": "",
+	"main": "src/index.ts",
+	"scripts": {
+		"build": "cross-env ORIGINAL_CWD=$PWD pnpm --filter ../../build-scripts run start",
+		"clear": "rm -rf dist"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
 }

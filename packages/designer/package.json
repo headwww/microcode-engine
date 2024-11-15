@@ -3,6 +3,10 @@
 	"version": "1.0.0",
 	"description": "",
 	"main": "src/index.ts",
+	"scripts": {
+		"build": "cross-env ORIGINAL_CWD=$PWD pnpm --filter ../../build-scripts run start",
+		"clear": "rm -rf dist"
+	},
 	"dependencies": {
 		"@arvin/microcode-editor-core": "workspace:^",
 		"semver": "^7.6.3"

@@ -6,7 +6,9 @@
 		"lint": "eslint \"{packages,examples}/**/*.{js,vue,ts}\" --fix",
 		"prettier-format": "prettier --config .prettierrc.cjs \"{packages,examples}/**/*.{vue,js,ts}\" --write",
 		"prepare": "husky install",
-		"lint:css": "stylelint **/*.{vue,css,sass,scss,less} --fix"
+		"lint:css": "stylelint **/*.{vue,css,sass,scss,less} --fix",
+		"build": "./scripts/build.sh",
+		"clear": "./scripts/clear.sh"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^19.5.0",
@@ -15,6 +17,7 @@
 		"@types/node": "^22.7.4",
 		"@typescript-eslint/eslint-plugin": "^8.9.0",
 		"@typescript-eslint/parser": "^8.9.0",
+		"cross-env": "^7.0.3",
 		"eslint": "^8.2.0",
 		"eslint-config-airbnb-base": "^15.0.0",
 		"eslint-config-prettier": "^9.1.0",
