@@ -13,6 +13,9 @@ export const getDir = () => {
 	return resolve(originalCwd);
 };
 
+// 是否构建 UMD 格式
+export const isBuildUmd = process.env.BUILD_UMD === 'true';
+
 export const outputRoot = resolve(getDir(), 'dist');
 
 export const buildRoot = resolve(projRoot, 'build-scripts');

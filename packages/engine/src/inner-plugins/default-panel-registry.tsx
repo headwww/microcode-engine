@@ -24,5 +24,3 @@ export const defaultPanelRegistry = (editor: any) => {
 
 	return fun;
 };
-
-export default defaultPanelRegistry;

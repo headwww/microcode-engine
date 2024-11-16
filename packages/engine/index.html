@@ -1,0 +1,67 @@
+<!--
+ * @Author: shuwen 1243889238@qq.com
+ * @Date: 2024-11-16 21:41:13
+ * @LastEditors: shuwen 1243889238@qq.com
+ * @LastEditTime: 2024-11-16 21:44:47
+ * @FilePath: /microcode-engine/packages/engine/index.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/dayjs/dayjs.min.js"></script>
+    <script src="https://unpkg.com/dayjs/plugin/customParseFormat.js"></script>
+    <script src="https://unpkg.com/dayjs/plugin/weekday.js"></script>
+    <script src="https://unpkg.com/dayjs/plugin/localeData.js"></script>
+    <script src="https://unpkg.com/dayjs/plugin/weekOfYear.js"></script>
+    <script src="https://unpkg.com/dayjs/plugin/weekYear.js"></script>
+    <script src="https://unpkg.com/dayjs/plugin/advancedFormat.js"></script>
+    <script src="https://unpkg.com/dayjs/plugin/quarterOfYear.js"></script>
+    <script src="https://unpkg.com/ant-design-vue@3/dist/antd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ant-design/icons-vue@latest/dist/index.umd.js"></script>
+
+    <script src="./dist/dist/index.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <script>
+            const {
+                createApp,
+                h
+            } = Vue;
+            const app = createApp({
+                setup() {
+                    // 等待 ArvinMicrocodeEngine 初始化完成
+                    if (!window.ArvinMicrocodeEngine) {
+                        console.error('ArvinMicrocodeEngine 未初始化');
+                        return () => h('div', 'Loading...');
+                    }
+                    return () => {
+                        try {
+                            // 检查组件是否存在
+                            const Component =
+                                window.ArvinMicrocodeEngine.MicrocodeWorkbench;
+                            if (!Component) {
+                                console.error('ArvinMicrocodeEngine 组件未找到');
+                                return h('div', 'ArvinMicrocodeEngine 组件未找到');
+                            }
+                            return h(Component, {});
+                        } catch (err) {
+                            console.error('渲染出错:', err);
+                            return h('div', '组件加载失败');
+                        }
+                    };
+                },
+            });
+            app.mount('#app');
+        </script>
+    </div>
+</body>
+
+</html>

@@ -1,4 +1,4 @@
-import { isNaN } from 'lodash';
+import { isNaN } from 'lodash-es';
 
 function resolveEdge(popup: any, target: any, arrow: any, bounds: any) {
 	const sx = arrow.width > target.width ? (arrow.width - target.width) / 2 : 0;

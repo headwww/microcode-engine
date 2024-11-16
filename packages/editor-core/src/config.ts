@@ -4,7 +4,7 @@ import {
 	IPublicTypeEngineOptions,
 } from '@arvin/microcode-types';
 import { getLogger, isPlainObject } from '@arvin/microcode-utils';
-import { get as lodashGet } from 'lodash';
+import { get as lodashGet } from 'lodash-es';
 import Preference from './utils/preference';
 
 const STRICT_PLUGIN_MODE_DEFAULT = true;

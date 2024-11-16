@@ -6,11 +6,12 @@ export const getPackageManifest = (pkgPath: string) =>
 
 export const getPackageDependencies = (
 	pkgPath: string
-): Record<'dependencies' | 'peerDependencies', string[]> => {
+): Record<'dependencies' | 'peerDependencies' | 'name', string[]> => {
 	const manifest = getPackageManifest(pkgPath);
-	const { dependencies = {}, peerDependencies = {} } = manifest;
+	const { dependencies = {}, peerDependencies = {}, name } = manifest;
 
 	return {
+		name,
 		dependencies: Object.keys(dependencies),
 		peerDependencies: Object.keys(peerDependencies),
 	};

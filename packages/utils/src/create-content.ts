@@ -1,5 +1,5 @@
 import { cloneVNode, Component, isVNode, VNode, h } from 'vue';
-import { isString } from 'lodash';
+import { isString } from 'lodash-es';
 import { isVueComponent } from './is-vue';
 
 export function createContent(

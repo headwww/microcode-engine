@@ -1,6 +1,6 @@
 import { series, parallel } from 'gulp';
 import { mkdir, rm } from 'fs/promises';
-import { outputRoot, runTask, withTaskName } from './src';
+import { isBuildUmd, outputRoot, runTask, withTaskName } from './src';
 
 export default series(
 	withTaskName('初始化', async () => {
@@ -12,8 +12,13 @@ export default series(
 			}
 		}
 	}),
+
 	withTaskName('创建输出目录', () => mkdir(outputRoot, { recursive: true })),
-	parallel(runTask('buildModules'))
+	parallel(
+		runTask('buildModules'),
+		isBuildUmd ? runTask('buildUmd') : [],
+		runTask('buildDts')
+	)
 );
 
 export * from './src';

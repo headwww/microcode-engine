@@ -27,7 +27,7 @@ import {
 import { IPublicTypePluginMeta } from '@arvin/microcode-types';
 import { Logger } from '@arvin/microcode-utils';
 import { h } from 'vue';
-import defaultPanelRegistry from './inner-plugins/default-panel-registry';
+import { defaultPanelRegistry } from './inner-plugins/default-panel-registry';
 import { componentMetaParser } from './inner-plugins/component-meta-parser';
 
 const editor = new Editor();
@@ -90,8 +90,12 @@ editor.set('plugins', plugins);
 // TODO 先模拟环境
 const defaultPanelRegistryPlugin = defaultPanelRegistry(editor);
 const componentMetaParserPlugin = componentMetaParser(designer);
-await plugins.register(defaultPanelRegistryPlugin);
-await plugins.register(componentMetaParserPlugin);
+async function registryInnerPlugin() {
+	await plugins.register(defaultPanelRegistryPlugin);
+	await plugins.register(componentMetaParserPlugin);
+}
+registryInnerPlugin();
+
 export async function init(pluginPreference?: PluginPreference) {
 	await plugins.init(pluginPreference);
 	// TODO 先模拟环境
