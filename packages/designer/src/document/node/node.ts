@@ -60,7 +60,7 @@ export function insertChild(
 	index?: number | null,
 	copy?: boolean
 ): INode | null {
-	container.document?.createNode(thing);
+	container.document?.createNode(thing as any);
 	console.log(container, thing, index, copy);
 	return null;
 }

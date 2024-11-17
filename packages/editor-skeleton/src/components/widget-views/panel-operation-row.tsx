@@ -3,9 +3,9 @@ import {
 	PushpinOutlined,
 	PushpinTwoTone,
 } from '@ant-design/icons-vue';
-import { Panel } from '@arvin/microcode-editor-skeleton';
 import { Button } from 'ant-design-vue';
 import { defineComponent, h, PropType } from 'vue';
+import { Panel } from '../..';
 
 export const PanelOperationRow = defineComponent({
 	name: 'PanelOperationRow',

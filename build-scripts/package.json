@@ -20,7 +20,8 @@
 		"gulp": "^5.0.0",
 		"gulp-typescript": "6.0.0-alpha.1",
 		"rollup": "^4.26.0",
-		"rollup-plugin-esbuild": "^6.1.1"
+		"rollup-plugin-esbuild": "^6.1.1",
+		"ts-morph": "^24.0.0"
 	},
 	"devDependencies": {
 		"@esbuild-kit/cjs-loader": "^2.4.4",

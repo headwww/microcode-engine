@@ -62,7 +62,7 @@ export class Designer implements IDesigner {
 	/**
 	 * 提供给模拟器使用的属性
 	 */
-	projectSimulatorProps = computed(() => ({
+	projectSimulatorProps = computed<Record<string, any>>(() => ({
 		...this.simulatorProps.value,
 		project: this.project,
 		designer: this,

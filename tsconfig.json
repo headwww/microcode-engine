@@ -16,14 +16,14 @@
       "forceConsistentCasingInFileNames": true,
       "resolveJsonModule": true,
       "skipLibCheck": true,
-      "baseUrl": "./packages",
+      "baseUrl": ".",
+      "rootDir": ".",
       "useDefineForClassFields": true,
       "paths": {
         "@arvin/microcode-*": ["./*/src"]
       },
       "outDir": "dist",
     },
-    "include": ["typings/env.d.ts","packages/*/src"],
+    "include": ["typings/env.d.ts","packages/*/src/**/*"],
     "exclude": ["**/tests/*", "**/*.test.ts", "**/dist", "**/es", "node_modules"]
-
   }

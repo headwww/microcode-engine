@@ -1,7 +1,9 @@
 import { IDragon } from '@arvin/microcode-designer';
 import { globalContext } from '@arvin/microcode-editor-core';
 import {
+	IPublicModelDragObject,
 	IPublicModelDragon,
+	IPublicTypeDisposable,
 	IPublicTypeDragNodeDataObject,
 } from '@arvin/microcode-types';
 import { dragonSymbol } from '../symbols';
@@ -52,5 +54,12 @@ export class Dragon implements IPublicModelDragon {
 		boost: (e: MouseEvent) => IPublicTypeDragNodeDataObject | null
 	): any {
 		return this[dragonSymbol].from(shell, boost);
+	}
+
+	onDragend(
+		func: (o: { dragObject: IPublicModelDragObject; copy?: boolean }) => any
+	): IPublicTypeDisposable {
+		func;
+		throw new Error('Method not implemented.');
 	}
 }

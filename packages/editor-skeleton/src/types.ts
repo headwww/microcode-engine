@@ -2,10 +2,10 @@ import {
 	IPublicTypePanelConfig,
 	IPublicTypePanelConfigProps,
 	IPublicTypePanelDockProps,
+	IPublicTypeTitleContent,
 	IPublicTypeWidgetBaseConfig,
 	IPublicTypeWidgetConfigArea,
 } from '@arvin/microcode-types';
-import { IPublicTypeTitleContent } from 'types/src/shell/type/title-content';
 import { Component, VNode } from 'vue';
 import { IWidget } from './widget';
 

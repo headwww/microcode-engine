@@ -1,4 +1,4 @@
-import { EitherOr } from 'types/src/utils';
+import { EitherOr } from '../../utils';
 
 export type IPublicTypePackage = EitherOr<
 	{
