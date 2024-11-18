@@ -1,4 +1,4 @@
-import { IPublicTypeAssetsJson } from '@arvin/microcode-types';
+import { IPublicTypeAssetsJson } from '@arvin-shu/microcode-types';
 
 export function assetsTransform(assets: IPublicTypeAssetsJson) {
 	// const { components, packages } = assets;

@@ -4,9 +4,9 @@ import {
 	IPublicTypeI18nData,
 	IPublicTypeNpmInfo,
 	IPublicTypeTitleContent,
-} from '@arvin/microcode-types';
+} from '@arvin-shu/microcode-types';
 import { VNode } from 'vue';
-import { isTitleConfig } from '@arvin/microcode-utils';
+import { isTitleConfig } from '@arvin-shu/microcode-utils';
 import { INode } from './document';
 import { Designer } from './designer';
 

@@ -1,4 +1,4 @@
-import { IPublicTypeJSExpression } from '@arvin/microcode-types';
+import { IPublicTypeJSExpression } from '@arvin-shu/microcode-types';
 import { isObject } from '../is-object';
 
 export function isJSExpression(data: any): data is IPublicTypeJSExpression {

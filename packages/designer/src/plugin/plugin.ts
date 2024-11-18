@@ -1,8 +1,8 @@
 import {
 	IPublicTypePluginConfig,
 	IPublicTypePluginMeta,
-} from '@arvin/microcode-types';
-import { getLogger, Logger } from '@arvin/microcode-utils';
+} from '@arvin-shu/microcode-types';
+import { getLogger, Logger } from '@arvin-shu/microcode-utils';
 import { IMicrocodePluginManager, IMicrocodePluginRuntime } from '.';
 import { invariant } from '../utils';
 

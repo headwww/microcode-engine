@@ -9,15 +9,15 @@ import {
 	IPublicTypeWidgetBaseConfig,
 	IPublicTypeWidgetConfigArea,
 	PluginClassSet,
-} from '@arvin/microcode-types';
-import { isPlainObject, Logger } from '@arvin/microcode-utils';
+} from '@arvin-shu/microcode-types';
+import { isPlainObject, Logger } from '@arvin-shu/microcode-utils';
 import { isVNode } from 'vue';
 import { Divider } from 'ant-design-vue';
 import {
 	engineConfig,
 	FocusTracker,
 	IEditor,
-} from '@arvin/microcode-editor-core';
+} from '@arvin-shu/microcode-editor-core';
 import { Area } from './area';
 import {
 	Dock,

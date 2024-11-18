@@ -2,12 +2,12 @@
  * @Author: shuwen 1243889238@qq.com
  * @Date: 2024-11-04 10:23:02
  * @LastEditors: shuwen 1243889238@qq.com
- * @LastEditTime: 2024-11-14 16:16:44
+ * @LastEditTime: 2024-11-18 15:36:09
  * @FilePath: /microcode-engine/examples/src/plugins/ComponentPane.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import { IEditor } from '@arvin/microcode-editor-core';
-import { IPublicTypeSnippet } from '@arvin/microcode-types';
+import { IEditor } from '@arvin-shu/microcode-editor-core';
+import { IPublicTypeSnippet } from '@arvin-shu/microcode-types';
 import { defineComponent, onMounted, PropType, ref } from 'vue';
 
 export const ComponentPane = defineComponent({

@@ -3,9 +3,9 @@ import {
 	IPublicTypePluginMeta,
 	IPublicTypePluginRegisterOptions,
 	IPublicTypePreferenceValueType,
-} from '@arvin/microcode-types';
-import { getLogger } from '@arvin/microcode-utils';
-import { engineConfig } from '@arvin/microcode-editor-core';
+} from '@arvin-shu/microcode-types';
+import { getLogger } from '@arvin-shu/microcode-utils';
+import { engineConfig } from '@arvin-shu/microcode-editor-core';
 import semverSatisfies from 'semver/functions/satisfies';
 import {
 	filterValidOptions,

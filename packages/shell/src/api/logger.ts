@@ -1,5 +1,5 @@
-import { ILoggerOptions, IPublicApiLogger } from '@arvin/microcode-types';
-import { getLogger } from '@arvin/microcode-utils';
+import { ILoggerOptions, IPublicApiLogger } from '@arvin-shu/microcode-types';
+import { getLogger } from '@arvin-shu/microcode-utils';
 
 const innerLoggerSymbol = Symbol('logger');
 

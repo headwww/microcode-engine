@@ -1,4 +1,4 @@
-import { IPublicModelPluginContext } from '@arvin/microcode-types';
+import { IPublicModelPluginContext } from '@arvin-shu/microcode-types';
 /**
  * 组件元数据解析器插件
  * 用于监听资产包变化并更新组件元数据映射表

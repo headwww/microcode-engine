@@ -1,6 +1,9 @@
-import { IEditor, IEventBus } from '@arvin/microcode-editor-core';
-import { IPublicApiEvent, IPublicTypeDisposable } from '@arvin/microcode-types';
-import { getLogger, isPluginEventName } from '@arvin/microcode-utils';
+import { IEditor, IEventBus } from '@arvin-shu/microcode-editor-core';
+import {
+	IPublicApiEvent,
+	IPublicTypeDisposable,
+} from '@arvin-shu/microcode-types';
+import { getLogger, isPluginEventName } from '@arvin-shu/microcode-utils';
 
 const logger = getLogger({ level: 'warn', bizName: 'shell-event' });
 

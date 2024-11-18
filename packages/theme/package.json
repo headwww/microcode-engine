@@ -1,12 +1,12 @@
 {
-	"name": "@arvin/microcode-theme",
-	"version": "1.0.0",
-	"description": "",
-	"scripts": {
-		"build": "cross-env ORIGINAL_CWD=$PWD BUILD_THEME=true pnpm --filter ../../build-scripts run start",
-		"clear": "rm -rf dist"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC"
+    "name": "@arvin-shu/microcode-theme",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "build": "cross-env ORIGINAL_CWD=$PWD BUILD_THEME=true pnpm --filter ../../build-scripts run start",
+        "clear": "rm -rf dist"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
 }

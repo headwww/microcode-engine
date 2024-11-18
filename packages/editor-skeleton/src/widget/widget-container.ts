@@ -1,5 +1,5 @@
 import { computed, ref, shallowReactive, ShallowReactive, toRaw } from 'vue';
-import { hasOwnProperty } from '@arvin/microcode-utils';
+import { hasOwnProperty } from '@arvin-shu/microcode-utils';
 import { isPanel } from './panel';
 
 export interface WidgetItem {

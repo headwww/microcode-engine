@@ -1,5 +1,8 @@
-import { IPublicApiEvent, IPublicTypeDisposable } from '@arvin/microcode-types';
-import { Logger } from '@arvin/microcode-utils';
+import {
+	IPublicApiEvent,
+	IPublicTypeDisposable,
+} from '@arvin-shu/microcode-types';
+import { Logger } from '@arvin-shu/microcode-utils';
 import EventEmitter from 'eventemitter2';
 
 const logger = new Logger({ level: 'warn', bizName: 'event-bus' });

@@ -2,8 +2,8 @@ import {
 	IPublicApiCanvas,
 	IPublicModelDragon,
 	IPublicModelEditor,
-} from '@arvin/microcode-types';
-import { IDesigner } from '@arvin/microcode-designer';
+} from '@arvin-shu/microcode-types';
+import { IDesigner } from '@arvin-shu/microcode-designer';
 import { designerSymbol, editorSymbol } from '../symbols';
 import { Dragon as ShellDragon } from '../model';
 

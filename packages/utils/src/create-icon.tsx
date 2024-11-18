@@ -1,5 +1,5 @@
 import { cloneVNode, defineComponent, h, isVNode } from 'vue';
-import { IPublicTypeIconType } from '@arvin/microcode-types';
+import { IPublicTypeIconType } from '@arvin-shu/microcode-types';
 import * as AntIcons from '@ant-design/icons-vue'; // 导入所有图标
 import { isESModule } from './is-es-module';
 import { isVueComponent } from './is-vue';

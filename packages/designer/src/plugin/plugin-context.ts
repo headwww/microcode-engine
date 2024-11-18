@@ -11,11 +11,11 @@ import {
 	IPublicModelPluginContext,
 	IPublicTypePluginDeclaration,
 	IPublicTypePreferenceValueType,
-} from '@arvin/microcode-types';
+} from '@arvin-shu/microcode-types';
 import {
 	createModuleEventBus,
 	engineConfig,
-} from '@arvin/microcode-editor-core';
+} from '@arvin-shu/microcode-editor-core';
 import {
 	IMicrocodeContextPrivate,
 	IMicroodePluginContextApiAssembler,

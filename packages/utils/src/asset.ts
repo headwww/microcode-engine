@@ -7,7 +7,7 @@ import {
 	AssetLevels,
 	AssetList,
 	AssetType,
-} from '@arvin/microcode-types';
+} from '@arvin-shu/microcode-types';
 import { isCSSUrl } from './is-css-url';
 import { evaluate, load } from './script';
 import { createDefer } from './create-defer';

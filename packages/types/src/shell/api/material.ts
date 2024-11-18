@@ -1,7 +1,7 @@
 import {
 	IPublicTypeAssetsJson,
 	IPublicTypeDisposable,
-} from '@arvin/microcode-types';
+} from '@arvin-shu/microcode-types';
 
 export interface IPublicApiMaterial {
 	/**

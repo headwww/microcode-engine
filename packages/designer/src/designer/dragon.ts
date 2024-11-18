@@ -1,8 +1,11 @@
 import {
 	IPublicModelDragObject,
 	IPublicModelDragon,
-} from '@arvin/microcode-types';
-import { createModuleEventBus, IEventBus } from '@arvin/microcode-editor-core';
+} from '@arvin-shu/microcode-types';
+import {
+	createModuleEventBus,
+	IEventBus,
+} from '@arvin-shu/microcode-editor-core';
 import { IDesigner } from './designer';
 import { makeEventsHandler } from '../utils';
 

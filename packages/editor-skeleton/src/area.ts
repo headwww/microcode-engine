@@ -1,6 +1,6 @@
 import { computed, ref, toRaw } from 'vue';
-import { Logger } from '@arvin/microcode-utils';
-import { IPublicTypeWidgetBaseConfig } from '@arvin/microcode-types';
+import { Logger } from '@arvin-shu/microcode-utils';
+import { IPublicTypeWidgetBaseConfig } from '@arvin-shu/microcode-types';
 import { ISkeleton } from './skeleton';
 import { IWidget, WidgetContainer } from './widget';
 

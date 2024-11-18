@@ -12,7 +12,7 @@ import {
 	IPublicTypePluginMeta,
 	IPublicTypePluginRegisterOptions,
 	IPublicTypePreferenceValueType,
-} from '@arvin/microcode-types';
+} from '@arvin-shu/microcode-types';
 import PluginContext from './plugin-context';
 
 export interface IMicrocodePluginManagerCore {

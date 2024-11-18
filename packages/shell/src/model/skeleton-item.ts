@@ -4,8 +4,8 @@ import {
 	Panel,
 	PanelDock,
 	Widget,
-} from '@arvin/microcode-editor-skeleton';
-import { IPublicModelSkeletonItem } from '@arvin/microcode-types';
+} from '@arvin-shu/microcode-editor-skeleton';
+import { IPublicModelSkeletonItem } from '@arvin-shu/microcode-types';
 import { skeletonItemSymbol } from '../symbols';
 
 export class SkeletonItem implements IPublicModelSkeletonItem {

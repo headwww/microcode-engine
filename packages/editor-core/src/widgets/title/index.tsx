@@ -1,8 +1,12 @@
 import {
 	IPublicTypeI18nData,
 	IPublicTypeTitleConfig,
-} from '@arvin/microcode-types';
-import { createIcon, isI18nData, isTitleConfig } from '@arvin/microcode-utils';
+} from '@arvin-shu/microcode-types';
+import {
+	createIcon,
+	isI18nData,
+	isTitleConfig,
+} from '@arvin-shu/microcode-utils';
 import { defineComponent, h, isVNode, VNode } from 'vue';
 import { intl } from '../../inti';
 import { Tip } from '../tip';

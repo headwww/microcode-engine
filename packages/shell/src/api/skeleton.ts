@@ -1,4 +1,7 @@
-import { ISkeleton, SkeletonEvents } from '@arvin/microcode-editor-skeleton';
+import {
+	ISkeleton,
+	SkeletonEvents,
+} from '@arvin-shu/microcode-editor-skeleton';
 import {
 	IPublicApiSkeleton,
 	IPublicModelSkeletonItem,
@@ -6,9 +9,9 @@ import {
 	IPublicTypeDisposable,
 	IPublicTypeSkeletonConfig,
 	IPublicTypeWidgetConfigArea,
-} from '@arvin/microcode-types';
-import { globalContext } from '@arvin/microcode-editor-core';
-import { getLogger } from '@arvin/microcode-utils';
+} from '@arvin-shu/microcode-types';
+import { globalContext } from '@arvin-shu/microcode-editor-core';
+import { getLogger } from '@arvin-shu/microcode-utils';
 import { skeletonSymbol } from '../symbols';
 import { SkeletonItem } from '../model';
 

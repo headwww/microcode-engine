@@ -1,12 +1,12 @@
-import { IMicrocodePluginManager } from '@arvin/microcode-designer';
+import { IMicrocodePluginManager } from '@arvin-shu/microcode-designer';
 import {
 	IPublicApiPlugins,
 	IPublicModelPluginInstance,
 	IPublicTypePlugin,
 	IPublicTypePluginRegisterOptions,
 	IPublicTypePreferenceValueType,
-} from '@arvin/microcode-types';
-import { globalContext } from '@arvin/microcode-editor-core';
+} from '@arvin-shu/microcode-types';
+import { globalContext } from '@arvin-shu/microcode-editor-core';
 import { pluginsSymbol } from '../symbols';
 import { PluginInstance as ShellPluginInstance } from '../model';
 

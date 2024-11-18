@@ -1,4 +1,4 @@
-import { IPublicTypeTipConfig } from '@arvin/microcode-types';
+import { IPublicTypeTipConfig } from '@arvin-shu/microcode-types';
 import { createModuleEventBus, IEventBus } from '../../event-bus';
 
 export interface TipOptions extends IPublicTypeTipConfig {

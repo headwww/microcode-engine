@@ -1,10 +1,10 @@
-import { IProject as InnerProject } from '@arvin/microcode-designer';
-import { getLogger } from '@arvin/microcode-utils';
-import { globalContext } from '@arvin/microcode-editor-core';
+import { IProject as InnerProject } from '@arvin-shu/microcode-designer';
+import { getLogger } from '@arvin-shu/microcode-utils';
+import { globalContext } from '@arvin-shu/microcode-editor-core';
 import {
 	IPublicApiProject,
 	IPublicTypeProjectSchema,
-} from '@arvin/microcode-types';
+} from '@arvin-shu/microcode-types';
 import { projectSymbol } from '../symbols';
 
 const logger = getLogger({ level: 'warn', bizName: 'shell-project' });

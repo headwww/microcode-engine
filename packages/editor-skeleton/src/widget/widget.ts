@@ -2,9 +2,9 @@ import { computed, ComputedRef, h, Ref, ref, VNode } from 'vue';
 import {
 	IPublicTypeWidgetBaseConfig,
 	IPublicTypeTitleContent,
-} from '@arvin/microcode-types';
-import { createContent, uniqueId } from '@arvin/microcode-utils';
-import { getEvent } from '@arvin/microcode-shell';
+} from '@arvin-shu/microcode-types';
+import { createContent, uniqueId } from '@arvin-shu/microcode-utils';
+import { getEvent } from '@arvin-shu/microcode-shell';
 import { ISkeleton } from '../skeleton';
 import { WidgetConfig } from '../types';
 import { WidgetView } from '../components/widget-views';

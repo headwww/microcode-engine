@@ -1,4 +1,4 @@
-import { AssetList } from '@arvin/microcode-types';
+import { AssetList } from '@arvin-shu/microcode-types';
 import { BuiltinSimulatorHost } from './host';
 
 export function createSimulator(

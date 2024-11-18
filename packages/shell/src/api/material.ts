@@ -3,10 +3,10 @@ import {
 	IPublicModelEditor,
 	IPublicTypeAssetsJson,
 	IPublicTypeDisposable,
-} from '@arvin/microcode-types';
-import { globalContext } from '@arvin/microcode-editor-core';
-import { getLogger } from '@arvin/microcode-utils';
-import { IDesigner } from '@arvin/microcode-designer';
+} from '@arvin-shu/microcode-types';
+import { globalContext } from '@arvin-shu/microcode-editor-core';
+import { getLogger } from '@arvin-shu/microcode-utils';
+import { IDesigner } from '@arvin-shu/microcode-designer';
 import { designerSymbol, editorSymbol } from '../symbols';
 
 const innerEditorSymbol = Symbol('editor');

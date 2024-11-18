@@ -2,8 +2,8 @@ import {
 	IPublicTypeIconType,
 	IPublicTypeTitleContent,
 	TipContent,
-} from '@arvin/microcode-types';
-import { isI18nData, isTitleConfig } from '@arvin/microcode-utils';
+} from '@arvin-shu/microcode-types';
+import { isI18nData, isTitleConfig } from '@arvin-shu/microcode-utils';
 import { isVNode } from 'vue';
 
 /**

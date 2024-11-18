@@ -1,5 +1,5 @@
-import { DesignerView } from '@arvin/microcode-designer';
-import { Editor } from '@arvin/microcode-editor-core';
+import { DesignerView } from '@arvin-shu/microcode-designer';
+import { Editor } from '@arvin-shu/microcode-editor-core';
 import { defineComponent, onMounted, PropType, reactive } from 'vue';
 
 export const DesignerPlugin = defineComponent({

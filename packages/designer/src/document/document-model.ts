@@ -1,8 +1,12 @@
 import {
 	IPublicModelDocumentModel,
 	IPublicTypeRootSchema,
-} from '@arvin/microcode-types';
-import { isDomText, isJSExpression, uniqueId } from '@arvin/microcode-utils';
+} from '@arvin-shu/microcode-types';
+import {
+	isDomText,
+	isJSExpression,
+	uniqueId,
+} from '@arvin-shu/microcode-utils';
 import { IProject } from '../project';
 import { INode, Node } from './node';
 

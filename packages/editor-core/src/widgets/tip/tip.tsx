@@ -1,8 +1,8 @@
 import {
 	IPublicTypeI18nData,
 	IPublicTypeTipConfig,
-} from '@arvin/microcode-types';
-import { uniqueId } from '@arvin/microcode-utils';
+} from '@arvin-shu/microcode-types';
+import { uniqueId } from '@arvin-shu/microcode-utils';
 import { defineComponent, onUnmounted, PropType, VNode } from 'vue';
 import { postTip } from './tip-handler';
 

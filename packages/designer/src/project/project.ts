@@ -2,8 +2,11 @@ import {
 	IBaseApiProject,
 	IPublicTypeProjectSchema,
 	IPublicTypeRootSchema,
-} from '@arvin/microcode-types';
-import { createModuleEventBus, IEventBus } from '@arvin/microcode-editor-core';
+} from '@arvin-shu/microcode-types';
+import {
+	createModuleEventBus,
+	IEventBus,
+} from '@arvin-shu/microcode-editor-core';
 import { shallowReactive } from 'vue';
 import { DocumentModel, IDocumentModel } from '../document';
 import { IDesigner } from '../designer';

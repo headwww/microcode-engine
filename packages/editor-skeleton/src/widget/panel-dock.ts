@@ -1,5 +1,5 @@
 import { computed, h, ref, VNode } from 'vue';
-import { uniqueId } from '@arvin/microcode-utils';
+import { uniqueId } from '@arvin-shu/microcode-utils';
 import { IWidget } from './widget';
 import { PanelDockView, WidgetView } from '../components/widget-views';
 import { PanelDockConfig } from '../types';

@@ -1,27 +1,27 @@
 {
-	"name": "@arvin/microcode-examples",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "vite",
-		"build": "vite build"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"devDependencies": {
-		"@vitejs/plugin-vue": "^5.1.4",
-		"@vitejs/plugin-vue-jsx": "^4.0.1",
-		"vite": "^5.4.8",
-		"vite-plugin-eslint": "^1.8.1",
-		"vite-plugin-stylelint": "^5.3.1"
-	},
-	"dependencies": {
-		"@arvin/microcode-engine": "workspace:^",
-		"@arvin/microcode-theme": "workspace:^",
-		"@arvin/microcode-vue-simulator-renderer": "workspace:^",
-		"vue-router": "^4.4.5"
-	}
+    "name": "@arvin-shu/microcode-examples",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^5.1.4",
+        "@vitejs/plugin-vue-jsx": "^4.0.1",
+        "vite": "^5.4.8",
+        "vite-plugin-eslint": "^1.8.1",
+        "vite-plugin-stylelint": "^5.3.1"
+    },
+    "dependencies": {
+        "@arvin-shu/microcode-engine": "workspace:^",
+        "@arvin-shu/microcode-theme": "workspace:^",
+        "@arvin-shu/microcode-vue-simulator-renderer": "workspace:^",
+        "vue-router": "^4.4.5"
+    }
 }

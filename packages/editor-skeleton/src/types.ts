@@ -5,7 +5,7 @@ import {
 	IPublicTypeTitleContent,
 	IPublicTypeWidgetBaseConfig,
 	IPublicTypeWidgetConfigArea,
-} from '@arvin/microcode-types';
+} from '@arvin-shu/microcode-types';
 import { Component, VNode } from 'vue';
 import { IWidget } from './widget';
 

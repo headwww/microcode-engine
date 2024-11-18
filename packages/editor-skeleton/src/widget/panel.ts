@@ -1,12 +1,15 @@
 import { computed, h, ref, toRaw } from 'vue';
-import { createModuleEventBus, IEventBus } from '@arvin/microcode-editor-core';
+import {
+	createModuleEventBus,
+	IEventBus,
+} from '@arvin-shu/microcode-editor-core';
 import {
 	IPublicTypeHelpTipConfig,
 	IPublicTypePanelConfig,
 	IPublicTypeTitleContent,
-} from '@arvin/microcode-types';
-import { createContent, uniqueId } from '@arvin/microcode-utils';
-import { getEvent } from '@arvin/microcode-shell';
+} from '@arvin-shu/microcode-types';
+import { createContent, uniqueId } from '@arvin-shu/microcode-utils';
+import { getEvent } from '@arvin-shu/microcode-shell';
 import { WidgetContainer } from './widget-container';
 import { composeTitle, ISkeleton, isPanelDock, IWidget, PanelDock } from '..';
 import { PanelView, TitledPanelView } from '../components/widget-views';

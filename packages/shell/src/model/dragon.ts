@@ -1,11 +1,11 @@
-import { IDragon } from '@arvin/microcode-designer';
-import { globalContext } from '@arvin/microcode-editor-core';
+import { IDragon } from '@arvin-shu/microcode-designer';
+import { globalContext } from '@arvin-shu/microcode-editor-core';
 import {
 	IPublicModelDragObject,
 	IPublicModelDragon,
 	IPublicTypeDisposable,
 	IPublicTypeDragNodeDataObject,
-} from '@arvin/microcode-types';
+} from '@arvin-shu/microcode-types';
 import { dragonSymbol } from '../symbols';
 
 export const innerDragonSymbol = Symbol('innerDragonSymbol');

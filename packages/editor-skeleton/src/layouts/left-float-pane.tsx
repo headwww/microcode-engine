@@ -7,8 +7,8 @@ import {
 	ref,
 	toRaw,
 } from 'vue';
-import { IPublicTypePanelConfig } from '@arvin/microcode-types';
-import { Focusable } from '@arvin/microcode-editor-core';
+import { IPublicTypePanelConfig } from '@arvin-shu/microcode-types';
+import { Focusable } from '@arvin-shu/microcode-editor-core';
 import { Area } from '../area';
 import { Panel } from '..';
 

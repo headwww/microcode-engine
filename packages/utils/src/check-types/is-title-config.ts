@@ -1,4 +1,4 @@
-import { IPublicTypeTitleConfig } from '@arvin/microcode-types';
+import { IPublicTypeTitleConfig } from '@arvin-shu/microcode-types';
 import { isI18nData } from './is-i18n-data';
 import { isPlainObject } from '../is-plain-object';
 

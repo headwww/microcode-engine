@@ -2,7 +2,7 @@ import { InfoCircleOutlined } from '@ant-design/icons-vue';
 import {
 	IPublicTypeHelpTipConfig,
 	IPublicTypeTipConfig,
-} from '@arvin/microcode-types';
+} from '@arvin-shu/microcode-types';
 import { Tip } from './tip';
 
 export function HelpTip({

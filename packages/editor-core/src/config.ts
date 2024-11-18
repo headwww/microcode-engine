@@ -2,8 +2,8 @@ import {
 	IPublicModelEngineConfig,
 	IPublicModelPreference,
 	IPublicTypeEngineOptions,
-} from '@arvin/microcode-types';
-import { getLogger, isPlainObject } from '@arvin/microcode-utils';
+} from '@arvin-shu/microcode-types';
+import { getLogger, isPlainObject } from '@arvin-shu/microcode-utils';
 import { get as lodashGet } from 'lodash-es';
 import Preference from './utils/preference';
 

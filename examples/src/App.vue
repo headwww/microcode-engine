@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { MicrocodeWorkbench } from '@arvin/microcode-engine';
-import { EditorConfig } from '@arvin/microcode-types';
+import { MicrocodeWorkbench } from '@arvin-shu/microcode-engine';
+import { EditorConfig } from '@arvin-shu/microcode-types';
 
 const config: EditorConfig = {
 	lifeCycles: {

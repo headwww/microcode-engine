@@ -1,5 +1,5 @@
-import { IPublicModelPluginInstance } from '@arvin/microcode-types';
-import { IMicrocodePluginRuntime } from '@arvin/microcode-designer';
+import { IPublicModelPluginInstance } from '@arvin-shu/microcode-types';
+import { IMicrocodePluginRuntime } from '@arvin-shu/microcode-designer';
 import { pluginInstanceSymbol } from '../symbols';
 
 export class PluginInstance implements IPublicModelPluginInstance {

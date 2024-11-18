@@ -1,5 +1,5 @@
 import { defineComponent, PropType } from 'vue';
-import { IPublicTypePanelConfig } from '@arvin/microcode-types';
+import { IPublicTypePanelConfig } from '@arvin-shu/microcode-types';
 import { Area } from '../area';
 import { Panel } from '..';
 

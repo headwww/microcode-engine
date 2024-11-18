@@ -1,21 +1,21 @@
 {
-	"name": "@arvin/microcode-editor-core",
-	"version": "1.0.0",
-	"description": "",
-	"main": "src/index.ts",
-	"scripts": {
-		"build": "cross-env ORIGINAL_CWD=$PWD pnpm --filter ../../build-scripts run start",
-		"clear": "rm -rf dist"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"dependencies": {
-		"intl-messageformat": "^10.7.3",
-		"power-di": "^2.4.41",
-		"store": "^2.0.12"
-	},
-	"devDependencies": {
-		"@types/store": "^2.0.5"
-	}
+    "name": "@arvin-shu/microcode-editor-core",
+    "version": "1.0.0",
+    "description": "",
+    "main": "src/index.ts",
+    "scripts": {
+        "build": "cross-env ORIGINAL_CWD=$PWD pnpm --filter ../../build-scripts run start",
+        "clear": "rm -rf dist"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "intl-messageformat": "^10.7.3",
+        "power-di": "^2.4.41",
+        "store": "^2.0.12"
+    },
+    "devDependencies": {
+        "@types/store": "^2.0.5"
+    }
 }

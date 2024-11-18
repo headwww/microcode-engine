@@ -3,7 +3,7 @@ import {
 	PartitionOutlined,
 	SlackOutlined,
 } from '@ant-design/icons-vue';
-import { IPublicModelPluginContext } from '@arvin/microcode-types';
+import { IPublicModelPluginContext } from '@arvin-shu/microcode-types';
 import { Button } from 'ant-design-vue';
 import { ComponentPane } from './ComponentPane';
 

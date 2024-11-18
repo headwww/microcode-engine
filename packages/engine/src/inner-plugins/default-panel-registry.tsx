@@ -1,4 +1,4 @@
-import { IPublicModelPluginContext } from '@arvin/microcode-types';
+import { IPublicModelPluginContext } from '@arvin-shu/microcode-types';
 import { DesignerPlugin } from './designer-plugin';
 
 // 注册默认的面板

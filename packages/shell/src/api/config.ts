@@ -2,8 +2,8 @@ import {
 	IPublicModelEngineConfig,
 	IPublicModelPreference,
 	IPublicTypeDisposable,
-} from '@arvin/microcode-types';
-import { IEngineConfig } from '@arvin/microcode-editor-core';
+} from '@arvin-shu/microcode-types';
+import { IEngineConfig } from '@arvin-shu/microcode-editor-core';
 import { configSymbol } from '../symbols';
 
 export class Config implements IPublicModelEngineConfig {

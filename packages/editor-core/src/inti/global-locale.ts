@@ -1,5 +1,5 @@
 import { computed, ref, Ref } from 'vue';
-import { Logger } from '@arvin/microcode-utils';
+import { Logger } from '@arvin-shu/microcode-utils';
 import { createModuleEventBus, IEventBus } from '../event-bus';
 
 const languageMap: { [key: string]: string } = {

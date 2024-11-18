@@ -1,5 +1,5 @@
-import { isI18nData } from '@arvin/microcode-utils';
-import { IPublicTypeI18nData } from '@arvin/microcode-types';
+import { isI18nData } from '@arvin-shu/microcode-utils';
+import { IPublicTypeI18nData } from '@arvin-shu/microcode-types';
 import { IntlMessageFormat } from 'intl-messageformat';
 import { globalLocale } from './global-locale';
 

@@ -1,4 +1,4 @@
-import { IPublicTypeI18nData } from '@arvin/microcode-types';
+import { IPublicTypeI18nData } from '@arvin-shu/microcode-types';
 import { isObject } from '../is-object';
 
 export function isI18nData(obj: any): obj is IPublicTypeI18nData {

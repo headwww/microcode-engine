@@ -1,5 +1,5 @@
-import { IPublicModelPreference } from '@arvin/microcode-types';
-import { getLogger } from '@arvin/microcode-utils';
+import { IPublicModelPreference } from '@arvin-shu/microcode-types';
+import { getLogger } from '@arvin-shu/microcode-utils';
 import store from 'store';
 
 const logger = getLogger({ level: 'warn', bizName: 'Preference' });

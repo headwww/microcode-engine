@@ -1,62 +1,62 @@
 {
-	"name": "microcode-engine",
-	"private": true,
-	"scripts": {
-		"lint:create": "eslint --init",
-		"lint": "eslint \"{packages,examples}/**/*.{js,vue,ts}\" --fix",
-		"prettier-format": "prettier --config .prettierrc.cjs \"{packages,examples}/**/*.{vue,js,ts}\" --write",
-		"prepare": "husky install",
-		"lint:css": "stylelint **/*.{vue,css,sass,scss,less} --fix",
-		"build": "./scripts/build.sh",
-		"clear": "./scripts/clear.sh"
-	},
-	"devDependencies": {
-		"@commitlint/cli": "^19.5.0",
-		"@commitlint/config-conventional": "^19.5.0",
-		"@types/eslint": "^8",
-		"@types/lodash": "^4.17.9",
-		"@types/lodash-es": "^4.17.12",
-		"@types/node": "^22.7.4",
-		"@typescript-eslint/eslint-plugin": "^8.9.0",
-		"@typescript-eslint/parser": "^8.9.0",
-		"cross-env": "^7.0.3",
-		"eslint": "^8.2.0",
-		"eslint-config-airbnb-base": "^15.0.0",
-		"eslint-config-prettier": "^9.1.0",
-		"eslint-import-resolver-alias": "^1.1.2",
-		"eslint-plugin-import": "^2.30.0",
-		"eslint-plugin-prettier": "^5.2.1",
-		"eslint-plugin-vue": "^9.28.0",
-		"husky": "^9.1.6",
-		"lint-staged": "^15.2.10",
-		"prettier": "^3.3.3",
-		"sass": "^1.79.3",
-		"stylelint": "^16.9.0",
-		"stylelint-config-recommended-scss": "^14.1.0",
-		"stylelint-config-recommended-vue": "^1.5.0",
-		"stylelint-config-standard": "^36.0.1",
-		"stylelint-config-standard-scss": "^13.1.0",
-		"stylelint-scss": "^6.7.0",
-		"typescript": "^5.5.4",
-		"vue": "^3.5.8"
-	},
-	"dependencies": {
-		"@ant-design/icons-vue": "^7.0.1",
-		"@arvin/microcode-types": "workspace:^",
-		"@arvin/microcode-utils": "workspace:^",
-		"ant-design-vue": "^4.2.5",
-		"eventemitter2": "^6.4.9",
-		"lodash": "^4.17.21",
-		"lodash-es": "^4.17.21",
-		"strict-event-emitter-types": "^2.0.0"
-	},
-	"lint-staged": {
-		"*.{js,jsx,vue,ts,tsx}": [
-			"pnpm run lint",
-			"pnpm run prettier-format"
-		],
-		"*.{vue,less,css,scss,sass}": [
-			"pnpm run lint:css"
-		]
-	}
+    "name": "microcode-engine",
+    "private": true,
+    "scripts": {
+        "lint:create": "eslint --init",
+        "lint": "eslint \"{packages,examples}/**/*.{js,vue,ts}\" --fix",
+        "prettier-format": "prettier --config .prettierrc.cjs \"{packages,examples}/**/*.{vue,js,ts}\" --write",
+        "prepare": "husky install",
+        "lint:css": "stylelint **/*.{vue,css,sass,scss,less} --fix",
+        "build": "./scripts/build.sh",
+        "clear": "./scripts/clear.sh"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^19.5.0",
+        "@commitlint/config-conventional": "^19.5.0",
+        "@types/eslint": "^8",
+        "@types/lodash": "^4.17.9",
+        "@types/lodash-es": "^4.17.12",
+        "@types/node": "^22.7.4",
+        "@typescript-eslint/eslint-plugin": "^8.9.0",
+        "@typescript-eslint/parser": "^8.9.0",
+        "cross-env": "^7.0.3",
+        "eslint": "^8.2.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-import-resolver-alias": "^1.1.2",
+        "eslint-plugin-import": "^2.30.0",
+        "eslint-plugin-prettier": "^5.2.1",
+        "eslint-plugin-vue": "^9.28.0",
+        "husky": "^9.1.6",
+        "lint-staged": "^15.2.10",
+        "prettier": "^3.3.3",
+        "sass": "^1.79.3",
+        "stylelint": "^16.9.0",
+        "stylelint-config-recommended-scss": "^14.1.0",
+        "stylelint-config-recommended-vue": "^1.5.0",
+        "stylelint-config-standard": "^36.0.1",
+        "stylelint-config-standard-scss": "^13.1.0",
+        "stylelint-scss": "^6.7.0",
+        "typescript": "^5.5.4",
+        "vue": "^3.5.8"
+    },
+    "dependencies": {
+        "@ant-design/icons-vue": "^7.0.1",
+        "@arvin-shu/microcode-types": "workspace:^",
+        "@arvin-shu/microcode-utils": "workspace:^",
+        "ant-design-vue": "^4.2.5",
+        "eventemitter2": "^6.4.9",
+        "lodash": "^4.17.21",
+        "lodash-es": "^4.17.21",
+        "strict-event-emitter-types": "^2.0.0"
+    },
+    "lint-staged": {
+        "*.{js,jsx,vue,ts,tsx}": [
+            "pnpm run lint",
+            "pnpm run prettier-format"
+        ],
+        "*.{vue,less,css,scss,sass}": [
+            "pnpm run lint:css"
+        ]
+    }
 }

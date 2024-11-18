@@ -4,17 +4,17 @@ import {
 	IMicrocodeContextPrivate,
 	PluginPreference,
 	Designer,
-} from '@arvin/microcode-designer';
+} from '@arvin-shu/microcode-designer';
 import {
 	commonEvent,
 	Editor,
 	engineConfig,
 	globalContext,
-} from '@arvin/microcode-editor-core';
+} from '@arvin-shu/microcode-editor-core';
 import {
 	Skeleton as InnerSkeleton,
 	Workbench,
-} from '@arvin/microcode-editor-skeleton';
+} from '@arvin-shu/microcode-editor-skeleton';
 import {
 	Config,
 	Plugins,
@@ -23,9 +23,9 @@ import {
 	Material,
 	Canvas,
 	Project,
-} from '@arvin/microcode-shell';
-import { IPublicTypePluginMeta } from '@arvin/microcode-types';
-import { Logger } from '@arvin/microcode-utils';
+} from '@arvin-shu/microcode-shell';
+import { IPublicTypePluginMeta } from '@arvin-shu/microcode-types';
+import { Logger } from '@arvin-shu/microcode-utils';
 import { h } from 'vue';
 import { defaultPanelRegistry } from './inner-plugins/default-panel-registry';
 import { componentMetaParser } from './inner-plugins/component-meta-parser';

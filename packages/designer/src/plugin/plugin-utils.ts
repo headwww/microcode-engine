@@ -1,5 +1,5 @@
-import { IPublicTypePluginDeclaration } from '@arvin/microcode-types';
-import { isPlainObject } from '@arvin/microcode-utils';
+import { IPublicTypePluginDeclaration } from '@arvin-shu/microcode-types';
+import { isPlainObject } from '@arvin-shu/microcode-utils';
 
 /**
  * 对传入的选项 opts 进行验证和过滤，保留那些在偏好声明中定义的有效选项。

@@ -1,6 +1,6 @@
-import { createContent, uniqueId } from '@arvin/microcode-utils';
+import { createContent, uniqueId } from '@arvin-shu/microcode-utils';
 import { computed, h, Ref, ref, VNode } from 'vue';
-import { getEvent } from '@arvin/microcode-shell';
+import { getEvent } from '@arvin-shu/microcode-shell';
 import { IWidget } from './widget';
 import { ISkeleton } from '../skeleton';
 import { DockConfig } from '../types';

@@ -1,5 +1,5 @@
 import { defineComponent } from 'vue';
-import { Renderer as MicrocodeRenderer } from '@arvin/microcode-renderer-core';
+import { Renderer as MicrocodeRenderer } from '@arvin-shu/microcode-renderer-core';
 import { Button } from 'ant-design-vue';
 
 export default defineComponent({

@@ -1,5 +1,5 @@
 import { defineComponent, onMounted, onUpdated, PropType, ref } from 'vue';
-import { HelpTip, Title } from '@arvin/microcode-editor-core';
+import { HelpTip, Title } from '@arvin-shu/microcode-editor-core';
 import { SkeletonEvents } from '../../skeleton';
 import { composeTitle, IWidget, Panel, PanelDock } from '../../widget';
 import { DockProps } from '../../types';

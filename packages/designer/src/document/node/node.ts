@@ -5,7 +5,7 @@ import {
 	IPublicTypeNodeSchema,
 	IPublicTypePageSchema,
 	IPublicTypeSlotSchema,
-} from '@arvin/microcode-types';
+} from '@arvin-shu/microcode-types';
 import { IDocumentModel } from '../document-model';
 
 export interface IBaseNode<

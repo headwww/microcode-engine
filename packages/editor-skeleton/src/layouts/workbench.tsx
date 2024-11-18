@@ -1,6 +1,6 @@
 import { defineComponent, PropType } from 'vue';
-import { TipContainer } from '@arvin/microcode-editor-core';
-import { EditorConfig, PluginClassSet } from '@arvin/microcode-types';
+import { TipContainer } from '@arvin-shu/microcode-editor-core';
+import { EditorConfig, PluginClassSet } from '@arvin-shu/microcode-types';
 import { ISkeleton } from '../skeleton';
 import { TopArea } from './top-area';
 import { LeftArea } from './left-area';

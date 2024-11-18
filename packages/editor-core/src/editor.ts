@@ -9,9 +9,9 @@ import {
 	IPublicTypeEditorValueKey,
 	IPublicTypeRemoteComponentDescription,
 	PluginClassSet,
-} from '@arvin/microcode-types';
+} from '@arvin-shu/microcode-types';
 import { shallowReactive } from 'vue';
-import { AssetLoader } from '@arvin/microcode-utils';
+import { AssetLoader } from '@arvin-shu/microcode-utils';
 import { EventBus, IEventBus } from './event-bus';
 import { engineConfig } from './config';
 import { globalLocale } from './inti/global-locale';

@@ -1,13 +1,13 @@
 import * as Vue from 'vue';
-import { init, plugins } from '@arvin/microcode-engine';
+import { init, plugins } from '@arvin-shu/microcode-engine';
 import App from './App.vue';
-import '@arvin/microcode-theme/src/index.scss';
+import '@arvin-shu/microcode-theme/src/index.scss';
 import './rest.scss';
 import 'ant-design-vue/dist/reset.css';
 import InitSkeleton from './plugins/plugin-init-skeleton';
 import InitMaterial from './plugins/plugin-material';
 
-import '@arvin/microcode-vue-simulator-renderer';
+import '@arvin-shu/microcode-vue-simulator-renderer';
 
 window.Vue = Vue;
 const app = Vue.createApp(App);

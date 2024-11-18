@@ -1,4 +1,4 @@
-import { IPublicTypeContainerSchema } from '@arvin/microcode-types';
+import { IPublicTypeContainerSchema } from '@arvin-shu/microcode-types';
 import { Component, defineComponent, PropType } from 'vue';
 
 export const Renderer = defineComponent({

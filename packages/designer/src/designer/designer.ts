@@ -1,7 +1,7 @@
 import {
 	IPublicModelEditor,
 	IPublicTypeComponentMetadata,
-} from '@arvin/microcode-types';
+} from '@arvin-shu/microcode-types';
 import { computed, CSSProperties, ExtractPropTypes, PropType, ref } from 'vue';
 import { insertChildren } from '../document';
 import { IProject, Project } from '../project';
