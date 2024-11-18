@@ -3,6 +3,7 @@ set -e
 echo "正在执行所有包的 build 命令..."
 
 pnpm --filter @arvin/microcode-types\
+  --filter @arvin/microcode-theme\
   --filter @arvin/microcode-utils\
   --filter @arvin/microcode-shell\
   --filter @arvin/microcode-editor-core\

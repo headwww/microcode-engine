@@ -48,6 +48,7 @@ export const buildModules = async () => {
 		format: 'esm',
 		preserveModules: true,
 		preserveModulesRoot: `${getDir()}/src`,
+		sourcemap: true,
 	});
 
 	// 输出 CommonJS 格式到 lib 目录

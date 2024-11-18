@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # 设置错误时退出
 set -e
 
@@ -15,6 +14,7 @@ pnpm --filter @arvin/microcode-types\
   --filter @arvin/microcode-vue-simulator-renderer\
   --filter @arvin/microcode-theme\
   --filter @arvin/microcode-engine\
+  --filter @arvin/microcode-theme\
   --stream exec -- rm -rf dist
 
 echo "所有包的 dist 目录清理完成"
