@@ -2,12 +2,7 @@
 	"name": "@arvin/microcode-engine",
 	"version": "1.0.0",
 	"description": "",
-	"main": "lib/index.js",
-	"module": "es/index.js",
-	"files": [
-		"lib",
-		"es"
-	],
+	"main": "src/index.ts",
 	"scripts": {
 		"build": "cross-env ORIGINAL_CWD=$PWD BUILD_UMD=true COPY_THEME=true pnpm --filter ../../build-scripts run start",
 		"clear": "rm -rf dist"
