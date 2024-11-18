@@ -1,7 +1,4 @@
-import {
-	IPublicTypeAssetsJson,
-	IPublicTypeDisposable,
-} from '@arvin-shu/microcode-types';
+import { IPublicTypeAssetsJson, IPublicTypeDisposable } from '../type';
 
 export interface IPublicApiMaterial {
 	/**
