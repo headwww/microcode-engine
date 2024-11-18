@@ -31,7 +31,9 @@ export async function buildTheme() {
 						functions: {
 							darken: (value: string, amount: string) => {
 								try {
-									const color = Color(value).darken(parseFloat(amount) / 100);
+									const color = (Color(value) as any).darken(
+										parseFloat(amount) / 100
+									);
 									// 对 hsl/hsla 的各个分量进行舍入
 									return color.hsl().round().toString();
 								} catch {
@@ -40,7 +42,9 @@ export async function buildTheme() {
 							},
 							lighten: (value: string, amount: string) => {
 								try {
-									const color = Color(value).lighten(parseFloat(amount) / 100);
+									const color = (Color(value) as any).lighten(
+										parseFloat(amount) / 100
+									);
 									// 对 hsl/hsla 的各个分量进行舍入
 									return color.hsl().round().toString();
 								} catch {
