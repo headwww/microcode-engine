@@ -19,6 +19,8 @@ export const isBuildUmd = process.env.BUILD_UMD === 'true';
 export const isBuildTheme = process.env.BUILD_THEME === 'true';
 // 是否复制主题
 export const isCopyTheme = process.env.COPY_THEME === 'true';
+// UMD 名称
+export const umdName = process.env.UMD_NAME;
 
 export const outputRoot = resolve(getDir(), 'dist');
 
