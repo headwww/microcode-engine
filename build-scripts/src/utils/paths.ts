@@ -15,6 +15,10 @@ export const getDir = () => {
 
 // 是否构建 UMD 格式
 export const isBuildUmd = process.env.BUILD_UMD === 'true';
+// 是否构建主题
+export const isBuildTheme = process.env.BUILD_THEME === 'true';
+// 是否复制主题
+export const isCopyTheme = process.env.COPY_THEME === 'true';
 
 export const outputRoot = resolve(getDir(), 'dist');
 
