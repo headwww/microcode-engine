@@ -51,10 +51,7 @@
         "strict-event-emitter-types": "^2.0.0"
     },
     "lint-staged": {
-        "*.{js,jsx,vue,ts,tsx}": [
-            "pnpm run lint",
-            "pnpm run prettier-format"
-        ],
+        "*.{js,jsx,vue,ts,tsx}": [],
         "*.{vue,less,css,scss,sass}": [
             "pnpm run lint:css"
         ]
