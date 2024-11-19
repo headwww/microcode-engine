@@ -11,12 +11,14 @@ export const ProjectView = defineComponent({
 		return () => {
 			const { designer } = props;
 
+			const { projectSimulatorProps: simulatorProps } = designer!;
+
 			const Simulator = BuiltinSimulatorHostView;
 
 			return (
 				<div class="mtc-project">
 					<div class="mtc-simulator-shell">
-						<Simulator designer={designer}></Simulator>
+						<Simulator {...simulatorProps.value}></Simulator>
 					</div>
 				</div>
 			);

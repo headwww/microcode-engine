@@ -20,6 +20,34 @@ export function isAssetBundle(obj: any): obj is AssetBundle {
 	return obj && obj.type === AssetType.Bundle;
 }
 
+/**
+ * 构建资源包
+ * @param assets
+ * @param level
+ * @returns
+ */
+export function assetBundle(
+	assets?: Asset | AssetList | null,
+	level?: AssetLevel
+): AssetBundle | null {
+	if (!assets) {
+		return null;
+	}
+	return {
+		type: AssetType.Bundle,
+		assets,
+		level,
+	};
+}
+
+/**
+ * 构建资源项
+ * @param type
+ * @param content
+ * @param level
+ * @param id
+ * @returns
+ */
 export function assetItem(
 	type: AssetType,
 	content?: string | null,

@@ -7,7 +7,7 @@ import 'ant-design-vue/dist/reset.css';
 import InitSkeleton from './plugins/plugin-init-skeleton';
 import InitMaterial from './plugins/plugin-material';
 
-import '@arvin-shu/microcode-vue-simulator-renderer';
+// import '@arvin-shu/microcode-vue-simulator-renderer';
 
 window.Vue = Vue;
 const app = Vue.createApp(App);

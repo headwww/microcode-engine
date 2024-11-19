@@ -1,1 +1,3 @@
-export interface ISimulatorHost {}
+export interface ISimulatorHost<P = object> {
+	setProps(props: P): void;
+}

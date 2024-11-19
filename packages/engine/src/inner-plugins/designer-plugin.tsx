@@ -1,6 +1,6 @@
 import { DesignerView } from '@arvin-shu/microcode-designer';
-import { Editor } from '@arvin-shu/microcode-editor-core';
-import { defineComponent, onMounted, PropType, reactive } from 'vue';
+import { Editor, engineConfig } from '@arvin-shu/microcode-editor-core';
+import { defineComponent, PropType, reactive } from 'vue';
 
 export const DesignerPlugin = defineComponent({
 	name: 'DesignerPlugin',
@@ -12,20 +12,32 @@ export const DesignerPlugin = defineComponent({
 
 		const simulatorProps = reactive({
 			library: null,
+			simulatorUrl: null,
 		});
 
-		onMounted(() => {
-			editor?.onceGot('assets').then(({ packages }) => {
-				simulatorProps.library = packages;
-			});
-		});
+		async function setupAssets() {
+			const assets = await editor?.onceGot('assets');
+			// 获取资源库
+			simulatorProps.library = assets.packages;
+			// 获取模拟器地址
+			simulatorProps.simulatorUrl =
+				engineConfig.get('simulatorUrl') || editor?.get('simulatorUrl');
+		}
 
-		return () => (
-			<DesignerView
-				designer={editor?.get('designer')}
-				className="microcode-plugin-designer"
-				simulatorProps={simulatorProps}
-			></DesignerView>
-		);
+		setupAssets();
+
+		return () => {
+			if (!simulatorProps.library) {
+				return null;
+			}
+
+			return (
+				<DesignerView
+					className="microcode-plugin-designer"
+					designer={editor?.get('designer')}
+					simulatorProps={simulatorProps}
+				></DesignerView>
+			);
+		};
 	},
 });

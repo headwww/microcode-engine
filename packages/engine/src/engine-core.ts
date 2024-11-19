@@ -96,12 +96,16 @@ async function registryInnerPlugin() {
 }
 registryInnerPlugin();
 
+// TODO 设置一个渲染模拟器插件
+editor.set('simulatorUrl', 'http://169.254.233.198:8080/dist/js/index.js');
+
 export async function init(pluginPreference?: PluginPreference) {
 	await plugins.init(pluginPreference);
-	// TODO 先模拟环境
+	// TODO 先模拟环境 后期如果engine-core打包成umd，则需要将此代码注释掉
 	window.ArvinMicrocodeEngine = innerPlugins._getMicrocodePluginContext(
 		{} as any
 	);
+
 	project.importSchema({
 		version: '1.0.0',
 		id: 'sdasgusgau',

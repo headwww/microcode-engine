@@ -1,15 +1,49 @@
-import { ref } from 'vue';
+import { ExtractPropTypes, PropType, Ref, ref } from 'vue';
+import {
+	Asset,
+	AssetLevel,
+	AssetList,
+	AssetType,
+	IPublicTypePackage,
+} from '@arvin-shu/microcode-types';
+import { assetBundle, assetItem } from '@arvin-shu/microcode-utils';
 import { Designer, IDesigner } from '../designer';
 import { IProject, Project } from '../project';
 import { ISimulatorHost } from '../simulator';
 import { createSimulator } from './create-simulator';
 
-export class BuiltinSimulatorHost implements ISimulatorHost {
+export type LibraryItem = IPublicTypePackage & {
+	package: string;
+	library: string;
+	urls?: Asset;
+	editUrls?: Asset;
+};
+
+export const builtinSimulatorProps = {
+	library: Array as PropType<LibraryItem[]>,
+	simulatorUrl: [Object, String] as PropType<Asset>,
+};
+
+const defaultEnvironment = [
+	assetItem(AssetType.JSText, 'window.Vue=parent.Vue', undefined, 'vue'),
+];
+
+export type BuiltinSimulatorProps = ExtractPropTypes<
+	typeof builtinSimulatorProps
+> & {
+	[key: string]: any;
+};
+
+export class BuiltinSimulatorHost
+	implements ISimulatorHost<BuiltinSimulatorProps>
+{
 	readonly project: IProject;
 
 	readonly designer: IDesigner;
 
 	private _iframe?: HTMLIFrameElement;
+
+	_props: Ref<BuiltinSimulatorProps> = ref({});
 
 	/**
 	 * iframe内部的window对象
@@ -26,7 +60,17 @@ export class BuiltinSimulatorHost implements ISimulatorHost {
 		this.designer = designer;
 	}
 
-	buildLibrary() {}
+	/**
+	 * 设置属性
+	 * @param props
+	 */
+	setProps(props: BuiltinSimulatorProps) {
+		this._props.value = props;
+	}
+
+	get(key: string) {
+		return this._props.value[key];
+	}
 
 	async mountContentFrame(iframe: HTMLIFrameElement) {
 		if (!iframe || this._iframe === iframe) {
@@ -38,10 +82,40 @@ export class BuiltinSimulatorHost implements ISimulatorHost {
 		this._contentDocument.value = this._contentWindow.value?.document;
 
 		// 构建资源库
-		this.buildLibrary();
+		const libraryAsset = this.buildLibrary();
 
-		const renderer: any = await createSimulator(this, iframe);
-		// todo 暂时document对象通过传入的方式，方便调试，后期改成自动获取，打包成js导入到iframe中自动获取
-		renderer.run(this._contentDocument.value);
+		const vendors = [
+			// vue环境
+			assetBundle(defaultEnvironment, AssetLevel.Environment),
+			// 额外的环境
+			null,
+			// 资产包定义的环境
+			assetBundle(libraryAsset, AssetLevel.Library),
+			// 主题
+			null,
+			// 渲染器模拟器环境
+			assetBundle(this.get('simulatorUrl'), AssetLevel.Runtime),
+		];
+
+		const renderer: any = await createSimulator(this, iframe, vendors);
+		// 内部实现是模拟vue挂载实例createApp(component).mount(#app);
+		renderer.run();
+	}
+
+	/**
+	 * 构建资源库
+	 */
+	buildLibrary() {
+		const _library = this.get('library') as LibraryItem[];
+		const libraryAsset: AssetList = [];
+
+		if (_library && _library.length) {
+			_library.forEach((item) => {
+				if (item.urls) {
+					libraryAsset.push(item.urls);
+				}
+			});
+		}
+		return libraryAsset;
 	}
 }

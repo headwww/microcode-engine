@@ -75,3 +75,6 @@ export interface IPublicTypeAssetsJson {
 
 ComponentMeta职责：
 
+## 编排面板
+
+designer-plugin.tsx->designer-view.tsx->project-view.tsx->host-view.tsx

@@ -1,17 +1,24 @@
 import { defineComponent, PropType } from 'vue';
 import { Project } from '../project';
-import { BuiltinSimulatorHost } from './host';
+import {
+	BuiltinSimulatorHost,
+	builtinSimulatorProps,
+	BuiltinSimulatorProps,
+} from './host';
 import { Designer } from '../designer';
 
 export const BuiltinSimulatorHostView = defineComponent({
 	name: 'BuiltinSimulatorHostView',
 	props: {
+		...builtinSimulatorProps,
 		project: Object as PropType<Project>,
 		designer: Object as PropType<Designer>,
+		onMount: Function as PropType<(host: BuiltinSimulatorHost) => void>,
 	},
-	setup(props) {
+	setup(props: BuiltinSimulatorProps) {
 		const { project, designer } = props;
 		const host = new BuiltinSimulatorHost(project!, designer!);
+		host.setProps(props);
 
 		return () => (
 			<div className="mtc-simulator">

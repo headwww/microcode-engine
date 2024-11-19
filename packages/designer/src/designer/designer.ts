@@ -2,8 +2,15 @@ import {
 	IPublicModelEditor,
 	IPublicTypeComponentMetadata,
 } from '@arvin-shu/microcode-types';
-import { computed, CSSProperties, ExtractPropTypes, PropType, ref } from 'vue';
-import { insertChildren } from '../document';
+import {
+	computed,
+	CSSProperties,
+	ExtractPropTypes,
+	PropType,
+	Ref,
+	ref,
+} from 'vue';
+import { DocumentModel, insertChildren } from '../document';
 import { IProject, Project } from '../project';
 import { Dragon, IDragon } from './dragon';
 import { ComponentMeta, IComponentMeta } from '../component-meta';
@@ -20,7 +27,9 @@ export const designerProps = {
 		type: Object as PropType<CSSProperties>,
 	},
 	simulatorProps: {
-		type: Object as PropType<Record<string, any>>,
+		type: [Object, Function] as PropType<
+			Record<string, any> | ((document: DocumentModel) => object)
+		>,
 	},
 };
 
@@ -28,6 +37,7 @@ export type DesignerProps = ExtractPropTypes<typeof designerProps>;
 
 export interface IDesigner {
 	get dragon(): IDragon;
+	get editor(): IPublicModelEditor;
 	readonly project: IProject;
 	createComponentMeta(
 		data: IPublicTypeComponentMetadata
@@ -38,6 +48,8 @@ export class Designer implements IDesigner {
 	// 拖拽实例
 	dragon: IDragon;
 
+	readonly editor: IPublicModelEditor;
+
 	// 当前正在编排的项目实例
 	readonly project: IProject;
 
@@ -47,7 +59,10 @@ export class Designer implements IDesigner {
 	// 组件元数据映射表
 	private _componentMetasMap = ref(new Map<string, IComponentMeta>());
 
+	private _simulatorProps: Ref<Record<string, any>> = ref({});
+
 	constructor(props: DesignerProps) {
+		this.editor = props.editor!;
 		this.dragon = new Dragon(this);
 		this.project = new Project(this);
 		this.setProps(props);
@@ -57,7 +72,7 @@ export class Designer implements IDesigner {
 		});
 	}
 
-	simulatorProps = computed(() => ({}));
+	simulatorProps = computed(() => this._simulatorProps.value);
 
 	/**
 	 * 提供给模拟器使用的属性
@@ -71,13 +86,19 @@ export class Designer implements IDesigner {
 		},
 	}));
 
-	setProps(props: DesignerProps) {
-		props;
+	/**
+	 * 设置属性
+	 *
+	 * @param nextProps
+	 */
+	setProps(nextProps: DesignerProps) {
+		this._simulatorProps.value = nextProps.simulatorProps || {};
 	}
 
 	/**
 	 * 构建组件元数据映射表
 	 * 方法再内置插件中进行调用，监听通过material来assets变化通过designer的实例进行调用
+	 *
 	 * @param metas 组件元数据
 	 */
 	buildComponentMetasMap(metas: IPublicTypeComponentMetadata[]) {
