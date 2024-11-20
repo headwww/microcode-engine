@@ -22,6 +22,15 @@ export type LibraryItem = IPublicTypePackage & {
 export const builtinSimulatorProps = {
 	library: Array as PropType<LibraryItem[]>,
 	simulatorUrl: [Object, String] as PropType<Asset>,
+	extraEnvironment: [Object, String] as PropType<Asset>,
+	device: {
+		type: String as PropType<'mobile' | 'iphone' | 'default' | string>,
+	},
+	renderEnv: {
+		type: String as PropType<'vue' | 'rax' | 'react' | 'default' | string>,
+	},
+	locale: String,
+	deviceClassName: String,
 };
 
 const defaultEnvironment = [

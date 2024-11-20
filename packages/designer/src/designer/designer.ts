@@ -10,7 +10,7 @@ import {
 	Ref,
 	ref,
 } from 'vue';
-import { DocumentModel, insertChildren } from '../document';
+import { insertChildren } from '../document';
 import { IProject, Project } from '../project';
 import { Dragon, IDragon } from './dragon';
 import { ComponentMeta, IComponentMeta } from '../component-meta';
@@ -26,10 +26,14 @@ export const designerProps = {
 	style: {
 		type: Object as PropType<CSSProperties>,
 	},
+	onMount: {
+		type: Function as PropType<(designer: Designer) => void>,
+	},
 	simulatorProps: {
-		type: [Object, Function] as PropType<
-			Record<string, any> | ((document: DocumentModel) => object)
-		>,
+		type: Object as PropType<Record<string, any>>,
+	},
+	componentMetadatas: {
+		type: Array as PropType<IPublicTypeComponentMetadata[]>,
 	},
 };
 
@@ -48,6 +52,8 @@ export class Designer implements IDesigner {
 	// 拖拽实例
 	dragon: IDragon;
 
+	private props?: DesignerProps;
+
 	readonly editor: IPublicModelEditor;
 
 	// 当前正在编排的项目实例
@@ -59,6 +65,7 @@ export class Designer implements IDesigner {
 	// 组件元数据映射表
 	private _componentMetasMap = ref(new Map<string, IComponentMeta>());
 
+	// 模拟器属性
 	private _simulatorProps: Ref<Record<string, any>> = ref({});
 
 	constructor(props: DesignerProps) {
@@ -92,7 +99,18 @@ export class Designer implements IDesigner {
 	 * @param nextProps
 	 */
 	setProps(nextProps: DesignerProps) {
-		this._simulatorProps.value = nextProps.simulatorProps || {};
+		const props = this.props ? { ...this.props, ...nextProps } : nextProps;
+		if (this.props) {
+			//
+			if (props.simulatorProps !== this.props.simulatorProps) {
+				this._simulatorProps.value = props.simulatorProps || {};
+			}
+		} else {
+			//
+			if (props.simulatorProps) {
+				this._simulatorProps.value = props.simulatorProps || {};
+			}
+		}
 	}
 
 	/**

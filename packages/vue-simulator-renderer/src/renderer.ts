@@ -3,7 +3,7 @@ import rendererView from './renderer-view';
 
 export class SimulatorRendererContainer {
 	run() {
-		const containerId = 'simulator-app';
+		const containerId = 'app';
 		let container = document.getElementById(containerId);
 		if (!container) {
 			container = document.createElement('div');
@@ -12,6 +12,8 @@ export class SimulatorRendererContainer {
 			createApp(rendererView).mount(container);
 		}
 	}
+
+	dispose() {}
 }
 
 export default new SimulatorRendererContainer();

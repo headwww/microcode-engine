@@ -13,7 +13,7 @@ import {
 import { BuiltinSimulatorHost } from './host';
 
 /**
- * 创建模拟器
+ * 创建渲染模拟器
  * @param host 模拟器宿主对象
  * @param iframe iframe元素
  * @param vendors 资源列表
