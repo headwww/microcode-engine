@@ -16,10 +16,10 @@ export const BuiltinSimulatorHostView = defineComponent({
 		onMount: Function as PropType<(host: BuiltinSimulatorHost) => void>,
 	},
 	setup(props: BuiltinSimulatorProps) {
-		const { project, designer } = props;
+		const { project, designer, onMount } = props;
 		const host = new BuiltinSimulatorHost(project!, designer!);
 		host.setProps(props);
-
+		onMount?.(host);
 		return () => (
 			<div className="mtc-simulator">
 				<Canvas host={host} />

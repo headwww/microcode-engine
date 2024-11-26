@@ -1,7 +1,24 @@
 import { IPublicTypeDisposable, IPublicTypeDragNodeDataObject } from '../type';
 import { IPublicModelDragObject } from './drag-object';
+import { IPublicModelLocateEvent } from './locate-event';
 
-export interface IPublicModelDragon {
+export interface IPublicModelDragon<LocateEvent = IPublicModelLocateEvent> {
+	/**
+	 * 绑定 dragstart 事件
+	 * bind a callback function which will be called on dragging start
+	 * @param func
+	 * @returns
+	 */
+	onDragstart(func: (e: LocateEvent) => any): IPublicTypeDisposable;
+
+	/**
+	 * 绑定 drag 事件
+	 * bind a callback function which will be called on dragging
+	 * @param func
+	 * @returns
+	 */
+	onDrag(func: (e: LocateEvent) => any): IPublicTypeDisposable;
+
 	/**
 	 * 绑定 dragend 事件
 	 * bind a callback function which will be called on dragging end

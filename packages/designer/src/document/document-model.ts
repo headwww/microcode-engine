@@ -9,6 +9,7 @@ import {
 } from '@arvin-shu/microcode-utils';
 import { IProject } from '../project';
 import { INode, Node } from './node';
+import { ISimulatorHost } from '../simulator';
 
 /**
  * 获取数据类型的工具类型
@@ -29,6 +30,7 @@ export type GetDataType<T, NodeType> = T extends undefined
 
 export interface IDocumentModel
 	extends Omit<IPublicModelDocumentModel<INode>, ''> {
+	get simulator(): ISimulatorHost | null;
 	nextId(possibleId: string | undefined): string;
 	open(): IDocumentModel;
 	remove(): void;
@@ -41,6 +43,13 @@ export class DocumentModel implements IDocumentModel {
 	id: string = uniqueId('doc');
 
 	readonly project: IProject;
+
+	/**
+	 * 模拟器
+	 */
+	get simulator(): ISimulatorHost | null {
+		return this.project.simulator;
+	}
 
 	constructor(project: IProject, schema?: IPublicTypeRootSchema) {
 		this.project = project;
@@ -71,7 +80,6 @@ export class DocumentModel implements IDocumentModel {
 		} else {
 			schema = data;
 		}
-		// @ts-ignore
 		const node: INode = new Node(this, schema);
 
 		return node as any;

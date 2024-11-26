@@ -1,6 +1,7 @@
 import {
 	IPublicModelDragObject,
 	IPublicModelDragon,
+	IPublicModelLocateEvent,
 } from '@arvin-shu/microcode-types';
 import {
 	createModuleEventBus,
@@ -8,8 +9,14 @@ import {
 } from '@arvin-shu/microcode-editor-core';
 import { IDesigner } from './designer';
 import { makeEventsHandler } from '../utils';
+import { ISimulatorHost } from '../simulator';
+import { isShaken } from './utils';
 
-export interface IDragon extends IPublicModelDragon {
+export interface ILocateEvent extends IPublicModelLocateEvent {
+	readonly type: 'LocateEvent';
+}
+
+export interface IDragon extends IPublicModelDragon<ILocateEvent> {
 	emitter: IEventBus;
 }
 
@@ -58,14 +65,31 @@ export class Dragon implements IDragon {
 		dragObject: IPublicModelDragObject,
 		boostEvent: MouseEvent | DragEvent
 	) {
-		const handleEvents = makeEventsHandler(boostEvent);
+		const masterSensors = this.getMasterSensors() as ISimulatorHost[];
+
+		const handleEvents = makeEventsHandler(boostEvent, masterSensors);
+
+		const dragstart = () => {
+			const locateEvent = createLocateEvent(boostEvent);
+			this.emitter.emit('dragstart', locateEvent);
+		};
+
+		const drag = (e: MouseEvent | DragEvent) => {
+			const locateEvent = createLocateEvent(e);
+			this.emitter.emit('drag', locateEvent);
+		};
 
 		const move = (e: MouseEvent | DragEvent) => {
-			console.log(e);
-		};
-		const over = (e?: any) => {
-			console.log(e);
+			drag(e);
 
+			if (isShaken(boostEvent, e)) {
+				dragstart();
+				drag(e);
+			}
+		};
+
+		const over = (e?: any) => {
+			e;
 			// 发送目标组件
 			this.emitter.emit('dragend', { dragObject });
 
@@ -75,13 +99,70 @@ export class Dragon implements IDragon {
 				doc.removeEventListener('mousedown', over, true);
 			});
 		};
+
+		// 用于创建拖拽定位事件
+		const createLocateEvent = (e: MouseEvent | DragEvent): ILocateEvent => {
+			const locateEvent: any = {
+				type: 'LocateEvent',
+				dragObject,
+				target: e.target,
+				originalEvent: e,
+			};
+
+			locateEvent.globalX = e.clientX;
+			locateEvent.globalY = e.clientY;
+			return locateEvent;
+		};
+
 		handleEvents((doc) => {
+			// 鼠标移动
 			doc.addEventListener('mousemove', move, true);
+			// 鼠标松开
 			doc.addEventListener('mouseup', over, true);
+			// 鼠标按下
 			doc.addEventListener('mousedown', over, true);
 		});
 	}
 
+	private getMasterSensors() {
+		return Array.from(
+			new Set(
+				this.designer.project.documents
+					.map((doc) => doc.simulator)
+					.filter(Boolean) as any
+			)
+		);
+	}
+
+	/**
+	 * 绑定拖拽开始事件
+	 * @param func
+	 * @returns
+	 */
+	onDragstart(func: (e: ILocateEvent) => any) {
+		this.emitter.on('dragstart', func);
+		return () => {
+			this.emitter.removeListener('dragstart', func);
+		};
+	}
+
+	/**
+	 * 绑定拖拽事件
+	 * @param func
+	 * @returns
+	 */
+	onDrag(func: (e: ILocateEvent) => any) {
+		this.emitter.on('drag', func);
+		return () => {
+			this.emitter.removeListener('drag', func);
+		};
+	}
+
+	/**
+	 * 绑定拖拽结束事件
+	 * @param func
+	 * @returns
+	 */
 	onDragend(
 		func: (x: { dragObject: IPublicModelDragObject; copy: boolean }) => any
 	) {

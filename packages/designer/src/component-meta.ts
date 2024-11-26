@@ -34,8 +34,6 @@ export class ComponentMeta implements IComponentMeta {
 	private _title?: IPublicTypeTitleContent;
 
 	get title(): string | IPublicTypeI18nData | VNode {
-		// string | i18nData | ReactElement
-		// TitleConfig title.label
 		if (isTitleConfig(this._title)) {
 			return (this._title?.label as any) || this.componentName;
 		}

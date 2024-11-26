@@ -1,6 +1,7 @@
 import { defineComponent, PropType } from 'vue';
 import { Designer, designerProps } from './designer';
 import { ProjectView } from '../project';
+import { DragGhost as BuiltinDragGhostComponent } from './drag-ghost';
 
 export const DesignerView = defineComponent({
 	name: 'DesignerView',
@@ -17,10 +18,15 @@ export const DesignerView = defineComponent({
 			designer = new Designer(designerProps);
 		}
 
-		return () => (
-			<div class={['mtc-designer', props.className]}>
-				<ProjectView designer={designer} />
-			</div>
-		);
+		return () => {
+			const DragGhost = BuiltinDragGhostComponent;
+
+			return (
+				<div class={['mtc-designer', props.className]}>
+					<DragGhost designer={designer} />
+					<ProjectView designer={designer} />
+				</div>
+			);
+		};
 	},
 });

@@ -46,6 +46,11 @@ export interface IDesigner {
 	createComponentMeta(
 		data: IPublicTypeComponentMetadata
 	): IComponentMeta | null;
+
+	getComponentMeta(
+		componentName: string,
+		generateMetadata?: () => IPublicTypeComponentMetadata | null
+	): IComponentMeta;
 }
 
 export class Designer implements IDesigner {
@@ -73,9 +78,14 @@ export class Designer implements IDesigner {
 		this.dragon = new Dragon(this);
 		this.project = new Project(this);
 		this.setProps(props);
-		this.dragon.onDragend(() => {
+		this.dragon.onDragend((e) => {
 			// 插入
-			insertChildren;
+			const { dragObject } = e;
+
+			const nodeData = Array.isArray(dragObject)
+				? dragObject.data
+				: [dragObject.data];
+			insertChildren({} as any, nodeData as any);
 		});
 	}
 
@@ -88,8 +98,10 @@ export class Designer implements IDesigner {
 		...this.simulatorProps.value,
 		project: this.project,
 		designer: this,
+		// 模拟器挂载完成时调用将模拟器实例传递给project
 		onMount: (simulator: any) => {
-			simulator;
+			this.project.mountSimulator(simulator);
+			this.editor.set('simulator', simulator);
 		},
 	}));
 
@@ -159,6 +171,35 @@ export class Designer implements IDesigner {
 			// 将元数据添加到映射表中
 			this._componentMetasMap.value.set(key, meta);
 		}
+
+		return meta;
+	}
+
+	/**
+	 * 获取组件元数据
+	 *
+	 * @param componentName 组件名
+	 * @param generateMetadata 生成组件元数据
+	 * @returns 组件元数据实例
+	 */
+	getComponentMeta(
+		componentName: string,
+		generateMetadata?: () => IPublicTypeComponentMetadata | null
+	): IComponentMeta {
+		if (this._componentMetasMap.value.has(componentName)) {
+			return this._componentMetasMap.value.get(componentName)!;
+		}
+
+		if (this._lostComponentMetasMap.has(componentName)) {
+			return this._lostComponentMetasMap.get(componentName)!;
+		}
+
+		const meta = new ComponentMeta(this, {
+			componentName,
+			...(generateMetadata ? generateMetadata() : null),
+		});
+		// 将元数据添加到丢失表中
+		this._lostComponentMetasMap.set(componentName, meta);
 
 		return meta;
 	}

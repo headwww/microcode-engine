@@ -9,6 +9,7 @@ export default defineConfig({
 	server: {
 		host: '0.0.0.0',
 		port: 9099,
+		open: true, // 自动打开浏览器
 	},
 	build: {
 		target: 'esnext', // 或 'es2022'

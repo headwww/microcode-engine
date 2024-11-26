@@ -56,36 +56,28 @@ export type INode = IPageNode | ISlotNode | IComponentNode | IRootNode;
  */
 export function insertChild(
 	container: INode,
-	thing: INode | IPublicTypeNodeData,
-	index?: number | null,
-	copy?: boolean
+	thing: INode | IPublicTypeNodeData
 ): INode | null {
-	container.document?.createNode(thing as any);
-	console.log(container, thing, index, copy);
-	return null;
+	const node = container.document?.createNode(thing as any);
+	return node ?? null;
 }
 
 /**
- * 插入node
+ * 插入多个节点
  *
- * @param container  容器节点（INode类型）
- * @param nodes 当前插入的节点
- * @param at 插入的位置
- * @param copy 可选参数，是否复制节点
+ * @param container 容器节点
+ * @param nodes 要插入的节点
  */
 export function insertChildren(
 	container: INode,
-	nodes: INode[] | IPublicTypeNodeData[] | IPublicTypeNodeData[],
-	at?: number | null,
-	copy?: boolean
+	nodes: INode[] | IPublicTypeNodeData[]
 ) {
-	let index = at;
-	let node: any;
 	const results: INode[] = [];
+	let node: any;
 	while (node === nodes.pop()) {
-		node = insertChild(container, node, index, copy);
+		node = insertChild(container, node);
 		results.push(node);
-		index = node.index;
 	}
+
 	return results;
 }

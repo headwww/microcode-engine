@@ -10,20 +10,38 @@ import {
 import { shallowReactive } from 'vue';
 import { DocumentModel, IDocumentModel } from '../document';
 import { IDesigner } from '../designer';
+import { ISimulatorHost } from '../simulator';
 
 export interface IProject extends Omit<IBaseApiProject, 'importSchema'> {
+	get simulator(): ISimulatorHost | null;
+
+	get documents(): IDocumentModel[];
+
 	load(schema?: IPublicTypeProjectSchema, autoOpen?: boolean | string): void;
 
+	// 创建文档
 	createDocument(data?: IPublicTypeRootSchema): IDocumentModel;
+
+	// 挂载模拟器
+	mountSimulator(simulator: ISimulatorHost): void;
 }
 
 export class Project implements IProject {
 	private emitter: IEventBus = createModuleEventBus('Project');
 
+	private _simulator?: ISimulatorHost;
+
 	readonly documents = shallowReactive<IDocumentModel[]>([]);
 
 	// 辅助属性，用于快速查找文档
 	private documentMap = new Map<string, IDocumentModel>();
+
+	/**
+	 * 模拟器
+	 */
+	get simulator(): ISimulatorHost | null {
+		return this._simulator || null;
+	}
 
 	private data: IPublicTypeProjectSchema = {
 		version: '1.0.0',
@@ -89,5 +107,11 @@ export class Project implements IProject {
 		this.documents.push(doc);
 		this.documentMap.set(doc.id, doc);
 		return doc;
+	}
+
+	mountSimulator(simulator: ISimulatorHost) {
+		// TODO: 多设备 simulator 支持
+		this._simulator = simulator;
+		this.emitter.emit('microcode_engine_simulator_ready', simulator);
 	}
 }

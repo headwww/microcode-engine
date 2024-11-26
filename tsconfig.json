@@ -16,7 +16,7 @@
       "forceConsistentCasingInFileNames": true,
       "resolveJsonModule": true,
       "skipLibCheck": true,
-      "baseUrl": ".",
+      "baseUrl": "./packages",
       "rootDir": ".",
       "useDefineForClassFields": true,
       "paths": {

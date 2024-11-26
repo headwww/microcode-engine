@@ -64,6 +64,10 @@ export class BuiltinSimulatorHost
 	 */
 	private _contentDocument = ref<Document>();
 
+	get contentDocument() {
+		return this._contentDocument.value;
+	}
+
 	constructor(project: Project, designer: Designer) {
 		this.project = project;
 		this.designer = designer;
