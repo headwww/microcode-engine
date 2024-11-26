@@ -34,7 +34,6 @@ export const DragGhost = defineComponent({
 				}
 			}),
 			dragon.onDrag((e) => {
-				titles.value = ['sss'];
 				x.value = e.globalX;
 				y.value = e.globalY;
 			}),
@@ -71,7 +70,7 @@ export const DragGhost = defineComponent({
 		});
 
 		return () => {
-			if (!titles.value || titles.value.length) {
+			if (!titles.value || !titles.value.length) {
 				return null;
 			}
 

@@ -7,6 +7,7 @@ import {
 	createModuleEventBus,
 	IEventBus,
 } from '@arvin-shu/microcode-editor-core';
+import { ref } from 'vue';
 import { IDesigner } from './designer';
 import { makeEventsHandler } from '../utils';
 import { ISimulatorHost } from '../simulator';
@@ -22,6 +23,8 @@ export interface IDragon extends IPublicModelDragon<ILocateEvent> {
 
 export class Dragon implements IDragon {
 	emitter: IEventBus = createModuleEventBus('Dragon');
+
+	private _dragging = ref(false);
 
 	constructor(readonly designer: IDesigner) {
 		designer;
@@ -69,7 +72,10 @@ export class Dragon implements IDragon {
 
 		const handleEvents = makeEventsHandler(boostEvent, masterSensors);
 
+		this._dragging.value = false;
+
 		const dragstart = () => {
+			this._dragging.value = true;
 			const locateEvent = createLocateEvent(boostEvent);
 			this.emitter.emit('dragstart', locateEvent);
 		};
@@ -80,7 +86,10 @@ export class Dragon implements IDragon {
 		};
 
 		const move = (e: MouseEvent | DragEvent) => {
-			drag(e);
+			if (this._dragging.value) {
+				drag(e);
+				return;
+			}
 
 			if (isShaken(boostEvent, e)) {
 				dragstart();
@@ -91,7 +100,10 @@ export class Dragon implements IDragon {
 		const over = (e?: any) => {
 			e;
 			// 发送目标组件
-			this.emitter.emit('dragend', { dragObject });
+			if (this._dragging.value) {
+				this._dragging.value = false;
+				this.emitter.emit('dragend', { dragObject });
+			}
 
 			handleEvents((doc) => {
 				doc.removeEventListener('mousemove', move, true);
