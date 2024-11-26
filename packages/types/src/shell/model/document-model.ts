@@ -8,4 +8,11 @@ export interface IPublicModelDocumentModel<Node = IPublicModelNode> {
 	 * @param data 节点数据
 	 */
 	createNode<T = Node>(data: IPublicTypeNodeSchema): T | null;
+
+	/**
+	 * 获取组件映射表
+	 *
+	 * @param extraComps 额外添加的组件
+	 */
+	getComponentsMap(extraComps?: string[]): any;
 }

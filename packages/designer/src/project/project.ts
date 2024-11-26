@@ -1,5 +1,7 @@
 import {
 	IBaseApiProject,
+	IPublicEnumTransformStage,
+	IPublicTypeComponentsMap,
 	IPublicTypeProjectSchema,
 	IPublicTypeRootSchema,
 } from '@arvin-shu/microcode-types';
@@ -17,7 +19,11 @@ export interface IProject extends Omit<IBaseApiProject, 'importSchema'> {
 
 	get documents(): IDocumentModel[];
 
+	get designer(): IDesigner;
+
 	load(schema?: IPublicTypeProjectSchema, autoOpen?: boolean | string): void;
+
+	getSchema(stage?: IPublicEnumTransformStage): IPublicTypeProjectSchema;
 
 	// 创建文档
 	createDocument(data?: IPublicTypeRootSchema): IDocumentModel;
@@ -29,9 +35,16 @@ export interface IProject extends Omit<IBaseApiProject, 'importSchema'> {
 export class Project implements IProject {
 	private emitter: IEventBus = createModuleEventBus('Project');
 
-	private _simulator?: ISimulatorHost;
-
 	readonly documents = shallowReactive<IDocumentModel[]>([]);
+
+	private data: IPublicTypeProjectSchema = {
+		version: '1.0.0',
+		componentsMap: [],
+		componentsTree: [],
+		i18n: {},
+	};
+
+	private _simulator?: ISimulatorHost;
 
 	// 辅助属性，用于快速查找文档
 	private documentMap = new Map<string, IDocumentModel>();
@@ -43,19 +56,25 @@ export class Project implements IProject {
 		return this._simulator || null;
 	}
 
-	private data: IPublicTypeProjectSchema = {
-		version: '1.0.0',
-		componentsMap: [],
-		componentsTree: [],
-		i18n: {},
-	};
-
 	constructor(
 		readonly designer: IDesigner,
 		schema?: IPublicTypeProjectSchema,
 		readonly viewName = 'global'
 	) {
 		this.load(schema);
+	}
+
+	/**
+	 * 获取组件映射表
+	 */
+	private getComponentsMap(): IPublicTypeComponentsMap {
+		return this.documents.reduce<IPublicTypeComponentsMap>(
+			(componentsMap: IPublicTypeComponentsMap, curDoc: IDocumentModel) => {
+				curDoc;
+				return componentsMap;
+			},
+			[] as IPublicTypeComponentsMap
+		);
 	}
 
 	/**
@@ -87,6 +106,13 @@ export class Project implements IProject {
 				// this.open(autoOpen);
 			}
 		}
+	}
+
+	getSchema(stage?: IPublicEnumTransformStage): IPublicTypeProjectSchema {
+		stage;
+		return {
+			...this.data,
+		};
 	}
 
 	/**

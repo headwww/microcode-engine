@@ -1,5 +1,6 @@
 import {
 	IPublicModelDocumentModel,
+	IPublicTypeComponentsMap,
 	IPublicTypeRootSchema,
 } from '@arvin-shu/microcode-types';
 import {
@@ -7,9 +8,14 @@ import {
 	isJSExpression,
 	uniqueId,
 } from '@arvin-shu/microcode-utils';
+import {
+	createModuleEventBus,
+	IEventBus,
+} from '@arvin-shu/microcode-editor-core';
 import { IProject } from '../project';
-import { INode, Node } from './node';
+import { INode, IRootNode, Node } from './node';
 import { ISimulatorHost } from '../simulator';
+import { IDesigner } from '../designer';
 
 /**
  * 获取数据类型的工具类型
@@ -30,6 +36,7 @@ export type GetDataType<T, NodeType> = T extends undefined
 
 export interface IDocumentModel
 	extends Omit<IPublicModelDocumentModel<INode>, ''> {
+	readonly designer: IDesigner;
 	get simulator(): ISimulatorHost | null;
 	nextId(possibleId: string | undefined): string;
 	open(): IDocumentModel;
@@ -38,11 +45,25 @@ export interface IDocumentModel
 
 export class DocumentModel implements IDocumentModel {
 	/**
+	 * 根节点 类型有：Page/Component/Block
+	 */
+	rootNode: IRootNode | null;
+
+	/**
 	 * 文档编号
 	 */
 	id: string = uniqueId('doc');
 
 	readonly project: IProject;
+
+	readonly designer: IDesigner;
+
+	private emitter: IEventBus;
+
+	// 是否初始化完成
+	private inited = false;
+
+	private _blank?: boolean;
 
 	/**
 	 * 模拟器
@@ -53,7 +74,26 @@ export class DocumentModel implements IDocumentModel {
 
 	constructor(project: IProject, schema?: IPublicTypeRootSchema) {
 		this.project = project;
-		schema;
+		this.designer = project.designer;
+		this.emitter = createModuleEventBus('DocumentModel');
+		// 是否是空白文档
+		if (!schema) {
+			this._blank = true;
+		}
+
+		this.id = project.getSchema()?.id || this.id;
+
+		// 创建根节点
+		this.rootNode = this.createNode(
+			schema || {
+				componentName: 'Page',
+				id: 'root',
+				fileName: '',
+			}
+		);
+
+		// 初始化完成
+		this.inited = true;
 	}
 
 	/**
@@ -90,4 +130,10 @@ export class DocumentModel implements IDocumentModel {
 	}
 
 	remove(): void {}
+
+	getComponentsMap(extraComps?: string[]): any {
+		const componentsMap: IPublicTypeComponentsMap = [];
+		extraComps;
+		return componentsMap;
+	}
 }
