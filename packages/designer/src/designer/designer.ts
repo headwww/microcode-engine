@@ -1,6 +1,10 @@
 import {
+	IPublicEnumTransformStage,
 	IPublicModelEditor,
 	IPublicTypeComponentMetadata,
+	IPublicTypeCompositeObject,
+	IPublicTypePropsList,
+	IPublicTypePropsTransducer,
 } from '@arvin-shu/microcode-types';
 import {
 	computed,
@@ -10,7 +14,7 @@ import {
 	Ref,
 	ref,
 } from 'vue';
-import { insertChildren } from '../document';
+import { insertChildren, Node } from '../document';
 import { IProject, Project } from '../project';
 import { Dragon, IDragon } from './dragon';
 import { ComponentMeta, IComponentMeta } from '../component-meta';
@@ -51,6 +55,12 @@ export interface IDesigner {
 		componentName: string,
 		generateMetadata?: () => IPublicTypeComponentMetadata | null
 	): IComponentMeta;
+
+	transformProps(
+		props: IPublicTypeCompositeObject | IPublicTypePropsList,
+		node: Node,
+		stage: IPublicEnumTransformStage
+	): IPublicTypeCompositeObject | IPublicTypePropsList;
 }
 
 export class Designer implements IDesigner {
@@ -72,6 +82,11 @@ export class Designer implements IDesigner {
 
 	// 模拟器属性
 	private _simulatorProps: Ref<Record<string, any>> = ref({});
+
+	private propsReducers = new Map<
+		IPublicEnumTransformStage,
+		IPublicTypePropsTransducer[]
+	>();
 
 	constructor(props: DesignerProps) {
 		this.editor = props.editor!;
@@ -202,5 +217,39 @@ export class Designer implements IDesigner {
 		this._lostComponentMetasMap.set(componentName, meta);
 
 		return meta;
+	}
+
+	/**
+	 * 转换属性
+	 *
+	 * @param props 属性
+	 * @param node 节点
+	 * @param stage 阶段
+	 * @returns 转换后的属性
+	 */
+	transformProps(
+		props: IPublicTypeCompositeObject | IPublicTypePropsList,
+		node: Node,
+		stage: IPublicEnumTransformStage
+	) {
+		if (Array.isArray(props)) {
+			return props;
+		}
+
+		const reducers = this.propsReducers.get(stage);
+		// 如果没有reducer则返回props
+		if (!reducers) {
+			return props;
+		}
+
+		return reducers.reduce((xprops, reducer) => {
+			try {
+				return reducer(xprops, node.internalToShellNode() as any, { stage });
+			} catch (e) {
+				// eslint-disable-next-line no-console
+				console.warn(e);
+				return xprops;
+			}
+		}, props);
 	}
 }

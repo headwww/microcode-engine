@@ -13,6 +13,11 @@ export interface IPublicTypeJSExpression {
 	 * 表达式字符串
 	 */
 	value: string;
+
+	/**
+	 * 模拟值
+	 */
+	mock?: any;
 }
 
 /**
@@ -36,7 +41,13 @@ export interface IPublicTypeJSFunction {
 
 /**
  * Slot 函数类型
- *
+ *  {
+ *    type: 'JSSlot',
+ *    title: '测试 slot',
+ *    name: 'testSlot',
+ *    params: { a: 1 },
+ *    value: [{ componentName: 'Button' }],
+ *  }
  * 通常用于描述组件的某一个属性为 VNode  的场景。
  */
 export interface IPublicTypeJSSlot {
@@ -48,15 +59,28 @@ export interface IPublicTypeJSSlot {
 	title?: string;
 	id?: string;
 	name?: string;
-
 	/**
 	 * 组件的某一个属性为 VNode 时，函数的入参
 	 *
+	 * 示例:
+	 * ```vue
+	 * <!-- 在 Vue 中使用具名插槽 -->
+	 * <MyComponent>
+	 *   <template #default="{ item, index }">  <!-- 这里的 item 和 index 就是 params -->
+	 *     <div>{{ item.name }} - {{ index }}</div>
+	 *   </template>
+	 * </MyComponent>
+	 * ```
+	 *
+	 * 对应的类型定义:
+	 * ```ts
+	 * params: ['item', 'index'] // 定义插槽函数可以接收的参数
+	 * ```
 	 */
 	params?: string[];
 
 	/**
-	 * 具体的值。
+	 * 具体的值组件信息。
 	 */
 	value?: IPublicTypeNodeData[] | IPublicTypeNodeData;
 }

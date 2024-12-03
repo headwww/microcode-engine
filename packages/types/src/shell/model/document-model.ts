@@ -15,4 +15,11 @@ export interface IPublicModelDocumentModel<Node = IPublicModelNode> {
 	 * @param extraComps 额外添加的组件
 	 */
 	getComponentsMap(extraComps?: string[]): any;
+
+	/**
+	 * id
+	 */
+	get id(): string;
+
+	set id(id);
 }

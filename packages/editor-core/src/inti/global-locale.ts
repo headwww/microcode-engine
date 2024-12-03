@@ -94,7 +94,7 @@ class GlobalLocale {
 			result = 'zh-CN';
 		}
 
-		this._locale = result;
+		this._locale.value = result;
 		return result;
 	});
 

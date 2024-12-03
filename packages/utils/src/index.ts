@@ -12,3 +12,4 @@ export * from './is-es-module';
 export * from './is-css-url';
 export * from './asset';
 export * from './script';
+export * from './shallow-equal';

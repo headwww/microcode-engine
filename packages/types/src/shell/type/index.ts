@@ -49,3 +49,6 @@ export * from './root-schema';
 export * from './page-schema';
 export * from './block-schema';
 export * from './slot-schema';
+export * from './on-change-options';
+export * from './props-list';
+export * from './props-transducer';
