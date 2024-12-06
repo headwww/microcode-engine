@@ -131,4 +131,8 @@ export class BuiltinSimulatorHost
 		}
 		return libraryAsset;
 	}
+
+	setSuspense() {
+		return false;
+	}
 }

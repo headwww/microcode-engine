@@ -30,6 +30,8 @@ export interface IProject extends Omit<IBaseApiProject, 'importSchema'> {
 
 	// 挂载模拟器
 	mountSimulator(simulator: ISimulatorHost): void;
+
+	checkExclusive(activeDoc: DocumentModel): void;
 }
 
 export class Project implements IProject {
@@ -139,5 +141,14 @@ export class Project implements IProject {
 		// TODO: 多设备 simulator 支持
 		this._simulator = simulator;
 		this.emitter.emit('microcode_engine_simulator_ready', simulator);
+	}
+
+	checkExclusive(activeDoc: DocumentModel): void {
+		this.documents.forEach((doc) => {
+			if (doc !== activeDoc) {
+				doc.suspense();
+			}
+		});
+		this.emitter.emit('current-document.change', activeDoc);
 	}
 }

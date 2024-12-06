@@ -52,3 +52,5 @@ export * from './slot-schema';
 export * from './on-change-options';
 export * from './props-list';
 export * from './props-transducer';
+export * from './advanced';
+export * from './metadata';

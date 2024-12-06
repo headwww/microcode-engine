@@ -57,13 +57,16 @@ export interface IPropParent {
 	readonly owner: INode;
 
 	get path(): string[];
+
+	delete(prop: IProp): void;
 }
 
 export interface IProps
 	extends Omit<
-		IBaseModelProps<IProp>,
-		'getExtraProp' | 'getExtraPropValue' | 'setExtraPropValue' | 'node'
-	> {
+			IBaseModelProps<IProp>,
+			'getExtraProp' | 'getExtraPropValue' | 'setExtraPropValue' | 'node'
+		>,
+		IPropParent {
 	getNode(): INode;
 
 	get(path: string, createIfNone?: boolean): IProp | null;

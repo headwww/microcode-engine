@@ -16,7 +16,9 @@ import {
 } from '@arvin-shu/microcode-utils';
 import {
 	createModuleEventBus,
+	engineConfig,
 	IEventBus,
+	runWithGlobalEventOff,
 } from '@arvin-shu/microcode-editor-core';
 import { ref, shallowReactive } from 'vue';
 import { IProject } from '../project';
@@ -24,6 +26,8 @@ import { INode, insertChild, insertChildren, IRootNode, Node } from './node';
 import { ISimulatorHost } from '../simulator';
 import { IDesigner } from '../designer';
 import { EDITOR_EVENT } from '../types';
+import { IComponentMeta } from '../component-meta';
+import { ISelection, Selection } from './selection';
 
 /**
  * 获取数据类型的工具类型
@@ -50,11 +54,15 @@ export interface IDocumentModel
 
 	get nodesMap(): Map<string, INode>;
 
+	get rootNode(): INode | null;
+
 	isBlank(): boolean;
 
 	nextId(possibleId: string | undefined): string;
 
 	import(schema: IPublicTypeRootSchema, checkId?: boolean): void;
+
+	getComponentMeta(componentName: string): IComponentMeta;
 
 	insertNodes(
 		parent: INode,
@@ -64,8 +72,11 @@ export interface IDocumentModel
 	): INode[];
 
 	open(): IDocumentModel;
-
+	unlinkNode(node: INode): void;
+	destroyNode(node: INode): void;
+	addWillPurge(node: INode): void;
 	remove(): void;
+	suspense(): void;
 }
 
 export class DocumentModel implements IDocumentModel {
@@ -91,6 +102,41 @@ export class DocumentModel implements IDocumentModel {
 
 	private emitter: IEventBus;
 
+	// 模拟器
+	get simulator(): ISimulatorHost | null {
+		return this.project.simulator;
+	}
+
+	/**
+	 * 选区控制
+	 */
+	readonly selection: ISelection = new Selection(this);
+
+	get nodesMap(): Map<string, INode> {
+		return this._nodesMap;
+	}
+
+	get fileName(): string {
+		return (
+			this.rootNode?.getExtraProp('fileName', false)?.getAsString() || this.id
+		);
+	}
+
+	set fileName(value: string) {
+		this.rootNode?.getExtraProp('fileName', true)?.setValue(value);
+	}
+
+	get focusNode() {
+		if (this._drillDownNode.value) {
+			return this._drillDownNode.value;
+		}
+		const selector = engineConfig.get('focusSelector');
+		if (selector && typeof selector === 'function') {
+			return selector(this.rootNode!);
+		}
+		return this.rootNode;
+	}
+
 	// 聚焦节点
 	private _drillDownNode = ref<INode | null>(null);
 
@@ -103,13 +149,34 @@ export class DocumentModel implements IDocumentModel {
 	// 将要被删除的节点
 	private willPurgeSpace = shallowReactive<INode[]>([]);
 
-	// 模拟器
-	get simulator(): ISimulatorHost | null {
-		return this.project.simulator;
+	get schema() {
+		return this.rootNode?.schema;
 	}
 
-	get nodesMap(): Map<string, INode> {
-		return this._nodesMap;
+	private _opened = ref(false);
+
+	private _suspensed = ref(false);
+
+	get suspended() {
+		return this._suspensed.value || !this._opened.value;
+	}
+
+	/**
+	 * 与 suspensed 相反，是否为激活状态，这个函数可能用的更多一点
+	 */
+	get active(): boolean {
+		return !this._suspensed.value;
+	}
+
+	/**
+	 * 是否打开
+	 */
+	get opened() {
+		return this._opened.value;
+	}
+
+	get root() {
+		return this.rootNode;
 	}
 
 	constructor(project: IProject, schema?: IPublicTypeRootSchema) {
@@ -293,7 +360,6 @@ export class DocumentModel implements IDocumentModel {
 		}
 
 		if (schema.id) {
-			node = this.getNode(schema.id);
 			// 尝试获取已存在的同id节点
 			node = this.getNode(schema.id);
 
@@ -326,11 +392,6 @@ export class DocumentModel implements IDocumentModel {
 		return node as any;
 	}
 
-	/**
-	 * 发送销毁事件的通知
-	 *
-	 * @param node
-	 */
 	destroyNode(node: INode) {
 		this.emitter.emit('nodedestroy', node);
 	}
@@ -399,26 +460,26 @@ export class DocumentModel implements IDocumentModel {
 	}
 
 	/**
-	 * TODO 包裹当前选中的节点，后期可以做组合操作
-	 * @param schema
-	 * @returns
-	 */
-	wrapWith(schema: IPublicTypeNodeSchema): INode | null {
-		schema;
-		return null;
-	}
-
-	/**
 	 * TODO 导入节点
 	 *
 	 * @param schema 节点schema
 	 * @param checkId 是否检查id
 	 * @returns
 	 */
-	import(schema: IPublicTypeNodeSchema, checkId = false): INode | null {
-		schema;
-		checkId;
-		return null;
+	import(schema: IPublicTypeNodeSchema, checkId = false) {
+		const drillDownNodeId = this._drillDownNode.value?.id;
+		runWithGlobalEventOff(() => {
+			this.nodes.forEach((node) => {
+				if (node.isRoot()) return;
+				this.internalRemoveAndPurgeNode(node, true);
+			});
+			this.rootNode?.import(schema as any, checkId);
+			// TODO model节点没有导入
+
+			if (drillDownNodeId) {
+				this.drillDown(this.getNode(drillDownNodeId));
+			}
+		});
 	}
 
 	export(stage: IPublicEnumTransformStage): IPublicTypeRootSchema {
@@ -442,11 +503,84 @@ export class DocumentModel implements IDocumentModel {
 		return currentSchema!;
 	}
 
-	open(): DocumentModel {
+	/**
+	 * 导出节点数据
+	 */
+	getNodeSchema(id: string): IPublicTypeNodeData | null {
+		const node = this.getNode(id);
+		if (node) {
+			return node.schema;
+		}
+		return null;
+	}
+
+	/**
+	 * 切换激活，只有打开的才能激活
+	 * 不激活，打开之后切换到另外一个时发生，比如 tab 视图，切换到另外一个标签页
+	 */
+	private setSuspense(flag: boolean) {
+		if (!this._opened && !flag) {
+			return;
+		}
+		this._suspensed.value = flag;
+		this.simulator?.setSuspense(flag);
+		if (!flag) {
+			this.project.checkExclusive(this);
+		}
+	}
+
+	suspense() {
+		this.setSuspense(true);
+	}
+
+	activate() {
+		this.setSuspense(false);
+	}
+
+	open() {
+		const originState = this._opened.value;
+		this._opened.value = true;
+		if (originState === false) {
+			this.designer.postEvent('document-open', this);
+		}
+		if (this._suspensed.value) {
+			this.setSuspense(false);
+		} else {
+			this.project.checkExclusive(this);
+		}
 		return this;
 	}
 
-	remove(): void {}
+	/**
+	 * 关闭，相当于 sleep，仍然缓存，停止一切响应，如果有发生的变更没被保存，仍然需要去取数据保存
+	 */
+	close(): void {
+		this.setSuspense(true);
+		this._opened.value = false;
+	}
+
+	/**
+	 * TODO 包裹当前选中的节点，后期可以做组合操作
+	 * @param schema
+	 * @returns
+	 */
+	wrapWith(schema: IPublicTypeNodeSchema): INode | null {
+		schema;
+		return null;
+	}
+
+	remove(): void {
+		this.designer.postEvent('document.remove', { id: this.id });
+		this.purge();
+		this.project.removeDocument(this);
+	}
+
+	purge() {
+		this.rootNode?.purge();
+		this.nodes.clear();
+		this.nodesMap.clear();
+		this.rootNode = null;
+	}
 
 	/**
 	 * 是否有状态变更但未保存
@@ -459,5 +593,12 @@ export class DocumentModel implements IDocumentModel {
 		const componentsMap: IPublicTypeComponentsMap = [];
 		extraComps;
 		return componentsMap;
+	}
+
+	getComponentMeta(componentName: string): IComponentMeta {
+		return this.designer.getComponentMeta(
+			componentName,
+			() => this.simulator?.generateComponentMetadata(componentName) || null
+		);
 	}
 }

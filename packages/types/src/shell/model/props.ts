@@ -1,5 +1,6 @@
 import { IPublicTypeCompositeValue } from '../type';
 import { IPublicModelNode } from './node';
+import { IPublicModelProp } from './prop';
 
 export interface IBaseModelProps<Prop> {
 	/**
@@ -72,3 +73,5 @@ export interface IBaseModelProps<Prop> {
 	 */
 	add(value: IPublicTypeCompositeValue, key?: string | number | undefined): any;
 }
+
+export interface IPublicModelProps extends IBaseModelProps<IPublicModelProp> {}

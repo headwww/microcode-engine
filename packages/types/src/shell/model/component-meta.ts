@@ -5,6 +5,7 @@ import {
 	IPublicTypeNpmInfo,
 } from '../type';
 import { IPublicModelNode } from './node';
+import { IPublicTypeAdvanced } from '../type/advanced';
 
 /**
  * 组件元数据
@@ -24,6 +25,11 @@ export interface IPublicModelComponentMeta<Node = IPublicModelNode> {
 	 * 组件 npm 信息
 	 */
 	get npm(): IPublicTypeNpmInfo;
+
+	/**
+	 * 组件元数据中高级配置部分
+	 */
+	get advanced(): IPublicTypeAdvanced;
 
 	/**
 	 * 设置 npm 信息

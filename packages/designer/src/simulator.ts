@@ -4,4 +4,6 @@ export interface ISimulatorHost<P = object> {
 	readonly contentWindow?: Window;
 	// 模拟器iframe的document
 	readonly contentDocument?: Document;
+
+	setSuspense(suspensed: boolean): void;
 }

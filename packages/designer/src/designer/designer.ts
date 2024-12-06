@@ -61,6 +61,8 @@ export interface IDesigner {
 		node: Node,
 		stage: IPublicEnumTransformStage
 	): IPublicTypeCompositeObject | IPublicTypePropsList;
+
+	postEvent(event: string, ...args: any[]): void;
 }
 
 export class Designer implements IDesigner {
@@ -251,5 +253,9 @@ export class Designer implements IDesigner {
 				return xprops;
 			}
 		}, props);
+	}
+
+	postEvent(event: string, ...args: any[]) {
+		this.editor.eventBus.emit(`designer.${event}`, ...args);
 	}
 }

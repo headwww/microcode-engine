@@ -1,4 +1,3 @@
-// eslint-disable-next-line max-classes-per-file
 export class FocusTracker {
 	// 存储当前活跃的 Focusable 实例（处于焦点中的元素）。
 	private actives: Focusable[] = [];
