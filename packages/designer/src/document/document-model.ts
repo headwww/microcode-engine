@@ -56,6 +56,8 @@ export interface IDocumentModel
 
 	get rootNode(): INode | null;
 
+	get active(): boolean;
+
 	isBlank(): boolean;
 
 	nextId(possibleId: string | undefined): string;

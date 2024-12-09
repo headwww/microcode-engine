@@ -3,9 +3,9 @@ import {
 	IPublicTypeI18nData,
 	IPublicTypeNodeData,
 	IPublicTypeNpmInfo,
+	IPublicTypeAdvanced,
 } from '../type';
 import { IPublicModelNode } from './node';
-import { IPublicTypeAdvanced } from '../type/advanced';
 
 /**
  * 组件元数据

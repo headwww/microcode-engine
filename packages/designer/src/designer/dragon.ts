@@ -1,7 +1,10 @@
 import {
+	IPublicEnumDragObjectType,
 	IPublicModelDragObject,
 	IPublicModelDragon,
 	IPublicModelLocateEvent,
+	IPublicModelSensor,
+	IPublicTypeDragNodeDataObject,
 } from '@arvin-shu/microcode-types';
 import {
 	createModuleEventBus,
@@ -10,21 +13,51 @@ import {
 import { ref } from 'vue';
 import { IDesigner } from './designer';
 import { makeEventsHandler } from '../utils';
-import { ISimulatorHost } from '../simulator';
 import { isShaken } from './utils';
+import { ISimulatorHost, isSimulatorHost } from '../simulator';
 
 export interface ILocateEvent extends IPublicModelLocateEvent {
 	readonly type: 'LocateEvent';
+
+	sensor?: IPublicModelSensor;
 }
 
 export interface IDragon extends IPublicModelDragon<ILocateEvent> {
 	emitter: IEventBus;
 }
 
+function isDragEvent(e: any): e is DragEvent {
+	return e?.type?.startsWith('drag');
+}
+
+export function setShaken(e: any) {
+	e.shaken = true;
+}
+
+// 判断是否为拖拽节点对象
+export function isDragNodeObject(
+	obj: any
+): obj is IPublicTypeDragNodeDataObject {
+	return obj && obj.type === IPublicEnumDragObjectType.Node;
+}
+
+function getSourceSensor(
+	dragObject: IPublicModelDragObject
+): ISimulatorHost | null {
+	if (!isDragNodeObject(dragObject)) {
+		return null;
+	}
+	return (dragObject.nodes?.[0]?.document as any).simulator || null;
+}
+
 export class Dragon implements IDragon {
+	private sensors: IPublicModelSensor[] = [];
+
 	emitter: IEventBus = createModuleEventBus('Dragon');
 
 	private _dragging = ref(false);
+
+	private _activeSensor = ref<IPublicModelSensor | undefined>();
 
 	constructor(readonly designer: IDesigner) {
 		designer;
@@ -68,24 +101,63 @@ export class Dragon implements IDragon {
 		dragObject: IPublicModelDragObject,
 		boostEvent: MouseEvent | DragEvent
 	) {
-		const masterSensors = this.getMasterSensors() as ISimulatorHost[];
+		const masterSensors = this.getMasterSensors();
+
+		const { designer } = this;
+
+		let lastSensor: IPublicModelSensor | undefined;
 
 		const handleEvents = makeEventsHandler(boostEvent, masterSensors);
+		// 是否是新的node对象而不是模拟器中已经有的node对象
+		const newBie = !isDragNodeObject(dragObject);
+
+		// 是否强制复制
+		const forceCopyState = false;
+
+		const isBoostFromDragAPI = isDragEvent(boostEvent);
 
 		this._dragging.value = false;
 
+		const checkesc = (e: KeyboardEvent) => {
+			// ESC cancel drag
+			if (e.keyCode === 27) {
+				designer.clearLocation();
+				over();
+			}
+		};
+
 		const dragstart = () => {
 			this._dragging.value = true;
+			setShaken(boostEvent);
 			const locateEvent = createLocateEvent(boostEvent);
+			chooseSensor(locateEvent);
 			this.emitter.emit('dragstart', locateEvent);
 		};
 
 		const drag = (e: MouseEvent | DragEvent) => {
 			const locateEvent = createLocateEvent(e);
+			if (newBie || forceCopyState) {
+				// TODO
+			} else {
+				chooseSensor(locateEvent);
+			}
+
+			// ESC cancel drag
+			if (!isBoostFromDragAPI) {
+				handleEvents((doc) => {
+					doc.addEventListener('keydown', checkesc, false);
+				});
+			}
+
 			this.emitter.emit('drag', locateEvent);
 		};
 
 		const move = (e: MouseEvent | DragEvent) => {
+			// 检查是否为拖拽API事件
+			if (isBoostFromDragAPI) {
+				// 阻止默认行为
+				e.preventDefault();
+			}
 			if (this._dragging.value) {
 				drag(e);
 				return;
@@ -99,8 +171,12 @@ export class Dragon implements IDragon {
 
 		const over = (e?: any) => {
 			e;
+			console.log(this._dragging.value);
+
 			// 发送目标组件
 			if (this._dragging.value) {
+				console.log('dragend');
+
 				this._dragging.value = false;
 				this.emitter.emit('dragend', { dragObject });
 			}
@@ -114,16 +190,81 @@ export class Dragon implements IDragon {
 
 		// 用于创建拖拽定位事件
 		const createLocateEvent = (e: MouseEvent | DragEvent): ILocateEvent => {
-			const locateEvent: any = {
+			const evt: any = {
 				type: 'LocateEvent',
 				dragObject,
 				target: e.target,
 				originalEvent: e,
 			};
 
-			locateEvent.globalX = e.clientX;
-			locateEvent.globalY = e.clientY;
-			return locateEvent;
+			const sourceDocument = e.view?.document;
+
+			if (!sourceDocument || sourceDocument === document) {
+				evt.globalX = e.clientX;
+				evt.globalY = e.clientY;
+			}
+			let srcSim: ISimulatorHost | undefined;
+			const lastSim =
+				lastSensor && isSimulatorHost(lastSensor) ? lastSensor : null;
+			if (lastSim && lastSim.contentDocument === sourceDocument) {
+				srcSim = lastSim;
+			} else {
+				srcSim = masterSensors.find(
+					(sim) => sim.contentDocument === sourceDocument
+				);
+				if (!srcSim && lastSim) {
+					srcSim = lastSim;
+				}
+			}
+
+			if (srcSim) {
+				const g = srcSim.viewport.toGlobalPoint(e);
+				evt.globalX = g.clientX;
+				evt.globalY = g.clientY;
+				evt.canvasX = e.clientX;
+				evt.canvasY = e.clientY;
+				evt.sensor = srcSim;
+			} else {
+				evt.globalX = e.clientX;
+				evt.globalY = e.clientY;
+			}
+			return evt;
+		};
+
+		const sourceSensor = getSourceSensor(dragObject);
+
+		// 选择传感器
+		const chooseSensor = (e: ILocateEvent) => {
+			const sensors: IPublicModelSensor[] = this.sensors.concat(
+				masterSensors as IPublicModelSensor[]
+			);
+			let sensor =
+				e.sensor && e.sensor.isEnter(e)
+					? e.sensor
+					: sensors.find((s) => s.sensorAvailable && s.isEnter(e));
+			if (!sensor) {
+				if (lastSensor) {
+					sensor = lastSensor;
+				} else if (e.sensor) {
+					sensor = e.sensor;
+				} else if (sourceSensor) {
+					sensor = sourceSensor;
+				}
+			}
+
+			if (sensor !== lastSensor) {
+				if (lastSensor) {
+					lastSensor.deactiveSensor();
+				}
+				lastSensor = sensor;
+			}
+
+			if (sensor) {
+				e.sensor = sensor;
+				sensor.fixEvent(e);
+			}
+			this._activeSensor.value = sensor;
+			return sensor;
 		};
 
 		handleEvents((doc) => {
@@ -136,11 +277,16 @@ export class Dragon implements IDragon {
 		});
 	}
 
-	private getMasterSensors() {
+	private getMasterSensors(): ISimulatorHost[] {
 		return Array.from(
 			new Set(
 				this.designer.project.documents
-					.map((doc) => doc.simulator)
+					.map((doc) => {
+						if (doc.active && doc.simulator?.sensorAvailable) {
+							return doc.simulator;
+						}
+						return null;
+					})
 					.filter(Boolean) as any
 			)
 		);

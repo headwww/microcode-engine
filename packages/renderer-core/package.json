@@ -1,23 +1,23 @@
 {
-    "name": "@arvin-shu/microcode-renderer-core",
-    "version": "1.0.0",
-    "description": "",
-    "main": "lib/index.js",
-    "module": "es/index.js",
-    "files": [
-        "lib",
-        "es",
-        "dist"
-    ],
-    "scripts": {
-        "build": "cross-env ORIGINAL_CWD=$PWD BUILD_UMD=true COPY_THEME=true pnpm --filter ../../build-scripts run start",
-        "clear": "rm -rf dist"
-    },
-    "publishConfig": {
-        "access": "public",
-        "registry": "https://registry.npmjs.org/"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC"
+	"name": "@arvin-shu/microcode-renderer-core",
+	"version": "1.0.0",
+	"description": "",
+	"main": "lib/index.js",
+	"module": "es/index.js",
+	"files": [
+		"lib",
+		"es",
+		"dist"
+	],
+	"scripts": {
+		"build": "cross-env ORIGINAL_CWD=$PWD BUILD_UMD=true COPY_THEME=true UMD_NAME='MicrocodeRendererCore' pnpm --filter ../../build-scripts run start",
+		"clear": "rm -rf dist"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org/"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
 }

@@ -63,6 +63,8 @@ export interface IDesigner {
 	): IPublicTypeCompositeObject | IPublicTypePropsList;
 
 	postEvent(event: string, ...args: any[]): void;
+
+	clearLocation(): void;
 }
 
 export class Designer implements IDesigner {
@@ -80,7 +82,9 @@ export class Designer implements IDesigner {
 	private _lostComponentMetasMap = new Map<string, ComponentMeta>();
 
 	// 组件元数据映射表
-	private _componentMetasMap = ref(new Map<string, IComponentMeta>());
+	private _componentMetasMap: Ref<Map<string, IComponentMeta>> = ref(
+		new Map<string, IComponentMeta>()
+	) as Ref<Map<string, IComponentMeta>>;
 
 	// 模拟器属性
 	private _simulatorProps: Ref<Record<string, any>> = ref({});
@@ -102,7 +106,8 @@ export class Designer implements IDesigner {
 			const nodeData = Array.isArray(dragObject)
 				? dragObject.data
 				: [dragObject.data];
-			insertChildren({} as any, nodeData as any);
+			nodeData;
+			insertChildren;
 		});
 	}
 
@@ -254,6 +259,8 @@ export class Designer implements IDesigner {
 			}
 		}, props);
 	}
+
+	clearLocation() {}
 
 	postEvent(event: string, ...args: any[]) {
 		this.editor.eventBus.emit(`designer.${event}`, ...args);

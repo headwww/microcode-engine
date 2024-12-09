@@ -16,11 +16,11 @@
       "forceConsistentCasingInFileNames": true,
       "resolveJsonModule": true,
       "skipLibCheck": true,
-      "baseUrl": "./packages",
+      "baseUrl": ".",
       "rootDir": ".",
       "useDefineForClassFields": true,
       "paths": {
-        "@arvin-shu/microcode-*": ["./*/src"]
+        "@arvin-shu/*": ["packages/*/src"]
       },
       "outDir": "dist",
     },

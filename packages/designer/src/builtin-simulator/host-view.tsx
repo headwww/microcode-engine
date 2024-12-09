@@ -36,7 +36,12 @@ export const Canvas = defineComponent({
 		const sim = props.host;
 		return () => (
 			<div class="mtc-simulator-canvas">
-				<div class="mtc-simulator-canvas-viewport mtc-simulator-device-default">
+				<div
+					class="mtc-simulator-canvas-viewport mtc-simulator-device-default"
+					ref={(elem: any) => {
+						sim?.mountViewport(elem);
+					}}
+				>
 					<Content host={sim}></Content>
 				</div>
 			</div>

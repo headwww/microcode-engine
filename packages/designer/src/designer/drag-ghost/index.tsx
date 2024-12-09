@@ -19,7 +19,7 @@ export const DragGhost = defineComponent({
 	setup({ designer }) {
 		let dispose: offBinding[] = [];
 
-		const titles = ref<Array<string | IPublicTypeI18nData | VNode>>();
+		const titles = ref<Array<string | IPublicTypeI18nData | VNode> | null>();
 
 		const { dragon } = designer!;
 
@@ -29,16 +29,24 @@ export const DragGhost = defineComponent({
 
 		dispose = [
 			dragon.onDragstart((e) => {
+				// 如果事件类型是drag，则不显示ghost
+				if (e.originalEvent.type.slice(0, 4) === 'drag') {
+					return;
+				}
 				if (e.dragObject) {
 					titles.value = getTitles(e.dragObject) as any;
 				}
+				x.value = e.globalX;
+				y.value = e.globalY;
 			}),
 			dragon.onDrag((e) => {
 				x.value = e.globalX;
 				y.value = e.globalY;
 			}),
-			dragon.onDragend((e) => {
-				console.log(e);
+			dragon.onDragend(() => {
+				titles.value = null;
+				x.value = 0;
+				y.value = 0;
 			}),
 		];
 
@@ -56,7 +64,7 @@ export const DragGhost = defineComponent({
 			return titles.value?.map((title, i) => {
 				const ghost = (
 					<div class="mtc-ghost" key={i}>
-						<Title title={title}> </Title>
+						<Title title={title!}> </Title>
 					</div>
 				);
 				return ghost;

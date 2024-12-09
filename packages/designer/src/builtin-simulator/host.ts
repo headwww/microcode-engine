@@ -4,6 +4,7 @@ import {
 	AssetLevel,
 	AssetList,
 	AssetType,
+	IPublicModelLocateEvent,
 	IPublicTypePackage,
 } from '@arvin-shu/microcode-types';
 import { assetBundle, assetItem } from '@arvin-shu/microcode-utils';
@@ -11,6 +12,7 @@ import { Designer, IDesigner } from '../designer';
 import { IProject, Project } from '../project';
 import { ISimulatorHost } from '../simulator';
 import { createSimulator } from './create-simulator';
+import Viewport from './viewport';
 
 export type LibraryItem = IPublicTypePackage & {
 	package: string;
@@ -50,6 +52,8 @@ export class BuiltinSimulatorHost
 
 	readonly designer: IDesigner;
 
+	readonly viewport = new Viewport();
+
 	private _iframe?: HTMLIFrameElement;
 
 	_props: Ref<BuiltinSimulatorProps> = ref({});
@@ -64,14 +68,24 @@ export class BuiltinSimulatorHost
 	 */
 	private _contentDocument = ref<Document>();
 
+	private sensing = false;
+
 	get contentDocument() {
 		return this._contentDocument.value;
+	}
+
+	private _sensorAvailable = true;
+
+	get sensorAvailable(): boolean {
+		return this._sensorAvailable;
 	}
 
 	constructor(project: Project, designer: Designer) {
 		this.project = project;
 		this.designer = designer;
 	}
+
+	contentWindow?: Window | undefined;
 
 	/**
 	 * 设置属性
@@ -115,6 +129,10 @@ export class BuiltinSimulatorHost
 		renderer.run();
 	}
 
+	mountViewport(viewport: HTMLElement | null) {
+		this.viewport.mount(viewport);
+	}
+
 	/**
 	 * 构建资源库
 	 */
@@ -134,5 +152,25 @@ export class BuiltinSimulatorHost
 
 	setSuspense() {
 		return false;
+	}
+
+	isEnter(e: IPublicModelLocateEvent): boolean {
+		const rect = this.viewport.bounds;
+		return (
+			e.globalY >= rect.top && // 点的Y坐标大于等于渲染区域模拟器矩形的顶部
+			e.globalY <= rect.bottom && // 点的Y坐标小于等于渲染区域模拟器矩形的底部
+			e.globalX >= rect.left && // 点的X坐标大于等于渲染区域模拟器矩形的左侧
+			e.globalX <= rect.right // 点的X坐标小于等于渲染区域模拟器矩形的右侧
+		);
+	}
+
+	deactiveSensor() {
+		// TODO 取消激活
+		this.sensing = false;
+	}
+
+	fixEvent(e: IPublicModelLocateEvent): IPublicModelLocateEvent {
+		console.log(e);
+		return e;
 	}
 }
