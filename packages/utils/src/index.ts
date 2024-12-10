@@ -13,3 +13,4 @@ export * from './is-css-url';
 export * from './asset';
 export * from './script';
 export * from './shallow-equal';
+export * from './svg-icon';

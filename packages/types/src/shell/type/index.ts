@@ -54,3 +54,5 @@ export * from './props-list';
 export * from './props-transducer';
 export * from './advanced';
 export * from './metadata';
+export * from './transformed-component-metadata';
+export * from './field-config';

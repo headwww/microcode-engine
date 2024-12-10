@@ -1,4 +1,6 @@
 import { IPublicTypeComponentSchema } from './component-schema';
+import { IPublicTypeConfigure } from './configure';
+import { IPublicTypeFieldConfig } from './field-config';
 import { IPublicTypeI18nData } from './i8n-data';
 import { IPublicTypeIconType } from './icon-type';
 import { IPublicTypeNpmInfo } from './npm-info';
@@ -73,10 +75,10 @@ export interface IPublicTypeComponentMetadata {
 	/**
 	 * 编辑体验增强 自定义属性设置器
 	 */
-	// configure?: IPublicTypeFieldConfig[] | IPublicTypeConfigure;
+	configure?: IPublicTypeFieldConfig[] | IPublicTypeConfigure;
 
 	/**
-	 * @todo 待补充文档
+	 * 组件schema
 	 */
 	schema?: IPublicTypeComponentSchema;
 

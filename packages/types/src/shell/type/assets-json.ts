@@ -13,7 +13,7 @@ export interface IPublicTypeAssetsJson {
 	version: string;
 
 	/**
-	 *  低代码编辑器中加载的资源列表，packages中的资源是在渲染器中加载的
+	 *  packages中的资源是在渲染器中加载的依赖
 	 */
 	packages?: IPublicTypePackage[];
 
