@@ -100,7 +100,7 @@ registryInnerPlugin();
 editor.set(
 	'simulatorUrl',
 	// 'https://cdn.jsdelivr.net/npm/@arvin-shu/microcode-vue-simulator-renderer@1.0.1/dist/js/index.js'
-	'http://192.168.1.109:8080/sjsjjajjsdnas/js/index.js'
+	'http://192.168.1.59:8081/dist/js/index.js'
 );
 
 export async function init(pluginPreference?: PluginPreference) {

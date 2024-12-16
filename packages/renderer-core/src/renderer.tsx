@@ -12,7 +12,7 @@ import {
 	shallowRef,
 	watch,
 } from 'vue';
-import { config } from '../utils';
+import config from './config';
 
 export const Renderer = defineComponent({
 	name: 'Renderer',

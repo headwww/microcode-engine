@@ -83,5 +83,6 @@ module.exports = {
         "no-return-await": 0,
         "no-await-in-loop": 0,
         "max-classes-per-file": 0,
+        "no-restricted-exports": 0,
     },
 }

@@ -60,6 +60,9 @@ export class SimulatorRendererContainer {
 					path: inst.path,
 					// TODO 需要处理meta
 					component: Renderer,
+					props: ((doc) => () => ({
+						documentInstance: doc,
+					}))(inst),
 				});
 				return inst;
 			});

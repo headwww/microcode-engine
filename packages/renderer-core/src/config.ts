@@ -1,5 +1,5 @@
-import { RendererComponent } from '../core';
-import { RENDERER_COMPS } from '../renderer';
+import { RendererComponent } from './core';
+import { RENDERER_COMPS } from './renderers';
 
 export type RendererModules = Record<string, RendererComponent>;
 

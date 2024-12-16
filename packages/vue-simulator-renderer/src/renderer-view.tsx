@@ -1,7 +1,7 @@
 import { defineComponent, PropType, renderSlot, Suspense } from 'vue';
 import { RouterView } from 'vue-router';
 import { Renderer as MicrocodeRenderer } from '@arvin-shu/microcode-renderer-core';
-import { SimulatorRendererContainer } from './renderer';
+import { DocumentInstance, SimulatorRendererContainer } from './renderer';
 
 export const Layout = defineComponent({
 	render() {
@@ -32,7 +32,18 @@ export const SimulatorRendererView = defineComponent({
 });
 
 export const Renderer = defineComponent({
-	setup() {
-		return () => <MicrocodeRenderer>123</MicrocodeRenderer>;
+	props: {
+		documentInstance: {
+			type: Object as PropType<DocumentInstance>,
+			required: true,
+		},
+	},
+
+	setup(props) {
+		return () => {
+			const { documentInstance } = props;
+			const { schema } = documentInstance;
+			return <MicrocodeRenderer schema={schema}></MicrocodeRenderer>;
+		};
 	},
 });
