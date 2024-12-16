@@ -1,3 +1,4 @@
+import { IPublicModelDropLocation } from './drop-location';
 import { IPublicModelLocateEvent } from './locate-event';
 
 export interface IPublicModelSensor {
@@ -20,4 +21,11 @@ export interface IPublicModelSensor {
 	 * 取消激活
 	 */
 	deactiveSensor(): void;
+
+	/**
+	 * 定位并激活
+	 */
+	locate(
+		e: IPublicModelLocateEvent
+	): IPublicModelDropLocation | undefined | null;
 }

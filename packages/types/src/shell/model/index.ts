@@ -16,3 +16,4 @@ export * from './props';
 export * from './history';
 export * from './selection';
 export * from './sensor';
+export * from './drop-location';

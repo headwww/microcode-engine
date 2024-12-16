@@ -1,34 +1,38 @@
-import { defineComponent } from 'vue';
+import { defineComponent, PropType, renderSlot, Suspense } from 'vue';
+import { RouterView } from 'vue-router';
 import { Renderer as MicrocodeRenderer } from '@arvin-shu/microcode-renderer-core';
+import { SimulatorRendererContainer } from './renderer';
 
-export default defineComponent({
+export const Layout = defineComponent({
+	render() {
+		const { $slots } = this;
+		return renderSlot($slots, 'default');
+	},
+});
+
+export const SimulatorRendererView = defineComponent({
+	props: {
+		rendererContainer: {
+			type: Object as PropType<SimulatorRendererContainer>,
+			required: true,
+		},
+	},
 	setup() {
-		const components = {
-			MyButton,
-		};
-
-		const schema = {
-			componentName: 'MyButton',
-			id: 'node_ocm3gxtp4a1',
-			props: {
-				type: 'primary',
-			},
-		};
-
 		return () => (
-			<MicrocodeRenderer
-				class="tstststs"
-				schema={schema as any}
-				components={components}
-				style={{ background: '#fff' }}
-			></MicrocodeRenderer>
+			<Layout>
+				<RouterView>
+					{{
+						default: ({ Component }: { Component: any }) =>
+							Component && <Suspense>{() => <Component />}</Suspense>,
+					}}
+				</RouterView>
+			</Layout>
 		);
 	},
 });
 
-const MyButton = defineComponent({
-	name: 'MyButton',
+export const Renderer = defineComponent({
 	setup() {
-		return () => <button>Button</button>;
+		return () => <MicrocodeRenderer>123</MicrocodeRenderer>;
 	},
 });

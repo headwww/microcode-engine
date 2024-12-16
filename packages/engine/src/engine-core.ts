@@ -99,7 +99,8 @@ registryInnerPlugin();
 // TODO 设置一个渲染模拟器插件
 editor.set(
 	'simulatorUrl',
-	'https://cdn.jsdelivr.net/npm/@arvin-shu/microcode-vue-simulator-renderer@1.0.1/dist/js/index.js'
+	// 'https://cdn.jsdelivr.net/npm/@arvin-shu/microcode-vue-simulator-renderer@1.0.1/dist/js/index.js'
+	'http://192.168.1.109:8080/sjsjjajjsdnas/js/index.js'
 );
 
 export async function init(pluginPreference?: PluginPreference) {

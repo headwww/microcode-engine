@@ -9,7 +9,7 @@ import {
 	createModuleEventBus,
 	IEventBus,
 } from '@arvin-shu/microcode-editor-core';
-import { shallowReactive } from 'vue';
+import { computed, shallowReactive } from 'vue';
 import { DocumentModel, IDocumentModel } from '../document';
 import { IDesigner } from '../designer';
 import { ISimulatorHost } from '../simulator';
@@ -20,6 +20,8 @@ export interface IProject extends Omit<IBaseApiProject, 'importSchema'> {
 	get documents(): IDocumentModel[];
 
 	get designer(): IDesigner;
+
+	get currentDocument(): IDocumentModel | null | undefined;
 
 	load(schema?: IPublicTypeProjectSchema, autoOpen?: boolean | string): void;
 
@@ -51,6 +53,14 @@ export class Project implements IProject {
 	// 辅助属性，用于快速查找文档
 	private documentMap = new Map<string, IDocumentModel>();
 
+	private readonly computedCurrentDocument = computed(() =>
+		this.documents.find((doc) => doc.active)
+	);
+
+	get currentDocument() {
+		return this.computedCurrentDocument.value;
+	}
+
 	/**
 	 * 模拟器
 	 */
@@ -67,6 +77,9 @@ export class Project implements IProject {
 	}
 
 	/**
+	get currentDocument(): IDocumentModel | null | undefined {
+		throw new Error('Method not implemented.');
+	}
 	 * 获取组件映射表
 	 */
 	private getComponentsMap(): IPublicTypeComponentsMap {

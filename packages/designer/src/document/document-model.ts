@@ -58,6 +58,8 @@ export interface IDocumentModel
 
 	get active(): boolean;
 
+	get currentRoot(): INode | null;
+
 	isBlank(): boolean;
 
 	nextId(possibleId: string | undefined): string;
@@ -179,6 +181,11 @@ export class DocumentModel implements IDocumentModel {
 
 	get root() {
 		return this.rootNode;
+	}
+
+	get currentRoot() {
+		// TODO 没有考虑modal的情况
+		return this.focusNode;
 	}
 
 	constructor(project: IProject, schema?: IPublicTypeRootSchema) {

@@ -33,6 +33,11 @@ export type IPublicTypePackage = EitherOr<
 		library: string;
 
 		/**
+		 *异步加载的库
+		 */
+		async?: boolean;
+
+		/**
 		 * 标识当前 package 从其他 package 的导出方式
 		 */
 		exportMode?: 'functionCall';

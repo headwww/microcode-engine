@@ -1,8 +1,70 @@
-import { createApp } from 'vue';
-import rendererView from './renderer-view';
+import { createApp, markRaw, ref } from 'vue';
+import { createMemoryHistory, createRouter, type Router } from 'vue-router';
+import { Renderer, SimulatorRendererView } from './renderer-view';
+import { host } from './host';
+
+export class DocumentInstance {
+	get id() {
+		return this.document.id;
+	}
+
+	get schema(): any {
+		return this.document.export('render');
+	}
+
+	get path(): string {
+		return `/${this.document.fileName}`;
+	}
+
+	// eslint-disable-next-line no-useless-constructor
+	constructor(
+		readonly container: SimulatorRendererContainer,
+		readonly document: any
+	) {
+		//
+	}
+}
 
 export class SimulatorRendererContainer {
 	private _running = false;
+
+	private _documentInstances = ref<DocumentInstance[]>([]);
+
+	private router: Router;
+
+	get documentInstances() {
+		return this._documentInstances.value;
+	}
+
+	constructor() {
+		this.router = markRaw(
+			createRouter({
+				history: createMemoryHistory('/'),
+				routes: [],
+			})
+		);
+
+		const documentInstanceMap = new Map<string, DocumentInstance>();
+
+		host.watchEffect(() => {
+			this._documentInstances.value = host.project.documents.map((doc: any) => {
+				let inst = documentInstanceMap.get(doc.id);
+				if (!inst) {
+					inst = new DocumentInstance(this, doc);
+					documentInstanceMap.set(doc.id, inst);
+				} else if (this.router.hasRoute(inst.id)) {
+					this.router.removeRoute(inst.id);
+				}
+				this.router.addRoute({
+					name: inst.id,
+					path: inst.path,
+					// TODO 需要处理meta
+					component: Renderer,
+				});
+				return inst;
+			});
+		});
+	}
 
 	run() {
 		if (this._running) {
@@ -19,7 +81,11 @@ export class SimulatorRendererContainer {
 
 		document.documentElement.classList.add('engine-page');
 		document.body.classList.add('engine-document');
-		createApp(rendererView).mount(container);
+		createApp(SimulatorRendererView, {
+			rendererContainer: this,
+		})
+			.use(this.router)
+			.mount(container);
 	}
 
 	dispose() {}

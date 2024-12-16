@@ -5,6 +5,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
+import replace from '@rollup/plugin-replace';
 import { outputRoot, getDir, isBuildUmd, umdName } from '../utils';
 import { progressPlugin } from '../plugins/spinner';
 
@@ -33,6 +34,14 @@ export const buildUmd = async () => {
 						'.tsx': 'tsx',
 					},
 				}),
+				replace({
+					preventAssignment: true,
+					values: {
+						// 处理vue-router的umd文件的报错
+						__VUE_PROD_DEVTOOLS__: JSON.stringify('false'),
+						'process.env.NODE_ENV': JSON.stringify('production'),
+					},
+				}),
 			],
 			external: [
 				'vue',
@@ -49,6 +58,7 @@ export const buildUmd = async () => {
 			format: 'umd',
 			name: umdName,
 			sourcemap: true,
+
 			// TODO 项目写完之后考虑哪些依赖需要配置
 			globals: {
 				vue: 'Vue',

@@ -3,6 +3,7 @@ import {
 	IPublicModelEditor,
 	IPublicTypeComponentMetadata,
 	IPublicTypeCompositeObject,
+	IPublicTypeLocationData,
 	IPublicTypePropsList,
 	IPublicTypePropsTransducer,
 } from '@arvin-shu/microcode-types';
@@ -14,10 +15,11 @@ import {
 	Ref,
 	ref,
 } from 'vue';
-import { insertChildren, Node } from '../document';
+import { INode, insertChildren, Node } from '../document';
 import { IProject, Project } from '../project';
 import { Dragon, IDragon } from './dragon';
 import { ComponentMeta, IComponentMeta } from '../component-meta';
+import { DropLocation } from './location';
 
 export const designerProps = {
 	editor: {
@@ -65,6 +67,8 @@ export interface IDesigner {
 	postEvent(event: string, ...args: any[]): void;
 
 	clearLocation(): void;
+
+	createLocation(locationData: IPublicTypeLocationData<INode>): DropLocation;
 }
 
 export class Designer implements IDesigner {
@@ -74,6 +78,8 @@ export class Designer implements IDesigner {
 	private props?: DesignerProps;
 
 	readonly editor: IPublicModelEditor;
+
+	private _dropLocation?: DropLocation;
 
 	// 当前正在编排的项目实例
 	readonly project: IProject;
@@ -106,9 +112,19 @@ export class Designer implements IDesigner {
 			const nodeData = Array.isArray(dragObject)
 				? dragObject.data
 				: [dragObject.data];
-			nodeData;
-			insertChildren;
+
+			const loc = this._dropLocation;
+
+			insertChildren(loc.target, nodeData, 1);
+			console.log(this.project);
 		});
+	}
+
+	createLocation(locationData: IPublicTypeLocationData<INode>): DropLocation {
+		this._dropLocation = {
+			target: locationData.target,
+		};
+		return {};
 	}
 
 	simulatorProps = computed(() => this._simulatorProps.value);

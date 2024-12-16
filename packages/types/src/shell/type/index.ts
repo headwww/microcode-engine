@@ -56,3 +56,4 @@ export * from './advanced';
 export * from './metadata';
 export * from './transformed-component-metadata';
 export * from './field-config';
+export * from './location';

@@ -3,6 +3,7 @@ import {
 	IPublicModelDragObject,
 	IPublicModelDragon,
 	IPublicModelLocateEvent,
+	IPublicModelNode,
 	IPublicModelSensor,
 	IPublicTypeDragNodeDataObject,
 } from '@arvin-shu/microcode-types';
@@ -15,6 +16,24 @@ import { IDesigner } from './designer';
 import { makeEventsHandler } from '../utils';
 import { isShaken } from './utils';
 import { ISimulatorHost, isSimulatorHost } from '../simulator';
+import { Node } from '../document';
+
+export function isInvalidPoint(e: any, last: any): boolean {
+	return (
+		e.clientX === 0 &&
+		e.clientY === 0 &&
+		last &&
+		(Math.abs(last.clientX - e.clientX) > 5 ||
+			Math.abs(last.clientY - e.clientY) > 5)
+	);
+}
+
+export function isSameAs(
+	e1: MouseEvent | DragEvent,
+	e2: MouseEvent | DragEvent
+): boolean {
+	return e1.clientY === e2.clientY && e1.clientX === e2.clientX;
+}
 
 export interface ILocateEvent extends IPublicModelLocateEvent {
 	readonly type: 'LocateEvent';
@@ -101,20 +120,23 @@ export class Dragon implements IDragon {
 		dragObject: IPublicModelDragObject,
 		boostEvent: MouseEvent | DragEvent
 	) {
+		const { designer } = this;
 		const masterSensors = this.getMasterSensors();
 
-		const { designer } = this;
-
-		let lastSensor: IPublicModelSensor | undefined;
-
 		const handleEvents = makeEventsHandler(boostEvent, masterSensors);
+
 		// 是否是新的node对象而不是模拟器中已经有的node对象
 		const newBie = !isDragNodeObject(dragObject);
-
-		// 是否强制复制
-		const forceCopyState = false;
+		// TODO是否强制复制
+		const hasSlotNode = dragObject.nodes?.some(
+			(node: Node | IPublicModelNode | null) =>
+				typeof node?.isSlot === 'function' ? node.isSlot() : node?.isSlot
+		);
+		const forceCopyState = isDragNodeObject(dragObject) && hasSlotNode;
 
 		const isBoostFromDragAPI = isDragEvent(boostEvent);
+
+		let lastSensor: IPublicModelSensor | undefined;
 
 		this._dragging.value = false;
 
@@ -126,30 +148,82 @@ export class Dragon implements IDragon {
 			}
 		};
 
+		let copy = false;
+		const checkcopy = (e: any) => {
+			if (isDragEvent(e) && e.dataTransfer) {
+				if (newBie || forceCopyState) {
+					e.dataTransfer.dropEffect = 'copy';
+				}
+				return;
+			}
+			if (newBie) {
+				return;
+			}
+
+			if (e.altKey || e.ctrlKey) {
+				copy = true;
+				this.setCopyState(true);
+				if (isDragEvent(e) && e.dataTransfer) {
+					e.dataTransfer.dropEffect = 'copy';
+				}
+			} else {
+				copy = false;
+				if (!forceCopyState) {
+					this.setCopyState(false);
+					if (isDragEvent(e) && e.dataTransfer) {
+						e.dataTransfer.dropEffect = 'move';
+					}
+				}
+			}
+		};
+
+		let lastArrive: any;
+
+		const drag = (e: MouseEvent | DragEvent) => {
+			checkcopy(e);
+
+			if (isInvalidPoint(e, lastArrive)) return;
+
+			if (lastArrive && isSameAs(e, lastArrive)) {
+				lastArrive = e;
+				return;
+			}
+			lastArrive = e;
+
+			const locateEvent = createLocateEvent(e);
+			const sensor = chooseSensor(locateEvent);
+
+			// TODO 磁贴设计，未设计
+
+			if (sensor) {
+				sensor.fixEvent(locateEvent);
+				sensor?.locate(locateEvent);
+			} else {
+				// 清除插入的位置
+				designer.clearLocation();
+			}
+
+			this.emitter.emit('drag', locateEvent);
+		};
+
 		const dragstart = () => {
 			this._dragging.value = true;
 			setShaken(boostEvent);
 			const locateEvent = createLocateEvent(boostEvent);
-			chooseSensor(locateEvent);
-			this.emitter.emit('dragstart', locateEvent);
-		};
-
-		const drag = (e: MouseEvent | DragEvent) => {
-			const locateEvent = createLocateEvent(e);
 			if (newBie || forceCopyState) {
-				// TODO
+				this.setCopyState(true);
 			} else {
 				chooseSensor(locateEvent);
 			}
+			this.setDraggingState(true);
 
-			// ESC cancel drag
 			if (!isBoostFromDragAPI) {
 				handleEvents((doc) => {
 					doc.addEventListener('keydown', checkesc, false);
 				});
 			}
 
-			this.emitter.emit('drag', locateEvent);
+			this.emitter.emit('dragstart', locateEvent);
 		};
 
 		const move = (e: MouseEvent | DragEvent) => {
@@ -169,23 +243,59 @@ export class Dragon implements IDragon {
 			}
 		};
 
+		let didDrop = true;
+		const drop = (e: DragEvent) => {
+			e.preventDefault();
+			e.stopPropagation();
+			didDrop = true;
+		};
+
 		const over = (e?: any) => {
-			e;
-			console.log(this._dragging.value);
+			// TODO 处理磁铁情况
 
-			// 发送目标组件
-			if (this._dragging.value) {
-				console.log('dragend');
-
-				this._dragging.value = false;
-				this.emitter.emit('dragend', { dragObject });
+			if (e && isDragEvent(e)) {
+				e.preventDefault();
 			}
+			if (lastSensor) {
+				lastSensor.deactiveSensor();
+			}
+			if (isBoostFromDragAPI) {
+				if (!didDrop) {
+					designer.clearLocation();
+				}
+			} else {
+				this.setNativeSelection(true);
+			}
+			this.clearState();
 
+			let exception;
+			if (this._dragging) {
+				this._dragging.value = false;
+				try {
+					this.emitter.emit('dragend', { dragObject, copy });
+				} catch (ex) {
+					exception = ex;
+				}
+			}
+			designer.clearLocation();
 			handleEvents((doc) => {
-				doc.removeEventListener('mousemove', move, true);
-				doc.removeEventListener('mouseup', over, true);
+				/* istanbul ignore next */
+				if (isBoostFromDragAPI) {
+					doc.removeEventListener('dragover', move, true);
+					doc.removeEventListener('dragend', over, true);
+					doc.removeEventListener('drop', drop, true);
+				} else {
+					doc.removeEventListener('mousemove', move, true);
+					doc.removeEventListener('mouseup', over, true);
+				}
 				doc.removeEventListener('mousedown', over, true);
+				doc.removeEventListener('keydown', checkesc, false);
+				doc.removeEventListener('keydown', checkcopy, false);
+				doc.removeEventListener('keyup', checkcopy, false);
 			});
+			if (exception) {
+				throw exception;
+			}
 		};
 
 		// 用于创建拖拽定位事件
@@ -268,13 +378,32 @@ export class Dragon implements IDragon {
 		};
 
 		handleEvents((doc) => {
-			// 鼠标移动
-			doc.addEventListener('mousemove', move, true);
-			// 鼠标松开
-			doc.addEventListener('mouseup', over, true);
+			if (isBoostFromDragAPI) {
+				doc.addEventListener('dragover', move, true);
+				didDrop = false;
+				doc.addEventListener('drop', drop, true);
+				doc.addEventListener('dragend', over, true);
+			} else {
+				// 鼠标移动
+				doc.addEventListener('mousemove', move, true);
+				// 鼠标松开
+				doc.addEventListener('mouseup', over, true);
+			}
+
 			// 鼠标按下
 			doc.addEventListener('mousedown', over, true);
 		});
+
+		if (!newBie && !isBoostFromDragAPI) {
+			handleEvents((doc) => {
+				doc.addEventListener('keydown', checkcopy, false);
+				doc.addEventListener('keyup', checkcopy, false);
+			});
+		}
+	}
+
+	private setDraggingState(state: boolean) {
+		state;
 	}
 
 	private getMasterSensors(): ISimulatorHost[] {
@@ -290,6 +419,18 @@ export class Dragon implements IDragon {
 					.filter(Boolean) as any
 			)
 		);
+	}
+
+	private setNativeSelection(enableFlag: boolean) {
+		enableFlag;
+	}
+
+	private setCopyState(state: boolean) {
+		state;
+	}
+
+	private clearState() {
+		// TODO 清除状态
 	}
 
 	/**
