@@ -1,11 +1,4 @@
-import {
-	computed,
-	ExtractPropTypes,
-	PropType,
-	Ref,
-	ref,
-	watchEffect,
-} from 'vue';
+import { computed, ExtractPropTypes, PropType, Ref, ref, watch } from 'vue';
 import {
 	Asset,
 	AssetLevel,
@@ -205,8 +198,8 @@ export class BuiltinSimulatorHost
 		return libraryAsset;
 	}
 
-	watchEffect(effect: () => void) {
-		watchEffect(effect);
+	watch(source: any, callback: any, options?: any) {
+		watch(source, callback, options);
 	}
 
 	setSuspense() {

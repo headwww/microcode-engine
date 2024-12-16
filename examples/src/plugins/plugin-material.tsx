@@ -18,6 +18,13 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					version: '4.6.1',
 					urls: ['https://g.alicdn.com/platform/c/lodash/4.6.1/lodash.min.js'],
 				},
+
+				{
+					package: 'css',
+					version: '1.0.0',
+					library: 'css',
+					urls: ['http://192.168.1.59:8081/dist/renderer.css'],
+				},
 			],
 			components: [
 				{

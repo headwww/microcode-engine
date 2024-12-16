@@ -1,5 +1,5 @@
 import { defineComponent } from 'vue';
-import { rendererProps } from '../core';
+import { rendererProps, useRenderer } from '../core';
 
 const Page = defineComponent({
 	name: 'Page',
@@ -15,7 +15,9 @@ const Page = defineComponent({
 export const PageRenderer = defineComponent({
 	name: 'PageRenderer',
 	props: rendererProps,
-	setup() {
-		return () => <Page></Page>;
+	setup(props) {
+		const { schemaRef, renderComp } = useRenderer(props);
+
+		return () => renderComp(schemaRef.value, Page);
 	},
 });

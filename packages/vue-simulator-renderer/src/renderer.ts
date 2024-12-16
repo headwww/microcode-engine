@@ -1,4 +1,4 @@
-import { createApp, markRaw, ref } from 'vue';
+import { createApp, markRaw, nextTick, ref } from 'vue';
 import { createMemoryHistory, createRouter, type Router } from 'vue-router';
 import { Renderer, SimulatorRendererView } from './renderer-view';
 import { host } from './host';
@@ -46,27 +46,56 @@ export class SimulatorRendererContainer {
 
 		const documentInstanceMap = new Map<string, DocumentInstance>();
 
-		host.watchEffect(() => {
-			this._documentInstances.value = host.project.documents.map((doc: any) => {
-				let inst = documentInstanceMap.get(doc.id);
-				if (!inst) {
-					inst = new DocumentInstance(this, doc);
-					documentInstanceMap.set(doc.id, inst);
-				} else if (this.router.hasRoute(inst.id)) {
-					this.router.removeRoute(inst.id);
-				}
-				this.router.addRoute({
-					name: inst.id,
-					path: inst.path,
-					// TODO 需要处理meta
-					component: Renderer,
-					props: ((doc) => () => ({
-						documentInstance: doc,
-					}))(inst),
+		host.watch(
+			() => host.project.documents,
+			async () => {
+				this._documentInstances.value = host.project.documents.map(
+					(doc: any) => {
+						let inst = documentInstanceMap.get(doc.id);
+						if (!inst) {
+							inst = new DocumentInstance(this, doc);
+							documentInstanceMap.set(doc.id, inst);
+						} else if (this.router.hasRoute(inst.id)) {
+							this.router.removeRoute(inst.id);
+						}
+						this.router.addRoute({
+							name: inst.id,
+							path: inst.path,
+							// TODO 需要处理meta
+							component: Renderer,
+							props: ((doc) => () => ({
+								documentInstance: doc,
+							}))(inst),
+						});
+						return inst;
+					}
+				);
+
+				this.router.getRoutes().forEach((route) => {
+					const id = route.name as string;
+					const hasDoc = this.documentInstances.some((doc) => doc.id === id);
+					if (!hasDoc) {
+						this.router.removeRoute(id);
+						documentInstanceMap.delete(id);
+					}
 				});
-				return inst;
-			});
-		});
+				const inst = this.getCurrentDocument();
+				if (inst) {
+					await nextTick(() => {
+						this.router.replace({ name: inst.id, force: true });
+					});
+				}
+			},
+			{
+				immediate: true,
+			}
+		);
+	}
+
+	getCurrentDocument() {
+		const crr = host.project.currentDocument;
+		const docs = this.documentInstances;
+		return crr ? (docs.find((doc) => doc.id === crr.id) ?? null) : null;
 	}
 
 	run() {

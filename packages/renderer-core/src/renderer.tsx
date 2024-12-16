@@ -48,7 +48,15 @@ export const Renderer = defineComponent({
 			const Comp =
 				components[componentName] || components[`${componentName}Renderer`];
 
-			return Comp ? h(Comp, {}, slots) : null;
+			return Comp
+				? h(
+						Comp,
+						{
+							__schema: schema,
+						},
+						slots
+					)
+				: null;
 		};
 
 		return () => renderContent();

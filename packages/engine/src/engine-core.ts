@@ -100,7 +100,7 @@ registryInnerPlugin();
 editor.set(
 	'simulatorUrl',
 	// 'https://cdn.jsdelivr.net/npm/@arvin-shu/microcode-vue-simulator-renderer@1.0.1/dist/js/index.js'
-	'http://192.168.1.59:8081/dist/js/index.js'
+	'http://192.168.1.59:8080/dist/bhuh/js/index.js'
 );
 
 export async function init(pluginPreference?: PluginPreference) {
@@ -112,12 +112,12 @@ export async function init(pluginPreference?: PluginPreference) {
 
 	project.importSchema({
 		version: '1.0.0',
-		id: 'sdasgusgau',
+		id: 'nodepageshiashida',
 		componentsMap: [{ componentName: 'Page', devMode: 'microCode' }],
 		componentsTree: [
 			{
 				componentName: 'Page',
-				fileName: '/',
+				fileName: '',
 			},
 		],
 	});
