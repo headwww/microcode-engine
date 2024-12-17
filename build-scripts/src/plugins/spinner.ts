@@ -38,7 +38,7 @@ ${chalk.dim('已处理:')} ${processedFiles}${totalFiles ? `/${totalFiles}` : ''
 			spinner.stopAndPersist({
 				symbol: chalk.green('✔'),
 				text: chalk.green(
-					`${getPackageDependencies(epPackage).name} 打包完成！共处理 ${processedFiles} 个文件`
+					`${getPackageDependencies(epPackage).name} js文件打包完成！共处理 ${processedFiles} 个文件`
 				),
 			});
 		},

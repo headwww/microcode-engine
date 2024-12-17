@@ -20,7 +20,7 @@
       "rootDir": ".",
       "useDefineForClassFields": true,
       "paths": {
-        "@arvin-shu/*": ["packages/*/src"]
+        "@arvin-shu/microcode-*": ["packages/*/src"]
       },
       "outDir": "dist",
     },

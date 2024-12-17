@@ -7,8 +7,10 @@ export const Hoc = defineComponent({
 	props: leafProps,
 	setup(props) {
 		return () => {
+			console.log('HOC');
+
 			const comp = toRaw(props.__comp);
-			return h(comp);
+			return h(comp, {});
 		};
 	},
 });

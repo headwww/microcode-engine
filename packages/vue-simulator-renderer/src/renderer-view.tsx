@@ -40,10 +40,19 @@ export const Renderer = defineComponent({
 	},
 
 	setup(props) {
+		// TODO 模拟组件库
+		const components = {
+			Button: () => <button>按钮</button>,
+		};
 		return () => {
 			const { documentInstance } = props;
 			const { schema } = documentInstance;
-			return <MicrocodeRenderer schema={schema}></MicrocodeRenderer>;
+			return (
+				<MicrocodeRenderer
+					components={components}
+					schema={schema}
+				></MicrocodeRenderer>
+			);
 		};
 	},
 });

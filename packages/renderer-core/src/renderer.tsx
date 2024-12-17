@@ -14,16 +14,24 @@ import {
 } from 'vue';
 import config from './config';
 
+const rendererProps = {
+	schema: {
+		type: Object as PropType<IPublicTypeRootSchema | IPublicTypeNodeSchema>,
+		required: true,
+	},
+	components: {
+		type: Object as PropType<Record<string, Component>>,
+		required: true,
+	},
+	/** 设备信息 */
+	device: String,
+	/** 语言 */
+	locale: String,
+} as const;
+
 export const Renderer = defineComponent({
 	name: 'Renderer',
-	props: {
-		schema: {
-			type: Object as PropType<IPublicTypeRootSchema | IPublicTypeNodeSchema>,
-		},
-		components: {
-			type: Object as PropType<Record<string, Component>>,
-		},
-	},
+	props: rendererProps,
 	setup(props, { slots }) {
 		const schemaRef = shallowRef(props.schema);
 
@@ -59,6 +67,21 @@ export const Renderer = defineComponent({
 				: null;
 		};
 
-		return () => renderContent();
+		return () => {
+			const { device, locale } = props;
+			const configProvider = config.getConfigProvider();
+			return configProvider
+				? h(
+						configProvider,
+						{
+							device,
+							locale,
+						},
+						{
+							default: renderContent,
+						}
+					)
+				: renderContent();
+		};
 	},
 });
