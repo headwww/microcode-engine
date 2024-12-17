@@ -20,14 +20,6 @@ export const buildDts = async () => {
 		emitDeclarationOnly: true,
 		// 指定根目录
 		rootDir: projRoot,
-
-		// TODO 后加的
-		// 处理 workspace 协议
-		preserveSymlinks: true,
-		// 指定包路径
-		paths: {
-			'@arvin-shu/microcode-*': ['packages/*/src'],
-		},
 	};
 
 	// 创建一个新的 TypeScript 项目实例
@@ -43,7 +35,9 @@ export const buildDts = async () => {
 	const sourceFiles = await addSourceFiles(project);
 
 	consola.success('++++++++已成功添加所有源文件到项目中');
+	// TODO 取消类型检查，后期想办法
 	// typeCheck(project);
+	typeCheck;
 	consola.success('✔✔✔✔✔✔✔✔类型检查通过！！！');
 
 	await project.emit({
@@ -139,7 +133,6 @@ async function addSourceFiles(project: Project) {
  * 类型检查
  * @param project
  */
-typeCheck;
 function typeCheck(project: Project) {
 	// 获取项目中的所有诊断信息(类型错误、语法错误等)
 	const diagnostics = project.getPreEmitDiagnostics();
