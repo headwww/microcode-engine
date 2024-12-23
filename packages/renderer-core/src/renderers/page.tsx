@@ -17,7 +17,7 @@ export const PageRenderer = defineComponent({
 	props: rendererProps,
 	__renderer__: true,
 	setup(props) {
-		const { scope } = useRootScope();
+		const { scope } = useRootScope(props);
 
 		const { schemaRef, componentsRef, renderComp } = useRenderer(props, scope);
 

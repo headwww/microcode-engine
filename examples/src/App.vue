@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MicrocodeWorkbench } from '@arvin-shu/microcode-engine';
 import { EditorConfig } from '@arvin-shu/microcode-types';
+import A from './A.vue';
 
 const config: EditorConfig = {
 	lifeCycles: {
@@ -32,6 +33,7 @@ const config: EditorConfig = {
 </script>
 
 <template>
+	<A cs="width: 100%; height: 100%"></A>
 	<MicrocodeWorkbench
 		:config="config"
 		className="engine-main"

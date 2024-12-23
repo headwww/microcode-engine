@@ -16,6 +16,7 @@ import {
 	InjectionKey,
 	isVNode,
 	mergeProps,
+	onBeforeMount,
 	provide,
 	Ref,
 	ref,
@@ -25,7 +26,20 @@ import {
 	VNode,
 } from 'vue';
 import { INode } from '@arvin-shu/microcode-designer';
-import { getCurrentInstance } from 'vue';
+import {
+	getCurrentInstance,
+	onMounted,
+	onBeforeUpdate,
+	onUpdated,
+	onActivated,
+	onDeactivated,
+	onBeforeUnmount,
+	onRenderTracked,
+	onRenderTriggered,
+	onUnmounted,
+	onErrorCaptured,
+	onServerPrefetch,
+} from 'vue';
 import { Hoc } from './leaf/hoc';
 import { leafPropKeys, LeafProps, RendererProps } from './base';
 import { useRendererContext } from './renderer-context';
@@ -51,12 +65,42 @@ import {
 	toString,
 } from '../utils';
 import { Live } from './leaf/live';
+import { createHookCaller } from './lifecycles';
 
 export type RenderComponent = (
 	nodeSchema: IPublicTypeNodeData,
 	scope: RuntimeScope,
 	comp?: Component | typeof Fragment
 ) => VNode | VNode[] | null;
+
+const VUE_LIFT_CYCLES_MAP = {
+	beforeMount: onBeforeMount,
+	mounted: onMounted,
+	beforeUpdate: onBeforeUpdate,
+	updated: onUpdated,
+	activated: onActivated,
+	deactivated: onDeactivated,
+	beforeUnmount: onBeforeUnmount,
+	renderTracked: onRenderTracked,
+	renderTriggered: onRenderTriggered,
+	unmounted: onUnmounted,
+	errorCaptured: onErrorCaptured,
+	serverPrefetch: onServerPrefetch,
+};
+
+// 适配 react lifecycle
+const REACT_ADAPT_LIFT_CYCLES_MAP = {
+	componentDidMount: onMounted,
+	componentDidCatch: onErrorCaptured,
+	shouldComponentUpdate: onBeforeUpdate,
+	componentWillUnmount: onBeforeUnmount,
+} as const;
+
+export const LIFT_CYCLES_MAP = {
+	...VUE_LIFT_CYCLES_MAP,
+	...REACT_ADAPT_LIFT_CYCLES_MAP,
+};
+
 // 定义注入键，用于在 Vue 组件间传递锁定状态
 const IS_LOCKED: InjectionKey<Ref<boolean>> = Symbol('IS_LOCKED');
 const IS_ROOT_NODE: InjectionKey<boolean> = Symbol('IS_ROOT_NODE');
@@ -700,11 +744,21 @@ export function useRenderer(rendererProps: RendererProps, scope: RuntimeScope) {
 	return { schemaRef, componentsRef, ...useLeaf(leafProps) };
 }
 
-export function useRootScope() {
-	// TODO 生命周期 js css 数据源都没有处理
+export function useRootScope(rendererProps: RendererProps) {
+	const { __schema: schema, __parser: parser } = rendererProps;
 
 	const instance = getCurrentInstance()!;
 	const scope = instance.proxy as RuntimeScope;
+
+	const callHook = createHookCaller(schema, scope, parser);
+
+	// TODO vue的各种生命周期，props，setup，render，在界面上定义
+
+	callHook('initEmits');
+	callHook('beforeCreate');
+
+	// 处理 props
+	callHook('initProps');
 
 	const unscopables = {
 		_: true,
