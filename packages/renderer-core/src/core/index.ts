@@ -1,2 +1,3 @@
 export * from './base';
-export { useRenderer, useLeaf } from './use';
+export * from './renderer-context';
+export { useRenderer, useLeaf, useRootScope } from './use';

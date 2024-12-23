@@ -23,7 +23,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					package: 'css',
 					version: '1.0.0',
 					library: 'css',
-					urls: ['http://192.168.1.59:8081/dist/renderer.css'],
+					urls: ['http://192.168.1.59:8080/dist/renderer.css'],
 				},
 			],
 			components: [

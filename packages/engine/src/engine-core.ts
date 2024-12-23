@@ -100,7 +100,7 @@ registryInnerPlugin();
 editor.set(
 	'simulatorUrl',
 	// 'https://cdn.jsdelivr.net/npm/@arvin-shu/microcode-vue-simulator-renderer@1.0.1/dist/js/index.js'
-	'http://192.168.1.59:8080/dist/hyqusi/js/index.js'
+	'http://192.168.1.59:8081/dist/dist/js/index.js'
 );
 
 export async function init(pluginPreference?: PluginPreference) {
@@ -117,7 +117,54 @@ export async function init(pluginPreference?: PluginPreference) {
 		componentsTree: [
 			{
 				componentName: 'Page',
-				fileName: '',
+				id: 'node_dockcviv8fo1',
+				props: {
+					style: {
+						height: '100%',
+					},
+				},
+				fileName: '/',
+				children: [
+					{
+						componentName: 'Button',
+						id: 'node_ocm4wdlixg1',
+						props: {
+							children: '按钮',
+							bordered: true,
+						},
+						hidden: false,
+						title: '',
+						isLocked: true,
+						condition: false,
+						conditionGroup: '',
+					},
+					{
+						componentName: 'Button',
+						id: 'node_ocm4wdlix2g1',
+						props: {
+							children: '按钮3',
+							bordered: true,
+						},
+						hidden: false,
+						title: '',
+						isLocked: false,
+						condition: true,
+						conditionGroup: '',
+					},
+					{
+						componentName: 'Button',
+						id: 'node_ocm4wdlidx2g1',
+						props: {
+							children: '按钮',
+							bordered: true,
+						},
+						hidden: false,
+						title: '',
+						isLocked: false,
+						condition: true,
+						conditionGroup: '',
+					},
+				],
 			},
 		],
 	});

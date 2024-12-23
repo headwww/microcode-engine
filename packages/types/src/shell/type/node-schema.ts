@@ -90,6 +90,8 @@ export interface IPublicTypeNodeSchema {
 	 */
 	isLocked?: boolean;
 
+	hidden?: boolean;
+
 	/** @experimental 编辑态内部使用 */
 	__ctx?: any;
 }

@@ -1,5 +1,5 @@
 import { defineComponent } from 'vue';
-import { rendererProps, useRenderer } from '../core';
+import { rendererProps, useRenderer, useRootScope } from '../core';
 
 const Page = defineComponent({
 	name: 'Page',
@@ -17,8 +17,13 @@ export const PageRenderer = defineComponent({
 	props: rendererProps,
 	__renderer__: true,
 	setup(props) {
-		const { schemaRef, componentsRef, renderComp } = useRenderer(props);
+		const { scope } = useRootScope();
 
-		return () => renderComp(schemaRef.value, componentsRef.value.Page || Page);
+		const { schemaRef, componentsRef, renderComp } = useRenderer(props, scope);
+
+		// TODO 缺少wrapRender
+
+		return () =>
+			renderComp(schemaRef.value, scope, componentsRef.value.Page || Page);
 	},
 });

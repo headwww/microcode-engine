@@ -16,6 +16,10 @@ export class DocumentInstance {
 		return `/${this.document.fileName}`;
 	}
 
+	getNode(id: string) {
+		return this.document.getNode(id);
+	}
+
 	// eslint-disable-next-line no-useless-constructor
 	constructor(
 		readonly container: SimulatorRendererContainer,
