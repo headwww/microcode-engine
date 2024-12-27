@@ -5,3 +5,4 @@ export * from './is-jsslot';
 export * from './is-node-schema';
 export * from './is-node';
 export * from './is-title-config';
+export * from './is-location-data';

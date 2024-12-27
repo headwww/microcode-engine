@@ -115,16 +115,17 @@ export class Designer implements IDesigner {
 
 			const loc = this._dropLocation;
 
-			insertChildren(loc.target, nodeData, 1);
-			console.log(this.project);
+			if (loc) {
+				insertChildren(loc.target, nodeData as any, (loc.detail as any).index);
+			}
 		});
 	}
 
 	createLocation(locationData: IPublicTypeLocationData<INode>): DropLocation {
-		this._dropLocation = {
-			target: locationData.target,
-		};
-		return {};
+		const loc = new DropLocation(locationData);
+
+		this._dropLocation = loc;
+		return loc;
 	}
 
 	simulatorProps = computed(() => this._simulatorProps.value);

@@ -93,10 +93,12 @@ export class NodeChildren implements INodeChildren {
 		readonly owner: INode,
 		data: IPublicTypeNodeData | IPublicTypeNodeData[]
 	) {
-		this.children = (Array.isArray(data) ? data : [data])
-			.filter((child) => !!child)
-			.map((child) => this.owner.document?.createNode(child as any))
-			.filter((node): node is INode => node != null);
+		this.children.push(
+			...(Array.isArray(data) ? data : [data])
+				.filter((child) => !!child)
+				.map((child) => this.owner.document?.createNode(child as any))
+				.filter((node): node is INode => node != null)
+		);
 	}
 
 	internalInitParent() {

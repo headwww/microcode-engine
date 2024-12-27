@@ -66,6 +66,8 @@ export interface IDocumentModel
 
 	import(schema: IPublicTypeRootSchema, checkId?: boolean): void;
 
+	export(stage: IPublicEnumTransformStage): IPublicTypeRootSchema | undefined;
+
 	getComponentMeta(componentName: string): IComponentMeta;
 
 	insertNodes(

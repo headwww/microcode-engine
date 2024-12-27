@@ -6,6 +6,7 @@ import {
 	BuiltinSimulatorProps,
 } from './host';
 import { Designer } from '../designer';
+import { BemTools } from './bem-tools';
 
 export const BuiltinSimulatorHostView = defineComponent({
 	name: 'BuiltinSimulatorHostView',
@@ -42,6 +43,7 @@ export const Canvas = defineComponent({
 						sim?.mountViewport(elem);
 					}}
 				>
+					<BemTools host={sim} />
 					<Content host={sim}></Content>
 				</div>
 			</div>

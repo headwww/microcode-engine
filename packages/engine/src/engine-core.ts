@@ -100,7 +100,7 @@ registryInnerPlugin();
 editor.set(
 	'simulatorUrl',
 	// 'https://cdn.jsdelivr.net/npm/@arvin-shu/microcode-vue-simulator-renderer@1.0.1/dist/js/index.js'
-	'http://192.168.1.59:8081/dist/dist/js/index.js'
+	'http://127.0.0.1:8081/dist/hsuquuu/js/index.js'
 );
 
 export async function init(pluginPreference?: PluginPreference) {
@@ -126,7 +126,7 @@ export async function init(pluginPreference?: PluginPreference) {
 				fileName: '/',
 				children: [
 					{
-						componentName: 'Button',
+						componentName: 'Button2',
 						id: 'node_ocm4wdlixg1',
 						props: {
 							children: '按钮',
@@ -139,32 +139,74 @@ export async function init(pluginPreference?: PluginPreference) {
 						conditionGroup: '',
 					},
 					{
-						componentName: 'Button',
-						id: 'node_ocm4wdlix2g1',
-						props: {
-							children: '按钮3',
-							bordered: true,
-						},
-						hidden: false,
-						title: '',
-						isLocked: false,
-						condition: true,
-						conditionGroup: '',
-					},
-					{
-						componentName: 'Button',
-						id: 'node_ocm4wdlidx2g1',
+						componentName: 'Button2',
+						id: 'node_ocm4wdlisxg1',
 						props: {
 							children: '按钮',
 							bordered: true,
 						},
 						hidden: false,
 						title: '',
-						isLocked: false,
-						condition: true,
+						isLocked: true,
+						condition: false,
 						conditionGroup: '',
+						// loop: [1, 2, 3],
 					},
+					// {
+					// 	componentName: 'Button2',
+					// 	id: 'node_ocmd4wdlisxg1',
+					// 	props: {
+					// 		children: '按钮',
+					// 		bordered: true,
+					// 	},
+					// 	hidden: false,
+					// 	title: '',
+					// 	isLocked: true,
+					// 	condition: false,
+					// 	conditionGroup: '',
+					// },
 				],
+				// children: [
+				// 	{
+				// 		componentName: 'Button',
+				// 		id: 'node_ocm4wdlixg1',
+				// 		props: {
+				// 			children: '按钮',
+				// 			bordered: true,
+				// 		},
+				// 		hidden: false,
+				// 		title: '',
+				// 		isLocked: true,
+				// 		condition: false,
+				// 		conditionGroup: '',
+				// 	},
+				// 	{
+				// 		componentName: 'Button',
+				// 		id: 'node_ocm4wdlix2g1',
+				// 		props: {
+				// 			children: '按钮3',
+				// 			bordered: true,
+				// 		},
+				// 		hidden: false,
+				// 		title: '',
+				// 		isLocked: false,
+				// 		condition: true,
+				// 		conditionGroup: '',
+				// 	},
+				// 	{
+				// 		componentName: 'Button',
+				// 		id: 'node_ocm4wdlidx2g1',
+				// 		props: {
+				// 			children: '按钮',
+				// 			bordered: true,
+				// 		},
+				// 		hidden: false,
+				// 		title: '',
+				// 		isLocked: false,
+				// 		condition: true,
+				// 		conditionGroup: '',
+				// 	},
+				// ],
 			},
 		],
 	});

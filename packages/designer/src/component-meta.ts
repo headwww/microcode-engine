@@ -61,6 +61,8 @@ export function buildFilter(
 
 export interface IComponentMeta extends IPublicModelComponentMeta<INode> {
 	setMetadata(metadata: IPublicTypeComponentMetadata): void;
+
+	get rootSelector(): string | undefined;
 }
 
 export class ComponentMeta implements IComponentMeta {

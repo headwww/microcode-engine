@@ -21,7 +21,7 @@ export const ComponentPane = defineComponent({
 				return {
 					type: 'nodedata',
 					data: {
-						title: '图片',
+						title: '按钮',
 						componentName: 'Button',
 						props: {
 							type: 'primary',

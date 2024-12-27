@@ -45,10 +45,29 @@ export interface IDragon extends IPublicModelDragon<ILocateEvent> {
 	emitter: IEventBus;
 }
 
+/**
+ * 判断事件是否为拖拽事件
+ * 拖拽事件是由浏览器原生的drag & drop API触发的事件
+ * 包括:
+ * - dragstart: 开始拖拽时触发
+ * - drag: 拖拽过程中持续触发
+ * - dragenter: 拖拽进入目标元素时触发
+ * - dragover: 拖拽经过目标元素时触发
+ * - dragleave: 拖拽离开目标元素时触发
+ * - drop: 在目标元素上松开鼠标时触发
+ * - dragend: 拖拽结束时触发
+ * @param e 事件对象
+ * @returns 如果是拖拽事件返回 true,否则返回 false
+ */
 function isDragEvent(e: any): e is DragEvent {
 	return e?.type?.startsWith('drag');
 }
 
+/**
+ * 设置事件为已抖动状态
+ * 用于标记鼠标移动是否已经达到触发拖拽的条件
+ * @param e 事件对象
+ */
 export function setShaken(e: any) {
 	e.shaken = true;
 }
@@ -60,6 +79,7 @@ export function isDragNodeObject(
 	return obj && obj.type === IPublicEnumDragObjectType.Node;
 }
 
+// 获取拖拽对象的源传感器
 function getSourceSensor(
 	dragObject: IPublicModelDragObject
 ): ISimulatorHost | null {
@@ -134,14 +154,16 @@ export class Dragon implements IDragon {
 		);
 		const forceCopyState = isDragNodeObject(dragObject) && hasSlotNode;
 
+		// 判断是否为拖拽API事件
 		const isBoostFromDragAPI = isDragEvent(boostEvent);
 
+		// 上一次的拖拽感应区
 		let lastSensor: IPublicModelSensor | undefined;
 
 		this._dragging.value = false;
 
 		const checkesc = (e: KeyboardEvent) => {
-			// ESC cancel drag
+			// 如果按下ESC键，则清除拖拽位置，并调用over函数
 			if (e.keyCode === 27) {
 				designer.clearLocation();
 				over();
@@ -237,8 +259,11 @@ export class Dragon implements IDragon {
 				return;
 			}
 
+			// 检查鼠标是否有足够的移动距离来触发拖拽
 			if (isShaken(boostEvent, e)) {
+				// 触发拖拽开始事件
 				dragstart();
+				// 执行拖拽操作
 				drag(e);
 			}
 		};
@@ -302,42 +327,58 @@ export class Dragon implements IDragon {
 		const createLocateEvent = (e: MouseEvent | DragEvent): ILocateEvent => {
 			const evt: any = {
 				type: 'LocateEvent',
+				// 拖拽对象
 				dragObject,
+				// 被拖拽的元素
 				target: e.target,
+				// 原始事件
 				originalEvent: e,
 			};
 
 			const sourceDocument = e.view?.document;
 
+			// 如果没有源document或鼠标当前指向的是源document的对象则直接使用事件的clientX/Y作为全局坐标
 			if (!sourceDocument || sourceDocument === document) {
 				evt.globalX = e.clientX;
 				evt.globalY = e.clientY;
-			}
-			let srcSim: ISimulatorHost | undefined;
-			const lastSim =
-				lastSensor && isSimulatorHost(lastSensor) ? lastSensor : null;
-			if (lastSim && lastSim.contentDocument === sourceDocument) {
-				srcSim = lastSim;
 			} else {
-				srcSim = masterSensors.find(
-					(sim) => sim.contentDocument === sourceDocument
-				);
-				if (!srcSim && lastSim) {
+				let srcSim: ISimulatorHost | undefined;
+				// 获取上一个传感器,如果是模拟器类型则赋值,否则为null
+				const lastSim =
+					lastSensor && isSimulatorHost(lastSensor) ? lastSensor : null;
+				// 如果上一个模拟器存在且其document与源document相同,则使用上一个模拟器
+				if (lastSim && lastSim.contentDocument === sourceDocument) {
 					srcSim = lastSim;
+				} else {
+					// 从主传感器列表中查找document与源document匹配的模拟器
+					srcSim = masterSensors.find(
+						(sim) => sim.contentDocument === sourceDocument
+					);
+					// 如果没找到匹配的模拟器但存在上一个模拟器,则使用上一个模拟器
+					if (!srcSim && lastSim) {
+						srcSim = lastSim;
+					}
+				}
+
+				// 如果存在源模拟器
+				if (srcSim) {
+					// 将事件坐标从模拟器视口坐标系转换为全局坐标系
+					const g = srcSim.viewport.toGlobalPoint(e);
+					evt.globalX = g.clientX;
+					evt.globalY = g.clientY;
+					// 保存原始的画布坐标
+					evt.canvasX = e.clientX;
+					evt.canvasY = e.clientY;
+					// 设置事件的传感器为源模拟器
+					evt.sensor = srcSim;
+				} else {
+					// 如果不存在源模拟器,直接使用原始事件坐标
+					evt.globalX = e.clientX;
+					evt.globalY = e.clientY;
 				}
 			}
+			// 定义源模拟器变量
 
-			if (srcSim) {
-				const g = srcSim.viewport.toGlobalPoint(e);
-				evt.globalX = g.clientX;
-				evt.globalY = g.clientY;
-				evt.canvasX = e.clientX;
-				evt.canvasY = e.clientY;
-				evt.sensor = srcSim;
-			} else {
-				evt.globalX = e.clientX;
-				evt.globalY = e.clientY;
-			}
 			return evt;
 		};
 
@@ -345,19 +386,25 @@ export class Dragon implements IDragon {
 
 		// 选择传感器
 		const chooseSensor = (e: ILocateEvent) => {
-			const sensors: IPublicModelSensor[] = this.sensors.concat(
-				masterSensors as IPublicModelSensor[]
-			);
+			const sensors: IPublicModelSensor[] = this.sensors.concat(masterSensors);
+
+			// 确定当前使用的传感器:
+			// 1. 如果事件已经有绑定的传感器(e.sensor)且鼠标在该传感器区域内(isEnter),则使用该传感器
+			// 2. 否则从所有传感器中找到第一个可用的(sensorAvailable)且鼠标在其区域内(isEnter)的传感器
 			let sensor =
 				e.sensor && e.sensor.isEnter(e)
 					? e.sensor
 					: sensors.find((s) => s.sensorAvailable && s.isEnter(e));
+			// 如果传感器不存在,则从以下几种情况中选择:
 			if (!sensor) {
+				// 1. 上一次使用的传感器(lastSensor)
 				if (lastSensor) {
 					sensor = lastSensor;
 				} else if (e.sensor) {
+					// 2. 事件中已绑定的传感器(e.sensor)
 					sensor = e.sensor;
 				} else if (sourceSensor) {
+					// 3. 拖拽对象的源传感器(sourceSensor)
 					sensor = sourceSensor;
 				}
 			}

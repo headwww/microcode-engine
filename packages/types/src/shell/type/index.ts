@@ -57,3 +57,5 @@ export * from './metadata';
 export * from './transformed-component-metadata';
 export * from './field-config';
 export * from './location';
+export * from './node-instance';
+export * from './component-instance';

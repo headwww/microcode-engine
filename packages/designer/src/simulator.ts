@@ -1,9 +1,19 @@
-import { IPublicModelSensor } from '@arvin-shu/microcode-types';
+import {
+	IPublicModelSensor,
+	IPublicTypeComponentInstance,
+	IPublicTypeNodeInstance,
+} from '@arvin-shu/microcode-types';
 import { Point } from './designer';
+import { INode } from './document';
 
 export type AutoFit = '100%';
 // eslint-disable-next-line no-redeclare
 export const AutoFit = '100%';
+
+export interface DropContainer {
+	container: INode;
+	instance: IPublicTypeComponentInstance;
+}
 
 export interface ISimulatorHost<P = object> extends IPublicModelSensor {
 	setProps(props: P): void;
@@ -14,7 +24,30 @@ export interface ISimulatorHost<P = object> extends IPublicModelSensor {
 	// 模拟器iframe的document
 	readonly contentDocument?: Document;
 
+	// TODO 没有设置类型
+	readonly renderer?: any;
+
 	setSuspense(suspensed: boolean): void;
+
+	/**
+	 * 根据节点获取节点的组件实例
+	 */
+	getComponentInstances(node: INode): IPublicTypeComponentInstance[] | null;
+
+	findDOMNodes(
+		instance: IPublicTypeComponentInstance,
+		selector?: string
+	): Array<Element | Text> | null;
+
+	computeComponentInstanceRect(
+		instance: IPublicTypeComponentInstance,
+		selector?: string
+	): DOMRect | null;
+
+	getClosestNodeInstance(
+		from: IPublicTypeComponentInstance,
+		specId?: string
+	): IPublicTypeNodeInstance | null;
 }
 
 export interface IViewport {
