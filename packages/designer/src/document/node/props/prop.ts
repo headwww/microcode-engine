@@ -21,6 +21,9 @@ import { INode, ISlotNode } from '../node';
 import { IPropParent, IProps } from './props';
 import { valueToSource } from './value-to-source';
 
+/**
+ * 定义未设置值的常量
+ */
 export const UNSET = Symbol.for('unset');
 
 export type UNSET = typeof UNSET;
@@ -42,10 +45,13 @@ export type ValueTypes =
 	| 'expression'
 	| 'slot';
 
+/**
+ * 属性接口定义,继承自IPublicModelProp和IPropParent
+ */
 export interface IProp
 	extends Omit<IPublicModelProp<INode>, 'exportSchema' | 'node'>,
 		IPropParent {
-	// 扩展值
+	// 属性展开标志
 	spread: Ref<boolean>;
 
 	// 属性key
@@ -57,61 +63,85 @@ export interface IProp
 	// 所属节点
 	readonly owner: INode;
 
+	// 删除属性
 	delete(prop: IProp): void;
 
+	// 导出属性数据
 	export(stage: IPublicEnumTransformStage): IPublicTypeCompositeValue;
 
+	// 获取所属节点
 	getNode(): INode;
 
+	// 获取属性值的字符串表示
 	getAsString(): string;
 
+	// 取消设置属性值
 	unset(): void;
 
+	// 获取属性值
 	get value(): IPublicTypeCompositeValue | UNSET;
 
+	// 比较两个属性是否相等
 	compare(other: IProp | null): number;
 
 	// 判断是否未设置值
 	isUnset(): boolean;
 
+	// 清除属性
 	purge(): void;
 
+	// 设置子属性
 	setupItems(): IProp[] | null;
 
+	// 判断是否为虚拟属性
 	isVirtual(): boolean;
 
+	// 获取属性类型
 	get type(): ValueTypes;
 
+	// 获取属性大小
 	get size(): number;
 
+	// 获取属性代码
 	get code(): string;
 }
 
+/**
+ * 属性类,实现IProp接口
+ */
 export class Prop implements IProp {
+	// 标识是否为Prop实例
 	readonly isProp = true;
 
+	// 所属节点
 	readonly owner: INode;
 
 	// 属性key
 	key: Ref<string | number | undefined> = ref();
 
-	// 扩展值
+	// 属性展开标志,类似于<Button {...props} />
 	spread: Ref<boolean> = ref(false);
 
+	// 所属属性组
 	readonly props: IProps;
 
+	// 属性配置选项
 	readonly options: any;
 
+	// 唯一标识符
 	readonly id = uniqueId('prop$');
 
+	// 属性类型
 	private _type = ref<ValueTypes>('unset');
 
 	get type(): ValueTypes {
 		return this._type.value;
 	}
 
+	// 属性值
 	private _value = ref<any>(UNSET);
 
+	// 计算属性值
 	private readonly computedValue = computed(() =>
 		this.export(IPublicEnumTransformStage.Serilize)
 	);
@@ -120,8 +150,10 @@ export class Prop implements IProp {
 		return this.computedValue.value;
 	}
 
+	// 属性代码
 	private _code: string | null = null;
 
+	// 计算属性代码
 	private readonly computedCode = computed(() => {
 		if (isJSExpression(this.value)) {
 			return this.value.value;
@@ -172,12 +204,15 @@ export class Prop implements IProp {
 		return this._slotNode || null;
 	}
 
+	// 子属性列表
 	private _items: ShallowReactive<IProp[]> = shallowReactive([]);
 
+	// 子属性映射表
 	private _maps: ShallowReactive<Map<string | number, IProp>> = shallowReactive(
 		new Map()
 	);
 
+	// 计算子属性列表
 	private readonly computedItems = computed((): IProp[] => {
 		if (this._items.length > 0) return this._items;
 		if (this._type.value === 'list') {
@@ -228,6 +263,7 @@ export class Prop implements IProp {
 		return this.computedItems.value;
 	}
 
+	// 计算子属性映射表
 	private readonly computedMaps = computed(() => {
 		if (this._items.length === 0) {
 			return null;
@@ -255,10 +291,11 @@ export class Prop implements IProp {
 	private purged = false;
 
 	/**
+	 * 构造函数
 	 * @param parent 父级节点
 	 * @param value 属性值
 	 * @param key 属性key
-	 * @param spread 是否展开
+	 * @param spread 是否展开 类似于<Button {...props} />;
 	 * @param options 其他配置
 	 */
 	constructor(
@@ -279,18 +316,30 @@ export class Prop implements IProp {
 		this.setupItems();
 	}
 
+	/**
+	 * 设置子属性
+	 */
 	setupItems() {
 		return this.items;
 	}
 
+	/**
+	 * 获取指定属性名的值
+	 */
 	getPropValue(propName: string | number): any {
 		return this.get(propName)!.getValue();
 	}
 
+	/**
+	 * 设置指定属性名的值
+	 */
 	setPropValue(propName: string | number, value: any): void {
 		this.set(propName, value);
 	}
 
+	/**
+	 * 清除指定属性名的值
+	 */
 	clearPropValue(propName: string | number): void {
 		this.get(propName, false)?.unset();
 	}
@@ -308,7 +357,8 @@ export class Prop implements IProp {
 			stage === IPublicEnumTransformStage.Render &&
 			this.key.value === '___condition___'
 		) {
-			// 在设计器里，所有组件默认需要展示，除非开启了 enableCondition 配置 当enableCondition === false的时候设计器中___condition___默认显示
+			// 在设计器里，所有组件默认需要展示，除非开启了 enableCondition 配置
+			// 当enableCondition === false的时候设计器中___condition___默认显示
 			if (engineConfig?.get('enableCondition') !== true) {
 				return true;
 			}
@@ -368,6 +418,9 @@ export class Prop implements IProp {
 		}
 	}
 
+	/**
+	 * 获取属性值的字符串表示
+	 */
 	getAsString(): string {
 		if (this.type === 'literal') {
 			return this._value.value ? String(this._value.value) : '';
@@ -375,6 +428,10 @@ export class Prop implements IProp {
 		return '';
 	}
 
+	/**
+	 * 设置属性值
+	 * @param val 要设置的值
+	 */
 	setValue(val: IPublicTypeCompositeValue) {
 		if (val === this._value.value) return;
 		const oldValue = this._value.value;
@@ -416,7 +473,6 @@ export class Prop implements IProp {
 
 	/**
 	 * 通知属性变化
-	 *
 	 * @param oldValue 旧值
 	 */
 	emitChange({ oldValue }: { oldValue: IPublicTypeCompositeValue | UNSET }) {
@@ -438,10 +494,16 @@ export class Prop implements IProp {
 		this.owner.emitPropChange(propsInfo);
 	}
 
+	/**
+	 * 获取属性值
+	 */
 	getValue(): IPublicTypeCompositeValue {
 		return this.export(IPublicEnumTransformStage.Serilize);
 	}
 
+	/**
+	 * 清理资源
+	 */
 	private dispose() {
 		if (this._items.length) {
 			this._items.forEach((prop) => prop.purge());
@@ -457,6 +519,10 @@ export class Prop implements IProp {
 		}
 	}
 
+	/**
+	 * 设置为插槽类型
+	 * @param data 插槽数据
+	 */
 	setAsSlot(data: IPublicTypeJSSlot) {
 		this._type.value = 'slot';
 		// 插槽的序列化结构
@@ -498,6 +564,9 @@ export class Prop implements IProp {
 		}
 	}
 
+	/**
+	 * 取消设置属性值
+	 */
 	unset() {
 		if (this._type.value !== 'unset') {
 			this._type.value = 'unset';
@@ -507,6 +576,9 @@ export class Prop implements IProp {
 		}
 	}
 
+	/**
+	 * 判断是否未设置值
+	 */
 	isUnset() {
 		return this._type.value === 'unset';
 	}
@@ -546,6 +618,12 @@ export class Prop implements IProp {
 		return this.code === other.code ? 0 : 2;
 	}
 
+	/**
+	 * 获取指定路径的属性
+	 * @param path 属性路径
+	 * @param createIfNone 如果不存在是否创建
+	 * @returns 属性实例
+	 */
 	get(path: string | number, createIfNone = true): IProp | null {
 		const type = this._type.value;
 		if (
@@ -597,11 +675,18 @@ export class Prop implements IProp {
 		return null;
 	}
 
+	/**
+	 * 移除当前属性
+	 */
 	remove() {
 		this.parent.delete(this);
 		this.unset();
 	}
 
+	/**
+	 * 删除指定属性
+	 * @param prop 要删除的属性
+	 */
 	delete(prop: IProp): void {
 		/* istanbul ignore else */
 		if (this._items) {
@@ -616,6 +701,10 @@ export class Prop implements IProp {
 		}
 	}
 
+	/**
+	 * 删除指定key的属性
+	 * @param key 属性key
+	 */
 	deleteKey(key: string): void {
 		/* istanbul ignore else */
 		if (this.maps) {
@@ -626,6 +715,12 @@ export class Prop implements IProp {
 		}
 	}
 
+	/**
+	 * 添加属性值
+	 * @param value 要添加的值
+	 * @param force 是否强制添加
+	 * @returns 添加的属性实例
+	 */
 	add(value: IPublicTypeCompositeValue, force = false): IProp | null {
 		const type = this._type.value;
 		if (type !== 'list' && type !== 'unset' && !force) {
@@ -640,6 +735,13 @@ export class Prop implements IProp {
 		return prop;
 	}
 
+	/**
+	 * 设置属性值
+	 * @param key 属性key
+	 * @param value 属性值
+	 * @param force 是否强制设置
+	 * @returns 设置的属性实例
+	 */
 	set(
 		key: string | number,
 		value: IPublicTypeCompositeValue | Prop,
@@ -693,6 +795,11 @@ export class Prop implements IProp {
 		return prop;
 	}
 
+	/**
+	 * 判断是否包含指定key的属性
+	 * @param key 属性key
+	 * @returns 是否包含
+	 */
 	has(key: string): boolean {
 		if (this._type.value !== 'map') {
 			return false;
@@ -703,6 +810,9 @@ export class Prop implements IProp {
 		return hasOwnProperty(this._value, key);
 	}
 
+	/**
+	 * 清除属性
+	 */
 	purge() {
 		if (this.purged) {
 			return;
@@ -719,6 +829,9 @@ export class Prop implements IProp {
 		}
 	}
 
+	/**
+	 * 迭代器实现
+	 */
 	[Symbol.iterator](): { next(): { value: IProp } } {
 		let index = 0;
 		const { items } = this;
@@ -739,6 +852,10 @@ export class Prop implements IProp {
 		};
 	}
 
+	/**
+	 * 遍历属性
+	 * @param fn 遍历函数
+	 */
 	forEach(fn: (item: IProp, key: number | string | undefined) => void): void {
 		const { items } = this;
 		if (!items) {
@@ -750,6 +867,11 @@ export class Prop implements IProp {
 		);
 	}
 
+	/**
+	 * 映射属性
+	 * @param fn 映射函数
+	 * @returns 映射结果
+	 */
 	map<T>(fn: (item: IProp, key: number | string | undefined) => T): T[] | null {
 		const { items } = this;
 		if (!items) {
@@ -761,15 +883,26 @@ export class Prop implements IProp {
 		);
 	}
 
+	/**
+	 * 获取所属属性组
+	 */
 	getProps() {
 		return this.props;
 	}
 
+	/**
+	 * 获取所属节点
+	 */
 	getNode() {
 		return this.owner;
 	}
 }
 
+/**
+ * 判断对象是否为Prop实例
+ * @param obj 要判断的对象
+ * @returns 是否为Prop实例
+ */
 export function isProp(obj: any): obj is Prop {
 	return obj && obj.isProp;
 }

@@ -2,9 +2,11 @@ import {
 	IPublicModelSensor,
 	IPublicTypeComponentInstance,
 	IPublicTypeNodeInstance,
+	IPublicTypeScrollable,
 } from '@arvin-shu/microcode-types';
 import { Point } from './designer';
 import { INode } from './document';
+import { ScrollTarget } from './designer/scroller';
 
 export type AutoFit = '100%';
 // eslint-disable-next-line no-redeclare
@@ -34,6 +36,8 @@ export interface ISimulatorHost<P = object> extends IPublicModelSensor {
 	 */
 	getComponentInstances(node: INode): IPublicTypeComponentInstance[] | null;
 
+	computeRect(node: INode): DOMRect | null;
+
 	findDOMNodes(
 		instance: IPublicTypeComponentInstance,
 		selector?: string
@@ -50,7 +54,9 @@ export interface ISimulatorHost<P = object> extends IPublicModelSensor {
 	): IPublicTypeNodeInstance | null;
 }
 
-export interface IViewport {
+export interface IScrollable extends IPublicTypeScrollable {}
+
+export interface IViewport extends IScrollable {
 	/**
 	 * 视口大小
 	 */
@@ -77,6 +83,26 @@ export interface IViewport {
 	 * 内容矩形维度
 	 */
 	readonly contentBounds: DOMRect;
+
+	/**
+	 * 视口滚动对象
+	 */
+	readonly scrollTarget?: ScrollTarget;
+
+	/**
+	 * 是否滚动中
+	 */
+	readonly scrolling: boolean;
+
+	/**
+	 * 内容当前滚动 X
+	 */
+	readonly scrollX: number;
+
+	/**
+	 * 内容当前滚动 Y
+	 */
+	readonly scrollY: number;
 
 	/**
 	 * 全局坐标系转化为本地坐标系

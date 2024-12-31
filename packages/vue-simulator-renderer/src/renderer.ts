@@ -266,7 +266,6 @@ export class SimulatorRendererContainer {
 			document.body.appendChild(container);
 			container.id = containerId;
 		}
-
 		document.documentElement.classList.add('engine-page');
 		document.body.classList.add('engine-document');
 		createApp(SimulatorRendererView, {
@@ -274,6 +273,7 @@ export class SimulatorRendererContainer {
 		})
 			.use(this.router)
 			.mount(container);
+		host.project.setRendererReady(this);
 	}
 
 	findDOMNodes(instance: ComponentRecord): Array<Element | Text> | null {
@@ -291,7 +291,6 @@ export class SimulatorRendererContainer {
 			const { cid, did } = el;
 			const documentInstance = this.documentInstanceMap.get(did);
 			const instance = documentInstance?.getComponentInstance(cid) ?? null;
-
 			return instance && getClosestNodeInstanceByComponent(instance.$, specId);
 		}
 		return getClosestNodeInstance(el, specId);

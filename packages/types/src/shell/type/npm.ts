@@ -1,6 +1,6 @@
 import { IPublicTypeNpmInfo } from './npm-info';
 
-export interface IPublicTypeLowCodeComponent {
+export interface IPublicTypeMicrocodeComponent {
 	/**
 	 * 研发模式
 	 */
@@ -14,5 +14,5 @@ export interface IPublicTypeLowCodeComponent {
 export type IPublicTypeProCodeComponent = IPublicTypeNpmInfo;
 export type IPublicTypeComponentMap =
 	| IPublicTypeProCodeComponent
-	| IPublicTypeLowCodeComponent;
+	| IPublicTypeMicrocodeComponent;
 export type IPublicTypeComponentsMap = IPublicTypeComponentMap[];

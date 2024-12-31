@@ -1,25 +1,31 @@
 import {
 	IPublicEnumTransformStage,
 	IPublicModelEditor,
+	IPublicModelScroller,
 	IPublicTypeComponentMetadata,
 	IPublicTypeCompositeObject,
 	IPublicTypeLocationData,
 	IPublicTypePropsList,
 	IPublicTypePropsTransducer,
+	IPublicTypeScrollable,
 } from '@arvin-shu/microcode-types';
 import {
 	computed,
 	CSSProperties,
 	ExtractPropTypes,
+	isProxy,
 	PropType,
 	Ref,
 	ref,
+	toRaw,
 } from 'vue';
 import { INode, insertChildren, Node } from '../document';
 import { IProject, Project } from '../project';
 import { Dragon, IDragon } from './dragon';
 import { ComponentMeta, IComponentMeta } from '../component-meta';
 import { DropLocation } from './location';
+import { Scroller } from './scroller';
+import { Detecting } from './detecting';
 
 export const designerProps = {
 	editor: {
@@ -49,6 +55,10 @@ export interface IDesigner {
 	get dragon(): IDragon;
 	get editor(): IPublicModelEditor;
 	readonly project: IProject;
+	get detecting(): Detecting;
+
+	createScroller(scrollable: IPublicTypeScrollable): IPublicModelScroller;
+
 	createComponentMeta(
 		data: IPublicTypeComponentMetadata
 	): IComponentMeta | null;
@@ -81,6 +91,8 @@ export class Designer implements IDesigner {
 
 	private _dropLocation?: DropLocation;
 
+	readonly detecting = new Detecting();
+
 	// 当前正在编排的项目实例
 	readonly project: IProject;
 
@@ -105,6 +117,9 @@ export class Designer implements IDesigner {
 		this.dragon = new Dragon(this);
 		this.project = new Project(this);
 		this.setProps(props);
+		this.dragon.onDragstart(() => {
+			this.detecting.enable = false;
+		});
 		this.dragon.onDragend((e) => {
 			// 插入
 			const { dragObject } = e;
@@ -118,13 +133,29 @@ export class Designer implements IDesigner {
 			if (loc) {
 				insertChildren(loc.target, nodeData as any, (loc.detail as any).index);
 			}
+			this.detecting.enable = true;
 		});
+	}
+
+	createScroller(scrollable: IPublicTypeScrollable): IPublicModelScroller {
+		return new Scroller(scrollable);
 	}
 
 	createLocation(locationData: IPublicTypeLocationData<INode>): DropLocation {
 		const loc = new DropLocation(locationData);
-
+		if (
+			this._dropLocation &&
+			this._dropLocation.document &&
+			this._dropLocation.document !== loc.document
+		) {
+			this._dropLocation.document.dropLocation = null;
+		}
 		this._dropLocation = loc;
+		this.postEvent('dropLocation.change', loc);
+		if (loc.document) {
+			toRaw(loc.document).dropLocation = loc;
+		}
+		// TODO this.activeTracker.track({ node: loc.target, detail: loc.detail });
 		return loc;
 	}
 
@@ -225,6 +256,10 @@ export class Designer implements IDesigner {
 		componentName: string,
 		generateMetadata?: () => IPublicTypeComponentMetadata | null
 	): IComponentMeta {
+		if (isProxy(this._componentMetasMap)) {
+			console.log(this._componentMetasMap);
+		}
+
 		if (this._componentMetasMap.value.has(componentName)) {
 			return this._componentMetasMap.value.get(componentName)!;
 		}

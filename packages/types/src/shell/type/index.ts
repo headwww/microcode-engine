@@ -59,3 +59,6 @@ export * from './field-config';
 export * from './location';
 export * from './node-instance';
 export * from './component-instance';
+export * from './drag-node-object';
+export * from './prop-change-options';
+export * from './scrollable';

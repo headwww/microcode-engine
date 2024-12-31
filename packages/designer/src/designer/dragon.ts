@@ -96,6 +96,10 @@ export class Dragon implements IDragon {
 
 	private _dragging = ref(false);
 
+	get dragging(): boolean {
+		return this._dragging.value;
+	}
+
 	private _activeSensor = ref<IPublicModelSensor | undefined>();
 
 	constructor(readonly designer: IDesigner) {

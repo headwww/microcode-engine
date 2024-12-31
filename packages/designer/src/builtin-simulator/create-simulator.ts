@@ -131,8 +131,7 @@ export function createSimulator(
 			resolve(renderer);
 		}
 		const loaded = () => {
-			// TODO renderer未判断
-			resolve(win.SimulatorRenderer);
+			resolve(win.SimulatorRenderer || host.renderer);
 			win.removeEventListener('load', loaded);
 		};
 		win.addEventListener('load', loaded);

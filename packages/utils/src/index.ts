@@ -15,3 +15,5 @@ export * from './shallow-equal';
 export * from './svg-icon';
 export * from './unique-id';
 export * from './check-types';
+export * from './is-element';
+export * from './node-helper';

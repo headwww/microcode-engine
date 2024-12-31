@@ -17,3 +17,8 @@ export * from './history';
 export * from './selection';
 export * from './sensor';
 export * from './drop-location';
+export * from './exclusive-group';
+export * from './simulator-render';
+export * from './scroll-target';
+export * from './scroller';
+export * from './detecting';

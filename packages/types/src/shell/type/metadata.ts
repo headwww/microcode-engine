@@ -1,6 +1,26 @@
 import { IPublicModelNode } from '../model';
 
 /**
+ * children 内容是纯文本，支持双击直接编 的可配置项目
+ */
+export interface IPublicTypeLiveTextEditingConfig {
+	propTarget: string;
+
+	selector?: string;
+
+	/**
+	 * 编辑模式 纯文本 | 段落编辑 | 文章编辑（默认纯文本，无跟随工具条）
+	 * @default 'plaintext'
+	 */
+	mode?: 'plaintext' | 'paragraph' | 'article';
+
+	/**
+	 * 从 contentEditable 获取内容并设置到属性
+	 */
+	onSaveContent?: (content: string, prop: any) => any;
+}
+
+/**
  * 嵌套控制函数
  */
 export type IPublicTypeNestingFilter = (
@@ -125,8 +145,12 @@ export interface IPublicTypeCallbacks {
 		currentNode: IPublicModelNode | null
 	) => void;
 
+	onSubtreeModified?: (currentNode: IPublicModelNode, options: any) => void;
 	/**
 	 * 移动 hook，如果返回值是 false，可以控制组件不可被移动
 	 */
 	onMoveHook?: (currentNode: IPublicModelNode) => boolean;
+
+	// thinkof 限制性拖拽
+	onHoverHook?: (currentNode: IPublicModelNode) => boolean;
 }

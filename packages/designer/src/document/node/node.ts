@@ -2,6 +2,7 @@ import {
 	GlobalEvent,
 	IBaseModelNode,
 	IPublicEnumTransformStage,
+	IPublicModelExclusiveGroup,
 	IPublicModelNode,
 	IPublicTypeComponentSchema,
 	IPublicTypeCompositeValue,
@@ -24,7 +25,7 @@ import {
 	IEventBus,
 	wrapWithEventSwitch,
 } from '@arvin-shu/microcode-editor-core';
-import { computed, nextTick, ref, Ref, shallowReactive } from 'vue';
+import { computed, nextTick, ref, Ref, shallowReactive, toRaw } from 'vue';
 import { IComponentMeta } from '../../component-meta';
 import { IDocumentModel } from '../document-model';
 import { getConvertedExtraKey, IProps, Props } from './props/props';
@@ -33,6 +34,15 @@ import { IProp, Prop } from './props/prop';
 import { EDITOR_EVENT, NodeRemoveOptions } from '../../types';
 import { includeSlot, removeSlot } from '../../utils/slot';
 import { foreachReverse } from '../../utils';
+import {
+	ExclusiveGroup,
+	IExclusiveGroup,
+	isExclusiveGroup,
+} from './exclusive-group';
+
+export function isRootNode(node: INode): node is IRootNode {
+	return node && node.isRootNode;
+}
 
 export interface IBaseNode<
 	Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema,
@@ -43,7 +53,8 @@ export interface IBaseNode<
 			INodeChildren,
 			IComponentMeta,
 			IProps,
-			IProp
+			IProp,
+			IExclusiveGroup
 		>,
 		| 'isRoot'
 		| 'isPage'
@@ -63,13 +74,19 @@ export interface IBaseNode<
 		| 'isContainer'
 		| 'isEmpty'
 	> {
+	isNode: boolean;
+
 	get componentMeta(): IComponentMeta;
+
+	// TODO   get settingEntry(): ISettingTopEntry;
 
 	get isPurged(): boolean;
 
 	get index(): number | undefined;
 
 	get isPurging(): boolean;
+
+	getId(): string;
 
 	getParent(): INode | null;
 
@@ -78,6 +95,8 @@ export interface IBaseNode<
 	 * @param useMutator 是否触发联动逻辑
 	 */
 	internalSetParent(parent: INode | null, useMutator?: boolean): void;
+
+	setConditionGroup(grp: IPublicModelExclusiveGroup | string | null): void;
 
 	internalToShellNode(): IPublicModelNode | null;
 
@@ -208,23 +227,15 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 		return this._children || null;
 	}
 
-	private readonly computedComponentMeta = computed(() =>
-		this.document.getComponentMeta(this.componentName)
-	);
-
 	private readonly computedZLevel = computed(() => {
 		if (this._parent.value) {
-			return this._parent.value.zLevel + 1;
+			return toRaw(this._parent.value).zLevel + 1;
 		}
 		return 0;
 	});
 
 	get zLevel() {
 		return this.computedZLevel.value;
-	}
-
-	get componentMeta() {
-		return this.computedComponentMeta.value;
 	}
 
 	private readonly computedTitle = computed(() => {
@@ -248,9 +259,9 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 
 	isInited = false;
 
-	private _isRGLContainer = false;
-
 	// TODO settingEntry设置器实例没有管理
+
+	private _isRGLContainer = false;
 
 	set isRGLContainer(status: boolean) {
 		this._isRGLContainer = status;
@@ -280,6 +291,12 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 		return this._slots;
 	}
 
+	private _conditionGroup = ref<IExclusiveGroup | null>(null);
+
+	get conditionGroup() {
+		return this._conditionGroup.value as any;
+	}
+
 	private purged = false;
 
 	/**
@@ -289,25 +306,14 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 		return this.purged;
 	}
 
-	private readonly computedPropsData = computed(() => {
-		if (!this.isParental() || this.componentName === 'Fragment') {
-			return null;
-		}
-		return this.props.export(IPublicEnumTransformStage.Serilize).props || null;
-	});
-
-	get propsData() {
-		return this.computedPropsData.value;
-	}
-
-	private purging: boolean = false;
-
 	/**
 	 * 是否正在销毁
 	 */
 	get isPurging() {
 		return this.purging;
 	}
+
+	private purging: boolean = false;
 
 	constructor(
 		readonly document: IDocumentModel,
@@ -349,10 +355,6 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 				node: this,
 			});
 		});
-	}
-
-	getDOMNode(): HTMLElement {
-		throw new Error('Method not implemented.');
 	}
 
 	/**
@@ -494,13 +496,14 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 	}
 
 	didDropIn(dragment: INode) {
-		const { callbacks } = this.componentMeta.advanced;
+		const self = toRaw(this);
+		const { callbacks } = self.componentMeta.advanced;
 		if (callbacks?.onNodeAdd) {
-			const cbThis = this.internalToShellNode();
+			const cbThis = self.internalToShellNode();
 			callbacks?.onNodeAdd.call(cbThis, dragment.internalToShellNode(), cbThis);
 		}
-		if (this._parent.value) {
-			this._parent.value.didDropIn(dragment);
+		if (self._parent.value) {
+			self._parent.value.didDropIn(dragment);
 		}
 	}
 
@@ -537,8 +540,16 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 		if (parent) {
 			// 建立新的父子关系，尤其注意：对于 parent 为 null 的场景，不会赋值，因为 subtreeModified 等事件可能需要知道该 node 被删除前的父子关系
 			this._parent.value = parent;
-			this.document.removeWillPurge(this);
-			// TODO 新的条件组没有设置
+			this.document.removeWillPurge(this as any);
+
+			if (!this.conditionGroup) {
+				// initial conditionGroup
+				const grp = this.getExtraProp('conditionGroup', false)?.getAsString();
+				if (grp) {
+					this.setConditionGroup(grp);
+				}
+			}
+
 			if (useMutator) {
 				parent.didDropIn(this as any);
 			}
@@ -621,13 +632,83 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 		this.document.selection.select(this.id);
 	}
 
-	// TODO 悬停高亮
+	/**
+	 * 悬停高亮
+	 */
+	hover(flag = true) {
+		if (flag) {
+			this.document.designer.detecting.capture(this as any);
+		} else {
+			this.document.designer.detecting.release(this as any);
+		}
+	}
+
+	private readonly computedComponentMeta = computed(() =>
+		this.document.getComponentMeta(this.componentName)
+	);
+
+	get componentMeta() {
+		return this.computedComponentMeta.value;
+	}
+
+	private readonly computedPropsData = computed(() => {
+		if (!this.isParental() || this.componentName === 'Fragment') {
+			return null;
+		}
+		return this.props.export(IPublicEnumTransformStage.Serilize).props || null;
+	});
+
+	get propsData() {
+		return this.computedPropsData.value;
+	}
 
 	hasSlots() {
 		return this._slots.length > 0;
 	}
 
-	// TODO setConditionGroup
+	setConditionGroup(grp: IPublicModelExclusiveGroup | string | null) {
+		let _grp: IExclusiveGroup | null = null;
+		if (!grp) {
+			this.getExtraProp('conditionGroup', false)?.remove();
+			if (this._conditionGroup.value) {
+				this._conditionGroup.value.remove(this as any);
+				this._conditionGroup.value = null;
+			}
+			return;
+		}
+		if (!isExclusiveGroup(grp)) {
+			if (this.prevSibling?.conditionGroup?.name === grp) {
+				_grp = this.prevSibling.conditionGroup;
+			} else if (this.nextSibling?.conditionGroup?.name === grp) {
+				_grp = this.nextSibling.conditionGroup;
+			} else if (typeof grp === 'string') {
+				_grp = new ExclusiveGroup(grp);
+			}
+		}
+		if (_grp && (this._conditionGroup.value as any) !== _grp) {
+			this.getExtraProp('conditionGroup', true)?.setValue(_grp.name);
+			if (this._conditionGroup.value) {
+				this._conditionGroup.value.remove(this as any);
+			}
+			this._conditionGroup.value = _grp;
+			_grp?.add(this as any);
+		}
+	}
+
+	/* istanbul ignore next */
+	isConditionalVisible(): boolean | undefined {
+		return this._conditionGroup.value?.isVisible(this as any);
+	}
+
+	/* istanbul ignore next */
+	setConditionalVisible() {
+		this._conditionGroup.value?.setVisible(this as any);
+	}
+
+	hasCondition() {
+		const v = this.getExtraProp('condition', false)?.getValue();
+		return v != null && v !== '' && v !== true;
+	}
 
 	/**
 	 * 当满足以下条件之一时存在循环:
@@ -650,7 +731,47 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 		return false;
 	}
 
-	// TODO 替换节点的功能replaceWith  replaceChild
+	wrapWith(schema: Schema) {
+		const wrappedNode = this.replaceWith({
+			...schema,
+			children: [this.export()],
+		});
+		return wrappedNode.children!.get(0);
+	}
+
+	replaceWith(schema: Schema, migrate = false): any {
+		// reuse the same id? or replaceSelection
+		schema = { ...(migrate ? this.export() : {}), ...schema };
+		return this.parent?.replaceChild(this, schema);
+	}
+
+	/**
+	 * 替换子节点
+	 *
+	 * @param {INode} node
+	 * @param {object} data
+	 */
+	replaceChild(node: INode, data: any): INode | null {
+		if (this.children?.has(node)) {
+			const selected = this.document.selection.has(node.id);
+
+			delete data.id;
+			const newNode = this.document.createNode(data);
+
+			if (!isNode(newNode)) {
+				return null;
+			}
+
+			this.insertBefore(newNode, node, false);
+			node.remove(false);
+
+			if (selected) {
+				this.document.selection.select(newNode.id);
+			}
+			return newNode;
+		}
+		return node;
+	}
 
 	setVisible(flag: boolean): void {
 		this.getExtraProp('hidden')?.setValue(!flag);
@@ -838,8 +959,6 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 			...extras,
 		};
 
-		// TODO 未处理addon
-
 		const schema = {
 			...baseSchema,
 			props: this.document.designer.transformProps(props as any, this, stage),
@@ -911,6 +1030,17 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 	}
 
 	/**
+	 * 当前node对应组件是否已注册可用
+	 */
+	isValidComponent() {
+		const allComponents = this.document?.designer?.componentsMap;
+		if (allComponents && allComponents[this.componentName]) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * 删除一个节点
 	 * @param node
 	 */
@@ -924,7 +1054,7 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 		}
 		this.purged = true;
 		this.props.purge();
-		// TODO未处理很多其他情况
+		// TODO settingEntry未注销
 	}
 
 	internalPurgeStart() {
@@ -997,6 +1127,14 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 		return this.props;
 	}
 
+	mergeChildren(
+		remover: (node: INode, idx: number) => any,
+		adder: (children: INode[]) => IPublicTypeNodeData[] | null,
+		sorter: (firstNode: INode, secondNode: INode) => any
+	) {
+		this.children?.mergeChildren(remover, adder, sorter);
+	}
+
 	onChildrenChange(
 		fn: (param?: { type: string; node: INode }) => void
 	): IPublicTypeDisposable | undefined {
@@ -1004,9 +1142,15 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 		return this.children?.onChange(wrappedFunc);
 	}
 
-	// TODO mergeChildren 未设计
-
-	// TODO getDOMNode 未设计
+	getDOMNode(): any {
+		const instance = this.document.simulator?.getComponentInstances(
+			this as any
+		)?.[0];
+		if (!instance) {
+			return;
+		}
+		return this.document.simulator?.findDOMNodes(instance)?.[0];
+	}
 
 	/**
 	 * 获取磁贴相关信息
@@ -1040,7 +1184,12 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 		};
 	}
 
-	// getRect 未设计
+	getRect(): DOMRect | null {
+		if (this.isRoot()) {
+			return this.document.simulator?.viewport.contentBounds || null;
+		}
+		return this.document.simulator?.computeRect(this as any) || null;
+	}
 
 	getIcon() {
 		return this.icon;
@@ -1109,8 +1258,15 @@ export function comparePosition(node1: INode, node2: INode): PositionNO {
 	return PositionNO.BeforeOrAfter;
 }
 
+/**
+ * 获取指定层级的父节点
+ * @param child 子节点
+ * @param zLevel 目标层级
+ * @returns 返回指定层级的父节点,如果找不到则返回 null
+ */
 export function getZLevelTop(child: INode, zLevel: number): INode | null {
 	let l = child.zLevel;
+
 	if (l < zLevel || zLevel < 0) {
 		return null;
 	}
@@ -1135,11 +1291,12 @@ export function contains(node1: INode, node2: INode): boolean {
 		return true;
 	}
 
-	if (!node1.isParentalNode || !node2.parent) {
+	if (!node1.isParentalNode || !toRaw(node2.parent)) {
 		return false;
 	}
 
-	const p = getZLevelTop(node2, node1.zLevel);
+	const p = toRaw(getZLevelTop(node2, node1.zLevel));
+
 	if (!p) {
 		return false;
 	}

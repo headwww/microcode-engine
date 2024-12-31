@@ -2,6 +2,8 @@ import { IPublicModelDocumentModel } from './document-model';
 import { IPublicModelDragObject } from './drag-object';
 
 export interface IPublicModelLocateEvent {
+	get type(): string;
+
 	/**
 	 * 浏览器窗口坐标系
 	 */

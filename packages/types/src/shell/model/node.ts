@@ -13,6 +13,7 @@ import { IPublicModelProp } from './prop';
 import { IPublicEnumTransformStage } from '../enum';
 import { IPublicModelComponentMeta } from './component-meta';
 import { IPublicModelProps } from './props';
+import { IPublicModelExclusiveGroup } from './exclusive-group';
 
 export interface IBaseModelNode<
 	Document = IPublicModelDocumentModel,
@@ -21,6 +22,7 @@ export interface IBaseModelNode<
 	ComponentMeta = IPublicModelComponentMeta,
 	Props = IPublicModelProps,
 	Prop = IPublicModelProp,
+	ExclusiveGroup = IPublicModelExclusiveGroup,
 > {
 	/**
 	 * 节点id
@@ -152,110 +154,105 @@ export interface IBaseModelNode<
 
 	/**
 	 * 下标
-	 * index
 	 */
 	get index(): number | undefined;
 
 	/**
 	 * 图标
-	 * get icon of this node
 	 */
 	get icon(): IPublicTypeIconType;
 
 	/**
 	 * 节点所在树的层级深度，根节点深度为 0
-	 * depth level of this node, value of root node is 0
 	 */
 	get zLevel(): number;
 
 	/**
 	 * 节点 componentName
-	 * componentName
 	 */
 	get componentName(): string;
 
 	/**
 	 * 节点的物料元数据
-	 * get component meta of this node
 	 */
 	get componentMeta(): ComponentMeta | null;
 
 	/**
 	 * 获取节点所属的文档模型对象
-	 * get documentModel of this node
 	 */
 	get document(): Document | null;
 
 	/**
 	 * 获取当前节点的前一个兄弟节点
-	 * get previous sibling of this node
 	 */
 	get prevSibling(): Node | null | undefined;
 
 	/**
 	 * 获取当前节点的后一个兄弟节点
-	 * get next sibling of this node
 	 */
 	get nextSibling(): Node | null | undefined;
 
 	/**
 	 * 获取当前节点的父亲节点
-	 * get parent of this node
 	 */
 	get parent(): Node | null;
 
 	/**
 	 * 获取当前节点的孩子节点模型
-	 * get children of this node
 	 */
 	get children(): NodeChildren | null;
 
 	/**
 	 * 节点上挂载的插槽节点们
-	 * get slots of this node
 	 */
 	get slots(): Node[];
 
 	/**
 	 * 当前节点为插槽节点时，返回节点对应的属性实例
-	 * return coresponding prop when this node is a slot node
 	 */
 	get slotFor(): Prop | null | undefined;
 
 	/**
 	 * 返回节点的属性集
-	 * get props
 	 */
 	get props(): Props | null;
 
 	/**
 	 * 返回节点的属性集
-	 * get props data
 	 */
 	get propsData(): IPublicTypePropsMap | IPublicTypePropsList | null;
 
 	/**
+	 * get conditionGroup
+	 */
+	get conditionGroup(): ExclusiveGroup | null;
+
+	/**
 	 * 获取符合搭建协议 - 节点 schema 结构
-	 * get schema of this node
-	 * @since v1.1.0
 	 */
 	get schema(): IPublicTypeNodeSchema;
 
 	/**
+	 * 返回节点的尺寸、位置信息
+	 */
+	getRect(): DOMRect | null;
+
+	/**
 	 * 是否有挂载插槽节点
-	 * check if current node has slots
 	 */
 	hasSlots(): boolean;
+	/**
+	 * 是否设定了渲染条件
+	 */
+	hasCondition(): boolean;
 
 	/**
 	 * 是否设定了循环数据
-	 * check if loop is set for this node
 	 */
 	hasLoop(): boolean;
 
 	/**
 	 * 获取指定 path 的属性模型实例
-	 * get prop by path
 	 * @param path 属性路径，支持 a / a.b / a.0 等格式
 	 * @param createIfNone 如果不存在，是否新建，默认为 true
 	 */
@@ -263,7 +260,6 @@ export interface IBaseModelNode<
 
 	/**
 	 * 获取指定 path 的属性模型实例值
-	 * get prop value by path
 	 * @param path 属性路径，支持 a / a.b / a.0 等格式
 	 */
 	getPropValue(path: string): any;
@@ -272,8 +268,6 @@ export interface IBaseModelNode<
 	 * 获取指定 path 的属性模型实例，
 	 *  注：导出时，不同于普通属性，该属性并不挂载在 props 之下，而是与 props 同级
 	 *
-	 * get extra prop by path, an extra prop means a prop not exists in the `props`
-	 * but as siblint of the `props`
 	 * @param path 属性路径，支持 a / a.b / a.0 等格式
 	 * @param createIfNone 当没有属性的时候，是否创建一个属性
 	 */
@@ -283,8 +277,6 @@ export interface IBaseModelNode<
 	 * 获取指定 path 的属性模型实例，
 	 *  注：导出时，不同于普通属性，该属性并不挂载在 props 之下，而是与 props 同级
 	 *
-	 * get extra prop value by path, an extra prop means a prop not exists in the `props`
-	 * but as siblint of the `props`
 	 * @param path 属性路径，支持 a / a.b / a.0 等格式
 	 * @returns
 	 */
@@ -292,7 +284,6 @@ export interface IBaseModelNode<
 
 	/**
 	 * 设置指定 path 的属性模型实例值
-	 * set value for prop with path
 	 * @param path 属性路径，支持 a / a.b / a.0 等格式
 	 * @param value 值
 	 */
@@ -300,7 +291,6 @@ export interface IBaseModelNode<
 
 	/**
 	 * 设置指定 path 的属性模型实例值
-	 * set value for extra prop with path
 	 * @param path 属性路径，支持 a / a.b / a.0 等格式
 	 * @param value 值
 	 */
@@ -308,14 +298,12 @@ export interface IBaseModelNode<
 
 	/**
 	 * 导入节点数据
-	 * import node schema
 	 * @param data
 	 */
 	importSchema(data: IPublicTypeNodeSchema): void;
 
 	/**
 	 * 导出节点数据
-	 * export schema from this node
 	 * @param stage
 	 * @param options
 	 */
@@ -326,7 +314,6 @@ export interface IBaseModelNode<
 
 	/**
 	 * 在指定位置之前插入一个节点
-	 * insert a node befor current node
 	 * @param node
 	 * @param ref
 	 * @param useMutator
@@ -335,7 +322,6 @@ export interface IBaseModelNode<
 
 	/**
 	 * 在指定位置之后插入一个节点
-	 * insert a node after this node
 	 * @param node
 	 * @param ref
 	 * @param useMutator
@@ -343,46 +329,71 @@ export interface IBaseModelNode<
 	insertAfter(node: Node, ref?: Node | undefined, useMutator?: boolean): void;
 
 	/**
+	 * 替换指定节点
+	 * @param node 待替换的子节点
+	 * @param data 用作替换的节点对象或者节点描述
+	 * @returns
+	 */
+	replaceChild(node: Node, data: any): Node | null;
+
+	/**
+	 * 将当前节点替换成指定节点描述
+	 */
+	replaceWith(schema: IPublicTypeNodeSchema): any;
+
+	/**
 	 * 选中当前节点实例
-	 * select current node
 	 */
 	select(): void;
 
 	/**
+	 * 设置悬停态
+	 */
+	hover(flag: boolean): void;
+
+	/**
 	 * 设置节点锁定状态
-	 * set lock value for current node
-	 * @param flag
-	 * @since v1.0.16
 	 */
 	lock(flag?: boolean): void;
 
 	/**
 	 * 删除当前节点实例
-	 * remove current node
 	 */
 	remove(): void;
 
 	/**
+	 * 执行新增、删除、排序等操作
+	 */
+	mergeChildren(
+		remover: (node: Node, idx: number) => boolean,
+		adder: (children: Node[]) => any,
+		sorter: (firstNode: Node, secondNode: Node) => number
+	): any;
+
+	/**
 	 * 当前节点是否包含某子节点
-	 * check if current node contains another node as a child
-	 * @param node
-	 * @since v1.1.0
 	 */
 	contains(node: Node): boolean;
 
 	/**
 	 * 当前节点是否可见
-	 * check if current node is visible
-	 * @since v1.1.0
 	 */
 	get visible(): boolean;
 
 	/**
 	 * 设置当前节点是否可见
-	 * set visible value for current node
-	 * @since v1.1.0
 	 */
 	set visible(value: boolean);
+
+	/**
+	 * 获取该节点的 ConditionalVisible 值
+	 */
+	isConditionalVisible(): boolean | undefined;
+
+	/**
+	 * 设置该节点的 ConditionalVisible 为 true
+	 */
+	setConditionalVisible(): void;
 
 	/**
 	 * 获取节点实例对应的 dom 节点

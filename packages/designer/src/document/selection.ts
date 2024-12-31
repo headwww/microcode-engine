@@ -6,30 +6,55 @@ import { IPublicModelSelection } from '@arvin-shu/microcode-types';
 import { shallowReactive } from 'vue';
 import { DocumentModel } from './document-model';
 import { comparePosition, INode, PositionNO } from './node';
-
+/**
+ * 选区接口定义
+ * 继承自IPublicModelSelection，但排除node属性
+ */
 export interface ISelection extends Omit<IPublicModelSelection<INode>, 'node'> {
+	/**
+	 * 判断选区是否包含指定节点
+	 * @param node 要检查的节点
+	 * @param excludeRoot 是否排除根节点
+	 */
 	containsNode(node: INode, excludeRoot: boolean): boolean;
 }
 
+/**
+ * 选区管理类
+ * 负责管理画布中节点的选中状态
+ */
 export class Selection implements ISelection {
+	/**
+	 * 选区事件总线,用于发布选区变更事件
+	 */
 	private emitter: IEventBus = createModuleEventBus('Selection');
 
+	/**
+	 * 已选中节点ID列表
+	 * 使用shallowReactive实现响应式
+	 */
 	private _selected = shallowReactive<string[]>([]);
 
+	/**
+	 * 构造函数
+	 * @param doc 关联的文档模型实例
+	 */
 	// eslint-disable-next-line no-useless-constructor, no-empty-function
 	constructor(readonly doc: DocumentModel) {}
 
 	/**
-	 * 选中的节点 id
+	 * 获取当前选中的节点ID列表
 	 */
 	get selected(): string[] {
 		return this._selected;
 	}
 
 	/**
-	 * 选中
+	 * 选中单个节点
+	 * @param id 要选中的节点ID
 	 */
 	select(id: string) {
+		// 如果已经是单选且选中的就是该节点,则不触发更新
 		if (this._selected.length === 1 && this._selected.indexOf(id) > -1) {
 			// avoid cause reaction
 			return;
@@ -37,6 +62,7 @@ export class Selection implements ISelection {
 
 		const node = this.doc.getNode(id);
 
+		// 检查节点是否可选
 		if (!node?.canSelect()) {
 			return;
 		}
@@ -46,11 +72,13 @@ export class Selection implements ISelection {
 	}
 
 	/**
-	 * 批量选中
+	 * 批量选中多个节点
+	 * @param ids 要选中的节点ID列表
 	 */
 	selectAll(ids: string[]) {
 		const selectIds: string[] = [];
 
+		// 过滤出可选的节点
 		ids.forEach((d) => {
 			const node = this.doc.getNode(d);
 
@@ -65,7 +93,7 @@ export class Selection implements ISelection {
 	}
 
 	/**
-	 * 清除选中
+	 * 清空选区
 	 */
 	clear() {
 		if (this._selected.length < 1) {
@@ -76,7 +104,7 @@ export class Selection implements ISelection {
 	}
 
 	/**
-	 * 整理选中
+	 * 整理选区,移除已不存在的节点
 	 */
 	dispose() {
 		const l = this._selected.length;
@@ -93,7 +121,8 @@ export class Selection implements ISelection {
 	}
 
 	/**
-	 * 添加选中
+	 * 添加节点到选区
+	 * @param id 要添加的节点ID
 	 */
 	add(id: string) {
 		if (this._selected.indexOf(id) > -1) {
@@ -105,14 +134,16 @@ export class Selection implements ISelection {
 	}
 
 	/**
-	 * 是否选中
+	 * 检查节点是否在选区内
+	 * @param id 要检查的节点ID
 	 */
 	has(id: string) {
 		return this._selected.indexOf(id) > -1;
 	}
 
 	/**
-	 * 移除选中
+	 * 从选区移除节点
+	 * @param id 要移除的节点ID
 	 */
 	remove(id: string) {
 		const i = this._selected.indexOf(id);
@@ -123,7 +154,9 @@ export class Selection implements ISelection {
 	}
 
 	/**
-	 * 选区是否包含节点
+	 * 检查选区是否包含指定节点
+	 * @param node 要检查的节点
+	 * @param excludeRoot 是否排除根节点
 	 */
 	containsNode(node: INode, excludeRoot = false) {
 		for (const id of this._selected) {
@@ -139,7 +172,7 @@ export class Selection implements ISelection {
 	}
 
 	/**
-	 * 获取选中的节点
+	 * 获取选区中的所有节点实例
 	 */
 	getNodes(): INode[] {
 		const nodes: INode[] = [];
@@ -153,12 +186,18 @@ export class Selection implements ISelection {
 	}
 
 	/**
-	 * 获取顶层选区节点，场景：拖拽时，建立蒙层，只蒙在最上层
+	 * 获取选区中的顶层节点
+	 * 如果一个节点是另一个选中节点的子节点,则只返回父节点
+	 *
+	 * 例如:
 	 * div (id: 1)
 	 *  ├── span (id: 2)
 	 *  │     └── text (id: 3)
 	 *  └── p (id: 4)
-	 *如果我们同时选中了 id 2（span）和 id 3（text），getTopNodes将只返回 id 2（span）节点，因为：
+	 *
+	 * 如果同时选中了id 2(span)和id 3(text),getTopNodes将只返回id 2(span)节点
+	 *
+	 * @param includeRoot 是否包含根节点
 	 */
 	getTopNodes(includeRoot = false) {
 		const nodes = [];
@@ -189,6 +228,11 @@ export class Selection implements ISelection {
 		return nodes;
 	}
 
+	/**
+	 * 监听选区变化事件
+	 * @param fn 选区变化回调函数
+	 * @returns 取消监听的函数
+	 */
 	onSelectionChange(fn: (ids: string[]) => void): () => void {
 		this.emitter.on('selectionchange', fn);
 		return () => {

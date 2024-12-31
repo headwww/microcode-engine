@@ -5,6 +5,7 @@ import {
 	reactive,
 	Ref,
 	ref,
+	toRaw,
 	watch,
 } from 'vue';
 import {
@@ -24,8 +25,12 @@ import {
 	assetBundle,
 	assetItem,
 	hasOwnProperty,
+	isDragAnyObject,
+	isDragNodeObject,
+	isLocationData,
 } from '@arvin-shu/microcode-utils';
 import { isNaN } from 'lodash';
+import { engineConfig } from '@arvin-shu/microcode-editor-core';
 import {
 	CanvasPoint,
 	Designer,
@@ -39,7 +44,8 @@ import { IProject, Project } from '../project';
 import { DropContainer, ISimulatorHost } from '../simulator';
 import { createSimulator } from './create-simulator';
 import Viewport from './viewport';
-import { INode } from '../document';
+import { contains, INode, isRootNode } from '../document';
+import { IScroller } from '../designer/scroller';
 
 export type LibraryItem = IPublicTypePackage & {
 	package: string;
@@ -83,6 +89,8 @@ export class BuiltinSimulatorHost
 
 	readonly viewport = new Viewport();
 
+	readonly scroller: IScroller;
+
 	private _iframe?: HTMLIFrameElement;
 
 	readonly asyncLibraryMap: { [key: string]: {} } = {};
@@ -124,9 +132,22 @@ export class BuiltinSimulatorHost
 		[docId: string]: Map<string, IPublicTypeComponentInstance[]>;
 	}>({});
 
+	get currentDocument() {
+		return this.project.currentDocument;
+	}
+
+	private readonly computedDesignMode = computed(
+		() => this.get('designMode') || 'design'
+	);
+
+	get designMode() {
+		return this.computedDesignMode.value;
+	}
+
 	constructor(project: Project, designer: Designer) {
 		this.project = project;
 		this.designer = designer;
+		this.scroller = this.designer.createScroller(this.viewport);
 	}
 
 	/**
@@ -135,6 +156,17 @@ export class BuiltinSimulatorHost
 	connect(renderer: any, source: any, callback: any, options?: any) {
 		this._renderer = renderer;
 		return watch(source, callback, options);
+	}
+
+	computeRect(node: INode): IPublicTypeRect | null {
+		const instances = this.getComponentInstances(node);
+		if (!instances) {
+			return null;
+		}
+		return this.computeComponentInstanceRect(
+			instances[0],
+			toRaw(node).componentMeta.rootSelector
+		);
 	}
 
 	getComponentInstances(
@@ -209,8 +241,95 @@ export class BuiltinSimulatorHost
 		];
 
 		const renderer: any = await createSimulator(this, iframe, vendors);
-		// 内部实现是模拟vue挂载实例createApp(component).mount(#app);
+
 		renderer.run();
+
+		this.viewport.setScrollTarget(this._contentWindow.value!);
+		this.setupEvents();
+	}
+
+	setupEvents() {
+		this.setupDetecting();
+	}
+
+	/**
+	 * 设置检测处理
+	 * 主要用于处理画布中的鼠标悬停、移动等事件
+	 */
+	setupDetecting() {
+		// 获取内容文档对象
+		const doc = this.contentDocument!;
+		const { detecting, dragon } = this.designer;
+
+		/**
+		 * 处理鼠标悬停事件
+		 * 用于检测当前悬停的节点并更新detecting状态
+		 */
+		const hover = (e: MouseEvent) => {
+			// 如果检测被禁用或不是设计模式则直接返回
+			if (!detecting.enable || this.designMode !== 'design') {
+				return;
+			}
+
+			// 从目标元素获取节点实例
+			const nodeInst = this.getNodeInstanceFromElement(e.target as Element);
+
+			if (nodeInst?.node) {
+				let { node } = nodeInst;
+				// 如果存在焦点节点且当前节点包含焦点节点,则使用焦点节点
+				const focusNode = node.document?.focusNode;
+				if (focusNode && node.contains(focusNode)) {
+					node = focusNode;
+				}
+				detecting.capture(node);
+			} else {
+				detecting.capture(null);
+			}
+
+			// 根据配置决定是否阻止事件冒泡
+			if (
+				!engineConfig.get('enableMouseEventPropagationInCanvas', false) ||
+				dragon.dragging
+			) {
+				e.stopPropagation();
+			}
+		};
+
+		/**
+		 * 处理鼠标离开事件
+		 * 清除detecting状态
+		 */
+		const leave = () => {
+			this.project.currentDocument &&
+				detecting.leave(this.project.currentDocument);
+		};
+
+		// 绑定事件监听器
+		doc.addEventListener('mouseover', hover, true);
+		doc.addEventListener('mouseleave', leave, false);
+
+		// TODO: refactor this line, contains click, mousedown, mousemove
+		doc.addEventListener(
+			'mousemove',
+			(e: Event) => {
+				// 根据配置决定是否阻止事件冒泡
+				if (
+					!engineConfig.get('enableMouseEventPropagationInCanvas', false) ||
+					dragon.dragging
+				) {
+					e.stopPropagation();
+				}
+			},
+			true
+		);
+
+		// 注销事件监听的代码,暂时注释掉
+		// this.disableDetecting = () => {
+		//   detecting.leave(this.project.currentDocument);
+		//   doc.removeEventListener('mouseover', hover, true);
+		//   doc.removeEventListener('mouseleave', leave, false);
+		//   this.disableDetecting = undefined;
+		// };
 	}
 
 	mountViewport(viewport: HTMLElement | null) {
@@ -401,6 +520,25 @@ export class BuiltinSimulatorHost
 		return elements;
 	}
 
+	getNodeInstanceFromElement(
+		target: Element | null
+	): IPublicTypeNodeInstance<IPublicTypeComponentInstance, INode> | null {
+		if (!target) {
+			return null;
+		}
+		const nodeInstance = this.getClosestNodeInstance(target);
+		if (!nodeInstance) {
+			return null;
+		}
+		const { docId } = nodeInstance;
+		const doc = this.project.getDocument(docId)!;
+		const node = doc.getNode(nodeInstance.nodeId);
+		return {
+			...nodeInstance,
+			node,
+		};
+	}
+
 	isEnter(e: IPublicModelLocateEvent): boolean {
 		const rect = this.viewport.bounds;
 		return (
@@ -413,7 +551,7 @@ export class BuiltinSimulatorHost
 
 	deactiveSensor() {
 		this.sensing = false;
-		// TODO 滚动处理
+		this.scroller.cancel();
 	}
 
 	/**
@@ -454,7 +592,8 @@ export class BuiltinSimulatorHost
 
 		// 获取可放置的容器
 		this.sensing = true;
-		// TODO 没有处理滚动的情况
+		this.scroller.scrolling(e);
+
 		const document = this.project.currentDocument;
 		if (!document) {
 			return null;
@@ -462,12 +601,22 @@ export class BuiltinSimulatorHost
 
 		const dropContainer = this.getDropContainer(e);
 
-		const { container, instance: containerInstance } = dropContainer;
+		// TODO 容器是否锁定
+
+		if (isLocationData(dropContainer)) {
+			return this.designer.createLocation(dropContainer as any);
+		}
+
+		const { container, instance: containerInstance } = dropContainer!;
 
 		const edge = this.computeComponentInstanceRect(
 			containerInstance,
-			container.componentMeta.rootSelector
+			toRaw(container).componentMeta.rootSelector
 		);
+
+		if (!edge) {
+			return null;
+		}
 
 		const { children } = container;
 
@@ -483,6 +632,21 @@ export class BuiltinSimulatorHost
 			source: `simulator${document.id}`,
 			event: e,
 		};
+
+		if (
+			e.dragObject &&
+			e.dragObject.nodes &&
+			e.dragObject.nodes.length &&
+			e.dragObject?.nodes[0]?.componentMeta?.isModal &&
+			document.focusNode
+		) {
+			return this.designer.createLocation({
+				target: document.focusNode,
+				detail,
+				source: `simulator${document.id}`,
+				event: e,
+			});
+		}
 
 		// 如果容器没有子节点或子节点数量小于1，或者没有计算到矩形区域，则创建位置数据
 		if (!children || children.size < 1 || !edge) {
@@ -514,7 +678,7 @@ export class BuiltinSimulatorHost
 			const rect = inst
 				? this.computeComponentInstanceRect(
 						inst,
-						node.componentMeta.rootSelector
+						toRaw(node).componentMeta.rootSelector
 					)
 				: null;
 
@@ -605,24 +769,160 @@ export class BuiltinSimulatorHost
 	}
 
 	getDropContainer(e: ILocateEvent) {
-		e;
-		let container: INode | null = null;
-
+		const { target, dragObject } = e;
+		const isAny = isDragAnyObject(dragObject);
 		const document = this.project.currentDocument!;
 		const { currentRoot } = document;
+		let container: INode | null = null;
+		let nodeInstance:
+			| IPublicTypeNodeInstance<IPublicTypeComponentInstance, INode>
+			| undefined;
 
-		container = currentRoot;
+		if (target) {
+			const ref = this.getNodeInstanceFromElement(target);
+			if (ref?.node) {
+				nodeInstance = ref;
+				container = ref.node;
+			} else if (isAny) {
+				return null;
+			} else {
+				container = currentRoot;
+			}
+		} else if (isAny) {
+			return null;
+		} else {
+			container = currentRoot;
+		}
 
-		let instance: any = null;
-		instance = container && this.getComponentInstances(container)?.[0];
+		if (!container?.isParental()) {
+			container = container?.parent || currentRoot;
+		}
 
-		const dropContainer: DropContainer = {
+		// TODO: 使用特定容器来接收特殊数据
+		if (isAny) {
+			// will return locationData
+			return null;
+		}
+
+		// 获取共同父节点，避免拖拽容器被拖拽对象包含
+		// 创建一个 Set 用于存储需要排除的节点
+		const drillDownExcludes = new Set<INode>();
+		// 如果拖拽对象是节点类型
+		if (isDragNodeObject(dragObject)) {
+			// 获取拖拽的节点列表
+			const { nodes } = dragObject;
+			let i = nodes.length;
+			let p: any = container;
+			// 遍历所有拖拽的节点
+			while (i-- > 0) {
+				// 检查当前节点是否包含目标容器
+				if (contains(nodes[i] as any, p)) {
+					// 如果包含,则向上查找父节点,避免拖拽节点包含目标容器
+					p = nodes[i].parent;
+				}
+			}
+			// 如果找到了新的容器节点
+			if (p !== container) {
+				// 更新容器为新找到的父节点或当前焦点节点
+				container = p || document.focusNode;
+				// 将新容器添加到排除列表中
+				container && drillDownExcludes.add(container);
+			}
+		}
+		// 用于存储组件实例的变量,这个实例将用于后续的拖拽放置判断
+		let instance: any;
+		if (nodeInstance) {
+			// 如果存在节点实例(通常是拖拽过程中鼠标悬停的组件实例)
+			if (nodeInstance.node === container) {
+				// 如果节点实例的节点与容器相同,说明当前悬停的就是目标容器
+				// 直接使用节点实例的实例,避免重复查找
+				instance = nodeInstance.instance;
+			} else {
+				// 如果节点实例与容器不同,说明需要向上查找合适的容器实例
+				// 通过 getClosestNodeInstance 获取最接近的父级节点实例
+				instance = this.getClosestNodeInstance(
+					nodeInstance.instance as any,
+					container?.id
+				)?.instance;
+			}
+		} else {
+			// 如果不存在节点实例(比如拖拽到了空白区域)
+			// 则尝试获取容器的默认组件实例
+			instance = container && this.getComponentInstances(container)?.[0];
+		}
+
+		let dropContainer: DropContainer = {
 			container: container!,
 			instance,
 		};
-		// TODO  拖拽的组件是否能被放入拖拽的容器中
 
-		return dropContainer;
+		let res: any;
+		let upward: DropContainer | null = null;
+		while (container) {
+			res = this.handleAccept(dropContainer, e);
+			// if (isLocationData(res)) {
+			//   return res;
+			// }
+			if (res === true) {
+				return dropContainer;
+			}
+			if (!res) {
+				drillDownExcludes.add(container);
+				if (upward) {
+					dropContainer = upward;
+					container = dropContainer.container;
+					upward = null;
+				} else if (container.parent) {
+					container = container.parent;
+					instance = this.getClosestNodeInstance(
+						dropContainer.instance,
+						container.id
+					)?.instance;
+					dropContainer = {
+						container,
+						instance,
+					};
+				} else {
+					return null;
+				}
+			}
+		}
+		return null;
+	}
+
+	isAcceptable(): boolean {
+		return false;
+	}
+
+	/**
+	 * 处理拖拽放置的接受判断
+	 * 主要用于判断拖拽的组件是否可以放置到目标容器中:
+	 * 1. 如果目标是根节点或包含当前焦点节点,则检查焦点节点与拖拽对象的嵌套关系
+	 * 2. 如果目标是普通容器,则检查:
+	 *   - 目标容器的组件元数据
+	 *   - 目标是否为容器或可接受拖拽
+	 *   - 目标与拖拽对象的嵌套关系
+	 * @param param0 拖拽的目标容器对象,包含容器节点和实例
+	 * @param e 定位事件对象,包含拖拽对象等信息
+	 * @returns 是否可以接受拖放,true表示可以放置,false表示不可放置
+	 */
+	handleAccept({ container }: DropContainer, e: ILocateEvent): boolean {
+		const { dragObject } = e;
+		const document = this.currentDocument!;
+		const { focusNode } = document;
+		if (isRootNode(container) || container.contains(focusNode as any)) {
+			return document.checkNesting(focusNode!, dragObject as any);
+		}
+
+		const meta = container.componentMeta;
+
+		const acceptable: boolean = this.isAcceptable();
+		if (!meta.isContainer && !acceptable) {
+			return false;
+		}
+
+		// check nesting
+		return document.checkNesting(container, dragObject as any);
 	}
 }
 

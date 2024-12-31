@@ -1,4 +1,6 @@
 import {
+	IPublicModelDropLocation,
+	IPublicModelLocateEvent,
 	IPublicTypeLocationData,
 	IPublicTypeLocationDetail,
 	IPublicTypeRect,
@@ -16,7 +18,18 @@ export interface CanvasPoint {
 	canvasY: number;
 }
 
-export class DropLocation {
+export interface IDropLocation
+	extends Omit<IPublicModelDropLocation, 'target' | 'clone'> {
+	readonly source: string;
+
+	get target(): INode;
+
+	get document(): IDocumentModel | null;
+
+	clone(event: IPublicModelLocateEvent): IDropLocation;
+}
+
+export class DropLocation implements IDropLocation {
 	readonly target: INode;
 
 	readonly detail: IPublicTypeLocationDetail;
@@ -40,6 +53,15 @@ export class DropLocation {
 		this.source = source;
 		this.event = event as any;
 	}
+
+	clone(event: ILocateEvent): IDropLocation {
+		return new DropLocation({
+			target: this.target,
+			detail: this.detail,
+			source: this.source,
+			event,
+		});
+	}
 }
 
 export function getRectTarget(rect: IPublicTypeRect | null) {
@@ -48,6 +70,17 @@ export function getRectTarget(rect: IPublicTypeRect | null) {
 	}
 	const els = rect.elements;
 	return els && els.length > 0 ? els[0]! : null;
+}
+
+export function isVertical(rect: IPublicTypeRect | null) {
+	const el = getRectTarget(rect);
+	if (!el) {
+		return false;
+	}
+	return (
+		isChildInline(el) ||
+		(el.parentElement ? isRowContainer(el.parentElement) : false)
+	);
 }
 
 function isText(elem: any): elem is Text {

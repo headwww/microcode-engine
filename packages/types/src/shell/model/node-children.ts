@@ -152,4 +152,18 @@ export interface IPublicModelNodeChildren<Node = IPublicModelNode> {
 	 * @param stage
 	 */
 	exportSchema(stage: IPublicEnumTransformStage): IPublicTypeNodeSchema;
+
+	/**
+	 * 执行新增、删除、排序等操作
+	 *
+	 * excute remove/add/sort operations
+	 * @param remover
+	 * @param adder
+	 * @param sorter
+	 */
+	mergeChildren(
+		remover: (node: Node, idx: number) => boolean,
+		adder: (children: Node[]) => IPublicTypeNodeData[] | null,
+		sorter: (firstNode: Node, secondNode: Node) => number
+	): any;
 }

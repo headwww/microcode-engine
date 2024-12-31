@@ -5,14 +5,16 @@ import {
 	IPublicTypeDisposable,
 	IPublicTypeFieldConfig,
 	IPublicTypeI18nData,
+	IPublicTypeLiveTextEditingConfig,
 	IPublicTypeNestingFilter,
+	IPublicTypeNodeData,
 	IPublicTypeNodeSchema,
 	IPublicTypeNpmInfo,
 	IPublicTypeTitleContent,
 	IPublicTypeTransformedComponentMetadata,
 } from '@arvin-shu/microcode-types';
 import { computed, VNode } from 'vue';
-import { isTitleConfig } from '@arvin-shu/microcode-utils';
+import { isNode, isTitleConfig } from '@arvin-shu/microcode-utils';
 import {
 	createModuleEventBus,
 	IEventBus,
@@ -63,12 +65,28 @@ export interface IComponentMeta extends IPublicModelComponentMeta<INode> {
 	setMetadata(metadata: IPublicTypeComponentMetadata): void;
 
 	get rootSelector(): string | undefined;
+
+	liveTextEditing?: IPublicTypeLiveTextEditingConfig[];
+
+	setMetadata(metadata: IPublicTypeComponentMetadata): void;
+
+	onMetadataChange(fn: (args: any) => void): IPublicTypeDisposable;
 }
 
 export class ComponentMeta implements IComponentMeta {
 	readonly isComponentMeta = true;
 
 	private emitter: IEventBus = createModuleEventBus('ComponentMeta');
+
+	private _npm: IPublicTypeNpmInfo;
+
+	get npm(): IPublicTypeNpmInfo {
+		return this._npm;
+	}
+
+	set npm(npm: any) {
+		this._npm = npm;
+	}
 
 	private _componentName: string;
 
@@ -88,16 +106,16 @@ export class ComponentMeta implements IComponentMeta {
 		return this._descriptor;
 	}
 
+	private _liveTextEditing?: IPublicTypeLiveTextEditingConfig[];
+
+	get liveTextEditing() {
+		return this._liveTextEditing;
+	}
+
 	private _isContainer: boolean;
 
 	get isContainer(): boolean {
 		return this._isContainer || this.isRootComponent();
-	}
-
-	private _isMinimalRenderUnit?: boolean;
-
-	get isMinimalRenderUnit(): boolean {
-		return this._isMinimalRenderUnit || false;
 	}
 
 	private _rootSelector?: string;
@@ -117,14 +135,10 @@ export class ComponentMeta implements IComponentMeta {
 		return config?.combined || config?.props || [];
 	}
 
-	private _npm: IPublicTypeNpmInfo;
+	private _isMinimalRenderUnit?: boolean;
 
-	get npm(): IPublicTypeNpmInfo {
-		return this._npm;
-	}
-
-	set npm(npm: any) {
-		this._npm = npm;
+	get isMinimalRenderUnit(): boolean {
+		return this._isMinimalRenderUnit || false;
 	}
 
 	private _title?: IPublicTypeTitleContent;
@@ -148,6 +162,12 @@ export class ComponentMeta implements IComponentMeta {
 		return this.computedIcon.value;
 	}
 
+	private _acceptable?: boolean;
+
+	get acceptable(): boolean {
+		return this._acceptable!;
+	}
+
 	get advanced(): IPublicTypeAdvanced {
 		return this.getMetadata().configure.advanced || {};
 	}
@@ -159,17 +179,10 @@ export class ComponentMeta implements IComponentMeta {
 		this.parseMetadata(data);
 	}
 
-	/**
-	 * 是否是根组件
-	 * @param includeBlock 是否包含Block
-	 * @returns
-	 */
-	isRootComponent(includeBlock = true): boolean {
-		return (
-			this.componentName === 'Page' ||
-			this.componentName === 'Component' ||
-			(includeBlock && this.componentName === 'Block')
-		);
+	setNpm(info: IPublicTypeNpmInfo) {
+		if (!this._npm) {
+			this._npm = info;
+		}
 	}
 
 	/**
@@ -215,9 +228,31 @@ export class ComponentMeta implements IComponentMeta {
 					: title;
 		}
 
-		// TODO liveTextEditing isTopFixed _acceptable
+		const liveTextEditing = this.advanced.liveTextEditing || [];
+		function collectLiveTextEditing(items: IPublicTypeFieldConfig[]) {
+			items.forEach((config) => {
+				if (config?.items) {
+					collectLiveTextEditing(config.items);
+				} else {
+					const liveConfig =
+						config.liveTextEditing || config.extraProps?.liveTextEditing;
+					if (liveConfig) {
+						liveTextEditing.push({
+							propTarget: String(config.name),
+							...liveConfig,
+						});
+					}
+				}
+			});
+		}
+		collectLiveTextEditing(this.configure);
+		this._liveTextEditing =
+			liveTextEditing.length > 0 ? liveTextEditing : undefined;
 
 		const { configure = {} } = this._transformedMetadata;
+		// 设置组件是否可以接受拖拽放置，默认为false表示不可接受其他组件拖入
+		this._acceptable = false;
+
 		const { component } = configure;
 		if (component) {
 			this._isContainer = !!component.isContainer;
@@ -254,14 +289,19 @@ export class ComponentMeta implements IComponentMeta {
 	}
 
 	/**
-	 * 设置组件npm信息
-	 * @param info
+	 * 是否是根组件
+	 * @param includeBlock 是否包含Block
+	 * @returns
 	 */
-	setNpm(info: IPublicTypeNpmInfo) {
-		if (!this._npm) {
-			this._npm = info;
-		}
+	isRootComponent(includeBlock = true): boolean {
+		return (
+			this.componentName === 'Page' ||
+			this.componentName === 'Component' ||
+			(includeBlock && this.componentName === 'Block')
+		);
 	}
+
+	// TODO availableActions组件的交互能力
 
 	/**
 	 * 设置组件元数据
@@ -275,8 +315,52 @@ export class ComponentMeta implements IComponentMeta {
 		return this._transformedMetadata!;
 	}
 
-	// TODO 检查当前节点是否可以放置
-	checkNestingUp(): boolean {
+	/**
+	 * 检查当前节点是否可以放置在目标父节点下
+	 * @param my 当前节点
+	 * @param parent 目标父节点
+	 * @returns 是否允许放置
+	 */
+	checkNestingUp(my: INode | IPublicTypeNodeData, parent: INode) {
+		// 检查父子关系，直接约束型，在画布中拖拽直接掠过目标容器
+		if (this.parentWhitelist) {
+			return this.parentWhitelist(
+				parent.internalToShellNode(),
+				isNode<INode>(my) ? my.internalToShellNode() : my
+			);
+		}
+		return true;
+	}
+
+	/**
+	 * 检查目标节点是否可以放置在当前节点下
+	 * @param my 当前节点
+	 * @param target 目标子节点或节点数组
+	 * @returns 是否允许放置
+	 */
+	checkNestingDown(
+		my: INode,
+		target: INode | IPublicTypeNodeSchema | IPublicTypeNodeSchema[]
+	): boolean {
+		// 检查父子关系，直接约束型，在画布中拖拽直接掠过目标容器
+		if (this.childWhitelist) {
+			// 统一转换为数组处理
+			const _target: any = !Array.isArray(target) ? [target] : target;
+			// 检查每个目标节点是否都满足白名单要求
+			return _target.every((item: Node | IPublicTypeNodeSchema) => {
+				// 统一转换为 Node 类型
+				const _item = !isNode<INode>(item)
+					? new Node(my.document as any, item as any)
+					: item;
+				return (
+					this.childWhitelist &&
+					this.childWhitelist(
+						_item.internalToShellNode(),
+						my.internalToShellNode()
+					)
+				);
+			});
+		}
 		return true;
 	}
 

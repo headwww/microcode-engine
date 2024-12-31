@@ -4,8 +4,12 @@ import { IPublicModelLocateEvent } from './locate-event';
 
 export interface IPublicModelDragon<LocateEvent = IPublicModelLocateEvent> {
 	/**
+	 * 是否正在拖动
+	 */
+	get dragging(): boolean;
+
+	/**
 	 * 绑定 dragstart 事件
-	 * bind a callback function which will be called on dragging start
 	 * @param func
 	 * @returns
 	 */
@@ -13,7 +17,6 @@ export interface IPublicModelDragon<LocateEvent = IPublicModelLocateEvent> {
 
 	/**
 	 * 绑定 drag 事件
-	 * bind a callback function which will be called on dragging
 	 * @param func
 	 * @returns
 	 */
@@ -21,7 +24,6 @@ export interface IPublicModelDragon<LocateEvent = IPublicModelLocateEvent> {
 
 	/**
 	 * 绑定 dragend 事件
-	 * bind a callback function which will be called on dragging end
 	 * @param func
 	 * @returns
 	 */

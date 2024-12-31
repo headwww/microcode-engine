@@ -1,6 +1,7 @@
 import { isI18nData } from '@arvin-shu/microcode-utils';
 import { IPublicTypeI18nData } from '@arvin-shu/microcode-types';
 import { IntlMessageFormat } from 'intl-messageformat';
+import { defineComponent, h, VNode } from 'vue';
 import { globalLocale } from './global-locale';
 
 function generateTryLocales(locale: string) {
@@ -48,4 +49,61 @@ export function intl(data: IPublicTypeI18nData | string, params?: object) {
 	}
 
 	return injectVars(msg, params, locale);
+}
+
+export function createIntl(instance: string | object): {
+	intlNode(id: string, params?: object): VNode;
+	intl(id: string, params?: object): string;
+	getLocale(): string;
+	setLocale(locale: string): void;
+} {
+	const data = (() => {
+		const locale = globalLocale.getLocale();
+		if (typeof instance === 'string') {
+			if ((window as any)[instance]) {
+				return (window as any)[instance][locale] || {};
+			}
+			const key = `${instance}_${locale.toLocaleLowerCase()}`;
+			return (window as any)[key] || {};
+		}
+		if (instance && typeof instance === 'object') {
+			return (instance as any)[locale] || {};
+		}
+		return {};
+	})();
+
+	function intl(key: string, params?: object): string {
+		// TODO: tries lost language
+		const str = data[key];
+
+		if (str == null) {
+			return `##intl@${key}##`;
+		}
+
+		return injectVars(str, params, globalLocale.getLocale());
+	}
+
+	const IntlElement = defineComponent({
+		props: {
+			id: String,
+			params: Object,
+		},
+		render() {
+			const { id, params } = this;
+			return intl(id!, params);
+		},
+	});
+
+	return {
+		intlNode(id: string, params?: object) {
+			return h(IntlElement, { id, params });
+		},
+		intl,
+		getLocale() {
+			return globalLocale.getLocale();
+		},
+		setLocale(locale: string) {
+			globalLocale.setLocale(locale);
+		},
+	};
 }

@@ -10,6 +10,7 @@ import { projectSymbol } from '../symbols';
 const logger = getLogger({ level: 'warn', bizName: 'shell-project' });
 
 const innerProjectSymbol = Symbol('innerProject');
+
 export class Project implements IPublicApiProject {
 	private readonly [innerProjectSymbol]: InnerProject;
 
@@ -34,6 +35,10 @@ export class Project implements IPublicApiProject {
 		public workspaceMode: boolean = false
 	) {
 		this[innerProjectSymbol] = project;
+	}
+
+	static create(project: InnerProject, workspaceMode: boolean = false) {
+		return new Project(project, workspaceMode);
 	}
 
 	/**

@@ -6,6 +6,8 @@ import {
 	IPublicTypeAdvanced,
 	IPublicTypeFieldConfig,
 	IPublicTypeIconType,
+	IPublicTypeTransformedComponentMetadata,
+	IPublicTypeNodeSchema,
 } from '../type';
 import { IPublicModelNode } from './node';
 
@@ -57,6 +59,8 @@ export interface IPublicModelComponentMeta<Node = IPublicModelNode> {
 	 */
 	get npm(): IPublicTypeNpmInfo;
 
+	// TODO availableActions    当前组件的可用 Action
+
 	/**
 	 * 组件元数据中高级配置部分
 	 */
@@ -69,10 +73,31 @@ export interface IPublicModelComponentMeta<Node = IPublicModelNode> {
 	setNpm(npm: IPublicTypeNpmInfo): void;
 
 	/**
+	 * 获取元数据
+	 * get component metadata
+	 */
+	getMetadata(): IPublicTypeTransformedComponentMetadata;
+
+	/**
 	 * 检测当前对应节点是否可被放置在父节点中
 	 *
 	 * @param my 当前节点
 	 * @param parent 父节点
 	 */
 	checkNestingUp(my: Node | IPublicTypeNodeData, params: any): boolean;
+
+	/**
+	 * 检测目标节点是否可被放置在父节点中
+	 * @param my 当前节点
+	 * @param parent 父节点
+	 */
+	checkNestingDown(
+		my: Node | IPublicTypeNodeData,
+		target: IPublicTypeNodeSchema | Node | IPublicTypeNodeSchema[]
+	): boolean;
+
+	/**
+	 * 刷新元数据，会触发元数据的重新解析和刷新
+	 */
+	refreshMetadata(): void;
 }
