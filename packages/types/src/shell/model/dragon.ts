@@ -1,4 +1,8 @@
-import { IPublicTypeDisposable, IPublicTypeDragNodeDataObject } from '../type';
+import {
+	IPublicTypeDisposable,
+	IPublicTypeDragNodeDataObject,
+	IPublicTypeDragObject,
+} from '../type';
 import { IPublicModelDragObject } from './drag-object';
 import { IPublicModelLocateEvent } from './locate-event';
 
@@ -41,4 +45,17 @@ export interface IPublicModelDragon<LocateEvent = IPublicModelLocateEvent> {
 		shell: Element,
 		boost: (e: MouseEvent) => IPublicTypeDragNodeDataObject | null
 	): any;
+
+	/**
+	 * 发射拖拽对象
+	 * boost your dragObject for dragging(flying)
+	 *
+	 * @param dragObject 拖拽对象
+	 * @param boostEvent 拖拽初始时事件
+	 */
+	boost(
+		dragObject: IPublicTypeDragObject,
+		boostEvent: MouseEvent | DragEvent,
+		fromRglNode?: Node
+	): void;
 }

@@ -19,6 +19,12 @@ import {
 	ref,
 	toRaw,
 } from 'vue';
+import {
+	isDragNodeDataObject,
+	isDragNodeObject,
+	isLocationChildrenDetail,
+	isNodeSchema,
+} from '@arvin-shu/microcode-utils';
 import { INode, insertChildren, Node } from '../document';
 import { IProject, Project } from '../project';
 import { Dragon, IDragon } from './dragon';
@@ -112,27 +118,92 @@ export class Designer implements IDesigner {
 		IPublicTypePropsTransducer[]
 	>();
 
+	get currentDocument() {
+		return this.project.currentDocument;
+	}
+
+	get currentSelection() {
+		return this.currentDocument?.selection;
+	}
+
 	constructor(props: DesignerProps) {
 		this.editor = props.editor!;
 		this.dragon = new Dragon(this);
 		this.project = new Project(this);
 		this.setProps(props);
-		this.dragon.onDragstart(() => {
+		this.dragon.onDragstart((e) => {
 			this.detecting.enable = false;
+			const { dragObject } = e;
+			if (isDragNodeObject(dragObject)) {
+				if (dragObject.nodes.length === 1) {
+					if (dragObject.nodes[0].parent) {
+						// ensure current selecting
+						dragObject.nodes[0].select();
+					} else {
+						this.currentSelection?.clear();
+					}
+				}
+			} else {
+				this.currentSelection?.clear();
+			}
+			// TODO 拖拽开始事件
+			// if (this.props?.onDragstart) {
+			// 	this.props.onDragstart(e);
+			// }
+			this.postEvent('dragstart', e);
+		});
+
+		this.dragon.onDrag((e) => {
+			// TODO 拖拽中事件
+			// if (this.props?.onDrag) {
+			// 	this.props.onDrag(e);
+			// }
+			this.postEvent('drag', e);
 		});
 		this.dragon.onDragend((e) => {
 			// 插入
-			const { dragObject } = e;
-
-			const nodeData = Array.isArray(dragObject)
-				? dragObject.data
-				: [dragObject.data];
-
+			const { dragObject, copy } = e;
 			const loc = this._dropLocation;
 
 			if (loc) {
-				insertChildren(loc.target, nodeData as any, (loc.detail as any).index);
+				// @ts-ignore
+				if (
+					isLocationChildrenDetail(loc.detail) &&
+					loc.detail.valid !== false
+				) {
+					let nodes: INode[] | undefined;
+					if (isDragNodeObject(dragObject)) {
+						nodes = insertChildren(
+							loc.target,
+							// @ts-ignore
+							[...dragObject.nodes],
+							loc.detail.index,
+							copy
+						);
+					} else if (isDragNodeDataObject(dragObject)) {
+						// @ts-ignore
+						const nodeData = Array.isArray(dragObject.data)
+							? dragObject.data
+							: [dragObject.data];
+						const isNotNodeSchema = nodeData.find(
+							(item) => !isNodeSchema(item)
+						);
+						if (isNotNodeSchema) {
+							return;
+						}
+						nodes = insertChildren(loc.target, nodeData, loc.detail.index);
+					}
+					if (nodes) {
+						loc.document?.selection.selectAll(nodes.map((o) => o.id));
+						// TODO setTimeout(() => this.activeTracker.track(nodes![0]), 10);
+					}
+				}
 			}
+			// TODO 拖拽结束事件
+			// if (this.props?.onDragend) {
+			// 	this.props.onDragend(e, loc);
+			// }
+			this.postEvent('dragend', e, loc);
 			this.detecting.enable = true;
 		});
 	}

@@ -216,7 +216,8 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 	private _parent: Ref<INode | null> = ref(null);
 
 	get parent() {
-		return this._parent.value;
+		const self = toRaw(this);
+		return self._parent.value;
 	}
 
 	/**

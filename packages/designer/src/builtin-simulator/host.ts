@@ -13,6 +13,7 @@ import {
 	AssetLevel,
 	AssetList,
 	AssetType,
+	IPublicEnumDragObjectType,
 	IPublicModelLocateEvent,
 	IPublicTypeComponentInstance,
 	IPublicTypeLocationChildrenDetail,
@@ -46,6 +47,8 @@ import { createSimulator } from './create-simulator';
 import Viewport from './viewport';
 import { contains, INode, isRootNode } from '../document';
 import { IScroller } from '../designer/scroller';
+import { getClosestClickableNode } from '../utils';
+import { isShaken } from '../designer/utils';
 
 export type LibraryItem = IPublicTypePackage & {
 	package: string;
@@ -249,7 +252,184 @@ export class BuiltinSimulatorHost
 	}
 
 	setupEvents() {
+		this.setupDragAndClick();
 		this.setupDetecting();
+	}
+
+	setupDragAndClick() {
+		const { designer } = this;
+		const doc = this.contentDocument!;
+
+		doc.addEventListener(
+			'mousedown',
+			(downEvent) => {
+				document.dispatchEvent(new Event('mousedown'));
+				const documentModel = this.project.currentDocument;
+
+				// TODO 如果正在进行行内编辑或没有文档模型,直接退出 liveEditing
+
+				// @ts-ignore
+				const { selection } = documentModel;
+				let isMulti = false;
+
+				// 根据设计模式判断是否为多选操作
+				if (this.designMode === 'design') {
+					// 按住 Command/Ctrl 键为多选模式
+					isMulti = downEvent.metaKey || downEvent.ctrlKey;
+				} else if (!downEvent.metaKey) {
+					// live 模式下必须按住 Command/Ctrl 才能选中
+					return;
+				}
+				// 移除 label 的 for 属性,避免触发原生行为
+				// @ts-ignore
+				downEvent.target?.removeAttribute('for');
+
+				// 获取点击位置对应的节点实例
+				const nodeInst = this.getNodeInstanceFromElement(
+					downEvent.target as any
+				);
+				// @ts-ignore
+				const { focusNode } = documentModel;
+
+				// 获取最近的可点击节点
+				const node = getClosestClickableNode(
+					nodeInst?.node || focusNode,
+					downEvent
+				);
+
+				// 如果找不到可点击节点,直接返回
+				if (!node) {
+					return;
+				}
+
+				// 触发节点的鼠标按下钩子函数
+				const onMouseDownHook =
+					node.componentMeta.advanced.callbacks?.onMouseDownHook;
+				if (onMouseDownHook) {
+					onMouseDownHook(downEvent, node.internalToShellNode());
+				}
+
+				// TODO 磁贴组件 isRGLNode
+
+				// 阻止事件冒泡和默认行为
+				downEvent.stopPropagation();
+				downEvent.preventDefault();
+
+				// 判断是否为左键点击
+				const isLeftButton = downEvent.which === 1 || downEvent.button === 0;
+
+				// 处理选中检查的函数
+				const checkSelect = (e: MouseEvent) => {
+					doc.removeEventListener('mouseup', checkSelect, true);
+
+					// TODO 结束 RGL 拖拽
+					// designer.dragon.emitter.emit('rgl.switch', {
+					// 	action: 'end',
+					// 	 rglNode,
+					// });
+
+					// TODO isRGLNode  判断是点击还是拖拽(通过判断鼠标是否有移动)
+					if (!isShaken(downEvent, e)) {
+						let { id } = node;
+						// TODO 激活节点
+						// designer.activeTracker.track({
+						// 	node,
+						// 	instance: nodeInst?.instance,
+						// });
+
+						// 处理多选逻辑
+						if (
+							isMulti &&
+							focusNode &&
+							!node.contains(focusNode) &&
+							selection.has(id)
+						) {
+							// 多选模式下,如果节点已经被选中,则取消选中
+							selection.remove(id);
+						} else {
+							// 处理页面组件的特殊选中逻辑
+							if (
+								node.isPage() &&
+								node.getChildren()?.notEmpty() &&
+								this.designMode === 'live'
+							) {
+								const firstChildId = node.getChildren()?.get(0)?.getId();
+								if (firstChildId) id = firstChildId;
+							}
+
+							// 选中节点
+							if (focusNode) {
+								selection.select(node.contains(focusNode) ? focusNode.id : id);
+							}
+
+							// 触发选中事件
+							const editor = this.designer?.editor;
+							const npm = node?.componentMeta?.npm;
+							const selected =
+								[npm?.package, npm?.componentName]
+									.filter((item) => !!item)
+									.join('-') ||
+								node?.componentMeta?.componentName ||
+								'';
+							editor?.eventBus.emit('designer.builtinSimulator.select', {
+								selected,
+							});
+						}
+					}
+				};
+
+				// 处理拖拽开始
+				if (isLeftButton && focusNode && !node.contains(focusNode)) {
+					let nodes: INode[] = [node];
+					const ignoreUpSelected = false;
+					// 处理多选拖拽
+					if (isMulti) {
+						if (!selection.has(node.id)) {
+							// TODO 未处理
+							// designer.activeTracker.track({
+							// 	node,
+							// 	instance: nodeInst?.instance,
+							// });
+							// selection.add(node.id);
+							// ignoreUpSelected = true;
+						}
+						focusNode?.id && selection.remove(focusNode.id);
+						// 获取所有选中的顶层节点
+						nodes = selection.getTopNodes();
+					} else if (selection.containsNode(node, true)) {
+						nodes = selection.getTopNodes();
+					}
+
+					// 启动拖拽
+					designer.dragon.boost(
+						{
+							type: IPublicEnumDragObjectType.Node,
+							nodes,
+						},
+						downEvent
+						// TODO isRGLNode ? rglNode : undefined
+					);
+
+					if (ignoreUpSelected) {
+						return;
+					}
+				}
+
+				doc.addEventListener('mouseup', checkSelect, true);
+			},
+			true
+		);
+		doc.addEventListener(
+			'click',
+			(e) => {
+				const x = new Event('click');
+				x.initEvent('click', true);
+				this._iframe?.dispatchEvent(x);
+				e.preventDefault();
+				e.stopPropagation();
+			},
+			true
+		);
 	}
 
 	/**
@@ -873,7 +1053,7 @@ export class BuiltinSimulatorHost
 					container = dropContainer.container;
 					upward = null;
 				} else if (container.parent) {
-					container = container.parent;
+					container = toRaw(container.parent);
 					instance = this.getClosestNodeInstance(
 						dropContainer.instance,
 						container.id

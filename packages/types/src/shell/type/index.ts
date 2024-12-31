@@ -62,3 +62,5 @@ export * from './component-instance';
 export * from './drag-node-object';
 export * from './prop-change-options';
 export * from './scrollable';
+export * from './drag-any-object';
+export * from './drag-object';

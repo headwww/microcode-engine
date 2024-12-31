@@ -5,6 +5,7 @@ import {
 	IPublicTypeI18nData,
 	IPublicTypeNodeSchema,
 } from '@arvin-shu/microcode-types';
+import { isDragNodeObject } from '@arvin-shu/microcode-utils';
 import { Designer } from '../designer';
 
 // 定义一个函数类型,用于解绑事件监听器
@@ -51,6 +52,9 @@ export const DragGhost = defineComponent({
 		];
 
 		function getTitles(dragObject: IPublicModelDragObject) {
+			if (isDragNodeObject(dragObject)) {
+				return dragObject.nodes.map((node) => node?.title);
+			}
 			const dataList = Array.isArray(dragObject.data)
 				? dragObject.data
 				: [dragObject.data];

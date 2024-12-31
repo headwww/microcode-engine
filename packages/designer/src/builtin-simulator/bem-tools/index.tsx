@@ -2,6 +2,7 @@ import { defineComponent, PropType } from 'vue';
 import { BuiltinSimulatorHost } from '../host';
 import { BorderDetecting } from './border-detecting';
 import { InsertionView } from './insertion';
+import { BorderSelecting } from './border-selecting';
 
 export const BemTools = defineComponent({
 	props: {
@@ -29,6 +30,7 @@ export const BemTools = defineComponent({
 				>
 					<BorderDetecting key="hovering" host={host} />
 					<InsertionView key="insertion" host={host} />
+					<BorderSelecting key="selecting" host={host} />
 				</div>
 			);
 		};

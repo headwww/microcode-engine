@@ -6,7 +6,7 @@ import {
 	IPublicTypePropsList,
 	IPublicTypePropsMap,
 } from '@arvin-shu/microcode-types';
-import { computed, ref, shallowReactive } from 'vue';
+import { computed, ref, shallowReactive, toRaw } from 'vue';
 import { INode } from '../node';
 import { IProp, Prop, UNSET } from './prop';
 
@@ -257,6 +257,7 @@ export class Props implements IProps, IPropParent {
 	}
 
 	get(path: string, createIfNone = false): IProp | null {
+		const self = toRaw(this);
 		let entry = path;
 		let nest = '';
 		const i = path.indexOf('.');
@@ -267,10 +268,10 @@ export class Props implements IProps, IPropParent {
 			}
 		}
 
-		let prop = this.maps.get(entry);
+		let prop = self.maps.get(entry);
 		if (!prop && createIfNone) {
-			prop = new Prop(this, UNSET, entry);
-			this.items.push(prop);
+			prop = new Prop(self, UNSET, entry);
+			self.items.push(prop);
 		}
 
 		if (prop) {
