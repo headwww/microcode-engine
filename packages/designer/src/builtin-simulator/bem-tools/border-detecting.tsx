@@ -104,7 +104,7 @@ export const BorderDetecting = defineComponent({
 			// 2. 没有当前节点 (current为null)
 			// 3. 视口正在滚动 (scrolling为true)
 			// 4. 正在进行实时编辑 (editing为true)
-			if (!canHover || !current.value || props.host?.viewport.scrolling) {
+			if (!canHover || !current.value || host?.viewport.scrolling) {
 				return <></>;
 			}
 

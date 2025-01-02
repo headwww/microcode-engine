@@ -128,7 +128,7 @@ export async function init(pluginPreference?: PluginPreference) {
 				children: [
 					{
 						componentName: 'Button2',
-						id: 'node_ocm4wdlixg1',
+						id: 'node_sxsm4wdio232',
 						props: {
 							children: '按钮',
 							bordered: true,

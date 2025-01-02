@@ -268,8 +268,12 @@ export class BuiltinSimulatorHost
 
 				// TODO 如果正在进行行内编辑或没有文档模型,直接退出 liveEditing
 
-				// @ts-ignore
+				if (!documentModel) {
+					return;
+				}
+
 				const { selection } = documentModel;
+
 				let isMulti = false;
 
 				// 根据设计模式判断是否为多选操作
@@ -288,6 +292,7 @@ export class BuiltinSimulatorHost
 				const nodeInst = this.getNodeInstanceFromElement(
 					downEvent.target as any
 				);
+
 				// @ts-ignore
 				const { focusNode } = documentModel;
 
@@ -311,7 +316,7 @@ export class BuiltinSimulatorHost
 
 				// TODO 磁贴组件 isRGLNode
 
-				// 阻止事件冒泡和默认行为
+				// 禁止原生拖拽
 				downEvent.stopPropagation();
 				downEvent.preventDefault();
 
@@ -336,7 +341,6 @@ export class BuiltinSimulatorHost
 						// 	node,
 						// 	instance: nodeInst?.instance,
 						// });
-
 						// 处理多选逻辑
 						if (
 							isMulti &&
@@ -381,7 +385,7 @@ export class BuiltinSimulatorHost
 				// 处理拖拽开始
 				if (isLeftButton && focusNode && !node.contains(focusNode)) {
 					let nodes: INode[] = [node];
-					const ignoreUpSelected = false;
+					let ignoreUpSelected = false;
 					// 处理多选拖拽
 					if (isMulti) {
 						if (!selection.has(node.id)) {
@@ -390,8 +394,8 @@ export class BuiltinSimulatorHost
 							// 	node,
 							// 	instance: nodeInst?.instance,
 							// });
-							// selection.add(node.id);
-							// ignoreUpSelected = true;
+							selection.add(node.id);
+							ignoreUpSelected = true;
 						}
 						focusNode?.id && selection.remove(focusNode.id);
 						// 获取所有选中的顶层节点

@@ -1,6 +1,55 @@
-import { defineComponent, PropType, computed } from 'vue';
+import {
+	defineComponent,
+	PropType,
+	computed,
+	toRaw,
+	onBeforeUnmount,
+} from 'vue';
 import { BuiltinSimulatorHost } from '../host';
 import { INode } from '../../document';
+import { OffsetObserver } from '../../designer/offset-observer';
+
+export const BorderSelectingInstance = defineComponent({
+	name: 'BorderSelectingInstance',
+	props: {
+		observed: {
+			type: Object as PropType<OffsetObserver>,
+			require: true,
+		},
+		dragging: Boolean,
+		highlight: Boolean,
+	},
+	setup(props) {
+		onBeforeUnmount(() => {
+			props.observed?.purge();
+		});
+
+		const { observed, highlight, dragging } = props;
+
+		const className = computed(() => [
+			'mtc-borders',
+			'mtc-borders-selecting',
+			{ highlight, dragging },
+		]);
+
+		const { offsetWidth, offsetHeight, offsetTop, offsetLeft } = observed!;
+
+		const style = {
+			width: `${offsetWidth}px`,
+			height: `${offsetHeight}px`,
+			transform: `translate3d(${offsetLeft}px, ${offsetTop}px, 0)`,
+		};
+
+		// TODO 工具栏
+		return () => {
+			const { observed } = props;
+			if (!observed?.hasOffset) {
+				return <></>;
+			}
+			return <div class={className.value} style={style}></div>;
+		};
+	},
+});
 
 export const BorderSelectingForNode = defineComponent({
 	name: 'BorderSelectingForNode',
@@ -26,9 +75,23 @@ export const BorderSelectingForNode = defineComponent({
 			}
 			return (
 				<>
-					{instances.value.map((instance) => (
-						<div>{instance.name}</div>
-					))}
+					{toRaw(instances.value).map((instance) => {
+						const observed = host?.designer.createOffsetObserver({
+							node: node!,
+							instance: toRaw(instance),
+						});
+						if (!observed) {
+							return <></>;
+						}
+
+						return (
+							<BorderSelectingInstance
+								key={observed.id}
+								dragging={host?.designer.dragon.dragging}
+								observed={observed}
+							/>
+						);
+					})}
 				</>
 			);
 		};
@@ -52,6 +115,7 @@ export const BorderSelecting = defineComponent({
 			if (!doc || doc.suspensed) {
 				return null;
 			}
+
 			const s = doc.selection;
 			return host.designer.dragon.dragging ? s.getTopNodes() : s.getNodes();
 		});
@@ -60,7 +124,6 @@ export const BorderSelecting = defineComponent({
 			if (!selecting.value || selecting.value.length < 1) {
 				return <></>;
 			}
-
 			return (
 				<>
 					{selecting.value.map((node) => (

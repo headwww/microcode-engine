@@ -1,66 +1,45 @@
-import {
-	IPublicTypeJSExpression,
-	IPublicTypeJSFunction,
-} from '@arvin-shu/microcode-types';
+import { ref, toRaw } from 'vue';
 
-export interface SchemaParserOptions {
-	thisRequired?: boolean;
+export class ReactTest {
+	private _id = ref(false);
+
+	get id() {
+		return this._id.value;
+	}
+
+	set id(value: boolean) {
+		this._id.value = value;
+	}
 }
 
-export class SchemaParser {
-	private createFunction: (code: string) => CallableFunction;
+export class ReactTest2 {
+	reactTest = ref<ReactTest | null>(null);
 
-	private exports = {};
-
-	constructor(options?: SchemaParserOptions) {
-		this.createFunction =
-			options && !options.thisRequired
-				? (code) =>
-						new Function(
-							'__exports__',
-							'__scope__',
-							`with(__exports__) { with(__scope__) { ${code} } }`
-						)
-				: (code) =>
-						new Function('__exports__', `with(__exports__) { ${code} }`);
+	constructor(reactTest: ReactTest) {
+		this.reactTest.value = reactTest;
 	}
 
-	parseExpression(
-		str: IPublicTypeJSFunction,
-		scope?: any | boolean
-	): CallableFunction;
+	getId() {
+		console.log(toRaw(this.reactTest.value));
 
-	parseExpression(str: IPublicTypeJSExpression, scope?: any | boolean): unknown;
-
-	parseExpression(
-		str: IPublicTypeJSExpression | IPublicTypeJSFunction,
-		scope?: any | boolean
-	): CallableFunction | unknown;
-
-	parseExpression(
-		str: IPublicTypeJSExpression | IPublicTypeJSFunction,
-		scope?: any | boolean
-	): CallableFunction | unknown {
-		try {
-			const contextArr = ['"use strict";'];
-			let tarStr: string;
-			tarStr = (str.value || '').trim();
-			// 替换this关键字
-			if (scope !== false && !tarStr.match(/^\([^)]*\)\s*=>/)) {
-				tarStr = tarStr.replace(
-					/this(\W|$)/g,
-					(_a: string, b: string) => `__self${b}`
-				);
-				contextArr.push('var __self = arguments[1];');
-			}
-			contextArr.push('return ');
-			tarStr = contextArr.join('\n') + tarStr;
-			const fn = this.createFunction(tarStr);
-			return fn(this.exports, scope || {});
-		} catch (error) {
-			// eslint-disable-next-line no-console
-			console.warn('parseExpression.error', error, str);
-			return undefined;
-		}
+		return toRaw(this.reactTest.value)?.id;
 	}
+}
+
+export function useReactTest() {
+	const id = ref(false);
+
+	return {
+		id,
+		setId: (value: boolean) => {
+			id.value = value;
+		},
+		getId: () => id.value,
+	};
+}
+
+export function useReactTest2(reactTest: ReturnType<typeof useReactTest>) {
+	return {
+		getId: () => reactTest.id,
+	};
 }

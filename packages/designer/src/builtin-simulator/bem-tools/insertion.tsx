@@ -95,7 +95,7 @@ export const InsertionView = defineComponent({
 			style.opacity = '1';
 			style.willChange = 'transform, opacity';
 
-			return <div class={className} style={style}></div>;
+			return <div class={className} style={style} />;
 		};
 	},
 });

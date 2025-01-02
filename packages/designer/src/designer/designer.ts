@@ -13,7 +13,6 @@ import {
 	computed,
 	CSSProperties,
 	ExtractPropTypes,
-	isProxy,
 	PropType,
 	Ref,
 	ref,
@@ -32,6 +31,8 @@ import { ComponentMeta, IComponentMeta } from '../component-meta';
 import { DropLocation } from './location';
 import { Scroller } from './scroller';
 import { Detecting } from './detecting';
+import { INodeSelector } from '../simulator';
+import { createOffsetObserver, OffsetObserver } from './offset-observer';
 
 export const designerProps = {
 	editor: {
@@ -85,6 +86,8 @@ export interface IDesigner {
 	clearLocation(): void;
 
 	createLocation(locationData: IPublicTypeLocationData<INode>): DropLocation;
+
+	createOffsetObserver(nodeInstance: INodeSelector): OffsetObserver | null;
 }
 
 export class Designer implements IDesigner {
@@ -98,6 +101,8 @@ export class Designer implements IDesigner {
 	private _dropLocation?: DropLocation;
 
 	readonly detecting = new Detecting();
+
+	private oobxList: OffsetObserver[] = [];
 
 	// 当前正在编排的项目实例
 	readonly project: IProject;
@@ -206,6 +211,26 @@ export class Designer implements IDesigner {
 			this.postEvent('dragend', e, loc);
 			this.detecting.enable = true;
 		});
+	}
+
+	createOffsetObserver(nodeInstance: INodeSelector): OffsetObserver | null {
+		const oobx = createOffsetObserver(nodeInstance);
+		this.clearOobxList();
+		if (oobx) {
+			this.oobxList.push(oobx);
+		}
+		return oobx;
+	}
+
+	private clearOobxList(force?: boolean) {
+		let l = this.oobxList.length;
+		if (l > 20 || force) {
+			while (l-- > 0) {
+				if (this.oobxList[l].isPurged()) {
+					this.oobxList.splice(l, 1);
+				}
+			}
+		}
 	}
 
 	createScroller(scrollable: IPublicTypeScrollable): IPublicModelScroller {
@@ -327,10 +352,6 @@ export class Designer implements IDesigner {
 		componentName: string,
 		generateMetadata?: () => IPublicTypeComponentMetadata | null
 	): IComponentMeta {
-		if (isProxy(this._componentMetasMap)) {
-			console.log(this._componentMetasMap);
-		}
-
 		if (this._componentMetasMap.value.has(componentName)) {
 			return this._componentMetasMap.value.get(componentName)!;
 		}
@@ -383,7 +404,13 @@ export class Designer implements IDesigner {
 		}, props);
 	}
 
-	clearLocation() {}
+	clearLocation() {
+		if (this._dropLocation && this._dropLocation.document) {
+			this._dropLocation.document.dropLocation = null;
+		}
+		this.postEvent('dropLocation.change', undefined);
+		this._dropLocation = undefined;
+	}
 
 	postEvent(event: string, ...args: any[]) {
 		this.editor.eventBus.emit(`designer.${event}`, ...args);

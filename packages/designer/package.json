@@ -9,6 +9,7 @@
     },
     "dependencies": {
         "@arvin-shu/microcode-editor-core": "workspace:^",
+        "ric-shim": "^1.0.1",
         "semver": "^7.6.3"
     },
     "devDependencies": {

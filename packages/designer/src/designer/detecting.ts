@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, toRaw } from 'vue';
 import {
 	createModuleEventBus,
 	IEventBus,
@@ -53,6 +53,10 @@ export class Detecting implements IDetecting {
 		return this._current.value;
 	}
 
+	/**
+	 * 捕获节点
+	 * @param node
+	 */
 	capture(node: INode | null) {
 		if (this._current.value !== node) {
 			this._current.value = node;
@@ -60,6 +64,10 @@ export class Detecting implements IDetecting {
 		}
 	}
 
+	/**
+	 * 释放节点
+	 * @param node
+	 */
 	release(node: INode | null) {
 		if (this._current.value === node) {
 			this._current.value = null;
@@ -67,12 +75,21 @@ export class Detecting implements IDetecting {
 		}
 	}
 
+	/**
+	 * 离开文档
+	 * @param document
+	 */
 	leave(document: IDocumentModel | undefined) {
-		if (this.current && this.current.document === document) {
+		if (this.current && toRaw(this.current.document) === toRaw(document)) {
 			this._current.value = null;
 		}
 	}
 
+	/**
+	 * 监听检测变化
+	 * @param fn
+	 * @returns
+	 */
 	onDetectingChange(fn: (node: INode) => void) {
 		this.emitter.on(DETECTING_CHANGE_EVENT, fn);
 		return () => {

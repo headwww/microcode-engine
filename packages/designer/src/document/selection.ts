@@ -3,7 +3,7 @@ import {
 	IEventBus,
 } from '@arvin-shu/microcode-editor-core';
 import { IPublicModelSelection } from '@arvin-shu/microcode-types';
-import { shallowReactive } from 'vue';
+import { shallowRef } from 'vue';
 import { DocumentModel } from './document-model';
 import { comparePosition, INode, PositionNO } from './node';
 /**
@@ -33,7 +33,7 @@ export class Selection implements ISelection {
 	 * 已选中节点ID列表
 	 * 使用shallowReactive实现响应式
 	 */
-	private _selected = shallowReactive<string[]>([]);
+	private _selected = shallowRef<string[]>([]);
 
 	/**
 	 * 构造函数
@@ -46,7 +46,7 @@ export class Selection implements ISelection {
 	 * 获取当前选中的节点ID列表
 	 */
 	get selected(): string[] {
-		return this._selected;
+		return this._selected.value;
 	}
 
 	/**
@@ -55,7 +55,10 @@ export class Selection implements ISelection {
 	 */
 	select(id: string) {
 		// 如果已经是单选且选中的就是该节点,则不触发更新
-		if (this._selected.length === 1 && this._selected.indexOf(id) > -1) {
+		if (
+			this._selected.value.length === 1 &&
+			this._selected.value.indexOf(id) > -1
+		) {
 			// avoid cause reaction
 			return;
 		}
@@ -67,7 +70,7 @@ export class Selection implements ISelection {
 			return;
 		}
 
-		this._selected = [id];
+		this._selected.value = [id];
 		this.emitter.emit('selectionchange', this._selected);
 	}
 
@@ -87,7 +90,7 @@ export class Selection implements ISelection {
 			}
 		});
 
-		this._selected = selectIds;
+		this._selected.value = selectIds;
 
 		this.emitter.emit('selectionchange', this._selected);
 	}
@@ -96,10 +99,10 @@ export class Selection implements ISelection {
 	 * 清空选区
 	 */
 	clear() {
-		if (this._selected.length < 1) {
+		if (this._selected.value.length < 1) {
 			return;
 		}
-		this._selected = [];
+		this._selected.value.length = 0;
 		this.emitter.emit('selectionchange', this._selected);
 	}
 
@@ -107,15 +110,15 @@ export class Selection implements ISelection {
 	 * 整理选区,移除已不存在的节点
 	 */
 	dispose() {
-		const l = this._selected.length;
+		const l = this._selected.value.length;
 		let i = l;
 		while (i-- > 0) {
-			const id = this._selected[i];
+			const id = this._selected.value[i];
 			if (!this.doc.hasNode(id)) {
-				this._selected.splice(i, 1);
+				this._selected.value.splice(i, 1);
 			}
 		}
-		if (this._selected.length !== l) {
+		if (this._selected.value.length !== l) {
 			this.emitter.emit('selectionchange', this._selected);
 		}
 	}
@@ -125,11 +128,11 @@ export class Selection implements ISelection {
 	 * @param id 要添加的节点ID
 	 */
 	add(id: string) {
-		if (this._selected.indexOf(id) > -1) {
+		if (this._selected.value.indexOf(id) > -1) {
 			return;
 		}
 
-		this._selected.push(id);
+		this._selected.value.push(id);
 		this.emitter.emit('selectionchange', this._selected);
 	}
 
@@ -138,7 +141,7 @@ export class Selection implements ISelection {
 	 * @param id 要检查的节点ID
 	 */
 	has(id: string) {
-		return this._selected.indexOf(id) > -1;
+		return this._selected.value.indexOf(id) > -1;
 	}
 
 	/**
@@ -146,9 +149,9 @@ export class Selection implements ISelection {
 	 * @param id 要移除的节点ID
 	 */
 	remove(id: string) {
-		const i = this._selected.indexOf(id);
+		const i = this._selected.value.indexOf(id);
 		if (i > -1) {
-			this._selected.splice(i, 1);
+			this._selected.value.splice(i, 1);
 			this.emitter.emit('selectionchange', this._selected);
 		}
 	}
@@ -159,7 +162,7 @@ export class Selection implements ISelection {
 	 * @param excludeRoot 是否排除根节点
 	 */
 	containsNode(node: INode, excludeRoot = false) {
-		for (const id of this._selected) {
+		for (const id of this._selected.value) {
 			const parent = this.doc.getNode(id);
 			if (excludeRoot && parent?.contains(this.doc.focusNode)) {
 				continue;
@@ -176,7 +179,7 @@ export class Selection implements ISelection {
 	 */
 	getNodes(): INode[] {
 		const nodes: INode[] = [];
-		for (const id of this._selected) {
+		for (const id of this._selected.value) {
 			const node = this.doc.getNode(id);
 			if (node) {
 				nodes.push(node);
@@ -201,7 +204,7 @@ export class Selection implements ISelection {
 	 */
 	getTopNodes(includeRoot = false) {
 		const nodes = [];
-		for (const id of this._selected) {
+		for (const id of this._selected.value) {
 			const node = this.doc.getNode(id);
 			// 排除根节点
 			if (!node || (!includeRoot && node.contains(this.doc.focusNode))) {

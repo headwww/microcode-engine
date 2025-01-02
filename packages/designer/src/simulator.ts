@@ -118,3 +118,8 @@ export interface IViewport extends IScrollable {
 export function isSimulatorHost(obj: any): obj is ISimulatorHost {
 	return obj && obj.isSimulator;
 }
+
+export interface INodeSelector {
+	node: INode;
+	instance?: IPublicTypeComponentInstance;
+}
