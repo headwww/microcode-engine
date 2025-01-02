@@ -9,8 +9,8 @@ import Preference from './utils/preference';
 
 const STRICT_PLUGIN_MODE_DEFAULT = true;
 
-// 在严格模式下使用，此时只能接受此VALID_ENGINE_options中的选项
-// 类型和描述仅用于开发人员的帮助，不会影响运行时
+// TODO 在严格模式下使用，此时只能接受此VALID_ENGINE_options中的选项
+// TODO 类型和描述仅用于开发人员的帮助，不会影响运行时
 const VALID_ENGINE_OPTIONS = {};
 
 const logger = getLogger({ level: 'log', bizName: 'config' });

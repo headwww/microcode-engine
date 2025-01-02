@@ -3,7 +3,7 @@ import {
 	IEventBus,
 } from '@arvin-shu/microcode-editor-core';
 import { IPublicModelSelection } from '@arvin-shu/microcode-types';
-import { shallowRef } from 'vue';
+import { ref } from 'vue';
 import { DocumentModel } from './document-model';
 import { comparePosition, INode, PositionNO } from './node';
 /**
@@ -33,7 +33,7 @@ export class Selection implements ISelection {
 	 * 已选中节点ID列表
 	 * 使用shallowReactive实现响应式
 	 */
-	private _selected = shallowRef<string[]>([]);
+	private _selected = ref<string[]>([]);
 
 	/**
 	 * 构造函数
@@ -102,7 +102,7 @@ export class Selection implements ISelection {
 		if (this._selected.value.length < 1) {
 			return;
 		}
-		this._selected.value.length = 0;
+		this._selected.value = [];
 		this.emitter.emit('selectionchange', this._selected);
 	}
 
@@ -111,14 +111,13 @@ export class Selection implements ISelection {
 	 */
 	dispose() {
 		const l = this._selected.value.length;
-		let i = l;
-		while (i-- > 0) {
-			const id = this._selected.value[i];
-			if (!this.doc.hasNode(id)) {
-				this._selected.value.splice(i, 1);
-			}
-		}
-		if (this._selected.value.length !== l) {
+		// 使用filter创建新数组
+		const newSelected = this._selected.value.filter((id) =>
+			this.doc.hasNode(id)
+		);
+
+		if (newSelected.length !== l) {
+			this._selected.value = newSelected;
 			this.emitter.emit('selectionchange', this._selected);
 		}
 	}
@@ -131,7 +130,7 @@ export class Selection implements ISelection {
 		if (this._selected.value.indexOf(id) > -1) {
 			return;
 		}
-
+		// 使用push添加新元素
 		this._selected.value.push(id);
 		this.emitter.emit('selectionchange', this._selected);
 	}
@@ -151,6 +150,7 @@ export class Selection implements ISelection {
 	remove(id: string) {
 		const i = this._selected.value.indexOf(id);
 		if (i > -1) {
+			// 使用splice删除元素
 			this._selected.value.splice(i, 1);
 			this.emitter.emit('selectionchange', this._selected);
 		}

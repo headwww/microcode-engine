@@ -25,6 +25,10 @@ export const ComponentPane = defineComponent({
 						componentName: 'Button',
 						props: {
 							type: 'primary',
+							style: {
+								height: '800px',
+								backgroundColor: '#FFF',
+							},
 						},
 					},
 				};

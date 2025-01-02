@@ -84,11 +84,10 @@ export const InsertionView = defineComponent({
 					return null;
 				}
 			}
-			// style.transform = `translate3d(${x}px, ${y}px, 0)`;
-			// style.transition = 'all 0.2s ease-in-out';
 			style.transform = `translate3d(${x}px, ${y}px, 0) ${
 				vertical ? `scaleY(1)` : `scaleX(1)`
 			}`;
+
 			style.transformOrigin = vertical ? 'center left' : 'left top';
 			style.transition =
 				'transform 0.15s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.1s ease-in-out';
@@ -124,7 +123,6 @@ function processDetail({
 	if (isLocationChildrenDetail(detail)) {
 		return processChildrenDetail(sim, target, detail);
 	}
-	// TODO: others...
 	const instances = sim.getComponentInstances(target);
 	if (!instances) {
 		return {};
@@ -163,7 +161,6 @@ function processChildrenDetail(
 		ret.nearRect = rect || toRaw(sim).computeRect(toRaw(node) as any);
 		ret.nearNode = toRaw(node);
 		if (pos === 'replace') {
-			// FIXME: ret.nearRect mybe null
 			ret.coverRect = ret.nearRect;
 			ret.insertType = 'cover';
 		} else if (
@@ -180,8 +177,6 @@ function processChildrenDetail(
 		return ret;
 	}
 
-	// from outline-tree: has index, but no near
-	// TODO: think of shadowNode & ConditionFlow
 	const { index } = detail;
 	if (index == null) {
 		ret.coverRect = ret.edge;

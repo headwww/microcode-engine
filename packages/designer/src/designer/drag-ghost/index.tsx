@@ -83,7 +83,7 @@ export const DragGhost = defineComponent({
 
 		return () => {
 			if (!titles.value || !titles.value.length) {
-				return null;
+				return <></>;
 			}
 
 			return (

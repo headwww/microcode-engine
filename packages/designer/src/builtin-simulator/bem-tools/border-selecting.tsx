@@ -34,19 +34,19 @@ export const BorderSelectingInstance = defineComponent({
 
 		const { offsetWidth, offsetHeight, offsetTop, offsetLeft } = observed!;
 
-		const style = {
+		const style = computed(() => ({
 			width: `${offsetWidth}px`,
 			height: `${offsetHeight}px`,
 			transform: `translate3d(${offsetLeft}px, ${offsetTop}px, 0)`,
-		};
+		}));
 
 		// TODO 工具栏
 		return () => {
 			const { observed } = props;
-			if (!observed?.hasOffset) {
+			if (!observed?.hasOffset.value) {
 				return <></>;
 			}
-			return <div class={className.value} style={style}></div>;
+			return <div class={className.value} style={style.value}></div>;
 		};
 	},
 });
@@ -66,16 +66,19 @@ export const BorderSelectingForNode = defineComponent({
 	setup(props) {
 		const { node, host } = props;
 
-		// @ts-ignore
-		const instances = computed(() => host?.getComponentInstances(node));
+		const instances = computed(() => host?.getComponentInstances(node!));
 
 		return () => {
 			if (!instances.value || instances.value.length < 1) {
 				return <></>;
 			}
+
 			return (
 				<>
-					{toRaw(instances.value).map((instance) => {
+					{instances.value.map((instance) => {
+						if (host?.viewport.scrolling) {
+							return;
+						}
 						const observed = host?.designer.createOffsetObserver({
 							node: node!,
 							instance: toRaw(instance),
@@ -115,7 +118,6 @@ export const BorderSelecting = defineComponent({
 			if (!doc || doc.suspensed) {
 				return null;
 			}
-
 			const s = doc.selection;
 			return host.designer.dragon.dragging ? s.getTopNodes() : s.getNodes();
 		});

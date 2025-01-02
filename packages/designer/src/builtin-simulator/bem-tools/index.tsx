@@ -15,7 +15,7 @@ export const BemTools = defineComponent({
 	setup(props) {
 		// TODO designMode === 'live' 取消掉这个 处理滚动的情况
 
-		// TODO设置配置状态engineConfig
+		// TODO 设置配置状态engineConfig
 
 		return () => {
 			const { host } = props;

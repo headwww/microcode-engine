@@ -142,7 +142,6 @@ export class Designer implements IDesigner {
 			if (isDragNodeObject(dragObject)) {
 				if (dragObject.nodes.length === 1) {
 					if (dragObject.nodes[0].parent) {
-						// ensure current selecting
 						dragObject.nodes[0].select();
 					} else {
 						this.currentSelection?.clear();

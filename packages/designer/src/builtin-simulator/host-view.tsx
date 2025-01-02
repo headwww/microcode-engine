@@ -1,4 +1,4 @@
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, ref, onMounted } from 'vue';
 import { Project } from '../project';
 import {
 	BuiltinSimulatorHost,
@@ -35,14 +35,17 @@ export const Canvas = defineComponent({
 	},
 	setup(props) {
 		const sim = props.host;
+		const viewportRef = ref<HTMLDivElement | null>(null);
+
+		onMounted(() => {
+			if (viewportRef.value) {
+				sim?.mountViewport(viewportRef.value);
+			}
+		});
+
 		return () => (
-			<div class="mtc-simulator-canvas">
-				<div
-					class="mtc-simulator-canvas-viewport mtc-simulator-device-default"
-					ref={(elem: any) => {
-						sim?.mountViewport(elem);
-					}}
-				>
+			<div className="mtc-simulator-canvas mtc-simulator-device-default">
+				<div class="mtc-simulator-canvas-viewport" ref={viewportRef}>
 					<BemTools host={sim} />
 					<Content host={sim}></Content>
 				</div>

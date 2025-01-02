@@ -186,6 +186,7 @@ export class OffsetObserver {
 				this._top.value = rect.top;
 				this._right.value = rect.right;
 				this._bottom.value = rect.bottom;
+				// 如果组件实例的尺寸发生变化，则需要重新计算偏移量
 				this.hasOffset.value = true;
 			}
 			this.pid = requestIdleCallback(compute);
