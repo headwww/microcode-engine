@@ -32,12 +32,10 @@ export const BorderSelectingInstance = defineComponent({
 			{ highlight, dragging },
 		]);
 
-		const { offsetWidth, offsetHeight, offsetTop, offsetLeft } = observed!;
-
 		const style = computed(() => ({
-			width: `${offsetWidth}px`,
-			height: `${offsetHeight}px`,
-			transform: `translate3d(${offsetLeft}px, ${offsetTop}px, 0)`,
+			width: `${observed?.offsetWidth}px`,
+			height: `${observed?.offsetHeight}px`,
+			transform: `translate3d(${observed?.offsetLeft}px, ${observed?.offsetTop}px, 0)`,
 		}));
 
 		// TODO 工具栏
@@ -65,8 +63,16 @@ export const BorderSelectingForNode = defineComponent({
 	},
 	setup(props) {
 		const { node, host } = props;
+		const observedMap = new Map();
 
 		const instances = computed(() => host?.getComponentInstances(node!));
+
+		onBeforeUnmount(() => {
+			observedMap.forEach((observed) => {
+				observed.purge();
+			});
+			observedMap.clear();
+		});
 
 		return () => {
 			if (!instances.value || instances.value.length < 1) {
@@ -76,17 +82,35 @@ export const BorderSelectingForNode = defineComponent({
 			return (
 				<>
 					{instances.value.map((instance) => {
+						const instanceKey = toRaw(instance);
+
+						// TODO 滚动需要优化
+
 						if (host?.viewport.scrolling) {
+							// 滚动时使用缓存的observed
+							const cachedObserved = observedMap.get(instanceKey);
+							if (cachedObserved) {
+								return (
+									<BorderSelectingInstance
+										key={cachedObserved.id}
+										dragging={host?.designer.dragon.dragging}
+										observed={cachedObserved}
+									/>
+								);
+							}
 							return;
 						}
+
 						const observed = host?.designer.createOffsetObserver({
 							node: node!,
-							instance: toRaw(instance),
+							instance: instanceKey,
 						});
+
 						if (!observed) {
 							return <></>;
 						}
-
+						// 缓存observed用于滚动时使用
+						observedMap.set(instanceKey, observed);
 						return (
 							<BorderSelectingInstance
 								key={observed.id}

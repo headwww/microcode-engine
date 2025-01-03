@@ -1,4 +1,4 @@
-import { ref, toRaw } from 'vue';
+import { computed, ref, toRaw } from 'vue';
 
 export class ReactTest {
 	private _id = ref(false);
@@ -42,4 +42,28 @@ export function useReactTest2(reactTest: ReturnType<typeof useReactTest>) {
 	return {
 		getId: () => reactTest.id,
 	};
+}
+
+export class ReactTest3 {
+	add = ref(1);
+
+	constructor() {
+		document.addEventListener('click', () => {
+			console.log('click');
+			// eslint-disable-next-line operator-assignment
+			this.add.value = this.add.value + 1;
+		});
+	}
+}
+
+export class ReactTest4 {
+	reactTest3: ReactTest3;
+
+	hegus = computed(() => this.reactTest3.add.value);
+
+	constructor(reactTest3: ReactTest3) {
+		console.log('-----');
+
+		this.reactTest3 = reactTest3;
+	}
 }

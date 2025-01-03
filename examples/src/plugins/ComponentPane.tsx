@@ -27,7 +27,7 @@ export const ComponentPane = defineComponent({
 							type: 'primary',
 							style: {
 								height: '800px',
-								backgroundColor: '#FFF',
+								backgroundColor: 'green',
 							},
 						},
 					},
