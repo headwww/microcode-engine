@@ -26,6 +26,7 @@ export const LeftFloatPane = defineComponent({
 			if (area) {
 				focusing = area.skeleton.focusTracker.create({
 					range: (e: MouseEvent) => {
+						// TODO 焦点没有设置完
 						const target = e.target as HTMLElement;
 						if (!target) {
 							return false;

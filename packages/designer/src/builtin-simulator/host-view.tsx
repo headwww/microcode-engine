@@ -1,4 +1,10 @@
-import { defineComponent, PropType, ref, onMounted } from 'vue';
+import {
+	defineComponent,
+	PropType,
+	ref,
+	onMounted,
+	onBeforeUnmount,
+} from 'vue';
 import { Project } from '../project';
 import {
 	BuiltinSimulatorHost,
@@ -43,11 +49,13 @@ export const Canvas = defineComponent({
 			}
 		});
 
+		// TODO deviceStyle 用来设置设备样式设置为浏览器还是手机还是平板
+
 		return () => (
 			<div className="mtc-simulator-canvas mtc-simulator-device-default">
 				<div class="mtc-simulator-canvas-viewport" ref={viewportRef}>
 					<BemTools host={sim} />
-					<Content host={sim}></Content>
+					<Content host={sim} />
 				</div>
 			</div>
 		);
@@ -59,13 +67,48 @@ export const Content = defineComponent({
 		host: Object as PropType<BuiltinSimulatorHost>,
 	},
 	setup(props) {
+		const disabledEvents = ref(false);
+
+		let dispose: () => void;
+
+		onMounted(() => {
+			const { editor } = props.host!.designer;
+			const onEnableEvents = (type: boolean) => {
+				disabledEvents.value = type;
+			};
+
+			editor.eventBus.on(
+				'designer.builtinSimulator.disabledEvents',
+				onEnableEvents
+			);
+
+			dispose = () => {
+				editor.removeListener(
+					'designer.builtinSimulator.disabledEvents',
+					onEnableEvents
+				);
+			};
+		});
+
+		onBeforeUnmount(() => {
+			dispose?.();
+		});
+
 		return () => {
 			const { host } = props;
+			const { viewport, designer } = host!;
 
+			const frameStyle: any = {
+				transform: `scale(${viewport.scale})`,
+				height: `${viewport.contentHeight}px`,
+				width: `${viewport.contentWidth}px`,
+			};
 			return (
 				<div class="mtc-simulator-content">
 					<iframe
+						name={`${designer.viewName}-SimulatorRenderer`}
 						class="mtc-simulator-content-frame"
+						style={frameStyle}
 						onload={(event: any) => {
 							const frame = event.target as HTMLIFrameElement;
 							host?.mountContentFrame(frame);

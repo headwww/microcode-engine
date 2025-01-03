@@ -15,6 +15,7 @@ export const ProjectView = defineComponent({
 			const { designer } = props;
 			const { project } = designer!;
 
+			// TODO 重新渲染
 			project.onRendererReady(() => {
 				updateFlag.value++; // 触发重新渲染
 			});
@@ -24,14 +25,14 @@ export const ProjectView = defineComponent({
 			const { designer } = props;
 			const { projectSimulatorProps } = designer!;
 
-			// TODO: designer?.simulatorComponent || BuiltinSimulatorHostView
-			// TODO LOading
-			const Simulator = BuiltinSimulatorHostView;
+			// TODO Loading
+			const Simulator =
+				(designer?.simulatorComponent as any) || BuiltinSimulatorHostView;
 
 			return (
 				<div class="mtc-project">
 					<div class="mtc-simulator-shell">
-						<Simulator {...projectSimulatorProps.value}></Simulator>
+						<Simulator {...projectSimulatorProps}></Simulator>
 					</div>
 				</div>
 			);

@@ -90,7 +90,7 @@ export const InsertionView = defineComponent({
 
 			style.transformOrigin = vertical ? 'center left' : 'left top';
 			style.transition =
-				'transform 0.15s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.1s ease-in-out';
+				'transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.2s ease-in-out';
 			style.opacity = '1';
 			style.willChange = 'transform, opacity';
 

@@ -1,4 +1,4 @@
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, onMounted, PropType } from 'vue';
 import { Designer, designerProps } from './designer';
 import { ProjectView } from '../project';
 import { DragGhost as BuiltinDragGhostComponent } from './drag-ghost';
@@ -18,11 +18,19 @@ export const DesignerView = defineComponent({
 			designer = new Designer(designerProps);
 		}
 
+		onMounted(() => {
+			const { onMount } = props;
+			if (onMount) {
+				onMount(designer);
+			}
+			designer.postEvent('mount', designer);
+		});
+
 		return () => {
 			const DragGhost = BuiltinDragGhostComponent;
 
 			return (
-				<div class={['mtc-designer', props.className]}>
+				<div class={['mtc-designer', props.className]} style={props.style}>
 					<DragGhost designer={designer} />
 					<ProjectView designer={designer} />
 				</div>

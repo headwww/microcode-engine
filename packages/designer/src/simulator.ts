@@ -2,6 +2,7 @@ import {
 	IPublicModelSensor,
 	IPublicTypeComponentInstance,
 	IPublicTypeNodeInstance,
+	IPublicTypePackage,
 	IPublicTypeScrollable,
 } from '@arvin-shu/microcode-types';
 import { Point } from './designer';
@@ -52,6 +53,8 @@ export interface ISimulatorHost<P = object> extends IPublicModelSensor {
 		from: IPublicTypeComponentInstance,
 		specId?: string
 	): IPublicTypeNodeInstance | null;
+
+	setupComponents(library: IPublicTypePackage[]): Promise<void>;
 }
 
 export interface IScrollable extends IPublicTypeScrollable {}

@@ -1,3 +1,4 @@
+import { Component } from 'vue';
 import { IPublicModelNode } from '../model';
 import {
 	IPublicTypeCallbacks,
@@ -30,4 +31,6 @@ export interface IPublicTypeAdvanced {
 	 * Live Text Editing：如果 children 内容是纯文本，支持双击直接编辑
 	 */
 	liveTextEditing?: IPublicTypeLiveTextEditingConfig[];
+
+	view?: Component<any>;
 }

@@ -58,17 +58,27 @@ export type LibraryItem = IPublicTypePackage & {
 };
 
 export const builtinSimulatorProps = {
-	library: Array as PropType<LibraryItem[]>,
-	simulatorUrl: [Object, String] as PropType<Asset>,
-	extraEnvironment: [Object, String] as PropType<Asset>,
+	designMode: {
+		type: String as PropType<
+			'live' | 'design' | 'preview' | 'extend' | 'border'
+		>,
+	},
 	device: {
 		type: String as PropType<'mobile' | 'iphone' | 'default' | string>,
 	},
+	deviceClassName: String,
+	environment: [Object, String] as PropType<Asset>,
+	// TODO requestHandlersMap
+	extraEnvironment: [Object, String] as PropType<Asset>,
+	library: Array as PropType<LibraryItem[]>,
+	// TODO utilsMetadata
+	simulatorUrl: [Object, String] as PropType<Asset>,
+	theme: [Object, String] as PropType<Asset>,
+	componentsAsset: [Object, String] as PropType<Asset>,
 	renderEnv: {
 		type: String as PropType<'vue' | 'rax' | 'react' | 'default' | string>,
 	},
 	locale: String,
-	deviceClassName: String,
 };
 
 const defaultEnvironment = [
@@ -151,6 +161,10 @@ export class BuiltinSimulatorHost
 		this.project = project;
 		this.designer = designer;
 		this.scroller = this.designer.createScroller(this.viewport);
+	}
+
+	async setupComponents(library: IPublicTypePackage[]): Promise<void> {
+		console.log('setupComponents', library);
 	}
 
 	/**

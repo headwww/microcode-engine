@@ -22,3 +22,4 @@ export * from './simulator-render';
 export * from './scroll-target';
 export * from './scroller';
 export * from './detecting';
+export * from './setting-field';

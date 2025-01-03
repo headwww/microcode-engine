@@ -1,15 +1,22 @@
 import {
 	IPublicEnumTransformStage,
+	IPublicModelDragObject,
 	IPublicModelEditor,
+	IPublicModelLocateEvent,
 	IPublicModelScroller,
+	IPublicTypeAssetsJson,
 	IPublicTypeComponentMetadata,
 	IPublicTypeCompositeObject,
 	IPublicTypeLocationData,
+	IPublicTypeNpmInfo,
+	IPublicTypeProjectSchema,
 	IPublicTypePropsList,
 	IPublicTypePropsTransducer,
 	IPublicTypeScrollable,
+	IShellModelFactory,
 } from '@arvin-shu/microcode-types';
 import {
+	Component,
 	computed,
 	CSSProperties,
 	ExtractPropTypes,
@@ -17,14 +24,16 @@ import {
 	Ref,
 	ref,
 	toRaw,
+	VNode,
 } from 'vue';
 import {
 	isDragNodeDataObject,
 	isDragNodeObject,
 	isLocationChildrenDetail,
 	isNodeSchema,
+	mergeAssets,
 } from '@arvin-shu/microcode-utils';
-import { INode, insertChildren, Node } from '../document';
+import { DocumentModel, INode, insertChildren, Node } from '../document';
 import { IProject, Project } from '../project';
 import { Dragon, IDragon } from './dragon';
 import { ComponentMeta, IComponentMeta } from '../component-meta';
@@ -33,11 +42,15 @@ import { Scroller } from './scroller';
 import { Detecting } from './detecting';
 import { INodeSelector } from '../simulator';
 import { createOffsetObserver, OffsetObserver } from './offset-observer';
+import { ISelection } from '../document/selection';
 
 export const designerProps = {
 	editor: {
 		type: Object as PropType<IPublicModelEditor>,
 		required: true,
+	},
+	shellModelFactory: {
+		type: Object as PropType<IShellModelFactory>,
 	},
 	className: {
 		type: String,
@@ -45,35 +58,102 @@ export const designerProps = {
 	style: {
 		type: Object as PropType<CSSProperties>,
 	},
-	onMount: {
-		type: Function as PropType<(designer: Designer) => void>,
+	// TODO 快捷键 hotkeys
+	viewName: {
+		type: String,
 	},
 	simulatorProps: {
-		type: Object as PropType<Record<string, any>>,
+		type: [Object, Function] as PropType<
+			Record<string, any> | ((document: DocumentModel) => object)
+		>,
+	},
+	simulatorComponent: {
+		type: Object as PropType<Component<any> | VNode>,
+	},
+	dragGhostComponent: {
+		type: Object as PropType<Component<any> | VNode>,
+	},
+	suspensed: {
+		type: Boolean,
+	},
+	defaultSchema: {
+		type: Object as PropType<IPublicTypeProjectSchema>,
 	},
 	componentMetadatas: {
 		type: Array as PropType<IPublicTypeComponentMetadata[]>,
+	},
+	// TODO globalComponentActions
+
+	onMount: {
+		type: Function as PropType<(designer: Designer) => void>,
+	},
+	onDragstart: {
+		type: Function as PropType<(e: IPublicModelLocateEvent) => void>,
+	},
+	onDrag: {
+		type: Function as PropType<(e: IPublicModelLocateEvent) => void>,
+	},
+	onDragend: {
+		type: Function as PropType<
+			(
+				e: { dragObject: IPublicModelDragObject; copy: boolean },
+				loc?: DropLocation
+			) => void
+		>,
 	},
 };
 
 export type DesignerProps = ExtractPropTypes<typeof designerProps>;
 
 export interface IDesigner {
-	get dragon(): IDragon;
-	get editor(): IPublicModelEditor;
+	readonly shellModelFactory: IShellModelFactory;
+
+	viewName: string | undefined;
+
 	readonly project: IProject;
+
+	get dragon(): IDragon;
+
+	get editor(): IPublicModelEditor;
+
 	get detecting(): Detecting;
+
+	get simulatorComponent(): Component<any> | VNode | undefined;
+
+	get currentSelection(): ISelection | undefined;
 
 	createScroller(scrollable: IPublicTypeScrollable): IPublicModelScroller;
 
-	createComponentMeta(
-		data: IPublicTypeComponentMetadata
-	): IComponentMeta | null;
+	refreshComponentMetasMap(): void;
+
+	createOffsetObserver(nodeInstance: INodeSelector): OffsetObserver | null;
+
+	createLocation(locationData: IPublicTypeLocationData<INode>): DropLocation;
+
+	get componentsMap(): {
+		[key: string]: IPublicTypeNpmInfo | Component<any> | object;
+	};
+
+	loadIncrementalAssets(
+		incrementalAssets: IPublicTypeAssetsJson
+	): Promise<void>;
 
 	getComponentMeta(
 		componentName: string,
 		generateMetadata?: () => IPublicTypeComponentMetadata | null
 	): IComponentMeta;
+
+	createComponentMeta(
+		data: IPublicTypeComponentMetadata
+	): IComponentMeta | null;
+
+	clearLocation(): void;
+
+	createComponentMeta(
+		data: IPublicTypeComponentMetadata
+	): IComponentMeta | null;
+
+	getComponentMetasMap(): Map<string, IComponentMeta>;
 
 	transformProps(
 		props: IPublicTypeCompositeObject | IPublicTypePropsList,
@@ -82,17 +162,14 @@ export interface IDesigner {
 	): IPublicTypeCompositeObject | IPublicTypePropsList;
 
 	postEvent(event: string, ...args: any[]): void;
-
-	clearLocation(): void;
-
-	createLocation(locationData: IPublicTypeLocationData<INode>): DropLocation;
-
-	createOffsetObserver(nodeInstance: INodeSelector): OffsetObserver | null;
 }
 
 export class Designer implements IDesigner {
-	// 拖拽实例
 	dragon: IDragon;
+
+	viewName: string | undefined;
+
+	readonly shellModelFactory: IShellModelFactory;
 
 	private props?: DesignerProps;
 
@@ -115,6 +192,8 @@ export class Designer implements IDesigner {
 		new Map<string, IComponentMeta>()
 	) as Ref<Map<string, IComponentMeta>>;
 
+	private selectionDispose: undefined | (() => void);
+
 	// 模拟器属性
 	private _simulatorProps: Ref<Record<string, any>> = ref({});
 
@@ -131,11 +210,32 @@ export class Designer implements IDesigner {
 		return this.currentDocument?.selection;
 	}
 
+	private _simulatorComponent = ref<Component<any> | VNode | undefined>(
+		undefined
+	);
+
+	get simulatorComponent() {
+		return this._simulatorComponent.value;
+	}
+
+	private _suspensed = ref<boolean>(false);
+
+	get suspensed() {
+		return this._suspensed.value;
+	}
+
+	set suspensed(value: boolean) {
+		this._suspensed.value = value;
+	}
+
 	constructor(props: DesignerProps) {
-		this.editor = props.editor!;
-		this.dragon = new Dragon(this);
-		this.project = new Project(this);
+		const { editor, viewName, shellModelFactory, defaultSchema } = props;
+		this.editor = editor!;
+		this.viewName = viewName;
+		this.shellModelFactory = shellModelFactory!;
 		this.setProps(props);
+		this.project = new Project(this, defaultSchema, viewName);
+		this.dragon = new Dragon(this);
 		this.dragon.onDragstart((e) => {
 			this.detecting.enable = false;
 			const { dragObject } = e;
@@ -150,18 +250,18 @@ export class Designer implements IDesigner {
 			} else {
 				this.currentSelection?.clear();
 			}
-			// TODO 拖拽开始事件
-			// if (this.props?.onDragstart) {
-			// 	this.props.onDragstart(e);
-			// }
+			if (this.props?.onDragstart) {
+				this.props.onDragstart(e);
+			}
 			this.postEvent('dragstart', e);
 		});
 
+		// TODO 初始化ContextMenuActions
+
 		this.dragon.onDrag((e) => {
-			// TODO 拖拽中事件
-			// if (this.props?.onDrag) {
-			// 	this.props.onDrag(e);
-			// }
+			if (this.props?.onDrag) {
+				this.props.onDrag(e);
+			}
 			this.postEvent('drag', e);
 		});
 		this.dragon.onDragend((e) => {
@@ -203,13 +303,82 @@ export class Designer implements IDesigner {
 					}
 				}
 			}
-			// TODO 拖拽结束事件
-			// if (this.props?.onDragend) {
-			// 	this.props.onDragend(e, loc);
-			// }
+			if (this.props?.onDragend) {
+				this.props.onDragend(e as any, loc);
+			}
 			this.postEvent('dragend', e, loc);
 			this.detecting.enable = true;
 		});
+
+		// TODO 还有很多属性没有实现
+
+		this.postEvent('init', this);
+		this.setupSelection();
+	}
+
+	setupSelection() {
+		if (this.selectionDispose) {
+			this.selectionDispose();
+			this.selectionDispose = undefined;
+		}
+		const { currentSelection } = this;
+		// TODO: 避免选中 Page 组件，默认选中第一个子节点；新增规则 或 判断 Live 模式
+		if (
+			currentSelection &&
+			currentSelection.selected.length === 0 &&
+			(this.simulatorProps as any)?.designMode === 'live'
+		) {
+			const rootNodeChildrens = this.currentDocument
+				?.getRoot()
+				?.getChildren()?.children;
+			if (rootNodeChildrens && rootNodeChildrens.length > 0) {
+				currentSelection.select(rootNodeChildrens[0].id);
+			}
+		}
+		this.postEvent('selection.change', currentSelection);
+		if (currentSelection) {
+			this.selectionDispose = currentSelection.onSelectionChange(() => {
+				this.postEvent('selection.change', currentSelection);
+			});
+		}
+	}
+
+	postEvent(event: string, ...args: any[]) {
+		this.editor.eventBus.emit(`designer.${event}`, ...args);
+	}
+
+	get dropLocation() {
+		return this._dropLocation;
+	}
+
+	createLocation(locationData: IPublicTypeLocationData<INode>): DropLocation {
+		const loc = new DropLocation(locationData);
+		if (
+			this._dropLocation &&
+			this._dropLocation.document &&
+			this._dropLocation.document !== loc.document
+		) {
+			this._dropLocation.document.dropLocation = null;
+		}
+		this._dropLocation = loc;
+		this.postEvent('dropLocation.change', loc);
+		if (loc.document) {
+			toRaw(loc.document).dropLocation = loc;
+		}
+		// TODO this.activeTracker.track({ node: loc.target, detail: loc.detail });
+		return loc;
+	}
+
+	clearLocation() {
+		if (this._dropLocation && this._dropLocation.document) {
+			this._dropLocation.document.dropLocation = null;
+		}
+		this.postEvent('dropLocation.change', undefined);
+		this._dropLocation = undefined;
+	}
+
+	createScroller(scrollable: IPublicTypeScrollable): IPublicModelScroller {
+		return new Scroller(scrollable);
 	}
 
 	createOffsetObserver(nodeInstance: INodeSelector): OffsetObserver | null {
@@ -232,43 +401,12 @@ export class Designer implements IDesigner {
 		}
 	}
 
-	createScroller(scrollable: IPublicTypeScrollable): IPublicModelScroller {
-		return new Scroller(scrollable);
+	touchOffsetObserver() {
+		this.clearOobxList(true);
+		this.oobxList.forEach((item) => item.compute());
 	}
 
-	createLocation(locationData: IPublicTypeLocationData<INode>): DropLocation {
-		const loc = new DropLocation(locationData);
-		if (
-			this._dropLocation &&
-			this._dropLocation.document &&
-			this._dropLocation.document !== loc.document
-		) {
-			this._dropLocation.document.dropLocation = null;
-		}
-		this._dropLocation = loc;
-		this.postEvent('dropLocation.change', loc);
-		if (loc.document) {
-			toRaw(loc.document).dropLocation = loc;
-		}
-		// TODO this.activeTracker.track({ node: loc.target, detail: loc.detail });
-		return loc;
-	}
-
-	simulatorProps = computed(() => this._simulatorProps.value);
-
-	/**
-	 * 提供给模拟器使用的属性
-	 */
-	projectSimulatorProps = computed<Record<string, any>>(() => ({
-		...this.simulatorProps.value,
-		project: this.project,
-		designer: this,
-		// 模拟器挂载完成时调用将模拟器实例传递给project
-		onMount: (simulator: any) => {
-			this.project.mountSimulator(simulator);
-			this.editor.set('simulator', simulator);
-		},
-	}));
+	// TODO createSettingEntry 设置起管理器
 
 	/**
 	 * 设置属性
@@ -278,16 +416,119 @@ export class Designer implements IDesigner {
 	setProps(nextProps: DesignerProps) {
 		const props = this.props ? { ...this.props, ...nextProps } : nextProps;
 		if (this.props) {
-			//
+			if (props.simulatorComponent !== this.props.simulatorComponent) {
+				this._simulatorComponent.value = props.simulatorComponent;
+			}
+			if (props.simulatorProps !== this.props.simulatorProps) {
+				this._simulatorProps.value = props.simulatorProps || {};
+				// 重新 setupSelection
+				if (
+					// @ts-ignore
+					props.simulatorProps?.designMode !==
+					// @ts-ignore
+					this.props.simulatorProps?.designMode
+				) {
+					this.setupSelection();
+				}
+			}
+			if (props.suspensed !== this.props.suspensed && props.suspensed != null) {
+				this.suspensed = props.suspensed;
+			}
 			if (props.simulatorProps !== this.props.simulatorProps) {
 				this._simulatorProps.value = props.simulatorProps || {};
 			}
+			if (
+				props.componentMetadatas !== this.props.componentMetadatas &&
+				props.componentMetadatas != null
+			) {
+				this.buildComponentMetasMap(props.componentMetadatas);
+			}
 		} else {
-			//
+			if (props.simulatorComponent) {
+				this._simulatorComponent.value = props.simulatorComponent;
+			}
 			if (props.simulatorProps) {
 				this._simulatorProps.value = props.simulatorProps || {};
 			}
+			if (props.suspensed != null) {
+				this.suspensed = props.suspensed;
+			}
+			if (props.componentMetadatas != null) {
+				this.buildComponentMetasMap(props.componentMetadatas);
+			}
 		}
+		this.props = props;
+	}
+
+	async loadIncrementalAssets(
+		incrementalAssets: IPublicTypeAssetsJson
+	): Promise<void> {
+		const { components, packages } = incrementalAssets;
+		components && this.buildComponentMetasMap(components);
+		if (packages) {
+			await this.project.simulator?.setupComponents(packages);
+		}
+
+		if (components) {
+			// 合并 assets
+			const assets = this.editor.get('assets') || {};
+			const newAssets = mergeAssets(assets, incrementalAssets);
+			// 对于 assets 存在需要二次网络下载的过程，必须 await 等待结束之后，再进行事件触发
+			await this.editor.set('assets', newAssets);
+		}
+		// TODO: 因为涉及修改 prototype.view，之后在 renderer 里修改了 vc 的 view 获取逻辑后，可删除
+		this.refreshComponentMetasMap();
+		// 完成加载增量资源后发送事件，方便插件监听并处理相关逻辑
+		this.editor.eventBus.emit('designer.incrementalAssetsReady');
+	}
+
+	get(key: string): any {
+		// @ts-ignore
+		return this.props?.[key];
+	}
+
+	/**
+	 * 刷新 componentMetasMap，可间接触发模拟器里的 buildComponents
+	 */
+	refreshComponentMetasMap() {
+		this._componentMetasMap.value = new Map(this._componentMetasMap.value);
+	}
+
+	private readonly computedSimulatorProps = computed(() => {
+		if (typeof this._simulatorProps.value === 'function') {
+			return this._simulatorProps.value(this.project);
+		}
+		return this._simulatorProps.value || {};
+	});
+
+	get simulatorProps() {
+		return this.computedSimulatorProps.value;
+	}
+
+	/**
+	 * 提供给模拟器使用的属性
+	 */
+	private readonly computedProjectSimulatorProps = computed(() => ({
+		...this.simulatorProps,
+		project: this.project,
+		designer: this,
+		// 模拟器挂载完成时调用将模拟器实例传递给project
+		onMount: (simulator: any) => {
+			this.project.mountSimulator(simulator);
+			this.editor.set('simulator', simulator);
+		},
+	}));
+
+	get projectSimulatorProps() {
+		return this.computedProjectSimulatorProps.value;
+	}
+
+	get schema(): IPublicTypeProjectSchema {
+		return this.project.getSchema();
+	}
+
+	setSchema(schema?: IPublicTypeProjectSchema) {
+		this.project.load(schema);
 	}
 
 	/**
@@ -340,13 +581,8 @@ export class Designer implements IDesigner {
 		return meta;
 	}
 
-	/**
-	 * 获取组件元数据
-	 *
-	 * @param componentName 组件名
-	 * @param generateMetadata 生成组件元数据
-	 * @returns 组件元数据实例
-	 */
+	// TODO getGlobalComponentActions 工具条动作
+
 	getComponentMeta(
 		componentName: string,
 		generateMetadata?: () => IPublicTypeComponentMetadata | null
@@ -367,6 +603,33 @@ export class Designer implements IDesigner {
 		this._lostComponentMetasMap.set(componentName, meta);
 
 		return meta;
+	}
+
+	getComponentMetasMap() {
+		return this._componentMetasMap.value;
+	}
+
+	private readonly computedComponentsMap = computed(() => {
+		const maps: any = {};
+		const designer = this;
+		designer._componentMetasMap.value.forEach((config, key) => {
+			const metaData = config.getMetadata();
+			if (metaData.devMode === 'microCode') {
+				maps[key] = metaData.schema;
+			} else {
+				const { view } = config.advanced;
+				if (view) {
+					maps[key] = view;
+				} else {
+					maps[key] = config.npm;
+				}
+			}
+		});
+		return maps;
+	});
+
+	get componentsMap() {
+		return this.computedComponentsMap.value;
 	}
 
 	/**
@@ -403,15 +666,7 @@ export class Designer implements IDesigner {
 		}, props);
 	}
 
-	clearLocation() {
-		if (this._dropLocation && this._dropLocation.document) {
-			this._dropLocation.document.dropLocation = null;
-		}
-		this.postEvent('dropLocation.change', undefined);
-		this._dropLocation = undefined;
-	}
+	// TODO addPropsReducer
 
-	postEvent(event: string, ...args: any[]) {
-		this.editor.eventBus.emit(`designer.${event}`, ...args);
-	}
+	// TODO autorun
 }

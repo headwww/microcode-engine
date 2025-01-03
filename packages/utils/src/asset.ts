@@ -6,6 +6,7 @@ import {
 	AssetLevels,
 	AssetList,
 	AssetType,
+	IPublicTypeAssetsJson,
 } from '@arvin-shu/microcode-types';
 import { isCSSUrl } from './is-css-url';
 import { evaluate, load } from './script';
@@ -282,4 +283,25 @@ export class AssetLoader {
 		}
 		return isUrl ? load(content, scriptType) : evaluate(content, scriptType);
 	}
+}
+
+export function mergeAssets(
+	assets: IPublicTypeAssetsJson,
+	incrementalAssets: IPublicTypeAssetsJson
+): IPublicTypeAssetsJson {
+	if (incrementalAssets.packages) {
+		assets.packages = [
+			...(assets.packages || []),
+			...incrementalAssets.packages,
+		];
+	}
+
+	if (incrementalAssets.components) {
+		assets.components = [
+			...(assets.components || []),
+			...incrementalAssets.components,
+		];
+	}
+
+	return assets;
 }

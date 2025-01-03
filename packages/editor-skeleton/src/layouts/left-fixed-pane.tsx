@@ -1,4 +1,4 @@
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, onUpdated, PropType } from 'vue';
 import { IPublicTypePanelConfig } from '@arvin-shu/microcode-types';
 import { Area } from '../area';
 import { Panel } from '..';
@@ -9,6 +9,9 @@ export const LeftFixedPane = defineComponent({
 		area: Object as PropType<Area<IPublicTypePanelConfig, Panel>>,
 	},
 	setup(props) {
+		onUpdated(() => {
+			props.area?.skeleton.editor.get('designer').touchOffsetObserver();
+		});
 		return () => {
 			const { area } = props;
 			const width = area?.current.value?.config.props?.width;

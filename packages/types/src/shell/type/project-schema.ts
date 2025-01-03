@@ -29,4 +29,6 @@ export interface IPublicTypeProjectSchema<T = IPublicTypeRootSchema> {
 	 * 国际化语料
 	 */
 	i18n?: IPublicTypeI18nMap;
+
+	// TODO 还有很多属性没有实现
 }
