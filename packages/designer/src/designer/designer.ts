@@ -5,6 +5,7 @@ import {
 	IPublicModelLocateEvent,
 	IPublicModelScroller,
 	IPublicTypeAssetsJson,
+	IPublicTypeComponentAction,
 	IPublicTypeComponentMetadata,
 	IPublicTypeCompositeObject,
 	IPublicTypeLocationData,
@@ -43,6 +44,7 @@ import { Detecting } from './detecting';
 import { INodeSelector } from '../simulator';
 import { createOffsetObserver, OffsetObserver } from './offset-observer';
 import { ISelection } from '../document/selection';
+import { ComponentActions } from '../component-actions';
 
 export const designerProps = {
 	editor: {
@@ -82,8 +84,9 @@ export const designerProps = {
 	componentMetadatas: {
 		type: Array as PropType<IPublicTypeComponentMetadata[]>,
 	},
-	// TODO globalComponentActions
-
+	globalComponentActions: {
+		type: Array as PropType<IPublicTypeComponentAction[]>,
+	},
 	onMount: {
 		type: Function as PropType<(designer: Designer) => void>,
 	},
@@ -113,6 +116,8 @@ export interface IDesigner {
 	readonly project: IProject;
 
 	get dragon(): IDragon;
+
+	get componentActions(): ComponentActions;
 
 	get editor(): IPublicModelEditor;
 
@@ -168,6 +173,8 @@ export class Designer implements IDesigner {
 	dragon: IDragon;
 
 	viewName: string | undefined;
+
+	readonly componentActions = new ComponentActions();
 
 	readonly shellModelFactory: IShellModelFactory;
 
@@ -482,7 +489,7 @@ export class Designer implements IDesigner {
 		this.editor.eventBus.emit('designer.incrementalAssetsReady');
 	}
 
-	get(key: string): any {
+	get(key: string) {
 		// @ts-ignore
 		return this.props?.[key];
 	}
@@ -581,7 +588,9 @@ export class Designer implements IDesigner {
 		return meta;
 	}
 
-	// TODO getGlobalComponentActions 工具条动作
+	getGlobalComponentActions(): IPublicTypeComponentAction[] | null {
+		return this.props?.globalComponentActions || null;
+	}
 
 	getComponentMeta(
 		componentName: string,

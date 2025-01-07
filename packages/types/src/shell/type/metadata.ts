@@ -1,4 +1,5 @@
 import { IPublicModelNode } from '../model';
+import { IPublicTypeComponentAction } from './component-action';
 
 /**
  * children 内容是纯文本，支持双击直接编 的可配置项目
@@ -127,6 +128,11 @@ export interface IPublicTypeComponentConfigure {
 	 * 禁用的行为，可以为 `'copy'`, `'move'`, `'remove'` 或它们组成的数组
 	 */
 	disableBehaviors?: string[] | string;
+
+	/**
+	 * 用于详细配置上述操作项的内容
+	 */
+	actions?: IPublicTypeComponentAction[];
 }
 
 /**
@@ -140,6 +146,10 @@ export interface IPublicTypeCallbacks {
 	/** 选中 hook，如果返回值是 false，可以控制组件不可被选中 */
 	onSelectHook?: (currentNode: IPublicModelNode) => boolean;
 	onClickHook?: (e: MouseEvent, currentNode: IPublicModelNode | null) => any;
+	onChildMoveHook?: (
+		childNode: IPublicModelNode,
+		currentNode: IPublicModelNode
+	) => boolean;
 
 	// events
 	onNodeRemove?: (

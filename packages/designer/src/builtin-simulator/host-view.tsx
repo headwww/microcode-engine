@@ -93,6 +93,13 @@ export const Content = defineComponent({
 		onBeforeUnmount(() => {
 			dispose?.();
 		});
+		const iframeRef = ref<HTMLIFrameElement>();
+
+		onMounted(() => {
+			if (iframeRef.value) {
+				props.host?.mountContentFrame(iframeRef.value);
+			}
+		});
 
 		return () => {
 			const { host } = props;
@@ -103,16 +110,14 @@ export const Content = defineComponent({
 				height: `${viewport.contentHeight}px`,
 				width: `${viewport.contentWidth}px`,
 			};
+
 			return (
 				<div class="mtc-simulator-content">
 					<iframe
 						name={`${designer.viewName}-SimulatorRenderer`}
 						class="mtc-simulator-content-frame"
 						style={frameStyle}
-						onload={(event: any) => {
-							const frame = event.target as HTMLIFrameElement;
-							host?.mountContentFrame(frame);
-						}}
+						ref={iframeRef}
 					/>
 				</div>
 			);

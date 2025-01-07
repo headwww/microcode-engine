@@ -64,3 +64,8 @@ export * from './prop-change-options';
 export * from './scrollable';
 export * from './drag-any-object';
 export * from './drag-object';
+export * from './component-action';
+export * from './action-content-object';
+export * from './metadata-transducer';
+export * from './simulator-renderer';
+export * from './app-config';

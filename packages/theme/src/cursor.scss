@@ -1,0 +1,19 @@
+html.mtc-cursor-dragging,
+html.mtc-cursor-dragging * {
+    cursor: move !important;
+}
+
+html.mtc-cursor-x-resizing,
+html.mtc-cursor-x-resizing * {
+    cursor: col-resize;
+}
+
+html.mtc-cursor-y-resizing,
+html.mtc-cursor-y-resizing * {
+    cursor: row-resize;
+}
+
+html.mtc-cursor-copy,
+html.mtc-cursor-copy * {
+    cursor: copy !important;
+}

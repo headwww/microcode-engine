@@ -1,4 +1,5 @@
 import {
+	Component,
 	computed,
 	ExtractPropTypes,
 	PropType,
@@ -7,6 +8,7 @@ import {
 	ref,
 	toRaw,
 	watch,
+	watchEffect,
 } from 'vue';
 import {
 	Asset,
@@ -15,6 +17,7 @@ import {
 	AssetType,
 	IPublicEnumDragObjectType,
 	IPublicModelLocateEvent,
+	IPublicModelNode,
 	IPublicTypeComponentInstance,
 	IPublicTypeLocationChildrenDetail,
 	IPublicTypeLocationDetailType,
@@ -25,13 +28,20 @@ import {
 import {
 	assetBundle,
 	assetItem,
+	getClosestNode,
 	hasOwnProperty,
 	isDragAnyObject,
 	isDragNodeObject,
+	isElement,
+	isFormEvent,
 	isLocationData,
 } from '@arvin-shu/microcode-utils';
 import { isNaN } from 'lodash';
-import { engineConfig } from '@arvin-shu/microcode-editor-core';
+import {
+	createModuleEventBus,
+	engineConfig,
+	IEventBus,
+} from '@arvin-shu/microcode-editor-core';
 import {
 	CanvasPoint,
 	Designer,
@@ -45,10 +55,17 @@ import { IProject, Project } from '../project';
 import { DropContainer, ISimulatorHost } from '../simulator';
 import { createSimulator } from './create-simulator';
 import Viewport from './viewport';
-import { contains, INode, isRootNode } from '../document';
+import { contains, INode, isRootNode, Node } from '../document';
 import { IScroller } from '../designer/scroller';
-import { getClosestClickableNode } from '../utils';
+import {
+	getClosestClickableNode,
+	isDOMNodeVisible,
+	isElementNode,
+	parseMetadata,
+} from '../utils';
 import { isShaken } from '../designer/utils';
+import ResourceConsumer from './resource-consumer';
+import { BuiltinSimulatorRenderer } from './renderer';
 
 export type LibraryItem = IPublicTypePackage & {
 	package: string;
@@ -104,6 +121,19 @@ export class BuiltinSimulatorHost
 
 	readonly scroller: IScroller;
 
+	readonly emitter: IEventBus = createModuleEventBus('BuiltinSimulatorHost');
+
+	readonly componentsConsumer: ResourceConsumer;
+
+	readonly injectionConsumer: ResourceConsumer;
+
+	readonly i18nConsumer: ResourceConsumer;
+
+	/**
+	 * 是否为画布自动渲染
+	 */
+	autoRender = true;
+
 	private _iframe?: HTMLIFrameElement;
 
 	readonly asyncLibraryMap: { [key: string]: {} } = {};
@@ -122,8 +152,7 @@ export class BuiltinSimulatorHost
 	 */
 	private _contentDocument = ref<Document>();
 
-	// TODO 没有限定类型
-	private _renderer?: any;
+	private _renderer?: BuiltinSimulatorRenderer;
 
 	get renderer() {
 		return this._renderer;
@@ -157,59 +186,14 @@ export class BuiltinSimulatorHost
 		return this.computedDesignMode.value;
 	}
 
-	constructor(project: Project, designer: Designer) {
-		this.project = project;
-		this.designer = designer;
-		this.scroller = this.designer.createScroller(this.viewport);
-	}
+	private _appHelper: Ref<any> = ref();
 
-	async setupComponents(library: IPublicTypePackage[]): Promise<void> {
-		console.log('setupComponents', library);
-	}
+	private readonly computedComponentsAsset = computed(() =>
+		this.get('componentsAsset')
+	);
 
-	/**
-	 * TODO renderer设置类型，有 Renderer 进程连接进来，设置同步机制
-	 */
-	connect(renderer: any, source: any, callback: any, options?: any) {
-		this._renderer = renderer;
-		return watch(source, callback, options);
-	}
-
-	computeRect(node: INode): IPublicTypeRect | null {
-		const instances = this.getComponentInstances(node);
-		if (!instances) {
-			return null;
-		}
-		return this.computeComponentInstanceRect(
-			instances[0],
-			toRaw(node).componentMeta.rootSelector
-		);
-	}
-
-	getComponentInstances(
-		node: INode,
-		context?: IPublicTypeNodeInstance
-	): IPublicTypeComponentInstance[] | null {
-		const docId = node.document?.id;
-		if (!docId) {
-			return null;
-		}
-
-		const instances = this.instancesMap[docId]?.get(node.id) || null;
-		if (!instances || !context) {
-			return instances;
-		}
-
-		// TODO  getClosestNodeInstance
-
-		return null;
-	}
-
-	getClosestNodeInstance(
-		from: IPublicTypeComponentInstance,
-		specId?: string
-	): IPublicTypeNodeInstance | null {
-		return this.renderer?.getClosestNodeInstance(from, specId) || null;
+	get componentsAsset() {
+		return this.computedComponentsAsset.value;
 	}
 
 	contentWindow?: Window | undefined;
@@ -220,6 +204,38 @@ export class BuiltinSimulatorHost
 		return this.computedTheme.value;
 	}
 
+	constructor(project: Project, designer: Designer) {
+		this.project = project;
+		this.designer = designer;
+		this.scroller = this.designer.createScroller(this.viewport);
+		this.autoRender = !engineConfig.get('disableAutoRender', false);
+		this._appHelper.value = engineConfig.get('appHelper');
+
+		this.componentsConsumer = new ResourceConsumer<Asset | undefined>(
+			() => this.componentsAsset
+		);
+		this.injectionConsumer = new ResourceConsumer(() => ({
+			appHelper: this._appHelper.value,
+		}));
+
+		engineConfig.onGot('appHelper', (data) => {
+			// appHelper被config.set修改后触发injectionConsumer.consume回调
+			this._appHelper.value = data;
+		});
+
+		this.i18nConsumer = new ResourceConsumer(() => this.project.i18n);
+
+		// TODO 还有很多属性没有设置
+	}
+
+	stopAutoRepaintNode() {
+		this.renderer?.stopAutoRepaintNode();
+	}
+
+	enableAutoRepaintNode() {
+		this.renderer?.enableAutoRepaintNode();
+	}
+
 	/**
 	 * 设置属性
 	 * @param props
@@ -228,8 +244,100 @@ export class BuiltinSimulatorHost
 		this._props.value = props;
 	}
 
-	get(key: string) {
+	set(key: string, value: any) {
+		this._props = {
+			...this._props,
+			[key]: value,
+		};
+	}
+
+	get(key: string): any {
+		if (key === 'device') {
+			return (
+				this.designer?.editor
+					?.get('deviceMapper')
+					?.transform?.(this._props.value.device) || this._props.value.device
+			);
+		}
 		return this._props.value[key];
+	}
+
+	/**
+	 *  renderer设置类型，有 Renderer 进程连接进来，设置同步机制
+	 */
+	connect(renderer: any, effect: any, options?: any) {
+		this._renderer = renderer;
+		return watchEffect(effect, options);
+	}
+
+	watch(source: any, callback: any, options?: any) {
+		watch(source, callback, options);
+	}
+
+	purge(): void {}
+
+	mountViewport(viewport: HTMLElement | null) {
+		this.viewport.mount(viewport);
+	}
+
+	/**
+	 * 构建资源库
+	 */
+	buildLibrary(library?: LibraryItem[]) {
+		// 获取库配置,如果没有传入则使用内部配置
+		const _library = library || (this.get('library') as LibraryItem[]);
+		// 初始化资源列表和导出列表
+		const libraryAsset: AssetList = [];
+		const libraryExportList: string[] = [];
+		const functionCallLibraryExportList: string[] = [];
+
+		if (_library && _library.length) {
+			_library.forEach((item) => {
+				// 记录包名和库名的映射关系
+				this.libraryMap[item.package] = item.library;
+
+				// 处理异步加载的库
+				if (item.async) {
+					this.asyncLibraryMap[item.package] = item;
+				}
+
+				// 处理导出名称和库名不一致的情况
+				if (item.exportName && item.library) {
+					libraryExportList.push(
+						`Object.defineProperty(window,'${item.exportName}',{get:()=>window.${item.library}});`
+					);
+				}
+
+				// 处理函数调用方式的导出
+				if (item.exportMode === 'functionCall' && item.exportSourceLibrary) {
+					functionCallLibraryExportList.push(
+						`window["${item.library}"] = window["${item.exportSourceLibrary}"]("${item.library}", "${item.package}");`
+					);
+				}
+
+				// 添加库的资源URL
+				if (item.editUrls) {
+					libraryAsset.push(item.editUrls);
+				} else if (item.urls) {
+					libraryAsset.push(item.urls);
+				}
+			});
+		}
+
+		// 合并所有资源配置
+		libraryAsset.unshift(
+			assetItem(AssetType.JSText, libraryExportList.join(''))
+		);
+		libraryAsset.push(
+			assetItem(AssetType.JSText, functionCallLibraryExportList.join(''))
+		);
+
+		return libraryAsset;
+	}
+
+	rerender() {
+		this.designer.refreshComponentMetasMap();
+		this.renderer?.rerender?.();
 	}
 
 	async mountContentFrame(iframe: HTMLIFrameElement) {
@@ -259,15 +367,38 @@ export class BuiltinSimulatorHost
 
 		const renderer: any = await createSimulator(this, iframe, vendors);
 
+		// TODO bug资源消费问题没用解决
+		// await this.componentsConsumer.waitFirstConsume();
+		// await this.injectionConsumer.waitFirstConsume();
+		// TODO 加载异步 Library
+
 		renderer.run();
 
 		this.viewport.setScrollTarget(this._contentWindow.value!);
 		this.setupEvents();
+
+		// TODO 绑定热键
+	}
+
+	async setupComponents(library: LibraryItem[]): Promise<void> {
+		const libraryAsset: AssetList = this.buildLibrary(library);
+		await this.renderer?.load(libraryAsset);
+		if (Object.keys(this.asyncLibraryMap).length > 0) {
+			// 加载异步 Library
+			await this.renderer?.loadAsyncLibrary(this.asyncLibraryMap);
+			Object.keys(this.asyncLibraryMap).forEach((key) => {
+				delete this.asyncLibraryMap[key];
+			});
+		}
 	}
 
 	setupEvents() {
 		this.setupDragAndClick();
 		this.setupDetecting();
+	}
+
+	postEvent(eventName: string, ...data: any[]) {
+		this.emitter.emit(eventName, ...data);
 	}
 
 	setupDragAndClick() {
@@ -443,8 +574,24 @@ export class BuiltinSimulatorHost
 				const x = new Event('click');
 				x.initEvent('click', true);
 				this._iframe?.dispatchEvent(x);
-				e.preventDefault();
-				e.stopPropagation();
+				const { target } = e;
+
+				const customizeIgnoreSelectors = engineConfig.get(
+					'customizeIgnoreSelectors'
+				);
+				const defaultIgnoreSelectors: string[] = ['.editor-container'];
+				const ignoreSelectors =
+					customizeIgnoreSelectors?.(defaultIgnoreSelectors, e) ||
+					defaultIgnoreSelectors;
+				const ignoreSelectorsString = ignoreSelectors.join(',');
+				if (
+					(!customizeIgnoreSelectors && isFormEvent(e)) ||
+					// @ts-ignore
+					target?.closest(ignoreSelectorsString)
+				) {
+					e.preventDefault();
+					e.stopPropagation();
+				}
 			},
 			true
 		);
@@ -506,7 +653,6 @@ export class BuiltinSimulatorHost
 		doc.addEventListener('mouseover', hover, true);
 		doc.addEventListener('mouseleave', leave, false);
 
-		// TODO: refactor this line, contains click, mousedown, mousemove
 		doc.addEventListener(
 			'mousemove',
 			(e: Event) => {
@@ -520,73 +666,40 @@ export class BuiltinSimulatorHost
 			},
 			true
 		);
-
-		// 注销事件监听的代码,暂时注释掉
-		// this.disableDetecting = () => {
-		//   detecting.leave(this.project.currentDocument);
-		//   doc.removeEventListener('mouseover', hover, true);
-		//   doc.removeEventListener('mouseleave', leave, false);
-		//   this.disableDetecting = undefined;
-		// };
 	}
 
-	mountViewport(viewport: HTMLElement | null) {
-		this.viewport.mount(viewport);
+	// TODO setupLiveEditing
+
+	setSuspense() {
+		return false;
 	}
 
-	/**
-	 * 构建资源库
-	 */
-	buildLibrary(library?: LibraryItem[]) {
-		// 获取库配置,如果没有传入则使用内部配置
-		const _library = library || (this.get('library') as LibraryItem[]);
-		// 初始化资源列表和导出列表
-		const libraryAsset: AssetList = [];
-		const libraryExportList: string[] = [];
-		const functionCallLibraryExportList: string[] = [];
+	// TODO setupContextMenu
 
-		if (_library && _library.length) {
-			_library.forEach((item) => {
-				// 记录包名和库名的映射关系
-				this.libraryMap[item.package] = item.library;
-
-				// 处理异步加载的库
-				if (item.async) {
-					this.asyncLibraryMap[item.package] = item;
-				}
-
-				// 处理导出名称和库名不一致的情况
-				if (item.exportName && item.library) {
-					libraryExportList.push(
-						`Object.defineProperty(window,'${item.exportName}',{get:()=>window.${item.library}});`
-					);
-				}
-
-				// 处理函数调用方式的导出
-				if (item.exportMode === 'functionCall' && item.exportSourceLibrary) {
-					functionCallLibraryExportList.push(
-						`window["${item.library}"] = window["${item.exportSourceLibrary}"]("${item.library}", "${item.package}");`
-					);
-				}
-
-				// 添加库的资源URL
-				if (item.editUrls) {
-					libraryAsset.push(item.editUrls);
-				} else if (item.urls) {
-					libraryAsset.push(item.urls);
-				}
-			});
+	generateComponentMetadata(componentName: string) {
+		if (isHTMLTag(componentName)) {
+			return {
+				componentName,
+			};
 		}
+		const component = this.getComponent(componentName);
+		if (!component) {
+			return {
+				componentName,
+			};
+		}
+		return {
+			componentName,
+			...parseMetadata(component),
+		};
+	}
 
-		// 合并所有资源配置
-		libraryAsset.unshift(
-			assetItem(AssetType.JSText, libraryExportList.join(''))
-		);
-		libraryAsset.push(
-			assetItem(AssetType.JSText, functionCallLibraryExportList.join(''))
-		);
+	getComponent(componentName: string): Component<any> | object | null {
+		return this.renderer?.getComponent(componentName) || null;
+	}
 
-		return libraryAsset;
+	createComponent() {
+		return null;
 	}
 
 	setInstance(
@@ -604,12 +717,47 @@ export class BuiltinSimulatorHost
 		}
 	}
 
-	watch(source: any, callback: any, options?: any) {
-		watch(source, callback, options);
+	getComponentInstances(
+		node: INode,
+		context?: IPublicTypeNodeInstance
+	): IPublicTypeComponentInstance[] | null {
+		const docId = node.document?.id;
+		if (!docId) {
+			return null;
+		}
+
+		const instances = this.instancesMap[docId]?.get(node.id) || null;
+		if (!instances || !context) {
+			return instances;
+		}
+
+		return instances.filter(
+			(instance) =>
+				this.getClosestNodeInstance(instance, context?.nodeId)?.instance ===
+				context.instance
+		);
 	}
 
-	setSuspense() {
-		return false;
+	getComponentContext(): any {
+		throw new Error('Method not implemented.');
+	}
+
+	getClosestNodeInstance(
+		from: IPublicTypeComponentInstance,
+		specId?: string
+	): IPublicTypeNodeInstance<IPublicTypeComponentInstance> | null {
+		return this.renderer?.getClosestNodeInstance(from, specId) || null;
+	}
+
+	computeRect(node: INode): IPublicTypeRect | null {
+		const instances = this.getComponentInstances(node);
+		if (!instances) {
+			return null;
+		}
+		return this.computeComponentInstanceRect(
+			instances[0],
+			toRaw(node).componentMeta.rootSelector
+		);
 	}
 
 	/**
@@ -713,8 +861,13 @@ export class BuiltinSimulatorHost
 		if (!elements) {
 			return null;
 		}
-		// TODO 指定根节点的情况
-		selector;
+		if (selector) {
+			const matched = getMatched(elements, selector);
+			if (!matched) {
+				return null;
+			}
+			return [matched];
+		}
 		return elements;
 	}
 
@@ -737,6 +890,81 @@ export class BuiltinSimulatorHost
 		};
 	}
 
+	scrollToNode(node: Node, detail?: any) {
+		if (this.sensing) {
+			return;
+		}
+		const opt: any = {};
+		let scroll = false;
+
+		const componentInstance = this.getComponentInstances(
+			detail?.near?.node || node
+		)?.[0];
+		if (!componentInstance) return;
+		const domNode = this.findDOMNodes(componentInstance)?.[0] as Element;
+		if (!domNode) return;
+		if (isElementNode(domNode) && !isDOMNodeVisible(domNode, this.viewport)) {
+			const { left, top } = domNode.getBoundingClientRect();
+			const { scrollTop = 0, scrollLeft = 0 } =
+				this.contentDocument?.documentElement || {};
+			opt.left = left + scrollLeft;
+			opt.top = top + scrollTop;
+			scroll = true;
+		}
+
+		if (scroll && this.scroller) {
+			this.scroller.scrollTo(opt);
+		}
+	}
+
+	setNativeSelection(enableFlag: boolean) {
+		this.renderer?.setNativeSelection &&
+			this.renderer?.setNativeSelection(enableFlag);
+	}
+
+	setDraggingState(state: boolean) {
+		this.renderer?.setDraggingState && this.renderer?.setDraggingState(state);
+	}
+
+	setCopyState(state: boolean) {
+		this.renderer?.setCopyState && this.renderer?.setCopyState(state);
+	}
+
+	clearState() {
+		this.renderer?.clearState && this.renderer?.clearState();
+	}
+
+	/**
+	 * 修复事件 当从模拟器感应器和外部结构树感应器切换的时候，需要处理事件的坐标
+	 * @param e
+	 */
+	fixEvent(e: ILocateEvent): ILocateEvent {
+		if (e.fixed) {
+			return e;
+		}
+
+		const notMyEvent = e.originalEvent.view?.document !== this.contentDocument;
+		if (notMyEvent || !('canvasX' in e) || !('canvasY' in e)) {
+			const l = this.viewport.toLocalPoint({
+				clientX: e.globalX,
+				clientY: e.globalY,
+			});
+			e.canvasX = l.clientX;
+			e.canvasY = l.clientY;
+		}
+
+		if (!e.target || notMyEvent) {
+			if (!isNaN(e.canvasX!) && !isNaN(e.canvasY!)) {
+				e.target = this.contentDocument?.elementFromPoint(
+					e.canvasX!,
+					e.canvasY!
+				);
+			}
+		}
+		e.fixed = true;
+		return e;
+	}
+
 	isEnter(e: IPublicModelLocateEvent): boolean {
 		const rect = this.viewport.bounds;
 		return (
@@ -752,41 +980,53 @@ export class BuiltinSimulatorHost
 		this.scroller.cancel();
 	}
 
-	/**
-	 * 修复事件 当从模拟器感应器和外部结构树感应器切换的时候，需要处理事件的坐标
-	 * @param e
-	 */
-	fixEvent(e: ILocateEvent): ILocateEvent {
-		if (e.fixed) {
-			return e;
-		}
-
-		const notMyEvent = e.originalEvent.view?.document !== this.contentDocument;
-		// fix canvasX canvasY : 当前激活文档画布坐标系
-		if (notMyEvent || !('canvasX' in e) || !('canvasY' in e)) {
-			const l = this.viewport.toLocalPoint({
-				clientX: e.globalX,
-				clientY: e.globalY,
-			});
-			e.canvasX = l.clientX;
-			e.canvasY = l.clientY;
-		}
-
-		// fix target : 浏览器事件响应目标
-		if (!e.target || notMyEvent) {
-			if (!isNaN(e.canvasX!) && !isNaN(e.canvasY!)) {
-				e.target = this.contentDocument?.elementFromPoint(
-					e.canvasX!,
-					e.canvasY!
-				);
-			}
-		}
-		e.fixed = true;
-		return e;
-	}
-
 	locate(e: ILocateEvent) {
-		// TODO 验证模拟器中的节点是否可以拖拽
+		const { dragObject } = e;
+
+		const nodes = dragObject?.nodes;
+
+		const operationalNodes = nodes?.filter((node) => {
+			const onMoveHook = node?.componentMeta?.advanced.callbacks?.onMoveHook;
+			const canMove =
+				onMoveHook && typeof onMoveHook === 'function'
+					? // @ts-ignore
+						onMoveHook(node.internalToShellNode())
+					: true;
+
+			let parentContainerNode: INode | null = null;
+			let parentNode = node?.parent;
+
+			while (parentNode) {
+				if (parentNode.isContainerNode) {
+					// @ts-ignore
+					parentContainerNode = parentNode;
+					break;
+				}
+
+				parentNode = parentNode.parent;
+			}
+
+			const onChildMoveHook =
+				parentContainerNode?.componentMeta?.advanced.callbacks?.onChildMoveHook;
+
+			const childrenCanMove =
+				onChildMoveHook &&
+				parentContainerNode &&
+				typeof onChildMoveHook === 'function'
+					? onChildMoveHook(
+							// @ts-ignore
+							node?.internalToShellNode(),
+							// @ts-ignore
+							parentContainerNode.internalToShellNode()
+						)
+					: true;
+
+			return canMove && childrenCanMove;
+		});
+
+		if (nodes && (!operationalNodes || operationalNodes.length === 0)) {
+			return;
+		}
 
 		// 获取可放置的容器
 		this.sensing = true;
@@ -799,7 +1039,15 @@ export class BuiltinSimulatorHost
 
 		const dropContainer = this.getDropContainer(e);
 
-		// TODO 容器是否锁定
+		const lockedNode = getClosestNode(
+			// @ts-ignore
+			dropContainer?.container,
+			(node) => node.isLocked
+		);
+		if (lockedNode) return null;
+		if (!dropContainer) {
+			return null;
+		}
 
 		if (isLocationData(dropContainer)) {
 			return this.designer.createLocation(dropContainer as any);
@@ -923,15 +1171,13 @@ export class BuiltinSimulatorHost
 			// 判断这个元素是否是垂直容器 根据行内元素和行容器来判断 任意一个为true则认为是垂直容器
 			const vertical = inline || row;
 
-			// TODO: fix type node的类型没有确定没有使用外壳模式
 			const near: {
-				node: any;
+				node: IPublicModelNode;
 				pos: 'before' | 'after' | 'replace';
 				rect?: IPublicTypeRect;
 				align?: 'V' | 'H';
 			} = {
-				// TODO: fix type node的类型没有确定没有使用外壳模式
-				node: nearNode!,
+				node: nearNode.internalToShellNode()!,
 				pos: 'before',
 				align: vertical ? 'V' : 'H',
 			};
@@ -996,9 +1242,7 @@ export class BuiltinSimulatorHost
 			container = container?.parent || currentRoot;
 		}
 
-		// TODO: 使用特定容器来接收特殊数据
 		if (isAny) {
-			// will return locationData
 			return null;
 		}
 
@@ -1124,6 +1368,10 @@ export class BuiltinSimulatorHost
 	}
 }
 
+function isHTMLTag(name: string) {
+	return /^[a-z]\w*$/.test(name);
+}
+
 function isPointInRect(point: CanvasPoint, rect: IPublicTypeRect) {
 	return (
 		point.canvasY >= rect.top &&
@@ -1204,4 +1452,23 @@ function distanceToEdge(point: CanvasPoint, rect: IPublicTypeRect) {
 		// 返回是否更靠近下边缘
 		nearAfter: distanceBottom < distanceTop,
 	};
+}
+
+function getMatched(
+	elements: Array<Element | Text>,
+	selector: string
+): Element | null {
+	let firstQueried: Element | null = null;
+	for (const elem of elements) {
+		if (isElement(elem)) {
+			if (elem.matches(selector)) {
+				return elem;
+			}
+
+			if (!firstQueried) {
+				firstQueried = elem.querySelector(selector);
+			}
+		}
+	}
+	return firstQueried;
 }

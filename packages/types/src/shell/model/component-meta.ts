@@ -8,6 +8,7 @@ import {
 	IPublicTypeIconType,
 	IPublicTypeTransformedComponentMetadata,
 	IPublicTypeNodeSchema,
+	IPublicTypeComponentAction,
 } from '../type';
 import { IPublicModelNode } from './node';
 
@@ -59,7 +60,7 @@ export interface IPublicModelComponentMeta<Node = IPublicModelNode> {
 	 */
 	get npm(): IPublicTypeNpmInfo;
 
-	// TODO availableActions    当前组件的可用 Action
+	get availableActions(): IPublicTypeComponentAction[];
 
 	/**
 	 * 组件元数据中高级配置部分

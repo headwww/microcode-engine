@@ -4,6 +4,7 @@ import {
 	IPublicEnumTransformStage,
 	IPublicModelExclusiveGroup,
 	IPublicModelNode,
+	IPublicTypeComponentAction,
 	IPublicTypeComponentSchema,
 	IPublicTypeCompositeValue,
 	IPublicTypeDisposable,
@@ -32,8 +33,7 @@ import { getConvertedExtraKey, IProps, Props } from './props/props';
 import { INodeChildren, NodeChildren } from './node-children';
 import { IProp, Prop } from './props/prop';
 import { EDITOR_EVENT, NodeRemoveOptions } from '../../types';
-import { includeSlot, removeSlot } from '../../utils/slot';
-import { foreachReverse } from '../../utils';
+import { includeSlot, removeSlot, foreachReverse } from '../../utils';
 import {
 	ExclusiveGroup,
 	IExclusiveGroup,
@@ -1062,7 +1062,22 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 		this.purging = true;
 	}
 
-	// TODO canPerformAction 是否可执行某 action
+	/**
+	 * 是否可执行某 action
+	 */
+	canPerformAction(actionName: string): boolean {
+		const availableActions =
+			this.componentMeta?.availableActions
+				?.filter((action: IPublicTypeComponentAction) => {
+					const { condition } = action;
+					return typeof condition === 'function'
+						? condition(this) !== false
+						: condition !== false;
+				})
+				.map((action: IPublicTypeComponentAction) => action.name) || [];
+
+		return availableActions.indexOf(actionName) >= 0;
+	}
 
 	isEmpty(): boolean {
 		return this.children ? this.children.isEmpty() : true;

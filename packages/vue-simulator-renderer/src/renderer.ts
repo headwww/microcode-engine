@@ -4,7 +4,8 @@ import {
 	markRaw,
 	nextTick,
 	onUnmounted,
-	ref,
+	Ref,
+	shallowRef,
 } from 'vue';
 import { createMemoryHistory, createRouter, type Router } from 'vue-router';
 import { Renderer, SimulatorRendererView } from './renderer-view';
@@ -21,7 +22,12 @@ import {
 	isVNodeHTMLElement,
 	setCompRootData,
 } from './utils';
-import { ComponentRecord } from './interface';
+import {
+	ComponentRecord,
+	MixedComponent,
+	SimulatorViewLayout,
+} from './interface';
+import { getSubComponent } from './utils/build-components';
 
 /**
  * 检查实例是否已挂载
@@ -174,7 +180,7 @@ export class DocumentInstance {
 export class SimulatorRendererContainer {
 	private _running = false;
 
-	private _documentInstances = ref<DocumentInstance[]>([]);
+	private _documentInstances = shallowRef<DocumentInstance[]>([]);
 
 	private router: Router;
 
@@ -182,7 +188,33 @@ export class SimulatorRendererContainer {
 		return this._documentInstances.value;
 	}
 
+	private _components: Ref<Record<string, ComponentPublicInstance>> =
+		shallowRef({});
+
+	get components() {
+		return this._components.value;
+	}
+
 	private documentInstanceMap = new Map<string, DocumentInstance>();
+
+	private layout: Ref<SimulatorViewLayout> = shallowRef({});
+
+	private disableCompMock: Ref<boolean | string[]> = shallowRef(true);
+
+	private libraryMap: Ref<Record<string, string>> = shallowRef({});
+
+	private componentsMap: Ref<Record<string, MixedComponent>> = shallowRef({});
+
+	private device: Ref<string> = shallowRef('default');
+
+	private locale: Ref<string | undefined> = shallowRef();
+
+	private designMode: Ref<boolean> = shallowRef(false);
+
+	private requestHandlersMap: Ref<Record<string, CallableFunction>> =
+		shallowRef({});
+
+	private thisRequiredInJSE: Ref<boolean> = shallowRef(false);
 
 	constructor() {
 		this.router = markRaw(
@@ -192,11 +224,31 @@ export class SimulatorRendererContainer {
 			})
 		);
 
-		host.connect(
-			this,
-			() => {},
-			() => {}
-		);
+		host.connect(this, () => {
+			const config = host.project.get('config') || {};
+			this.layout = config.layout ?? {};
+
+			this.disableCompMock.value = Array.isArray(config.disableCompMock)
+				? config.disableCompMock
+				: Boolean(config.disableCompMock);
+			if (
+				this.libraryMap.value !== host.libraryMap ||
+				this.componentsMap.value !== host.designer.componentsMap
+			) {
+				this.libraryMap.value = host.libraryMap || {};
+				this.componentsMap.value = host.designer.componentsMap;
+			}
+
+			this.locale.value = host.locale;
+
+			this.device.value = host.device;
+
+			this.designMode.value = host.designMode;
+
+			this.requestHandlersMap.value = host.requestHandlersMap ?? {};
+
+			this.thisRequiredInJSE.value = host.thisRequiredInJSE ?? false;
+		});
 
 		host.watch(
 			() => host.project.documents,
@@ -248,6 +300,34 @@ export class SimulatorRendererContainer {
 		const crr = host.project.currentDocument;
 		const docs = this.documentInstances;
 		return crr ? (docs.find((doc) => doc.id === crr.id) ?? null) : null;
+	}
+
+	/**
+	 * 根据组件名称获取组件实例
+	 * 支持通过点号获取子组件,例如:
+	 * - "Button" 获取Button组件
+	 * - "Form.Item" 获取Form组件下的Item子组件
+	 * @param componentName 组件名称,支持通过点号获取子组件
+	 * @returns 返回对应的组件实例,如果未找到则返回null
+	 */
+	getComponent(componentName: string) {
+		const paths = componentName.split('.');
+		const subs: string[] = [];
+
+		// eslint-disable-next-line no-constant-condition
+		while (true) {
+			const component = this._components.value?.[componentName];
+			if (component) {
+				return getSubComponent(component, subs);
+			}
+
+			const sub = paths.pop();
+			if (!sub) {
+				return null;
+			}
+			subs.unshift(sub);
+			componentName = paths.join('.');
+		}
 	}
 
 	getClientRects(element: Element | Text) {

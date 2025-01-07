@@ -130,7 +130,17 @@ export class Project implements IProject {
 		return this.computedCurrentDocument.value;
 	}
 
-	// TODO: config配置
+	private _config = ref({});
+
+	private readonly computedConfig = computed(() => this._config.value);
+
+	get config() {
+		return this.computedConfig.value;
+	}
+
+	set config(value: any) {
+		this._config.value = value;
+	}
 
 	private _i18n = ref({});
 
@@ -237,7 +247,7 @@ export class Project implements IProject {
 			...schema,
 		};
 
-		// TODO config配置
+		this.config = schema?.config || this.config;
 		this.i18n = schema?.i18n || this.i18n;
 
 		if (autoOpen) {
@@ -290,7 +300,9 @@ export class Project implements IProject {
 
 	// eslint-disable-next-line no-dupe-class-members
 	set(key: string, value: unknown): void {
-		// TODO config配置
+		if (key === 'config') {
+			this.config = value;
+		}
 		if (key === 'i18n') {
 			this.i18n = value;
 		}
@@ -302,15 +314,14 @@ export class Project implements IProject {
 	 */
 	get<T extends keyof IPublicTypeRootSchema>(key: T): IPublicTypeRootSchema[T];
 
-	// eslint-disable-next-line no-dupe-class-members
 	get<T>(key: string): T;
 
-	// eslint-disable-next-line no-dupe-class-members
 	get(key: string): unknown;
 
-	// eslint-disable-next-line no-dupe-class-members
 	get(key: string): any {
-		// TODO config配置
+		if (key === 'config') {
+			return this.config;
+		}
 		if (key === 'i18n') {
 			return this.i18n;
 		}

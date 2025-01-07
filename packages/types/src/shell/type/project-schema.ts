@@ -1,3 +1,4 @@
+import { IPublicTypeAppConfig } from './app-config';
 import { IPublicTypeI18nMap } from './i18n-map';
 import { IPublicTypeComponentsMap } from './npm';
 import { IPublicTypeRootSchema } from './root-schema';
@@ -29,6 +30,12 @@ export interface IPublicTypeProjectSchema<T = IPublicTypeRootSchema> {
 	 * 国际化语料
 	 */
 	i18n?: IPublicTypeI18nMap;
+
+	/**
+	 * 当前应用配置信息
+	 *
+	 */
+	config?: IPublicTypeAppConfig & Record<string, unknown>;
 
 	// TODO 还有很多属性没有实现
 }

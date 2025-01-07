@@ -94,6 +94,12 @@ export class ComponentMeta implements IComponentMeta {
 		return this._componentName;
 	}
 
+	private _isContainer: boolean;
+
+	get isContainer(): boolean {
+		return this._isContainer || this.isRootComponent();
+	}
+
 	private _isModal?: boolean;
 
 	get isModal(): boolean {
@@ -110,12 +116,6 @@ export class ComponentMeta implements IComponentMeta {
 
 	get liveTextEditing() {
 		return this._liveTextEditing;
-	}
-
-	private _isContainer: boolean;
-
-	get isContainer(): boolean {
-		return this._isContainer || this.isRootComponent();
 	}
 
 	private _rootSelector?: string;
@@ -279,8 +279,13 @@ export class ComponentMeta implements IComponentMeta {
 	}
 
 	private transformMetadata(metadata: IPublicTypeComponentMetadata) {
-		// TODO 给元数据添加交互能力如锁定，复制，删除等
-		const result = preprocessMetadata(metadata);
+		const registeredTransducers =
+			this.designer.componentActions.getRegisteredMetadataTransducers();
+
+		const result = registeredTransducers.reduce(
+			(prevMetadata, current) => current(prevMetadata),
+			preprocessMetadata(metadata)
+		);
 
 		if (!result.configure) {
 			result.configure = {};
@@ -301,7 +306,32 @@ export class ComponentMeta implements IComponentMeta {
 		);
 	}
 
-	// TODO availableActions组件的交互能力
+	private readonly computedAvailableActions = computed(() => {
+		const { disableBehaviors } =
+			this._transformedMetadata?.configure.component || {};
+		let { actions } = this._transformedMetadata?.configure.component || {};
+		const disabled =
+			ensureAList(disableBehaviors) ||
+			(this.isRootComponent(false)
+				? ['copy', 'remove', 'lock', 'unlock']
+				: null);
+		actions = this.designer.componentActions.actions.concat(
+			this.designer.getGlobalComponentActions() || [],
+			actions || []
+		);
+
+		if (disabled) {
+			if (disabled.includes('*')) {
+				return actions.filter((action) => action.condition === 'always');
+			}
+			return actions.filter((action) => disabled.indexOf(action.name) < 0);
+		}
+		return actions;
+	});
+
+	get availableActions() {
+		return this.computedAvailableActions.value;
+	}
 
 	/**
 	 * 设置组件元数据

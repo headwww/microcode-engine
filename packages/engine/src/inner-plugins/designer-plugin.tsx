@@ -1,4 +1,4 @@
-import { DesignerView } from '@arvin-shu/microcode-designer';
+import { Designer, DesignerView } from '@arvin-shu/microcode-designer';
 import { Editor, engineConfig } from '@arvin-shu/microcode-editor-core';
 import { defineComponent, PropType, reactive } from 'vue';
 
@@ -14,14 +14,17 @@ export const DesignerPlugin = defineComponent({
 		const { engineEditor: editor } = props;
 
 		const simulatorProps = reactive({
-			library: null,
-			simulatorUrl: null,
 			componentMetadatas: [],
+			library: null,
 			extraEnvironment: null,
 			renderEnv: 'default', // 渲染环境 rax vue 这些
 			device: 'default', // 设备类型  pc phone
 			locale: '',
+			designMode: 'live',
 			deviceClassName: '',
+			simulatorUrl: null,
+			requestHandlersMap: null,
+			utilsMetadata: [],
 		});
 
 		/**
@@ -33,10 +36,18 @@ export const DesignerPlugin = defineComponent({
 				engineConfig.get('renderEnv') || editor?.get('renderEnv');
 			const device = engineConfig.get('device') || editor?.get('device');
 			const locale = engineConfig.get('locale') || editor?.get('locale');
+			const designMode =
+				engineConfig.get('designMode') || editor?.get('designMode');
 			const deviceClassName =
 				engineConfig.get('deviceClassName') || editor?.get('deviceClassName');
+			const simulatorUrl =
+				engineConfig.get('simulatorUrl') || editor?.get('simulatorUrl');
+			const requestHandlersMap =
+				engineConfig.get('requestHandlersMap') ||
+				editor?.get('requestHandlersMap');
 
-			const { packages, components, extraEnvironment } = assets;
+			const { packages, components, extraEnvironment, utils } = assets;
+
 			// 获取资源库
 			simulatorProps.library = packages;
 			// 获取模拟器地址
@@ -52,17 +63,37 @@ export const DesignerPlugin = defineComponent({
 			simulatorProps.device = device;
 			// 获取语言
 			simulatorProps.locale = locale;
+			// 获取设计模式
+			simulatorProps.designMode = designMode;
+			// 获取模拟器地址
+			simulatorProps.simulatorUrl = simulatorUrl;
+			// 获取请求处理映射
+			simulatorProps.requestHandlersMap = requestHandlersMap;
+			// 获取工具函数
+			simulatorProps.utilsMetadata = utils;
+			// 获取模拟的设备样式类名
+			simulatorProps.deviceClassName = deviceClassName;
 			engineConfig.onGot('locale', (locale) => {
 				simulatorProps.locale = locale;
 			});
 			engineConfig.onGot('device', (device) => {
 				simulatorProps.device = device;
 			});
-			// 获取模拟的设备样式类名
-			simulatorProps.deviceClassName = deviceClassName;
+			engineConfig.onGot('requestHandlersMap', (requestHandlersMap) => {
+				simulatorProps.requestHandlersMap = requestHandlersMap;
+			});
 		}
 
 		setupAssets();
+
+		function handleDesignerMount(designer: Designer) {
+			const editor = props.engineEditor;
+			editor?.set('designer', designer);
+			editor?.eventBus.emit('designer.ready', designer);
+			editor?.onGot('schema', (schema) => {
+				designer.project.open(schema);
+			});
+		}
 
 		return () => {
 			if (!simulatorProps.library || !simulatorProps.componentMetadatas) {
@@ -71,20 +102,14 @@ export const DesignerPlugin = defineComponent({
 
 			return (
 				<DesignerView
-					onMount={() => {}}
+					onMount={handleDesignerMount}
 					className="microcode-plugin-designer"
 					editor={editor}
 					name={editor?.viewName}
 					designer={editor?.get('designer')}
 					componentMetadatas={simulatorProps.componentMetadatas}
 					simulatorProps={{
-						library: simulatorProps.library,
-						simulatorUrl: simulatorProps.simulatorUrl,
-						extraEnvironment: simulatorProps.extraEnvironment,
-						renderEnv: simulatorProps.renderEnv,
-						device: simulatorProps.device,
-						locale: simulatorProps.locale,
-						deviceClassName: simulatorProps.deviceClassName,
+						...simulatorProps,
 					}}
 				></DesignerView>
 			);

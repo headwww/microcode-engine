@@ -5,8 +5,12 @@ import {
 } from '../type';
 import { IPublicModelDragObject } from './drag-object';
 import { IPublicModelLocateEvent } from './locate-event';
+import { IPublicModelNode } from './node';
 
-export interface IPublicModelDragon<LocateEvent = IPublicModelLocateEvent> {
+export interface IPublicModelDragon<
+	Node = IPublicModelNode,
+	LocateEvent = IPublicModelLocateEvent,
+> {
 	/**
 	 * 是否正在拖动
 	 */
@@ -58,4 +62,16 @@ export interface IPublicModelDragon<LocateEvent = IPublicModelLocateEvent> {
 		boostEvent: MouseEvent | DragEvent,
 		fromRglNode?: Node
 	): void;
+
+	/**
+	 * 添加投放感应区
+	 * add sensor area
+	 */
+	addSensor(sensor: any): void;
+
+	/**
+	 * 移除投放感应
+	 * remove sensor area
+	 */
+	removeSensor(sensor: any): void;
 }

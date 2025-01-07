@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, PropType } from 'vue';
+import { defineComponent, onMounted, PropType, h } from 'vue';
 import { Designer, designerProps } from './designer';
 import { ProjectView } from '../project';
 import { DragGhost as BuiltinDragGhostComponent } from './drag-ghost';
@@ -27,11 +27,12 @@ export const DesignerView = defineComponent({
 		});
 
 		return () => {
-			const DragGhost = BuiltinDragGhostComponent;
+			const { dragGhostComponent, className, style } = props;
+			const DragGhost = dragGhostComponent || BuiltinDragGhostComponent;
 
 			return (
-				<div class={['mtc-designer', props.className]} style={props.style}>
-					<DragGhost designer={designer} />
+				<div class={['mtc-designer', className]} style={style}>
+					{h(DragGhost, { designer })}
 					<ProjectView designer={designer} />
 				</div>
 			);

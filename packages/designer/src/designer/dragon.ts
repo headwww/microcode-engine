@@ -12,11 +12,12 @@ import {
 	IEventBus,
 } from '@arvin-shu/microcode-editor-core';
 import { ref } from 'vue';
+import { cursor, setNativeSelection } from '@arvin-shu/microcode-utils';
 import { IDesigner } from './designer';
 import { makeEventsHandler } from '../utils';
 import { isShaken } from './utils';
 import { ISimulatorHost, isSimulatorHost } from '../simulator';
-import { Node } from '../document';
+import { INode, Node } from '../document';
 
 export function isInvalidPoint(e: any, last: any): boolean {
 	return (
@@ -41,7 +42,7 @@ export interface ILocateEvent extends IPublicModelLocateEvent {
 	sensor?: IPublicModelSensor;
 }
 
-export interface IDragon extends IPublicModelDragon<ILocateEvent> {
+export interface IDragon extends IPublicModelDragon<INode, ILocateEvent> {
 	emitter: IEventBus;
 }
 
@@ -102,8 +103,10 @@ export class Dragon implements IDragon {
 
 	private _activeSensor = ref<IPublicModelSensor | undefined>();
 
+	viewName: string | undefined;
+
 	constructor(readonly designer: IDesigner) {
-		designer;
+		this.viewName = designer.viewName;
 	}
 
 	/**
@@ -151,7 +154,6 @@ export class Dragon implements IDragon {
 
 		// 是否是新的node对象而不是模拟器中已经有的node对象
 		const newBie = !isDragNodeObject(dragObject);
-		// TODO是否强制复制
 		const hasSlotNode = dragObject.nodes?.some(
 			(node: Node | IPublicModelNode | null) =>
 				typeof node?.isSlot === 'function' ? node.isSlot() : node?.isSlot
@@ -165,6 +167,8 @@ export class Dragon implements IDragon {
 		let lastSensor: IPublicModelSensor | undefined;
 
 		this._dragging.value = false;
+
+		// TODO getRGL
 
 		const checkesc = (e: KeyboardEvent) => {
 			// 如果按下ESC键，则清除拖拽位置，并调用over函数
@@ -381,8 +385,6 @@ export class Dragon implements IDragon {
 					evt.globalY = e.clientY;
 				}
 			}
-			// 定义源模拟器变量
-
 			return evt;
 		};
 
@@ -428,6 +430,25 @@ export class Dragon implements IDragon {
 			return sensor;
 		};
 
+		if (isDragEvent(boostEvent)) {
+			const { dataTransfer } = boostEvent;
+
+			if (dataTransfer) {
+				dataTransfer.effectAllowed = 'all';
+
+				try {
+					dataTransfer.setData('application/json', '{}');
+				} catch (ex) {
+					// eslint-disable-next-line no-console
+					console.error(ex);
+				}
+			}
+
+			dragstart();
+		} else {
+			this.setNativeSelection(false);
+		}
+
 		handleEvents((doc) => {
 			if (isBoostFromDragAPI) {
 				doc.addEventListener('dragover', move, true);
@@ -453,10 +474,6 @@ export class Dragon implements IDragon {
 		}
 	}
 
-	private setDraggingState(state: boolean) {
-		state;
-	}
-
 	private getMasterSensors(): ISimulatorHost[] {
 		return Array.from(
 			new Set(
@@ -472,16 +489,62 @@ export class Dragon implements IDragon {
 		);
 	}
 
+	private getSimulators() {
+		return new Set(this.designer.project.documents.map((doc) => doc.simulator));
+	}
+
 	private setNativeSelection(enableFlag: boolean) {
-		enableFlag;
+		setNativeSelection(enableFlag);
+		this.getSimulators().forEach((sim) => {
+			sim?.setNativeSelection(enableFlag);
+		});
 	}
 
+	/**
+	 * 设置拖拽态
+	 */
+	private setDraggingState(state: boolean) {
+		cursor.setDragging(state);
+		this.getSimulators().forEach((sim) => {
+			sim?.setDraggingState(state);
+		});
+	}
+
+	/**
+	 * 设置拷贝态
+	 */
 	private setCopyState(state: boolean) {
-		state;
+		cursor.setCopy(state);
+		this.getSimulators().forEach((sim) => {
+			sim?.setCopyState(state);
+		});
 	}
 
+	/**
+	 * 清除所有态：拖拽态、拷贝态
+	 */
 	private clearState() {
-		// TODO 清除状态
+		cursor.release();
+		this.getSimulators().forEach((sim) => {
+			sim?.clearState();
+		});
+	}
+
+	/**
+	 * 添加投放感应区
+	 */
+	addSensor(sensor: any) {
+		this.sensors.push(sensor);
+	}
+
+	/**
+	 * 移除投放感应
+	 */
+	removeSensor(sensor: any) {
+		const i = this.sensors.indexOf(sensor);
+		if (i > -1) {
+			this.sensors.splice(i, 1);
+		}
 	}
 
 	/**
