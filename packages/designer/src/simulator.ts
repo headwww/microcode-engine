@@ -1,13 +1,18 @@
 import {
 	IPublicModelSensor,
 	IPublicTypeComponentInstance,
+	IPublicTypeComponentMetadata,
 	IPublicTypeNodeInstance,
+	IPublicTypeNodeSchema,
 	IPublicTypePackage,
 	IPublicTypeScrollable,
 } from '@arvin-shu/microcode-types';
-import { Point } from './designer';
+import { Component } from 'vue';
+import { IDesigner, ILocateEvent, Point } from './designer';
 import { INode } from './document';
 import { ScrollTarget } from './designer/scroller';
+import { BuiltinSimulatorRenderer } from './builtin-simulator';
+import { IProject } from './project';
 
 export type AutoFit = '100%';
 // eslint-disable-next-line no-redeclare
@@ -19,40 +24,99 @@ export interface DropContainer {
 }
 
 export interface ISimulatorHost<P = object> extends IPublicModelSensor {
-	setProps(props: P): void;
+	readonly isSimulator: true;
 	readonly viewport: IViewport;
 
-	// 模拟器iframe的window
 	readonly contentWindow?: Window;
-	// 模拟器iframe的document
 	readonly contentDocument?: Document;
+	readonly renderer?: BuiltinSimulatorRenderer;
 
-	// TODO 没有设置类型
-	readonly renderer?: any;
+	readonly project: IProject;
+
+	readonly designer: IDesigner;
+
+	setProps(props: P): void;
+	set(key: string, value: any): void;
 
 	setSuspense(suspensed: boolean): void;
+
+	/**
+	 * 设置文字拖选
+	 */
+	setNativeSelection(enableFlag: boolean): void;
+
+	/**
+	 * 设置拖拽态
+	 */
+	setDraggingState(state: boolean): void;
+
+	/**
+	 * 设置拷贝态
+	 */
+	setCopyState(state: boolean): void;
+
+	/**
+	 * 清除所有态：拖拽态、拷贝态
+	 */
+	clearState(): void;
+
+	/**
+	 * 滚动视口到节点
+	 */
+	scrollToNode(node: INode, detail?: any): void;
+
+	/**
+	 * 描述组件
+	 */
+	generateComponentMetadata(
+		componentName: string
+	): IPublicTypeComponentMetadata;
+
+	/**
+	 * 根据组件信息获取组件类
+	 */
+	getComponent(componentName: string): Component | object | any;
 
 	/**
 	 * 根据节点获取节点的组件实例
 	 */
 	getComponentInstances(node: INode): IPublicTypeComponentInstance[] | null;
 
-	computeRect(node: INode): DOMRect | null;
+	/**
+	 * 根据 schema 创建组件类
+	 */
+	createComponent(schema: IPublicTypeNodeSchema): Component | null;
 
-	findDOMNodes(
-		instance: IPublicTypeComponentInstance,
-		selector?: string
-	): Array<Element | Text> | null;
+	/**
+	 * 根据节点获取节点的组件运行上下文
+	 */
+	getComponentContext(node: INode): object | null;
+
+	getClosestNodeInstance(
+		from: IPublicTypeComponentInstance,
+		specId?: string
+	): IPublicTypeNodeInstance | null;
+
+	computeRect(node: INode): DOMRect | null;
 
 	computeComponentInstanceRect(
 		instance: IPublicTypeComponentInstance,
 		selector?: string
 	): DOMRect | null;
 
-	getClosestNodeInstance(
-		from: IPublicTypeComponentInstance,
-		specId?: string
-	): IPublicTypeNodeInstance | null;
+	findDOMNodes(
+		instance: IPublicTypeComponentInstance,
+		selector?: string
+	): Array<Element | Text> | null;
+	getDropContainer(e: ILocateEvent): DropContainer | null;
+
+	postEvent(evtName: string, evtData: any): void;
+
+	rerender(): void;
+	/**
+	 * 销毁
+	 */
+	purge(): void;
 
 	setupComponents(library: IPublicTypePackage[]): Promise<void>;
 }

@@ -3,7 +3,6 @@ import { IPublicModelDocumentModel } from '../model';
 import {
 	IPublicTypeDisposable,
 	IPublicTypeProjectSchema,
-	IPublicTypePropsTransducer,
 	IPublicTypeRootSchema,
 } from '../type';
 import { IPublicApiSimulatorHost } from './simulator-host';
@@ -69,12 +68,12 @@ export interface IBaseApiProject<DocumentModel> {
 	getCurrentDocument(): DocumentModel | null;
 
 	/**
-	 * 增加一个属性的管道处理函数
+	 * TODO 增加一个属性的管道处理函数
 	 */
-	addPropsTransducer(
-		transducer: IPublicTypePropsTransducer,
-		stage: IPublicEnumTransformStage
-	): void;
+	// addPropsTransducer(
+	// 	transducer: IPublicTypePropsTransducer,
+	// 	stage: IPublicEnumTransformStage
+	// ): void;
 
 	/**
 	 * 绑定删除文档事件

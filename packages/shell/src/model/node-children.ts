@@ -238,4 +238,31 @@ export class NodeChildren implements IPublicModelNodeChildren {
 	): any {
 		return this[nodeChildrenSymbol].export(stage);
 	}
+
+	/**
+	 * 执行新增、删除、排序等操作
+	 * @param remover
+	 * @param adder
+	 * @param sorter
+	 */
+	mergeChildren(
+		remover: (node: IPublicModelNode, idx: number) => boolean,
+		adder: (children: IPublicModelNode[]) => any,
+		originalSorter: (
+			firstNode: IPublicModelNode,
+			secondNode: IPublicModelNode
+		) => number
+	) {
+		let sorter = originalSorter;
+		if (!sorter) {
+			sorter = () => 0;
+		}
+		this[nodeChildrenSymbol].mergeChildren(
+			(node: InnerNode, idx: number) => remover(ShellNode.create(node)!, idx),
+			(children: InnerNode[]) =>
+				adder(children.map((node) => ShellNode.create(node)!)),
+			(firstNode: InnerNode, secondNode: InnerNode) =>
+				sorter(ShellNode.create(firstNode)!, ShellNode.create(secondNode)!)
+		);
+	}
 }

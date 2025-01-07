@@ -6,3 +6,4 @@ export * from './document';
 export * from './simulator';
 export * from './component-meta';
 export * from './types';
+export * from './builtin-simulator';

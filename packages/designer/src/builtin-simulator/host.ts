@@ -871,6 +871,7 @@ export class BuiltinSimulatorHost
 		return elements;
 	}
 
+	// @ts-ignore
 	getNodeInstanceFromElement(
 		target: Element | null
 	): IPublicTypeNodeInstance<IPublicTypeComponentInstance, INode> | null {

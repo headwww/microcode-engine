@@ -1,16 +1,32 @@
-import { IDragon } from '@arvin-shu/microcode-designer';
+import {
+	IDragon,
+	ILocateEvent as InnerLocateEvent,
+	INode,
+} from '@arvin-shu/microcode-designer';
 import { globalContext } from '@arvin-shu/microcode-editor-core';
 import {
 	IPublicModelDragObject,
 	IPublicModelDragon,
-	IPublicTypeDisposable,
+	IPublicModelLocateEvent,
+	IPublicModelNode,
 	IPublicTypeDragNodeDataObject,
+	IPublicTypeDragObject,
 } from '@arvin-shu/microcode-types';
-import { dragonSymbol } from '../symbols';
+import { dragonSymbol, nodeSymbol } from '../symbols';
+import { LocateEvent } from './locate-event';
+import { DragObject } from './drag-object';
 
 export const innerDragonSymbol = Symbol('innerDragonSymbol');
+
 export class Dragon implements IPublicModelDragon {
 	private readonly [innerDragonSymbol]: IDragon;
+
+	constructor(
+		innerDragon: IDragon,
+		readonly workspaceMode: boolean
+	) {
+		this[innerDragonSymbol] = innerDragon;
+	}
 
 	get [dragonSymbol](): IDragon {
 		if (this.workspaceMode) {
@@ -27,13 +43,6 @@ export class Dragon implements IPublicModelDragon {
 		return designer.dragon;
 	}
 
-	constructor(
-		innerDragon: IDragon,
-		readonly workspaceMode: boolean
-	) {
-		this[innerDragonSymbol] = innerDragon;
-	}
-
 	static create(
 		dragon: IDragon | null,
 		workspaceMode: boolean
@@ -42,6 +51,52 @@ export class Dragon implements IPublicModelDragon {
 			return null;
 		}
 		return new Dragon(dragon, workspaceMode);
+	}
+
+	/**
+	 * is dragging or not
+	 */
+	get dragging(): boolean {
+		return this[dragonSymbol].dragging;
+	}
+
+	/**
+	 * 绑定 dragstart 事件
+	 * @param func
+	 * @returns
+	 */
+	onDragstart(func: (e: IPublicModelLocateEvent) => any): () => void {
+		return this[dragonSymbol].onDragstart((e: InnerLocateEvent) =>
+			func(LocateEvent.create(e)!)
+		);
+	}
+
+	/**
+	 * 绑定 drag 事件
+	 * @param func
+	 * @returns
+	 */
+	onDrag(func: (e: IPublicModelLocateEvent) => any): () => void {
+		return this[dragonSymbol].onDrag((e: InnerLocateEvent) =>
+			func(LocateEvent.create(e)!)
+		);
+	}
+
+	/**
+	 * 绑定 dragend 事件
+	 * @param func
+	 * @returns
+	 */
+	onDragend(
+		func: (o: { dragObject: IPublicModelDragObject; copy?: boolean }) => any
+	): () => void {
+		return this[dragonSymbol].onDragend(
+			(o: { dragObject: IPublicModelDragObject; copy?: boolean }) => {
+				const dragObject = DragObject.create(o.dragObject);
+				const { copy } = o;
+				return func({ dragObject: dragObject!, copy });
+			}
+		);
 	}
 
 	/**
@@ -56,10 +111,40 @@ export class Dragon implements IPublicModelDragon {
 		return this[dragonSymbol].from(shell, boost);
 	}
 
-	onDragend(
-		func: (o: { dragObject: IPublicModelDragObject; copy?: boolean }) => any
-	): IPublicTypeDisposable {
-		func;
-		throw new Error('Method not implemented.');
+	/**
+	 * boost your dragObject for dragging(flying) 发射拖拽对象
+	 *
+	 * @param dragObject 拖拽对象
+	 * @param boostEvent 拖拽初始时事件
+	 */
+	boost(
+		dragObject: IPublicTypeDragObject,
+		boostEvent: MouseEvent | DragEvent,
+		fromRglNode?: IPublicModelNode & {
+			[nodeSymbol]: INode;
+		}
+	): void {
+		return this[dragonSymbol].boost(
+			{
+				...dragObject,
+				nodes: dragObject.nodes.map((node: any) => node[nodeSymbol]),
+			},
+			boostEvent,
+			fromRglNode?.[nodeSymbol]
+		);
+	}
+
+	/**
+	 * 添加投放感应区
+	 */
+	addSensor(sensor: any): void {
+		return this[dragonSymbol].addSensor(sensor);
+	}
+
+	/**
+	 * 移除投放感应
+	 */
+	removeSensor(sensor: any): void {
+		return this[dragonSymbol].removeSensor(sensor);
 	}
 }

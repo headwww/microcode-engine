@@ -6,9 +6,11 @@ import {
 	IPublicTypeI18nData,
 	IPublicTypeIconType,
 	IPublicTypeNodeData,
+	IPublicTypeNodeSchema,
 	IPublicTypeNpmInfo,
+	IPublicTypeTransformedComponentMetadata,
 } from '@arvin-shu/microcode-types';
-import { VNode, RendererNode, RendererElement } from 'vue';
+import { VNode } from 'vue';
 import {
 	IComponentMeta as InnerComponentMeta,
 	INode,
@@ -71,34 +73,90 @@ export class ComponentMeta implements IPublicModelComponentMeta {
 		return this[componentMetaSymbol].configure;
 	}
 
-	get title():
-		| string
-		| VNode<RendererNode, RendererElement, { [key: string]: any }>
-		| IPublicTypeI18nData {
+	/**
+	 * 标题
+	 */
+	get title(): string | IPublicTypeI18nData | VNode {
 		return this[componentMetaSymbol].title;
 	}
 
+	/**
+	 * 图标
+	 */
 	get icon(): IPublicTypeIconType {
 		return this[componentMetaSymbol].icon;
 	}
 
+	/**
+	 * 组件 npm 信息
+	 */
 	get npm(): IPublicTypeNpmInfo {
 		return this[componentMetaSymbol].npm;
+	}
+
+	/**
+	 * @deprecated
+	 */
+	get prototype() {
+		return (this[componentMetaSymbol] as any).prototype;
+	}
+
+	get availableActions(): any {
+		return this[componentMetaSymbol].availableActions;
 	}
 
 	get advanced(): IPublicTypeAdvanced {
 		return this[componentMetaSymbol].advanced;
 	}
 
+	/**
+	 * 设置 npm 信息
+	 * @param npm
+	 */
 	setNpm(npm: IPublicTypeNpmInfo): void {
 		this[componentMetaSymbol].setNpm(npm);
 	}
 
+	/**
+	 * 获取元数据
+	 * @returns
+	 */
+	getMetadata(): IPublicTypeTransformedComponentMetadata {
+		return this[componentMetaSymbol].getMetadata();
+	}
+
+	/**
+	 * check if the current node could be placed in parent node
+	 * @param my
+	 * @param parent
+	 * @returns
+	 */
 	checkNestingUp(
 		my: IPublicModelNode | IPublicTypeNodeData,
 		parent: INode
 	): boolean {
 		const curNode = (my as any).isNode ? (my as any)[nodeSymbol] : my;
 		return this[componentMetaSymbol].checkNestingUp(curNode as any, parent);
+	}
+
+	/**
+	 * check if the target node(s) could be placed in current node
+	 * @param my
+	 * @param parent
+	 * @returns
+	 */
+	checkNestingDown(
+		my: IPublicModelNode | IPublicTypeNodeData,
+		target: IPublicTypeNodeSchema | IPublicModelNode | IPublicTypeNodeSchema[]
+	) {
+		const curNode = (my as any)?.isNode ? (my as any)[nodeSymbol] : my;
+		return this[componentMetaSymbol].checkNestingDown(
+			curNode as any,
+			(target as any)[nodeSymbol] || target
+		);
+	}
+
+	refreshMetadata(): void {
+		this[componentMetaSymbol].refreshMetadata();
 	}
 }
