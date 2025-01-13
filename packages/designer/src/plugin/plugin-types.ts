@@ -5,6 +5,7 @@ import {
 	IPublicApiMaterial,
 	IPublicApiPlugins,
 	IPublicApiProject,
+	IPublicApiSetters,
 	IPublicApiSkeleton,
 	IPublicModelEngineConfig,
 	IPublicTypePlugin,
@@ -70,6 +71,7 @@ export type PluginPreference = Map<
 >;
 
 export interface IMicrocodeContextPrivate {
+	set setters(setters: IPublicApiSetters);
 	set skeleton(skeleton: IPublicApiSkeleton);
 	set plugins(plugins: IPublicApiPlugins);
 	set material(material: IPublicApiMaterial);

@@ -1,3 +1,11 @@
+/*
+ * @Author: shuwen 1243889238@qq.com
+ * @Date: 2024-11-06 10:16:24
+ * @LastEditors: shuwen 1243889238@qq.com
+ * @LastEditTime: 2025-01-07 15:28:24
+ * @FilePath: /microcode-engine/packages/designer/src/designer/designer-view.tsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import { defineComponent, onMounted, PropType, h } from 'vue';
 import { Designer, designerProps } from './designer';
 import { ProjectView } from '../project';
@@ -11,6 +19,7 @@ export const DesignerView = defineComponent({
 	},
 	setup(props) {
 		let { designer } = props;
+
 		const { ...designerProps } = props;
 		if (designer) {
 			designer.setProps(designerProps);

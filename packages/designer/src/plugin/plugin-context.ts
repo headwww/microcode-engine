@@ -6,6 +6,7 @@ import {
 	IPublicApiMaterial,
 	IPublicApiPlugins,
 	IPublicApiProject,
+	IPublicApiSetters,
 	IPublicApiSkeleton,
 	IPublicModelEngineConfig,
 	IPublicModelPluginContext,
@@ -29,9 +30,13 @@ import {
 export default class PluginContext
 	implements IPublicModelPluginContext, IMicrocodeContextPrivate
 {
-	preference: IPluginPreferenceMananger;
+	project: IPublicApiProject;
 
 	skeleton: IPublicApiSkeleton;
+
+	preference: IPluginPreferenceMananger;
+
+	setters: IPublicApiSetters;
 
 	plugins: IPublicApiPlugins;
 
@@ -46,8 +51,6 @@ export default class PluginContext
 	logger: IPublicApiLogger;
 
 	material: IPublicApiMaterial;
-
-	project: IPublicApiProject;
 
 	constructor(
 		options: IPluginContextOptions,

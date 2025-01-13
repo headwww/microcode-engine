@@ -38,12 +38,13 @@ const MicrocodeConfigKey = 'arvin-microcode-config';
 class GlobalLocale {
 	private emitter: IEventBus = createModuleEventBus('GlobalLocale');
 
-	private _locale: Ref<string | undefined> = ref('');
+	private _locale: Ref<string | undefined> = ref();
 
 	locale = computed(() => {
 		if (this._locale.value != null) {
 			return this._locale.value;
 		}
+
 		// store 1: 从 localStorage 中获取配置
 		let result = null;
 		if (hasLocalStorage(window)) {

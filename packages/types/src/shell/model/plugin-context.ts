@@ -6,6 +6,7 @@ import {
 	IPublicApiMaterial,
 	IPublicApiPlugins,
 	IPublicApiProject,
+	IPublicApiSetters,
 	IPublicApiSkeleton,
 } from '../api';
 import { IPublicModelEngineConfig } from './engine-config';
@@ -25,6 +26,11 @@ export interface IPublicModelPluginContext {
 	 * plugins api
 	 */
 	get plugins(): IPublicApiPlugins;
+
+	/**
+	 * setter API
+	 */
+	get setters(): IPublicApiSetters;
 
 	/**
 	 * config api

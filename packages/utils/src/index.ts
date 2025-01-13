@@ -20,3 +20,4 @@ export * from './node-helper';
 export * from './navtive-selection';
 export * from './cursor';
 export * from './is-form-event';
+export * from './clone-deep';

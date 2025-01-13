@@ -26,7 +26,6 @@ export const ComponentPane = defineComponent({
 						props: {
 							type: 'primary',
 							style: {
-								height: '800px',
 								backgroundColor: 'green',
 							},
 						},

@@ -61,7 +61,7 @@ export interface IPublicTypeNestingRule {
 }
 
 /**
- * 通用扩展面板支持性配置
+ * TODO 还没定义 通用扩展面板支持性配置
  */
 export interface ConfigureSupport {}
 

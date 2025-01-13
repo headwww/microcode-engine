@@ -12,6 +12,8 @@ export function parseProps(component: any) {
 	}
 	const { props } = component;
 
+	console.log(component);
+
 	for (const [key, prop] of Object.entries(props)) {
 		const config = {
 			name: key,

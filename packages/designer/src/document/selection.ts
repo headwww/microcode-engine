@@ -71,7 +71,7 @@ export class Selection implements ISelection {
 		}
 
 		this._selected.value = [id];
-		this.emitter.emit('selectionchange', this._selected);
+		this.emitter.emit('selectionchange', this._selected.value);
 	}
 
 	/**
@@ -92,7 +92,7 @@ export class Selection implements ISelection {
 
 		this._selected.value = selectIds;
 
-		this.emitter.emit('selectionchange', this._selected);
+		this.emitter.emit('selectionchange', this._selected.value);
 	}
 
 	/**
@@ -103,7 +103,7 @@ export class Selection implements ISelection {
 			return;
 		}
 		this._selected.value = [];
-		this.emitter.emit('selectionchange', this._selected);
+		this.emitter.emit('selectionchange', this._selected.value);
 	}
 
 	/**
@@ -118,7 +118,7 @@ export class Selection implements ISelection {
 
 		if (newSelected.length !== l) {
 			this._selected.value = newSelected;
-			this.emitter.emit('selectionchange', this._selected);
+			this.emitter.emit('selectionchange', this._selected.value);
 		}
 	}
 
@@ -132,7 +132,7 @@ export class Selection implements ISelection {
 		}
 		// 使用push添加新元素
 		this._selected.value.push(id);
-		this.emitter.emit('selectionchange', this._selected);
+		this.emitter.emit('selectionchange', this._selected.value);
 	}
 
 	/**
@@ -152,7 +152,7 @@ export class Selection implements ISelection {
 		if (i > -1) {
 			// 使用splice删除元素
 			this._selected.value.splice(i, 1);
-			this.emitter.emit('selectionchange', this._selected);
+			this.emitter.emit('selectionchange', this._selected.value);
 		}
 	}
 

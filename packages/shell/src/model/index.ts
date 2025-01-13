@@ -14,3 +14,5 @@ export * from './props';
 export * from './selection';
 export * from './simulator-render';
 export * from './skeleton-item';
+export * from './setting-field';
+export * from './setting-top-entry';

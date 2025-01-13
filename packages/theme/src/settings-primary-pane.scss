@@ -1,0 +1,62 @@
+.mtc-settings-main {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+
+    ul {
+        margin: 0;
+    }
+
+    .mtc-settings-content {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        overflow-y: auto;
+    }
+
+    .mtc-settings-notice {
+        text-align: center;
+        font-size: 12px;
+        color: var(--color-text, rgb(0 0 0 / 60%));
+        padding: 50px 15px 0;
+    }
+
+    .mtc-title {
+        color: inherit,
+    }
+
+    .mtc-settings-tabs {
+        .mtc-settings-tabs-nav {
+            margin: 0;
+
+            .mtc-settings-tabs-nav-list {
+                flex: 1;
+
+                .mtc-settings-tabs-tab {
+                    flex: 1;
+                    font-size: 12px;
+                    padding: 10px 0;
+
+                    .mtc-settings-tabs-tab-btn {
+                        text-align: center;
+                        line-height: 12px;
+                        width: 100%;
+                    }
+                }
+            }
+        }
+
+        .mtc-settings-tabs-content-holder {
+            position: absolute;
+            inset: 68px 0 0;
+            overflow: hidden;
+
+            .mtc-settings-tabs-content {
+                position: absolute;
+                inset: 0;
+                overflow: hidden;
+            }
+        }
+    }
+}

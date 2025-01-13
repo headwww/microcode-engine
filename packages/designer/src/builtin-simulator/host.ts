@@ -677,6 +677,8 @@ export class BuiltinSimulatorHost
 	// TODO setupContextMenu
 
 	generateComponentMetadata(componentName: string) {
+		console.log(componentName);
+
 		if (isHTMLTag(componentName)) {
 			return {
 				componentName,
@@ -985,7 +987,6 @@ export class BuiltinSimulatorHost
 		const { dragObject } = e;
 
 		const nodes = dragObject?.nodes;
-
 		const operationalNodes = nodes?.filter((node) => {
 			const onMoveHook = node?.componentMeta?.advanced.callbacks?.onMoveHook;
 			const canMove =
@@ -995,10 +996,10 @@ export class BuiltinSimulatorHost
 					: true;
 
 			let parentContainerNode: INode | null = null;
-			let parentNode = node?.parent;
+			let parentNode = toRaw(node?.parent);
 
 			while (parentNode) {
-				if (parentNode.isContainerNode) {
+				if (!parentNode.isContainerNode) {
 					// @ts-ignore
 					parentContainerNode = parentNode;
 					break;

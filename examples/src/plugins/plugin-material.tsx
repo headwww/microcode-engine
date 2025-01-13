@@ -2,8 +2,9 @@ import { IPublicModelPluginContext } from '@arvin-shu/microcode-types';
 
 const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 	async init() {
-		const { material } = ctx;
-		material.setAssets({
+		const { material, project } = ctx;
+
+		await material.setAssets({
 			version: '1.0.0',
 			packages: [
 				{
@@ -28,30 +29,86 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 			],
 			components: [
 				{
-					componentName: 'button',
+					componentName: 'Button',
 					title: '按钮',
 					props: [
 						{
 							name: 'type',
 							title: '按钮类型',
 							propType: {
-								type: 'oneOfType',
-								value: [
-									{
-										type: 'oneOf',
-										value: [
-											'primary',
-											'ghost',
-											'dashed',
-											'link',
-											'text',
-											'default',
-										],
-									},
-									'string',
-								],
+								type: 'oneOf',
+								value: ['primary', 'ghost', 'dashed', 'danger', 'link', 'text'],
 							},
-						} as any,
+							setter: 'StringSetter',
+						},
+					],
+					configure: [
+						{
+							title: {
+								type: 'i18n',
+								'zh-CN': '属性',
+								'en-US': 'Props',
+							},
+							name: '#props',
+							items: [],
+						},
+						{
+							name: '#styles',
+							title: {
+								type: 'i18n',
+								'zh-CN': '样式',
+								'en-US': 'Styles',
+							},
+							items: [
+								{
+									name: 'f1',
+									title: {
+										type: 'i18n',
+										'zh-CN': '测试样式1',
+										'en-US': 'Style',
+									},
+
+									setter: 'StringSetter',
+									extraProps: {
+										display: 'block',
+									},
+								},
+								{
+									name: 'f2',
+									title: {
+										type: 'i18n',
+										'zh-CN': '测试样式2',
+										'en-US': 'Style',
+									},
+									setter: 'BoolSetter',
+								},
+								{
+									name: 'f3',
+									title: {
+										label: {
+											type: 'i18n',
+											'zh-CN': 'accordion',
+											'en-US': 'Style',
+										},
+										tip: '点击 ? tipo',
+									},
+									setter: 'BoolSetter',
+								},
+								{
+									name: 'f4',
+									title: {
+										type: 'i18n',
+										'zh-CN': 'accordion',
+										'en-US': 'Style',
+										description: '点击 ? tipo',
+									},
+									setter: 'BoolSetter',
+									extraProps: {
+										display: 'accordion',
+									},
+								},
+							],
+						},
 					],
 					snippets: [
 						{
@@ -64,6 +121,39 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 									type: 'primary',
 								},
 							},
+						},
+					],
+				},
+			],
+		});
+
+		project.importSchema({
+			version: '1.0.0',
+			id: 'nodepageshiashida',
+			componentsMap: [{ componentName: 'Page', devMode: 'microCode' }],
+			componentsTree: [
+				{
+					componentName: 'Page',
+					id: 'node_dockcviv8fo1',
+					props: {
+						style: {
+							height: '100%',
+						},
+					},
+					fileName: '/',
+					children: [
+						{
+							componentName: 'Button',
+							id: 'node_sxsm4wdio232',
+							props: {
+								children: '按钮',
+								bordered: true,
+							},
+							hidden: false,
+							title: '',
+							isLocked: false,
+							condition: false,
+							conditionGroup: '',
 						},
 					],
 				},

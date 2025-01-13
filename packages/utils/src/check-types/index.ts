@@ -12,3 +12,6 @@ export * from './is-procode-component-type';
 export * from './is-microcode-component-type';
 export * from './is-drag-any-object';
 export * from './is-location-children-detail';
+export * from './is-custom-view';
+export * from './is-setting-field';
+export * from './is-dynamic-setter';

@@ -45,6 +45,7 @@ import { INodeSelector } from '../simulator';
 import { createOffsetObserver, OffsetObserver } from './offset-observer';
 import { ISelection } from '../document/selection';
 import { ComponentActions } from '../component-actions';
+import { ISettingTopEntry, SettingTopEntry } from './setting';
 
 export const designerProps = {
 	editor: {
@@ -153,6 +154,8 @@ export interface IDesigner {
 	): IComponentMeta | null;
 
 	clearLocation(): void;
+
+	createSettingEntry(nodes: INode[]): ISettingTopEntry;
 
 	createComponentMeta(
 		data: IPublicTypeComponentMetadata
@@ -320,6 +323,10 @@ export class Designer implements IDesigner {
 		// TODO 还有很多属性没有实现
 
 		this.postEvent('init', this);
+		this.project.onCurrentDocumentChange(() => {
+			this.postEvent('selection.change', this.currentSelection);
+			this.setupSelection();
+		});
 		this.setupSelection();
 	}
 
@@ -342,6 +349,7 @@ export class Designer implements IDesigner {
 				currentSelection.select(rootNodeChildrens[0].id);
 			}
 		}
+
 		this.postEvent('selection.change', currentSelection);
 		if (currentSelection) {
 			this.selectionDispose = currentSelection.onSelectionChange(() => {
@@ -395,6 +403,10 @@ export class Designer implements IDesigner {
 			this.oobxList.push(oobx);
 		}
 		return oobx;
+	}
+
+	createSettingEntry(nodes: INode[]) {
+		return new SettingTopEntry(this.editor, nodes);
 	}
 
 	private clearOobxList(force?: boolean) {

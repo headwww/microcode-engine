@@ -86,5 +86,6 @@ module.exports = {
         "no-restricted-exports": 0,
         "no-new-func": 0,
         "no-dupe-class-members": 0,
+        "prefer-destructuring": 0,
     },
 }

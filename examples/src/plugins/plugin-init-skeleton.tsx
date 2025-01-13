@@ -34,7 +34,9 @@ const InitSkeleton = (ctx: IPublicModelPluginContext) => ({
 			area: 'leftArea',
 			type: 'PanelDock',
 			props: {
+				align: 'top',
 				icon: <SlackOutlined />,
+				description: '组件库',
 			},
 			content: <ComponentPane></ComponentPane>,
 			panelProps: {

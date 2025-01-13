@@ -23,3 +23,5 @@ export * from './scroll-target';
 export * from './scroller';
 export * from './detecting';
 export * from './setting-field';
+export * from './setting-top-entry';
+export * from './set-value-options';

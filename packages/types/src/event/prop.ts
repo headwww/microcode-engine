@@ -8,3 +8,5 @@ export interface ChangeOptions {
 
 /** Node Prop 变化事件 */
 export const InnerChange = 'node.innerProp.change';
+
+export const Change = 'node.prop.change';

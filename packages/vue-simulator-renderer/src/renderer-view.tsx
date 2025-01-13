@@ -2,7 +2,7 @@
  * @Author: shuwen 1243889238@qq.com
  * @Date: 2024-12-17 16:01:38
  * @LastEditors: shuwen 1243889238@qq.com
- * @LastEditTime: 2024-12-25 19:11:49
+ * @LastEditTime: 2025-01-13 14:02:21
  * @FilePath: /microcode-engine/packages/vue-simulator-renderer/src/renderer-view.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -51,14 +51,27 @@ export const Renderer = defineComponent({
 		// TODO 模拟组件库
 		const components = {
 			Button: defineComponent({
-				setup() {
+				props: {
+					type: {
+						type: String,
+						default: 'primary',
+					},
+				},
+				setup(props) {
+					const typeColorMap: any = {
+						primary: '#1890ff',
+						success: '#52c41a',
+						warning: '#faad14',
+						danger: '#ff4d4f',
+					};
+
 					return () => (
 						<button
 							style={{
 								padding: '8px 16px',
 								fontSize: '14px',
 								color: '#fff',
-								backgroundColor: '#1890ff',
+								backgroundColor: typeColorMap[props.type],
 								border: 'none',
 								borderRadius: '4px',
 								cursor: 'pointer',

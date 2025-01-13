@@ -1,3 +1,11 @@
+/*
+ * @Author: shuwen 1243889238@qq.com
+ * @Date: 2024-11-12 14:54:17
+ * @LastEditors: shuwen 1243889238@qq.com
+ * @LastEditTime: 2025-01-07 17:13:50
+ * @FilePath: /microcode-engine/packages/engine/src/inner-plugins/component-meta-parser.ts
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import { IPublicModelPluginContext } from '@arvin-shu/microcode-types';
 /**
  * 组件元数据解析器插件
@@ -5,15 +13,7 @@ import { IPublicModelPluginContext } from '@arvin-shu/microcode-types';
  * @param designer 设计器实例
  */
 export const componentMetaParser = (designer: any) => {
-	/**
-	 * 插件主函数
-	 * @param ctx 插件上下文
-	 */
 	const fun = (ctx: IPublicModelPluginContext) => ({
-		/**
-		 * 插件初始化函数
-		 * 监听资产包变化,并在变化时重新构建组件元数据映射表
-		 */
 		init() {
 			const { material } = ctx;
 			material.onChangeAssets(() => {

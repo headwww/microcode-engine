@@ -39,6 +39,7 @@ import {
 	IExclusiveGroup,
 	isExclusiveGroup,
 } from './exclusive-group';
+import { ISettingTopEntry } from '../../designer';
 
 export function isRootNode(node: INode): node is IRootNode {
 	return node && node.isRootNode;
@@ -260,7 +261,15 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 
 	isInited = false;
 
-	// TODO settingEntry设置器实例没有管理
+	_settingEntry: ISettingTopEntry;
+
+	get settingEntry(): ISettingTopEntry {
+		if (this._settingEntry) return this._settingEntry;
+		this._settingEntry = this.document.designer.createSettingEntry([
+			this as any,
+		]);
+		return this._settingEntry;
+	}
 
 	private _isRGLContainer = false;
 

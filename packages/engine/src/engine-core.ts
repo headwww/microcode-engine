@@ -10,6 +10,7 @@ import {
 	Editor,
 	engineConfig,
 	globalContext,
+	Setters as InnerSetters,
 } from '@arvin-shu/microcode-editor-core';
 import {
 	Skeleton as InnerSkeleton,
@@ -23,12 +24,14 @@ import {
 	Material,
 	Canvas,
 	Project,
+	Setters,
 } from '@arvin-shu/microcode-shell';
 import { IPublicTypePluginMeta } from '@arvin-shu/microcode-types';
 import { Logger } from '@arvin-shu/microcode-utils';
 import { h } from 'vue';
 import { defaultPanelRegistry } from './inner-plugins/default-panel-registry';
 import { componentMetaParser } from './inner-plugins/component-meta-parser';
+import { shellModelFactory } from './modules/shell-model-factory';
 
 const editor = new Editor();
 
@@ -39,7 +42,8 @@ globalContext.register({}, 'workspace');
 const innerSkeleton = new InnerSkeleton(editor);
 editor.set('skeleton' as any, innerSkeleton);
 
-const designer = new Designer({ editor });
+// @ts-ignore
+const designer = new Designer({ editor, shellModelFactory });
 editor.set('designer', designer);
 
 const { project: innerProject } = designer;
@@ -47,11 +51,13 @@ const { project: innerProject } = designer;
 const project = new Project(innerProject);
 
 const skeleton = new Skeleton(innerSkeleton, 'any', false);
+const innerSetters = new InnerSetters();
+const setters = new Setters(innerSetters);
 
 const material = new Material(editor);
 
 editor.set('project', project);
-
+editor.set('setters', setters);
 editor.set('material', material);
 
 const config = new Config(engineConfig);
@@ -68,6 +74,7 @@ const pluginContextApiAssembler: IMicroodePluginContextApiAssembler = {
 	) {
 		context.skeleton = new Skeleton(innerSkeleton, pluginName, false);
 		context.plugins = plugins;
+		context.setters = setters;
 		context.config = config;
 		context.material = material;
 		context.canvas = canvas;
@@ -95,7 +102,6 @@ async function registryInnerPlugin() {
 	await plugins.register(defaultPanelRegistryPlugin);
 	await plugins.register(componentMetaParserPlugin);
 }
-registryInnerPlugin();
 
 // TODO 设置一个渲染模拟器插件
 editor.set(
@@ -110,111 +116,20 @@ export async function init(pluginPreference?: PluginPreference) {
 	window.ArvinMicrocodeEngine = innerPlugins._getMicrocodePluginContext(
 		{} as any
 	);
-
-	project.importSchema({
-		version: '1.0.0',
-		id: 'nodepageshiashida',
-		componentsMap: [{ componentName: 'Page', devMode: 'microCode' }],
-		componentsTree: [
-			{
-				componentName: 'Page',
-				id: 'node_dockcviv8fo1',
-				props: {
-					style: {
-						height: '100%',
-					},
-				},
-				fileName: '/',
-				children: [
-					{
-						componentName: 'Button2',
-						id: 'node_sxsm4wdio232',
-						props: {
-							children: '按钮',
-							bordered: true,
-						},
-						hidden: false,
-						title: '',
-						isLocked: true,
-						condition: false,
-						conditionGroup: '',
-					},
-					{
-						componentName: 'Button2',
-						id: 'node_ocm4wdlisxg1',
-						props: {
-							children: '按钮',
-							bordered: true,
-						},
-						hidden: false,
-						title: '',
-						isLocked: true,
-						condition: false,
-						conditionGroup: '',
-						// loop: [1, 2, 3],
-					},
-					// {
-					// 	componentName: 'Button2',
-					// 	id: 'node_ocmd4wdlisxg1',
-					// 	props: {
-					// 		children: '按钮',
-					// 		bordered: true,
-					// 	},
-					// 	hidden: false,
-					// 	title: '',
-					// 	isLocked: true,
-					// 	condition: false,
-					// 	conditionGroup: '',
-					// },
-				],
-				// children: [
-				// 	{
-				// 		componentName: 'Button',
-				// 		id: 'node_ocm4wdlixg1',
-				// 		props: {
-				// 			children: '按钮',
-				// 			bordered: true,
-				// 		},
-				// 		hidden: false,
-				// 		title: '',
-				// 		isLocked: true,
-				// 		condition: false,
-				// 		conditionGroup: '',
-				// 	},
-				// 	{
-				// 		componentName: 'Button',
-				// 		id: 'node_ocm4wdlix2g1',
-				// 		props: {
-				// 			children: '按钮3',
-				// 			bordered: true,
-				// 		},
-				// 		hidden: false,
-				// 		title: '',
-				// 		isLocked: false,
-				// 		condition: true,
-				// 		conditionGroup: '',
-				// 	},
-				// 	{
-				// 		componentName: 'Button',
-				// 		id: 'node_ocm4wdlidx2g1',
-				// 		props: {
-				// 			children: '按钮',
-				// 			bordered: true,
-				// 		},
-				// 		hidden: false,
-				// 		title: '',
-				// 		isLocked: false,
-				// 		condition: true,
-				// 		conditionGroup: '',
-				// 	},
-				// ],
-			},
-		],
-	});
 }
 
 const MicrocodeWorkbench = h(Workbench, {
 	skeleton: innerSkeleton,
 });
 
-export { skeleton, plugins, config, event, material, MicrocodeWorkbench };
+export {
+	skeleton,
+	plugins,
+	config,
+	event,
+	setters,
+	material,
+	MicrocodeWorkbench,
+	// TODO 先模拟环境 这块需要考虑内置插件和外部插件的加载顺序
+	registryInnerPlugin,
+};

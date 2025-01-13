@@ -11,7 +11,7 @@ import {
 	PluginClassSet,
 } from '@arvin-shu/microcode-types';
 import { isPlainObject, Logger } from '@arvin-shu/microcode-utils';
-import { isVNode } from 'vue';
+import { isVNode, InjectionKey } from 'vue';
 import { Divider } from 'ant-design-vue';
 import {
 	engineConfig,
@@ -51,6 +51,8 @@ export enum SkeletonEvents {
 	WIDGET_DISABLE = 'skeleton.widget.disable',
 	WIDGET_ENABLE = 'skeleton.widget.enable',
 }
+
+export const SkeletonKey: InjectionKey<ISkeleton> = Symbol('skeleton');
 
 const logger = new Logger({ level: 'warn', bizName: 'skeleton' });
 

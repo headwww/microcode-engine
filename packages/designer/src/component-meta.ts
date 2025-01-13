@@ -281,7 +281,6 @@ export class ComponentMeta implements IComponentMeta {
 	private transformMetadata(metadata: IPublicTypeComponentMetadata) {
 		const registeredTransducers =
 			this.designer.componentActions.getRegisteredMetadataTransducers();
-
 		const result = registeredTransducers.reduce(
 			(prevMetadata, current) => current(prevMetadata),
 			preprocessMetadata(metadata)

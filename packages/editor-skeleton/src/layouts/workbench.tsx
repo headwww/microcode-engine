@@ -1,7 +1,7 @@
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, provide } from 'vue';
 import { TipContainer } from '@arvin-shu/microcode-editor-core';
 import { EditorConfig, PluginClassSet } from '@arvin-shu/microcode-types';
-import { ISkeleton } from '../skeleton';
+import { ISkeleton, SkeletonKey } from '../skeleton';
 import { TopArea } from './top-area';
 import { LeftArea } from './left-area';
 import { MainArea } from './main-area';
@@ -22,6 +22,8 @@ export const Workbench = defineComponent({
 	},
 	setup(props) {
 		props.skeleton?.buildFromConfig(props.config, props.components);
+
+		provide(SkeletonKey, props.skeleton!);
 
 		return () => {
 			const { className, skeleton, topAreaItemClassName } = props;
