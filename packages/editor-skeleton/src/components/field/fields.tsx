@@ -6,7 +6,11 @@ import {
 	ref,
 } from 'vue';
 import { Title } from '@arvin-shu/microcode-editor-core';
-import { DownOutlined, RightOutlined } from '@ant-design/icons-vue';
+import {
+	DownOutlined,
+	SelectOutlined,
+	VerticalLeftOutlined,
+} from '@ant-design/icons-vue';
 import { isObject } from '@arvin-shu/microcode-utils';
 import { fieldProps } from './types';
 import { intl } from '../../locale';
@@ -187,8 +191,21 @@ export const Field = defineComponent({
 
 export const PopupField = defineComponent({
 	name: 'PopupField',
-	setup() {
-		return () => <div></div>;
+	props: { ...fieldProps },
+	setup(props) {
+		return () => {
+			const { className, title } = props;
+			return (
+				<div class={['mtc-field', 'mtc-popup-field', className]}>
+					<div class="mtc-field-head">
+						<div class="mtc-field-title">
+							<Title title={title} />
+						</div>
+						<SelectOutlined />
+					</div>
+				</div>
+			);
+		};
 	},
 });
 
@@ -208,7 +225,7 @@ export const EntryField = defineComponent({
 						<div class="mtc-field-title">
 							<Title title={title || ''}></Title>
 						</div>
-						<RightOutlined class="mtc-field-icon" />
+						<VerticalLeftOutlined class="mtc-field-icon" />
 					</div>
 				</div>
 			);
@@ -218,7 +235,6 @@ export const EntryField = defineComponent({
 
 export const PlainField = defineComponent({
 	name: 'PlainField',
-	inheritAttrs: false,
 	props: fieldProps,
 	setup(props, { slots }) {
 		return () => {

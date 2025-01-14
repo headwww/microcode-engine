@@ -11,7 +11,8 @@ import { FieldProps } from './types';
  */
 export function createField(
 	props: FieldProps,
-	children: VNode,
+	children: VNode | any,
+	// 字段类型，可选值包括：手风琴（accordion）、内联（inline）、块级（block）、纯文本（plain）、弹出（popup）和入口（entry）
 	type?: 'accordion' | 'inline' | 'block' | 'plain' | 'popup' | 'entry'
 ) {
 	if (type === 'popup') {

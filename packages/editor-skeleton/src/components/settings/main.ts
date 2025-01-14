@@ -4,7 +4,11 @@ import {
 	Selection,
 	SettingTopEntry,
 } from '@arvin-shu/microcode-designer';
-import { Editor } from '@arvin-shu/microcode-editor-core';
+import {
+	createModuleEventBus,
+	Editor,
+	IEventBus,
+} from '@arvin-shu/microcode-editor-core';
 import { computed, ref } from 'vue';
 
 function generateSessionId(nodes: Node[]) {
@@ -19,6 +23,10 @@ export class SettingsMain {
 
 	private _settings = ref<SettingTopEntry>();
 
+	private emitter: IEventBus = createModuleEventBus('SettingsMain');
+
+	private disposeListener: () => void;
+
 	private readonly computedSettings = computed(() => this._settings?.value);
 
 	get settings() {
@@ -31,7 +39,7 @@ export class SettingsMain {
 		this.init();
 	}
 
-	private init() {
+	private async init() {
 		const setupSelection = (selection?: Selection) => {
 			if (selection) {
 				this.setup(selection.getNodes() as Node[]);
@@ -41,6 +49,12 @@ export class SettingsMain {
 		};
 
 		this.editor.eventBus.on('designer.selection.change', setupSelection);
+		this.disposeListener = () => {
+			this.editor.removeListener('designer.selection.change', setupSelection);
+		};
+		const designer = await this.editor.onceGot('designer');
+		this.designer = designer;
+		setupSelection(designer.currentSelection);
 	}
 
 	private setup(nodes: Node[]) {
@@ -65,5 +79,10 @@ export class SettingsMain {
 		} else {
 			this._settings.value = this.designer.createSettingEntry(nodes);
 		}
+	}
+
+	purge() {
+		this.disposeListener();
+		this.emitter.removeAllListeners();
 	}
 }

@@ -4,9 +4,17 @@ import {
 	ISettingTopEntry,
 } from '@arvin-shu/microcode-designer';
 import { IPublicTypeCustomView } from '@arvin-shu/microcode-types';
-import { createContent, isObject } from '@arvin-shu/microcode-utils';
-import { computed, defineComponent, PropType } from 'vue';
+import {
+	createContent,
+	isJSSlot,
+	isObject,
+	isSetterConfig,
+	shouldUseVariableSetter,
+} from '@arvin-shu/microcode-utils';
+import { computed, defineComponent, onMounted, PropType, ref } from 'vue';
+import { engineConfig, shallowIntl } from '@arvin-shu/microcode-editor-core';
 import { createField } from '../field';
+import { PopupService } from '../popup';
 
 export const SettingPane = defineComponent({
 	name: 'SettingPane',
@@ -21,11 +29,13 @@ export const SettingPane = defineComponent({
 
 			return (
 				<div class="mtc-settings-pane">
-					<div className="mtc-settings-content">
-						{items.map((item, index) =>
-							createSettingFieldView(item, target!, index)
-						)}
-					</div>
+					<PopupService>
+						<div className="mtc-settings-content">
+							{items.map((item, index) =>
+								createSettingFieldView(item, target!, index)
+							)}
+						</div>
+					</PopupService>
 				</div>
 			);
 		};
@@ -46,6 +56,25 @@ export function createSettingFieldView(
 	return createContent(field, { key: index, field: fieldEntry });
 }
 
+/**
+ * 判断 initialValue 是否为非空，非空条件：
+ *  1. 当为 slot 结构时，value 为有长度的数组且 visible 不为 false
+ *  2. 不为 slot 结构，为非 undefined / null 值
+ * @param initialValue
+ * @returns
+ */
+function isInitialValueNotEmpty(initialValue: any) {
+	if (isJSSlot(initialValue)) {
+		return (
+			// @ts-ignore visible 为 false 代表默认不展示
+			initialValue.visible !== false &&
+			Array.isArray(initialValue.value) &&
+			initialValue.value.length > 0
+		);
+	}
+	return initialValue !== undefined && initialValue !== null;
+}
+
 export const SettingFieldView = defineComponent({
 	name: 'SettingFieldView',
 	inheritAttrs: false,
@@ -57,13 +86,77 @@ export const SettingFieldView = defineComponent({
 
 		const setters = editor?.get('setters');
 
-		const { setter } = props.field!;
-
 		const setterInfo = computed(() => {
-			const setterType: any = setter;
+			const { setter, extraProps } = props.field!;
 
+			const { defaultValue } = extraProps;
+
+			let setterType: any = setter;
+			let initialValue: any = null;
+
+			let setterProps: any = {};
+			if (Array.isArray(setter)) {
+				setterType = 'MixedSetter';
+				setterProps = {
+					setters: setter,
+				};
+			} else if (isSetterConfig(setter)) {
+				setterType = setter.componentName;
+				if (setter.props) {
+					setterProps = setter.props;
+					if (typeof setterProps === 'function') {
+						setterProps = setterProps(props.field?.internalToShellField());
+					}
+				}
+				if (setter.initialValue != null) {
+					initialValue = setter.initialValue;
+				}
+			}
+
+			if (defaultValue != null && !('defaultValue' in setterProps)) {
+				setterProps.defaultValue = defaultValue;
+				if (initialValue == null) {
+					initialValue = defaultValue;
+				}
+			}
+			// TODO this.field.valueState  === -1
+
+			// 根据是否支持变量配置做相应的更改
+			const supportVariable = props.field?.extraProps?.supportVariable;
+			const supportVariableGlobally = engineConfig.get(
+				'supportVariableGlobally',
+				false
+			);
+			const isUseVariableSetter = shouldUseVariableSetter(
+				supportVariable,
+				supportVariableGlobally
+			);
+			if (isUseVariableSetter === false) {
+				return {
+					setterProps,
+					initialValue,
+					setterType,
+				};
+			}
+
+			if (setterType === 'MixedSetter') {
+				// VariableSetter 不单独使用
+				if (
+					Array.isArray(setterProps.setters) &&
+					!setterProps.setters.includes('VariableSetter')
+				) {
+					setterProps.setters.push('VariableSetter');
+				}
+			} else {
+				setterType = 'MixedSetter';
+				setterProps = {
+					setters: [setter, 'VariableSetter'],
+				};
+			}
 			return {
 				setterType,
+				setterProps,
+				initialValue,
 			};
 		});
 
@@ -84,6 +177,8 @@ export const SettingFieldView = defineComponent({
 			return true;
 		};
 
+		const fromOnChange = ref(false);
+
 		const ignoreDefaultValue = () => {
 			if (props.field) {
 				const { extraProps } = props.field;
@@ -101,33 +196,84 @@ export const SettingFieldView = defineComponent({
 				return false;
 			}
 		};
-		ignoreDefaultValue;
+
+		const value = ref(props.field?.getValue());
+
+		function initDefaultValue() {
+			const { initialValue } = setterInfo.value;
+			if (
+				fromOnChange.value ||
+				!isInitialValueNotEmpty(initialValue) ||
+				ignoreDefaultValue() ||
+				value.value !== undefined
+			) {
+				return;
+			}
+			const _initialValue =
+				typeof initialValue === 'function'
+					? initialValue(props.field?.internalToShellField())
+					: initialValue;
+			props.field?.setValue(_initialValue);
+		}
+
+		onMounted(() => {
+			initDefaultValue();
+		});
 
 		return () => {
-			const {
-				extraProps,
-				title,
-				componentMeta,
-				expanded,
-				setExpanded,
-				clearValue,
-			} = props.field!;
+			const { extraProps, title, componentMeta, expanded, clearValue } =
+				props.field!;
 
 			if (!visible()) {
 				return <></>;
 			}
 
-			const { setterType } = setterInfo.value;
+			const { setterProps = {}, initialValue, setterType } = setterInfo.value;
+			const { field } = props;
+
 			return createField(
 				{
 					meta: componentMeta?.npm || componentMeta?.componentName || '',
 					title,
 					collapsed: !expanded,
-					onExpandChange: (expandState: any) => setExpanded(expandState),
+					onExpandChange: (expandState: any) => {
+						props.field?.setExpanded(expandState);
+					},
 					onClear: () => clearValue(),
 					...extraProps,
 				} as any,
-				setters.createSetterContent(setterType, {}),
+				setters.createSetterContent(setterType, {
+					...shallowIntl(setterProps),
+					value: value.value,
+					forceInline: extraProps.forceInline,
+					prop: field?.internalToShellField(), // for compatible vision
+					selected: field?.top?.getNode()?.internalToShellNode(),
+					field: field?.internalToShellField(),
+					key: field?.id,
+					initialValue,
+					onInitial: () => {
+						if (initialValue) {
+							return;
+						}
+						const value =
+							typeof initialValue === 'function'
+								? initialValue(field?.internalToShellField())
+								: initialValue;
+
+						value.value = value;
+						field?.setValue(value, true);
+					},
+					removeProp: () => {
+						if (field?.name) {
+							field.parent.clearPropValue(field.name);
+						}
+					},
+					onChange: (v: any) => {
+						fromOnChange.value = true;
+						value.value = v;
+						field?.setValue(v, true);
+					},
+				}),
 				extraProps.forceInline ? 'plain' : extraProps.display
 			);
 		};
@@ -137,8 +283,39 @@ export const SettingFieldView = defineComponent({
 export const SettingGroupView = defineComponent({
 	name: 'SettingGroupView',
 	inheritAttrs: false,
-	setup() {
-		return () => <div>SettingGroupView</div>;
+	props: {
+		field: Object as PropType<ISettingField>,
+	},
+	setup(props) {
+		return () => {
+			const { field } = props;
+			const { extraProps } = field!;
+			const { condition, display } = extraProps;
+			const visible =
+				field?.isSingle && typeof condition === 'function'
+					? condition(field.internalToShellField()) !== false
+					: true;
+
+			if (!visible) {
+				return <></>;
+			}
+
+			return createField(
+				{
+					meta:
+						field?.componentMeta?.npm ||
+						field?.componentMeta?.componentName ||
+						'',
+					title: field?.title,
+					collapsed: !field?.expanded,
+					onExpandChange: (expandState: any) => field?.setExpanded(expandState),
+				} as any,
+				field?.items.map((item, index) =>
+					createSettingFieldView(item, field, index)
+				),
+				display
+			);
+		};
 	},
 });
 

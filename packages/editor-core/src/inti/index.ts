@@ -20,6 +20,17 @@ function generateTryLocales(locale: string) {
 	return tries;
 }
 
+export function shallowIntl(data: any): any {
+	if (!data || typeof data !== 'object') {
+		return data;
+	}
+	const maps: any = {};
+	Object.keys(data).forEach((key) => {
+		maps[key] = intl(data[key]);
+	});
+	return maps;
+}
+
 function injectVars(msg: string, params: any, locale: string): string {
 	if (!msg || !params) {
 		return msg;

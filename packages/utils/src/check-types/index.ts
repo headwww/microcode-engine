@@ -15,3 +15,4 @@ export * from './is-location-children-detail';
 export * from './is-custom-view';
 export * from './is-setting-field';
 export * from './is-dynamic-setter';
+export * from './is-setter-config';

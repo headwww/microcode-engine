@@ -31,27 +31,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 				{
 					componentName: 'Button',
 					title: '按钮',
-					props: [
-						{
-							name: 'type',
-							title: '按钮类型',
-							propType: {
-								type: 'oneOf',
-								value: ['primary', 'ghost', 'dashed', 'danger', 'link', 'text'],
-							},
-							setter: 'StringSetter',
-						},
-					],
 					configure: [
-						{
-							title: {
-								type: 'i18n',
-								'zh-CN': '属性',
-								'en-US': 'Props',
-							},
-							name: '#props',
-							items: [],
-						},
 						{
 							name: '#styles',
 							title: {
@@ -61,53 +41,131 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							},
 							items: [
 								{
-									name: 'f1',
+									name: 'type',
 									title: {
 										type: 'i18n',
-										'zh-CN': '测试样式1',
-										'en-US': 'Style',
+										'zh-CN': '按钮类型',
+										'en-US': 'Type',
 									},
-
 									setter: 'StringSetter',
+									extraProps: {
+										display: 'inline',
+									},
+								},
+								{
+									name: 'link',
+									title: {
+										label: {
+											type: 'i18n',
+											'zh-CN': '和上面联动',
+											'en-US': 'Link to above',
+										},
+										tip: '测试condition',
+									},
+									setter: {
+										componentName: 'StringSetter',
+										props: {
+											defaultValue: '默认值',
+										},
+									},
+									extraProps: {
+										condition: (field) =>
+											field.parent.getPropValue('type') === 'primary',
+									},
+								},
+								{
+									name: 'block-01',
+									title: 'block模式',
+									setter: 'BoolSetter',
 									extraProps: {
 										display: 'block',
 									},
 								},
 								{
-									name: 'f2',
+									name: 'accordion-01',
 									title: {
 										type: 'i18n',
-										'zh-CN': '测试样式2',
-										'en-US': 'Style',
-									},
-									setter: 'BoolSetter',
-								},
-								{
-									name: 'f3',
-									title: {
-										label: {
-											type: 'i18n',
-											'zh-CN': 'accordion',
-											'en-US': 'Style',
-										},
-										tip: '点击 ? tipo',
-									},
-									setter: 'BoolSetter',
-								},
-								{
-									name: 'f4',
-									title: {
-										type: 'i18n',
-										'zh-CN': 'accordion',
+										'zh-CN': '默认折叠',
 										'en-US': 'Style',
 										description: '点击 ? tipo',
 									},
 									setter: 'BoolSetter',
 									extraProps: {
+										defaultCollapsed: true,
 										display: 'accordion',
 									},
 								},
+								{
+									name: 'plain',
+									title: '纯文本',
+									setter: 'StringSetter',
+									extraProps: {
+										display: 'plain',
+									},
+								},
+
+								{
+									name: 'group-01',
+									type: 'group',
+									extraProps: {
+										display: 'accordion',
+									},
+									items: [
+										{
+											name: 'type',
+											setter: 'StringSetter',
+										},
+										{
+											name: 'field-12',
+											setter: 'StringSetter',
+										},
+									],
+								},
+								{
+									name: 'entry-01',
+									title: '入口模式',
+									type: 'group',
+									extraProps: {
+										display: 'entry',
+									},
+									items: [
+										{
+											name: 'theme',
+											title: '主题',
+											setter: 'StringSetter',
+										},
+									],
+								},
+
+								{
+									type: 'group',
+									display: 'accordion',
+									title: '校验2',
+									items: [
+										{
+											type: 'group',
+											display: 'popup',
+											title: '非空校验',
+											items: [
+												{
+													name: 'requiredMessage',
+													title: '错误信息',
+													setter: 'StringSetter',
+												},
+											],
+										},
+									],
+								},
 							],
+						},
+						{
+							title: {
+								type: 'i18n',
+								'zh-CN': '属性',
+								'en-US': 'Props',
+							},
+							name: '#props',
+							items: [],
 						},
 					],
 					snippets: [
@@ -118,7 +176,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							schema: {
 								componentName: 'Button',
 								props: {
-									type: 'primary',
+									type: 'success',
 								},
 							},
 						},
@@ -146,8 +204,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							componentName: 'Button',
 							id: 'node_sxsm4wdio232',
 							props: {
-								children: '按钮',
-								bordered: true,
+								type: 'primary',
 							},
 							hidden: false,
 							title: '',

@@ -1,4 +1,11 @@
-import { defineComponent, inject, PropType, ref, toRaw } from 'vue';
+import {
+	defineComponent,
+	inject,
+	onBeforeUnmount,
+	PropType,
+	ref,
+	toRaw,
+} from 'vue';
 import { Editor, engineConfig, Title } from '@arvin-shu/microcode-editor-core';
 import { TabPane, Tabs } from 'ant-design-vue';
 import { SettingField } from '@arvin-shu/microcode-designer';
@@ -28,6 +35,10 @@ export const SettingsPrimaryPane = defineComponent({
 
 		const skeleton = inject(SkeletonKey);
 		skeleton;
+
+		onBeforeUnmount(() => {
+			main.purge();
+		});
 
 		return () => {
 			const { settings } = main;

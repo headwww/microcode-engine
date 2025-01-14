@@ -6,7 +6,7 @@ import {
 	IPublicTypePropsList,
 	IPublicTypePropsMap,
 } from '@arvin-shu/microcode-types';
-import { computed, ref, shallowReactive, toRaw } from 'vue';
+import { ref, shallowReactive } from 'vue';
 import { INode } from '../node';
 import { IProp, Prop, UNSET } from './prop';
 
@@ -93,7 +93,7 @@ export class Props implements IProps, IPropParent {
 
 	private items = shallowReactive<IProp[]>([]);
 
-	private readonly computedMaps = computed(() => {
+	private get maps(): Map<string, Prop> {
 		const maps = new Map();
 		if (this.items.length > 0) {
 			this.items.forEach((item) => {
@@ -103,10 +103,6 @@ export class Props implements IProps, IPropParent {
 			});
 		}
 		return maps;
-	});
-
-	private get maps(): Map<string, Prop> {
-		return this.computedMaps.value;
 	}
 
 	readonly path = [];
@@ -117,10 +113,8 @@ export class Props implements IProps, IPropParent {
 
 	readonly owner: INode;
 
-	private readonly computedSize = computed(() => this.items.length);
-
 	get size(): number {
-		return this.computedSize.value;
+		return this.items.length;
 	}
 
 	type = ref<'map' | 'list'>('map');
@@ -257,7 +251,6 @@ export class Props implements IProps, IPropParent {
 	}
 
 	get(path: string, createIfNone = false): IProp | null {
-		const self = toRaw(this);
 		let entry = path;
 		let nest = '';
 		const i = path.indexOf('.');
@@ -268,10 +261,11 @@ export class Props implements IProps, IPropParent {
 			}
 		}
 
-		let prop = self.maps.get(entry);
+		let prop = this.maps.get(entry);
+
 		if (!prop && createIfNone) {
-			prop = new Prop(self, UNSET, entry);
-			self.items.push(prop);
+			prop = new Prop(this, UNSET, entry);
+			this.items.push(prop);
 		}
 
 		if (prop) {

@@ -805,7 +805,9 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 	}
 
 	getExtraProp(key: string, createIfNone = true): IProp | null {
-		return this.props.get(getConvertedExtraKey(key), createIfNone) || null;
+		return (
+			toRaw(this.props).get(getConvertedExtraKey(key), createIfNone) || null
+		);
 	}
 
 	setExtraProp(key: string, value: IPublicTypeCompositeValue) {
@@ -927,7 +929,7 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 			this.props.import(props, extras);
 			this._children?.import(children, checkId);
 		} else {
-			this.props
+			toRaw(this.props)
 				.get('children', true)!
 				.setValue(
 					isDomText(children) || isJSExpression(children) ? children : ''
@@ -959,7 +961,7 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 		if (this.isLeaf()) {
 			// 在导出阶段不导出children,除非指定bypassChildren
 			if (!options.bypassChildren) {
-				baseSchema.children = this.props.get('children')?.export(stage);
+				baseSchema.children = toRaw(this.props).get('children')?.export(stage);
 			}
 			return baseSchema;
 		}

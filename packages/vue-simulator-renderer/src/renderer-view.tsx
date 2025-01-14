@@ -1,11 +1,3 @@
-/*
- * @Author: shuwen 1243889238@qq.com
- * @Date: 2024-12-17 16:01:38
- * @LastEditors: shuwen 1243889238@qq.com
- * @LastEditTime: 2025-01-13 14:02:21
- * @FilePath: /microcode-engine/packages/vue-simulator-renderer/src/renderer-view.tsx
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 import { defineComponent, PropType, renderSlot, Suspense } from 'vue';
 import { RouterView } from 'vue-router';
 import MicrocodeRenderer from '@arvin-shu/microcode-renderer-core';
