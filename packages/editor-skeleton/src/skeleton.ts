@@ -10,7 +10,7 @@ import {
 	IPublicTypeWidgetConfigArea,
 	PluginClassSet,
 } from '@arvin-shu/microcode-types';
-import { isPlainObject, Logger } from '@arvin-shu/microcode-utils';
+import { isPlainObject, Logger, uniqueId } from '@arvin-shu/microcode-utils';
 import { isVNode, InjectionKey } from 'vue';
 import { Divider } from 'ant-design-vue';
 import {
@@ -26,6 +26,8 @@ import {
 	IWidget,
 	Panel,
 	PanelDock,
+	Stage,
+	StageConfig,
 	Widget,
 	WidgetContainer,
 } from './widget';
@@ -103,7 +105,7 @@ export interface ISkeleton
 		Widget | Panel
 	>;
 
-	readonly stages: Area;
+	readonly stages: Area<StageConfig, Stage>;
 
 	readonly widgets: IWidget[];
 
@@ -114,6 +116,10 @@ export interface ISkeleton
 	getPanel(name: string): Panel | undefined;
 
 	getWidget(name: string): IWidget | undefined;
+
+	createStage(config: any): string | undefined;
+
+	getStage(name: string): Stage | null;
 
 	toggleFloatStatus(panel: Panel): void;
 
@@ -186,7 +192,7 @@ export class Skeleton implements ISkeleton {
 
 	readonly widgets: IWidget[] = [];
 
-	readonly stages: Area;
+	readonly stages: Area<StageConfig, Stage>;
 
 	readonly focusTracker = new FocusTracker();
 
@@ -287,7 +293,14 @@ export class Skeleton implements ISkeleton {
 			},
 			true
 		);
+		this.stages = new Area(this, 'stages', (config) => {
+			if (isWidget(config)) {
+				return config;
+			}
+			return new Stage(this, config);
+		});
 
+		this.setupPlugins();
 		this.setupEvents();
 		this.focusTracker.mount(window);
 	}
@@ -403,6 +416,19 @@ export class Skeleton implements ISkeleton {
 				this.add(config);
 			});
 		});
+	}
+
+	getStage(name: string) {
+		return this.stages.container.get(name);
+	}
+
+	createStage(config: any) {
+		const stage = this.add({
+			name: uniqueId('stage'),
+			area: 'stages',
+			...config,
+		});
+		return stage?.getName?.();
 	}
 
 	createContainer(
@@ -543,6 +569,9 @@ export class Skeleton implements ISkeleton {
 			case 'bottomArea':
 			case 'bottom':
 				return this.bottomArea.add(parsedConfig as IPublicTypePanelConfig);
+			case 'stages':
+				return this.stages.add(parsedConfig as StageConfig);
+			default:
 		}
 	}
 

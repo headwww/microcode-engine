@@ -1,5 +1,6 @@
 import {
 	defineComponent,
+	inject,
 	onBeforeUnmount,
 	onMounted,
 	PropType,
@@ -14,6 +15,7 @@ import {
 import { isObject } from '@arvin-shu/microcode-utils';
 import { fieldProps } from './types';
 import { intl } from '../../locale';
+import { PopupPipeKey } from '../popup';
 
 export const Field = defineComponent({
 	name: 'Field',
@@ -191,13 +193,31 @@ export const Field = defineComponent({
 
 export const PopupField = defineComponent({
 	name: 'PopupField',
-	props: { ...fieldProps },
-	setup(props) {
+	props: { ...fieldProps, width: { type: Number, default: 320 } },
+	setup(props, { slots }) {
+		const context = inject(PopupPipeKey, null);
+
+		const pipe = context?.create({ width: props.width });
+
 		return () => {
 			const { className, title } = props;
+			const children = slots.default ? slots.default() : <></>;
+
+			pipe?.sent(
+				<div class="mtc-field-body">{children}</div>,
+				title && (
+					<div class="mtc-field-title">
+						<Title title={title}></Title>
+					</div>
+				)
+			);
+
 			return (
 				<div class={['mtc-field', 'mtc-popup-field', className]}>
-					<div class="mtc-field-head">
+					<div
+						class="mtc-field-head"
+						onClick={(e: any) => pipe?.show(e.target)}
+					>
 						<div class="mtc-field-title">
 							<Title title={title} />
 						</div>
@@ -221,7 +241,7 @@ export const EntryField = defineComponent({
 			const { title, className } = props;
 			return (
 				<div class={['mtc-field', 'mtc-entry-field', className]}>
-					<div class="mtc-field-head">
+					<div class="mtc-field-head" data-stage-target={props.stageName}>
 						<div class="mtc-field-title">
 							<Title title={title || ''}></Title>
 						</div>

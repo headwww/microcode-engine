@@ -14,7 +14,7 @@ import {
 import { computed, defineComponent, onMounted, PropType, ref } from 'vue';
 import { engineConfig, shallowIntl } from '@arvin-shu/microcode-editor-core';
 import { createField } from '../field';
-import { PopupService } from '../popup';
+import { PopupPipe, PopupService } from '../popup';
 
 export const SettingPane = defineComponent({
 	name: 'SettingPane',
@@ -26,10 +26,12 @@ export const SettingPane = defineComponent({
 		return () => {
 			const { target } = props;
 			const { items } = target!;
+			const popupPipe = new PopupPipe();
+			popupPipe.create();
 
 			return (
 				<div class="mtc-settings-pane">
-					<PopupService>
+					<PopupService popupPipe={popupPipe}>
 						<div className="mtc-settings-content">
 							{items.map((item, index) =>
 								createSettingFieldView(item, target!, index)

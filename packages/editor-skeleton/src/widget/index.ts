@@ -4,3 +4,4 @@ export * from './widget';
 export * from './utils';
 export * from './dock';
 export * from './panel-dock';
+export * from './stage';

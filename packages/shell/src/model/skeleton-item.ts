@@ -4,14 +4,23 @@ import {
 	Panel,
 	PanelDock,
 	Widget,
+	Stage,
 } from '@arvin-shu/microcode-editor-skeleton';
 import { IPublicModelSkeletonItem } from '@arvin-shu/microcode-types';
 import { skeletonItemSymbol } from '../symbols';
 
 export class SkeletonItem implements IPublicModelSkeletonItem {
-	private [skeletonItemSymbol]: IWidget | Widget | Panel | Dock | PanelDock;
+	private [skeletonItemSymbol]:
+		| IWidget
+		| Widget
+		| Panel
+		| Dock
+		| PanelDock
+		| Stage;
 
-	constructor(skeletonItem: IWidget | Widget | Panel | Dock | PanelDock) {
+	constructor(
+		skeletonItem: IWidget | Widget | Panel | Dock | Stage | PanelDock
+	) {
 		this[skeletonItemSymbol] = skeletonItem;
 	}
 

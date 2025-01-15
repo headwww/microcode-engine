@@ -148,9 +148,19 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 											title: '非空校验',
 											items: [
 												{
-													name: 'requiredMessage',
-													title: '错误信息',
+													name: 'field-01',
 													setter: 'StringSetter',
+												},
+												{
+													type: 'group',
+													display: 'popup',
+													title: '非空校验01010',
+													items: [
+														{
+															name: 'field-01',
+															setter: 'StringSetter',
+														},
+													],
 												},
 											],
 										},
