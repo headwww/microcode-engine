@@ -152,7 +152,7 @@ export const SettingsPrimaryPane = defineComponent({
 						class: 'mtc-settings-navigator-icon',
 					})}
 					<Breadcrumb
-						separator={<RightOutlined />}
+						separator={<RightOutlined style={{ fontSize: '12px' }} />}
 						className="mtc-settings-node-breadcrumb"
 					>
 						{items}
