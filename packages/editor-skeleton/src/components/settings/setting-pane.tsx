@@ -15,6 +15,7 @@ import { computed, defineComponent, onMounted, PropType, ref } from 'vue';
 import { engineConfig, shallowIntl } from '@arvin-shu/microcode-editor-core';
 import { createField } from '../field';
 import { PopupPipe, PopupService } from '../popup';
+import { Skeleton } from '../../skeleton';
 
 export const SettingPane = defineComponent({
 	name: 'SettingPane',
@@ -87,6 +88,38 @@ export const SettingFieldView = defineComponent({
 		const editor = props.field?.designer?.editor;
 
 		const setters = editor?.get('setters');
+
+		const { field } = props;
+		const { extraProps } = field!;
+		const { display } = extraProps;
+
+		const skeleton = editor?.get('skeleton') as Skeleton;
+		const { stages } = skeleton || {};
+
+		const stageName = ref();
+
+		if (display === 'entry') {
+			// watchEffect(() => {
+			const name = `${field!.getNode().id}_${field!.name?.toString()}`;
+			stages.container.remove(name);
+			stages.add({
+				type: 'Widget',
+				name,
+				content: (
+					<>
+						{field!.items.map((item, index) =>
+							createSettingFieldView(item, field!, index)
+						)}
+					</>
+				),
+				props: {
+					title: field!.title,
+				},
+			});
+			stageName.value = name;
+
+			// });
+		}
 
 		const setterInfo = computed(() => {
 			const { setter, extraProps } = props.field!;
@@ -242,6 +275,7 @@ export const SettingFieldView = defineComponent({
 						props.field?.setExpanded(expandState);
 					},
 					onClear: () => clearValue(),
+					stageName: stageName.value,
 					...extraProps,
 				} as any,
 				setters.createSetterContent(setterType, {
@@ -289,6 +323,39 @@ export const SettingGroupView = defineComponent({
 		field: Object as PropType<ISettingField>,
 	},
 	setup(props) {
+		const editor = props.field?.designer?.editor;
+
+		const { field } = props;
+		const { extraProps } = field!;
+		const { display } = extraProps;
+
+		const skeleton = editor?.get('skeleton') as Skeleton;
+		const { stages } = skeleton || {};
+
+		const stageName = ref();
+
+		if (display === 'entry') {
+			// watchEffect(() => {
+			const name = `${field!.getNode().id}_${field!.name?.toString()}`;
+			stages.container.remove(name);
+			stages.add({
+				type: 'Widget',
+				name,
+				content: (
+					<>
+						{field!.items.map((item, index) =>
+							createSettingFieldView(item, field!, index)
+						)}
+					</>
+				),
+				props: {
+					title: field!.title,
+				},
+			});
+			stageName.value = name;
+
+			// });
+		}
 		return () => {
 			const { field } = props;
 			const { extraProps } = field!;
@@ -311,6 +378,7 @@ export const SettingGroupView = defineComponent({
 					title: field?.title,
 					collapsed: !field?.expanded,
 					onExpandChange: (expandState: any) => field?.setExpanded(expandState),
+					stageName: stageName.value,
 				} as any,
 				field?.items.map((item, index) =>
 					createSettingFieldView(item, field, index)

@@ -69,7 +69,7 @@ export class Detecting implements IDetecting {
 	 * @param node
 	 */
 	release(node: INode | null) {
-		if (this._current.value === node) {
+		if (toRaw(this._current.value) === toRaw(node)) {
 			this._current.value = null;
 			this.emitter.emit(DETECTING_CHANGE_EVENT, this.current);
 		}

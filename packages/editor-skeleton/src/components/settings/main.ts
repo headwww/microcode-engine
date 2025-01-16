@@ -33,6 +33,14 @@ export class SettingsMain {
 		return this.computedSettings.value;
 	}
 
+	private readonly computedComponentMeta = computed(
+		() => this._settings?.value?.componentMeta
+	);
+
+	get componentMeta() {
+		return this.computedComponentMeta.value;
+	}
+
 	private designer?: Designer;
 
 	constructor(readonly editor: Editor) {

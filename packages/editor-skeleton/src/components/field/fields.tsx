@@ -20,6 +20,7 @@ import { PopupPipeKey } from '../popup';
 export const Field = defineComponent({
 	name: 'Field',
 	props: fieldProps,
+	inheritAttrs: false,
 	setup(props, { slots }) {
 		const display = ref(props.defaultDisplay || 'inline');
 
@@ -193,6 +194,7 @@ export const Field = defineComponent({
 
 export const PopupField = defineComponent({
 	name: 'PopupField',
+	inheritAttrs: false,
 	props: { ...fieldProps, width: { type: Number, default: 320 } },
 	setup(props, { slots }) {
 		const context = inject(PopupPipeKey, null);
@@ -272,6 +274,7 @@ export const PlainField = defineComponent({
 
 export const InlineTip = defineComponent({
 	name: 'InlineTip',
+	inheritAttrs: false,
 	props: {
 		position: {
 			type: String,

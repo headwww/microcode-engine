@@ -103,7 +103,6 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 										display: 'plain',
 									},
 								},
-
 								{
 									name: 'group-01',
 									type: 'group',
@@ -123,7 +122,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 								},
 								{
 									name: 'entry-01',
-									title: '入口模式',
+									title: '入口模式=group',
 									type: 'group',
 									extraProps: {
 										display: 'entry',
@@ -134,9 +133,23 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 											title: '主题',
 											setter: 'StringSetter',
 										},
+										{
+											name: 'entry-02',
+											title: '入口模式=group',
+											type: 'group',
+											extraProps: {
+												display: 'entry',
+											},
+											items: [
+												{
+													name: 'theme2',
+													title: '主题',
+													setter: 'StringSetter',
+												},
+											],
+										},
 									],
 								},
-
 								{
 									type: 'group',
 									display: 'accordion',
@@ -157,7 +170,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 													title: '非空校验01010',
 													items: [
 														{
-															name: 'field-01',
+															name: 'field-022',
 															setter: 'StringSetter',
 														},
 													],
@@ -189,6 +202,22 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 									type: 'success',
 								},
 							},
+						},
+					],
+				},
+
+				{
+					componentName: 'Page',
+					title: 'Page',
+					configure: [
+						{
+							title: {
+								type: 'i18n',
+								'zh-CN': '属性',
+								'en-US': 'Props',
+							},
+							name: '#props',
+							items: [],
 						},
 					],
 				},
