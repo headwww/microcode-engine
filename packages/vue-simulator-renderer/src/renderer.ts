@@ -88,6 +88,21 @@ export class DocumentInstance {
 	) {
 		const docId = this.document.id;
 
+		if (instanceOrEl == null) {
+			let instances = this.instancesMap.get(id);
+			if (instances) {
+				instances = instances.filter(checkInstanceMounted);
+				if (instances.length > 0) {
+					this.instancesMap.set(id, instances);
+					this.setHostInstance(docId, id, instances);
+				} else {
+					this.instancesMap.delete(id);
+					this.setHostInstance(docId, id, null);
+				}
+			}
+			return;
+		}
+
 		let el: CompRootHTMLElement;
 		let instance: ComponentPublicInstance;
 		// 如果 instanceOrEl 是 Vue 组件实例
@@ -98,9 +113,10 @@ export class DocumentInstance {
 		// 如果 instanceOrEl 是 VNode 对应的 DOM 元素
 		else if (isVNodeHTMLElement(instanceOrEl)) {
 			// 获取 VNode 对应的 Vue 组件实例
+			// @ts-ignore
 			instance = instanceOrEl.__vueParentComponent.proxy!;
 			// 直接使用 DOM 元素作为根元素
-			// @ts-expect-error
+			// @ts-ignore
 			el = instanceOrEl;
 		}
 		// 其他情况不处理

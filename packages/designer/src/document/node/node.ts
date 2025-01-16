@@ -218,7 +218,7 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 
 	get parent() {
 		const self = toRaw(this);
-		return self._parent.value;
+		return toRaw(self._parent.value);
 	}
 
 	/**
@@ -518,6 +518,8 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 	}
 
 	didDropOut(dragment: INode) {
+		console.log(this);
+
 		const { callbacks } = this.componentMeta.advanced;
 		if (callbacks?.onNodeRemove) {
 			const cbThis = this.internalToShellNode();
@@ -658,7 +660,7 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 	);
 
 	get componentMeta() {
-		return this.computedComponentMeta.value;
+		return toRaw(this.computedComponentMeta.value);
 	}
 
 	private readonly computedPropsData = computed(() => {

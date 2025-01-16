@@ -104,7 +104,7 @@ async function registryInnerPlugin() {
 }
 
 // TODO 设置一个渲染模拟器插件
-editor.set('simulatorUrl', 'http://127.0.0.1:8081/dist/best/js/index.js');
+editor.set('simulatorUrl', 'http://127.0.0.1:8081/dist/dsaaaaa/js/index.js');
 
 export async function init(pluginPreference?: PluginPreference) {
 	await plugins.init(pluginPreference);

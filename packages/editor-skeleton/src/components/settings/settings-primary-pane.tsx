@@ -148,7 +148,7 @@ export const SettingsPrimaryPane = defineComponent({
 
 			return (
 				<div className="mtc-settings-navigator">
-					{createIcon(main.componentMeta?.icon, {
+					{createIcon(toRaw(main.componentMeta)?.icon, {
 						class: 'mtc-settings-navigator-icon',
 					})}
 					<Breadcrumb

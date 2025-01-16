@@ -168,7 +168,7 @@ export class DocumentModel implements IDocumentModel {
 	/**
 	 * 选区控制
 	 */
-	readonly selection: ISelection = new Selection(this);
+	readonly selection: ISelection = shallowReactive(new Selection(this));
 
 	// TODO 操作记录控制
 
@@ -690,6 +690,7 @@ export class DocumentModel implements IDocumentModel {
 		this.setSuspense(false);
 	}
 
+	// @ts-ignore
 	open(): DocumentModel {
 		const originState = this._opened.value;
 		this._opened.value = true;

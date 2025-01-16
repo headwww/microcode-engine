@@ -4,7 +4,17 @@ import {
 	computed,
 	toRaw,
 	onBeforeUnmount,
+	isVNode,
+	cloneVNode,
+	h,
+	VNode,
 } from 'vue';
+import { engineConfig, Tip } from '@arvin-shu/microcode-editor-core';
+import {
+	createIcon,
+	isActionContentObject,
+	isVueComponent,
+} from '@arvin-shu/microcode-utils';
 import { BuiltinSimulatorHost } from '../host';
 import { INode } from '../../document';
 import { OffsetObserver } from '../../designer/offset-observer';
@@ -38,16 +48,92 @@ export const BorderSelectingInstance = defineComponent({
 			transform: `translate3d(${observed?.offsetLeft}px, ${observed?.offsetTop}px, 0)`,
 		}));
 
-		// TODO 工具栏
 		return () => {
 			const { observed } = props;
 			if (!observed?.hasOffset.value) {
 				return <></>;
 			}
-			return <div class={className.value} style={style.value}></div>;
+
+			const hideComponentAction = engineConfig.get('hideComponentAction');
+
+			return (
+				<div class={className.value} style={style.value}>
+					{!dragging && !hideComponentAction ? (
+						<Toolbar observed={observed} />
+					) : null}
+				</div>
+			);
 		};
 	},
 });
+
+export const Toolbar = defineComponent({
+	name: 'Toolbar',
+	inheritAttrs: false,
+	props: {
+		observed: {
+			type: Object as PropType<OffsetObserver>,
+		},
+	},
+	setup(props) {
+		return () => {
+			const { observed } = props;
+			const { node } = observed!;
+
+			const actions: VNode[] = [];
+
+			toRaw(node.componentMeta).availableActions.forEach((action) => {
+				const { content, name } = action;
+
+				actions.push(createAction(content, name, node));
+			});
+
+			return <div class="mtc-borders-actions">{...actions}</div>;
+		};
+	},
+});
+
+function createAction(content: any, key: string, node: INode) {
+	// 处理 VNode
+	if (isVNode(content)) {
+		return cloneVNode(content, { key, node });
+	}
+
+	// 处理 Vue 组件
+	if (isVueComponent(content)) {
+		return h(content, { key, node });
+	}
+
+	if (isActionContentObject(content)) {
+		const { action, title, icon } = content;
+
+		return (
+			<div
+				key={key}
+				class="mtc-borders-action"
+				onClick={() => {
+					action && action(node.internalToShellNode()!);
+					const editor = node.document?.designer.editor;
+					const npm = node?.componentMeta?.npm;
+					const selected =
+						[npm?.package, npm?.componentName]
+							.filter((item) => !!item)
+							.join('-') ||
+						node?.componentMeta?.componentName ||
+						'';
+					editor?.eventBus.emit('designer.border.action', {
+						name: key,
+						selected,
+					});
+				}}
+			>
+				{icon && createIcon(icon, { key, node: node.internalToShellNode() })}
+				<Tip children={title as any}></Tip>
+			</div>
+		);
+	}
+	return null;
+}
 
 export const BorderSelectingForNode = defineComponent({
 	name: 'BorderSelectingForNode',

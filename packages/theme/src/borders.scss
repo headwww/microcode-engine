@@ -36,8 +36,7 @@ $scope: mtc-borders;
         }
     }
 
-    &-action,
-    .ve-icon-button.ve-action-save {
+    &-action {
         box-sizing: border-box;
         cursor: pointer;
         height: 20px;

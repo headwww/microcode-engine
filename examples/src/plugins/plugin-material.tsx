@@ -226,13 +226,14 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 
 		project.importSchema({
 			version: '1.0.0',
-			id: 'nodepageshiashida',
+			id: 'node_pagetest0809a',
 			componentsMap: [{ componentName: 'Page', devMode: 'microCode' }],
 			componentsTree: [
 				{
 					componentName: 'Page',
 					id: 'node_dockcviv8fo1',
 					props: {
+						ref: 'outerView',
 						style: {
 							height: '100%',
 						},

@@ -1,4 +1,4 @@
-import { VNode } from 'vue';
+import { PropType, defineComponent } from 'vue';
 
 const SizePresets: any = {
 	xsmall: 8,
@@ -12,39 +12,46 @@ export interface IconProps {
 	className?: string;
 	fill?: string;
 	size?: 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | number;
-	children?: VNode;
 	style?: Record<string, unknown>;
 }
 
-export function SVGIcon({
-	fill,
-	size = 'medium',
-	viewBox,
-	style,
-	children,
-	...props
-}: IconProps & {
-	viewBox: string;
-}) {
-	// eslint-disable-next-line no-prototype-builtins
-	if (SizePresets.hasOwnProperty(size)) {
-		size = SizePresets[size];
-	}
+export const SVGIcon = defineComponent({
+	name: 'SVGIcon',
+	props: {
+		fill: String,
+		size: {
+			type: [String, Number] as PropType<IconProps['size']>,
+			default: 'medium',
+		},
+		viewBox: {
+			type: String,
+		},
+		className: String,
+		style: Object as PropType<Record<string, any>>,
+	},
+	setup(props, { slots }) {
+		const getSize = (size: IconProps['size']) =>
+			SizePresets[size as string] ?? size;
 
-	return (
-		<svg
-			fill="currentColor"
-			preserveAspectRatio="xMidYMid meet"
-			width={size}
-			height={size}
-			viewBox={viewBox}
-			{...props}
-			style={{
-				color: fill,
-				...style,
-			}}
-		>
-			{children}
-		</svg>
-	);
-}
+		return () => {
+			const finalSize = getSize(props.size);
+
+			return (
+				<svg
+					fill="currentColor"
+					preserveAspectRatio="xMidYMid meet"
+					width={finalSize}
+					height={finalSize}
+					viewBox={props.viewBox}
+					class={props.className}
+					style={{
+						color: props.fill,
+						...(props.style || {}),
+					}}
+				>
+					{slots.default?.()}
+				</svg>
+			);
+		};
+	},
+});

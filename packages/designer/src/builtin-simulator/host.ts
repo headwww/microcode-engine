@@ -6,6 +6,7 @@ import {
 	reactive,
 	Ref,
 	ref,
+	shallowReactive,
 	toRaw,
 	watch,
 	watchEffect,
@@ -117,7 +118,7 @@ export class BuiltinSimulatorHost
 
 	readonly designer: IDesigner;
 
-	readonly viewport = new Viewport();
+	readonly viewport = shallowReactive(new Viewport());
 
 	readonly scroller: IScroller;
 
@@ -677,8 +678,6 @@ export class BuiltinSimulatorHost
 	// TODO setupContextMenu
 
 	generateComponentMetadata(componentName: string) {
-		console.log(componentName);
-
 		if (isHTMLTag(componentName)) {
 			return {
 				componentName,

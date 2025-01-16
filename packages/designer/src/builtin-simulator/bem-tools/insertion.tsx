@@ -159,7 +159,7 @@ function processChildrenDetail(
 	if (detail.near) {
 		const { node, pos, rect, align } = detail.near;
 		ret.nearRect = rect || toRaw(sim).computeRect(toRaw(node) as any);
-		ret.nearNode = toRaw(node);
+		ret.nearNode = node;
 		if (pos === 'replace') {
 			ret.coverRect = ret.nearRect;
 			ret.insertType = 'cover';
