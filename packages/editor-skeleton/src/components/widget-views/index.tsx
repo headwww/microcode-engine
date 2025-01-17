@@ -140,7 +140,7 @@ export const TitledPanelView = defineComponent({
 				>
 					<PanelOperationRow panel={panel}></PanelOperationRow>
 					<PanelTitle panel={panel}></PanelTitle>
-					<div className="mtc-panel-body">{panel?.body}</div>
+					<div class="mtc-panel-body">{panel?.body}</div>
 				</div>
 			);
 		};

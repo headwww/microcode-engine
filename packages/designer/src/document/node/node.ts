@@ -527,8 +527,8 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 				cbThis
 			);
 		}
-		if (this._parent.value) {
-			this._parent.value.didDropOut(dragment);
+		if (this.parent) {
+			this.parent.didDropOut(dragment);
 		}
 	}
 

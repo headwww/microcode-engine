@@ -36,6 +36,16 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							isContainer: true,
 						},
 					},
+					snippets: [
+						{
+							title: '容器',
+							screenshot:
+								'https://img.alicdn.com/imgextra/i2/O1CN01B1NMW926IFrFxjqQT_!!6000000007638-55-tps-56-56.svg',
+							schema: {
+								componentName: 'FCell',
+							},
+						},
+					],
 				},
 				{
 					componentName: 'Button',
@@ -215,21 +225,21 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					],
 				},
 
-				{
-					componentName: 'Page',
-					title: 'Page',
-					configure: [
-						{
-							title: {
-								type: 'i18n',
-								'zh-CN': '属性',
-								'en-US': 'Props',
-							},
-							name: '#props',
-							items: [],
-						},
-					],
-				},
+				// {
+				// 	componentName: 'Page',
+				// 	title: 'Page',
+				// 	configure: [
+				// 		{
+				// 			title: {
+				// 				type: 'i18n',
+				// 				'zh-CN': '属性',
+				// 				'en-US': 'Props',
+				// 			},
+				// 			name: '#props',
+				// 			items: [],
+				// 		},
+				// 	],
+				// },
 			],
 		});
 

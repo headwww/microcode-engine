@@ -11,6 +11,7 @@ import 'ant-design-vue/dist/reset.css';
 import InitSkeleton from './plugins/plugin-init-skeleton';
 import InitMaterial from './plugins/plugin-material';
 import InitSetter from './plugins/plugin-init-setter';
+import ComponentPanelPlugin from './plugins/plugin-components-pane';
 
 window.Vue = Vue;
 const app = Vue.createApp(App);
@@ -20,6 +21,7 @@ preference.set('testPlungin-1', {
 	scenarioName: '01010101',
 });
 registryInnerPlugin();
+await plugins.register(ComponentPanelPlugin);
 await plugins.register(InitSkeleton);
 await plugins.register(InitMaterial);
 await plugins.register(InitSetter);
