@@ -2,6 +2,7 @@ import { defineComponent, PropType, renderSlot, Suspense } from 'vue';
 import { RouterView } from 'vue-router';
 import MicrocodeRenderer from '@arvin-shu/microcode-renderer-core';
 import { DocumentInstance, SimulatorRendererContainer } from './renderer';
+import { FCell } from './test/Fc';
 
 export const Layout = defineComponent({
 	render() {
@@ -74,23 +75,7 @@ export const Renderer = defineComponent({
 					);
 				},
 			}),
-			Button2: defineComponent({
-				setup() {
-					return () => (
-						<button
-							style={{
-								padding: '8px 16px',
-								fontSize: '14px',
-								border: 'none',
-								borderRadius: '4px',
-								cursor: 'pointer',
-							}}
-						>
-							按钮
-						</button>
-					);
-				},
-			}),
+			FCell,
 		};
 		return () => {
 			const { documentInstance } = props;

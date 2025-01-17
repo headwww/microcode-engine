@@ -2,7 +2,7 @@
  * @Author: shuwen 1243889238@qq.com
  * @Date: 2024-11-04 10:23:02
  * @LastEditors: shuwen 1243889238@qq.com
- * @LastEditTime: 2025-01-13 17:58:09
+ * @LastEditTime: 2025-01-16 23:53:40
  * @FilePath: /microcode-engine/examples/src/plugins/ComponentPane.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -29,11 +29,8 @@ export const ComponentPane = defineComponent({
 				return {
 					type: 'nodedata',
 					data: {
-						title: '按钮',
-						componentName: 'Button',
-						props: {
-							type: 'primary',
-						},
+						title: '容器',
+						componentName: 'FCell',
 					},
 				};
 			});
@@ -71,6 +68,8 @@ export const ComponentPane = defineComponent({
 					});
 				}
 			});
+			console.log(components);
+
 			componentSnippets.value = snippets;
 		}
 

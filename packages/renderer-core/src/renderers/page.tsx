@@ -5,7 +5,7 @@ const Page = defineComponent({
 	name: 'Page',
 	setup(props, { slots }) {
 		return () => (
-			<div class="mtc-page" style={{ height: '100%' }} {...props}>
+			<div class="mtc-page" {...props}>
 				{slots.default?.()}
 			</div>
 		);

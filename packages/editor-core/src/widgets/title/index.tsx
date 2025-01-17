@@ -83,7 +83,7 @@ export const Title = defineComponent({
 				)) as any;
 			}
 
-			return <span className="mtc-title-txt">{labelToRender}</span>;
+			return <span class="mtc-title-txt">{labelToRender}</span>;
 		};
 
 		return () => {

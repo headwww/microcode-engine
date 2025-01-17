@@ -29,6 +29,15 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 			],
 			components: [
 				{
+					componentName: 'FCell',
+					title: '容器',
+					configure: {
+						component: {
+							isContainer: true,
+						},
+					},
+				},
+				{
 					componentName: 'Button',
 					title: '按钮',
 					configure: [

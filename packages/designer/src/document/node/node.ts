@@ -518,8 +518,6 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 	}
 
 	didDropOut(dragment: INode) {
-		console.log(this);
-
 		const { callbacks } = this.componentMeta.advanced;
 		if (callbacks?.onNodeRemove) {
 			const cbThis = this.internalToShellNode();
@@ -535,19 +533,19 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 	}
 
 	internalSetParent(parent: INode | null, useMutator?: boolean): void {
-		if (this._parent.value === parent) {
+		if (this.parent === parent) {
 			return;
 		}
 
-		if (this._parent.value) {
+		if (this.parent) {
 			if (this.isSlot()) {
-				this._parent.value.unlinkSlot(this as any);
+				this.parent.unlinkSlot(this as any);
 			} else {
-				this._parent.value.children?.unlinkChild(this as any);
+				this.parent.children?.unlinkChild(this as any);
 			}
 		}
 		if (useMutator) {
-			this._parent.value?.didDropOut(this as any);
+			this.parent?.didDropOut(this as any);
 		}
 		if (parent) {
 			// 建立新的父子关系，尤其注意：对于 parent 为 null 的场景，不会赋值，因为 subtreeModified 等事件可能需要知道该 node 被删除前的父子关系
