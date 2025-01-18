@@ -2,7 +2,6 @@ import { defineComponent, PropType, renderSlot, Suspense } from 'vue';
 import { RouterView } from 'vue-router';
 import MicrocodeRenderer from '@arvin-shu/microcode-renderer-core';
 import { DocumentInstance, SimulatorRendererContainer } from './renderer';
-import { FCell } from './test/Fc';
 
 export const Layout = defineComponent({
 	render() {
@@ -34,6 +33,10 @@ export const SimulatorRendererView = defineComponent({
 
 export const Renderer = defineComponent({
 	props: {
+		simulator: {
+			type: Object as PropType<SimulatorRendererContainer>,
+			required: true,
+		},
 		documentInstance: {
 			type: Object as PropType<DocumentInstance>,
 			required: true,
@@ -42,43 +45,9 @@ export const Renderer = defineComponent({
 
 	setup(props) {
 		// TODO 模拟组件库
-		const components = {
-			Button: defineComponent({
-				props: {
-					type: {
-						type: String,
-						default: 'primary',
-					},
-				},
-				setup(props) {
-					const typeColorMap: any = {
-						primary: '#1890ff',
-						success: '#52c41a',
-						warning: '#faad14',
-						danger: '#ff4d4f',
-					};
-
-					return () => (
-						<button
-							style={{
-								padding: '8px 16px',
-								fontSize: '14px',
-								color: '#fff',
-								backgroundColor: typeColorMap[props.type],
-								border: 'none',
-								borderRadius: '4px',
-								cursor: 'pointer',
-							}}
-						>
-							按钮
-						</button>
-					);
-				},
-			}),
-			FCell,
-		};
 		return () => {
-			const { documentInstance } = props;
+			const { documentInstance, simulator } = props;
+			const { components } = simulator;
 			const { schema } = documentInstance;
 			return (
 				<MicrocodeRenderer

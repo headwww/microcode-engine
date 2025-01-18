@@ -1,4 +1,6 @@
 import { IPublicModelPluginContext } from '@arvin-shu/microcode-types';
+import { TestButton } from './materials/Button';
+import { FCell } from './materials/FCell';
 
 const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 	async init() {
@@ -7,12 +9,20 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 		await material.setAssets({
 			version: '1.0.0',
 			packages: [
-				{
-					package: 'moment',
-					version: '2.24.0',
-					urls: ['https://g.alicdn.com/mylib/moment/2.24.0/min/moment.min.js'],
-					library: 'moment',
-				},
+				// {
+				// 	package: 'dayjs',
+				// 	version: '1.11.10',
+				// 	library: 'dayjs',
+				// 	urls: ['https://unpkg.com/dayjs/dayjs.min.js'],
+				// },
+				// {
+				// 	package: 'ant-design-vue',
+				// 	version: '4.2.6',
+				// 	urls: [
+				// 		'https://cdn.jsdelivr.net/npm/ant-design-vue@4.2.6/dist/antd.min.js',
+				// 	],
+				// 	library: 'ant-design-vue',
+				// },
 				{
 					package: 'lodash',
 					library: '_',
@@ -26,6 +36,30 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					library: 'css',
 					urls: ['http://127.0.0.1:8080/dist/renderer.css'],
 				},
+				{
+					package: 'dayjs',
+					version: '1.11.10',
+					library: 'dayjs',
+					urls: [
+						'https://unpkg.com/dayjs/dayjs.min.js',
+						'https://unpkg.com/dayjs/plugin/customParseFormat.js',
+						'https://unpkg.com/dayjs/plugin/weekday.js',
+						'https://unpkg.com/dayjs/plugin/localeData.js',
+						'https://unpkg.com/dayjs/plugin/weekOfYear.js',
+						'https://unpkg.com/dayjs/plugin/weekYear.js',
+						'https://unpkg.com/dayjs/plugin/advancedFormat.js',
+						'https://unpkg.com/dayjs/plugin/quarterOfYear.js',
+					],
+				},
+				{
+					package: 'ant-design-vue',
+					version: '4.2.6',
+					urls: [
+						'https://cdn.jsdelivr.net/npm/ant-design-vue@4.2.6/dist/antd.min.js',
+						'https://cdn.jsdelivr.net/npm/ant-design-vue@4.2.6/dist/reset.css',
+					],
+					library: 'ant-design-vue',
+				},
 			],
 			components: [
 				{
@@ -34,6 +68,9 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					configure: {
 						component: {
 							isContainer: true,
+						},
+						advanced: {
+							view: FCell,
 						},
 					},
 					snippets: [
@@ -48,175 +85,181 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					],
 				},
 				{
-					componentName: 'Button',
+					componentName: 'TestButton',
 					title: '按钮',
-					configure: [
-						{
-							name: '#styles',
-							title: {
-								type: 'i18n',
-								'zh-CN': '样式',
-								'en-US': 'Styles',
-							},
-							items: [
-								{
-									name: 'type',
-									title: {
-										type: 'i18n',
-										'zh-CN': '按钮类型',
-										'en-US': 'Type',
-									},
-									setter: 'StringSetter',
-									extraProps: {
-										display: 'inline',
-									},
+					configure: {
+						props: [
+							{
+								name: '#styles',
+								title: {
+									type: 'i18n',
+									'zh-CN': '样式',
+									'en-US': 'Styles',
 								},
-								{
-									name: 'link',
-									title: {
-										label: {
+								items: [
+									{
+										name: 'type',
+										title: {
 											type: 'i18n',
-											'zh-CN': '和上面联动',
-											'en-US': 'Link to above',
+											'zh-CN': '按钮类型',
+											'en-US': 'Type',
 										},
-										tip: '测试condition',
-									},
-									setter: {
-										componentName: 'StringSetter',
-										props: {
-											defaultValue: '默认值',
+										setter: 'StringSetter',
+										extraProps: {
+											display: 'inline',
 										},
 									},
-									extraProps: {
-										condition: (field) =>
-											field.parent.getPropValue('type') === 'primary',
-									},
-								},
-								{
-									name: 'block-01',
-									title: 'block模式',
-									setter: 'BoolSetter',
-									extraProps: {
-										display: 'block',
-									},
-								},
-								{
-									name: 'accordion-01',
-									title: {
-										type: 'i18n',
-										'zh-CN': '默认折叠',
-										'en-US': 'Style',
-										description: '点击 ? tipo',
-									},
-									setter: 'BoolSetter',
-									extraProps: {
-										defaultCollapsed: true,
-										display: 'accordion',
-									},
-								},
-								{
-									name: 'plain',
-									title: '纯文本',
-									setter: 'StringSetter',
-									extraProps: {
-										display: 'plain',
-									},
-								},
-								{
-									name: 'group-01',
-									type: 'group',
-									extraProps: {
-										display: 'accordion',
-									},
-									items: [
-										{
-											name: 'type',
-											setter: 'StringSetter',
-										},
-										{
-											name: 'field-12',
-											setter: 'StringSetter',
-										},
-									],
-								},
-								{
-									name: 'entry-01',
-									title: '入口模式=group',
-									type: 'group',
-									extraProps: {
-										display: 'entry',
-									},
-									items: [
-										{
-											name: 'theme',
-											title: '主题',
-											setter: 'StringSetter',
-										},
-										{
-											name: 'entry-02',
-											title: '入口模式=group',
-											type: 'group',
-											extraProps: {
-												display: 'entry',
+									{
+										name: 'title',
+										title: {
+											label: {
+												type: 'i18n',
+												'zh-CN': '和上面联动',
+												'en-US': 'Link to above',
 											},
-											items: [
-												{
-													name: 'theme2',
-													title: '主题',
-													setter: 'StringSetter',
-												},
-											],
+											tip: '测试condition',
 										},
-									],
-								},
-								{
-									type: 'group',
-									display: 'accordion',
-									title: '校验2',
-									items: [
-										{
-											type: 'group',
-											display: 'popup',
-											title: '非空校验',
-											items: [
-												{
-													name: 'field-01',
-													setter: 'StringSetter',
-												},
-												{
-													type: 'group',
-													display: 'popup',
-													title: '非空校验01010',
-													items: [
-														{
-															name: 'field-022',
-															setter: 'StringSetter',
-														},
-													],
-												},
-											],
+										setter: {
+											componentName: 'StringSetter',
+											props: {
+												defaultValue: '默认值',
+											},
 										},
-									],
-								},
-							],
-						},
-						{
-							title: {
-								type: 'i18n',
-								'zh-CN': '属性',
-								'en-US': 'Props',
+										extraProps: {
+											condition: (field) =>
+												field.parent.getPropValue('type') === 'primary',
+										},
+									},
+									{
+										name: 'block-01',
+										title: 'block模式',
+										setter: 'BoolSetter',
+										extraProps: {
+											display: 'block',
+										},
+									},
+									{
+										name: 'accordion-01',
+										title: {
+											type: 'i18n',
+											'zh-CN': '默认折叠',
+											'en-US': 'Style',
+											description: '点击 ? tipo',
+										},
+										setter: 'BoolSetter',
+										extraProps: {
+											defaultCollapsed: true,
+											display: 'accordion',
+										},
+									},
+									{
+										name: 'plain',
+										title: '纯文本',
+										setter: 'StringSetter',
+										extraProps: {
+											display: 'plain',
+										},
+									},
+									{
+										name: 'group-01',
+										type: 'group',
+										extraProps: {
+											display: 'accordion',
+										},
+										items: [
+											{
+												name: 'type',
+												setter: 'StringSetter',
+											},
+											{
+												name: 'field-12',
+												setter: 'StringSetter',
+											},
+										],
+									},
+									{
+										name: 'entry-01',
+										title: '入口模式=group',
+										type: 'group',
+										extraProps: {
+											display: 'entry',
+										},
+										items: [
+											{
+												name: 'theme',
+												title: '主题',
+												setter: 'StringSetter',
+											},
+											{
+												name: 'entry-02',
+												title: '入口模式=group',
+												type: 'group',
+												extraProps: {
+													display: 'entry',
+												},
+												items: [
+													{
+														name: 'theme2',
+														title: '主题',
+														setter: 'StringSetter',
+													},
+												],
+											},
+										],
+									},
+									{
+										type: 'group',
+										display: 'accordion',
+										title: '校验2',
+										items: [
+											{
+												type: 'group',
+												display: 'popup',
+												title: '非空校验',
+												items: [
+													{
+														name: 'field-01',
+														setter: 'StringSetter',
+													},
+													{
+														type: 'group',
+														display: 'popup',
+														title: '非空校验01010',
+														items: [
+															{
+																name: 'field-022',
+																setter: 'StringSetter',
+															},
+														],
+													},
+												],
+											},
+										],
+									},
+								],
 							},
-							name: '#props',
-							items: [],
+							{
+								title: {
+									type: 'i18n',
+									'zh-CN': '属性',
+									'en-US': 'Props',
+								},
+								name: '#props',
+								items: [],
+							},
+						],
+						advanced: {
+							view: TestButton,
 						},
-					],
+					},
+
 					snippets: [
 						{
 							title: '按钮',
 							screenshot:
 								'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
 							schema: {
-								componentName: 'Button',
+								componentName: 'TestButton',
 								props: {
 									type: 'success',
 								},
@@ -224,22 +267,6 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 						},
 					],
 				},
-
-				// {
-				// 	componentName: 'Page',
-				// 	title: 'Page',
-				// 	configure: [
-				// 		{
-				// 			title: {
-				// 				type: 'i18n',
-				// 				'zh-CN': '属性',
-				// 				'en-US': 'Props',
-				// 			},
-				// 			name: '#props',
-				// 			items: [],
-				// 		},
-				// 	],
-				// },
 			],
 		});
 
@@ -260,7 +287,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					fileName: '/',
 					children: [
 						{
-							componentName: 'Button',
+							componentName: 'TestButton',
 							id: 'node_sxsm4wdio232',
 							props: {
 								type: 'primary',

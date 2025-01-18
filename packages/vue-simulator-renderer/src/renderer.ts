@@ -255,6 +255,13 @@ export class SimulatorRendererContainer {
 				this.componentsMap.value = host.designer.componentsMap;
 			}
 
+			// TODO
+			const comps: any = this.componentsMap.value;
+
+			this._components.value = {
+				...comps,
+			};
+
 			this.locale.value = host.locale;
 
 			this.device.value = host.device;
@@ -285,6 +292,7 @@ export class SimulatorRendererContainer {
 							component: Renderer,
 							props: ((doc) => () => ({
 								documentInstance: doc,
+								simulator: this,
 							}))(inst),
 						});
 						return inst;
@@ -369,6 +377,8 @@ export class SimulatorRendererContainer {
 		})
 			.use(this.router)
 			.mount(container);
+		// TODO 删除日志
+		console.log('模拟器window：', window);
 		host.project.setRendererReady(this);
 	}
 

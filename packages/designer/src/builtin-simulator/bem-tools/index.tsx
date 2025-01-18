@@ -1,4 +1,5 @@
 import { defineComponent, PropType } from 'vue';
+import { engineConfig } from '@arvin-shu/microcode-editor-core';
 import { BuiltinSimulatorHost } from '../host';
 import { BorderDetecting } from './border-detecting';
 import { InsertionView } from './insertion';
@@ -28,9 +29,11 @@ export const BemTools = defineComponent({
 						transform: `translate(${-scrollX * scale}px,${-scrollY * scale}px)`,
 					}}
 				>
-					<BorderDetecting key="hovering" host={host} />
-					<InsertionView key="insertion" host={host} />
+					{!engineConfig.get('disableDetecting') && (
+						<BorderDetecting key="hovering" host={host} />
+					)}
 					<BorderSelecting key="selecting" host={host} />
+					<InsertionView key="insertion" host={host} />
 				</div>
 			);
 		};
