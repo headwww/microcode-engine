@@ -24,106 +24,90 @@ export function createSimulator(
 	iframe: HTMLIFrameElement,
 	vendors: AssetList = []
 ) {
-	// 等待 iframe 加载完成
-	return new Promise((resolve) => {
-		const init = () => {
-			const win: any = iframe.contentWindow;
-			const doc = iframe.contentDocument!;
+	const win: any = iframe.contentWindow;
+	const doc = iframe.contentDocument!;
+	// 获取内部插件
+	const innerPlugins = host.designer.editor.get('innerPlugins');
+	// 注入全局变量
+	win.ArvinMicrocodeEngine = innerPlugins._getMicrocodePluginContext({});
+	win.ArvinMicrocodeSimulatorHost = host;
+	win._ = window._;
+	// 初始化样式和脚本存储对象
+	const styles: any = {};
+	const scripts: any = {};
+	AssetLevels.forEach((lv) => {
+		styles[lv] = [];
+		scripts[lv] = [];
+	});
 
-			if (!win || !doc) {
-				setTimeout(init, 100);
-				return;
+	/**
+	 * 解析资产列表
+	 * @param assets 资产列表
+	 * @param level 资产级别
+	 */
+	function parseAssetList(assets: AssetList, level?: AssetLevel) {
+		for (let asset of assets) {
+			if (!asset) {
+				continue;
 			}
-
-			// 获取内部插件
-			const innerPlugins = host.designer.editor.get('innerPlugins');
-			// 注入全局变量
-			win.ArvinMicrocodeEngine = innerPlugins._getMicrocodePluginContext({});
-			win.ArvinMicrocodeSimulatorHost = host;
-			win._ = window._;
-
-			// 初始化样式和脚本存储对象
-			const styles: any = {};
-			const scripts: any = {};
-			AssetLevels.forEach((lv) => {
-				styles[lv] = [];
-				scripts[lv] = [];
-			});
-
-			/**
-			 * 解析资产列表
-			 * @param assets 资产列表
-			 * @param level 资产级别
-			 */
-			function parseAssetList(assets: AssetList, level?: AssetLevel) {
-				for (let asset of assets) {
-					if (!asset) {
-						continue;
-					}
-					// 处理资产包
-					if (isAssetBundle(asset)) {
-						if (asset.assets) {
-							parseAssetList(
-								Array.isArray(asset.assets) ? asset.assets : [asset.assets],
-								asset.level || level
-							);
-						}
-						continue;
-					}
-					// 处理数组类型资产
-					if (Array.isArray(asset)) {
-						parseAssetList(asset, level);
-						continue;
-					}
-					// 处理URL类型资产
-					if (!isAssetItem(asset)) {
-						asset = assetItem(
-							isCSSUrl(asset) ? AssetType.CSSUrl : AssetType.JSUrl,
-							asset,
-							level
-						)!;
-					}
-					// 生成资产HTML标签
-					const id = asset.id ? ` data-id="${asset.id}"` : '';
-					const lv = asset.level || level || AssetLevel.Environment;
-					const scriptType = asset.scriptType
-						? ` type="${asset.scriptType}"`
-						: '';
-					if (asset.type === AssetType.JSUrl) {
-						scripts[lv].push(
-							`<script src="${asset.content}"${id}${scriptType}></script>`
-						);
-					} else if (asset.type === AssetType.JSText) {
-						scripts[lv].push(
-							`<script${id}${scriptType}>${asset.content}</script>`
-						);
-					} else if (asset.type === AssetType.CSSUrl) {
-						styles[lv].push(
-							`<link rel="stylesheet" href="${asset.content}"${id} />`
-						);
-					} else if (asset.type === AssetType.CSSText) {
-						styles[lv].push(
-							`<style type="text/css"${id}>${asset.content}</style>`
-						);
-					}
+			// 处理资产包
+			if (isAssetBundle(asset)) {
+				if (asset.assets) {
+					parseAssetList(
+						Array.isArray(asset.assets) ? asset.assets : [asset.assets],
+						asset.level || level
+					);
 				}
+				continue;
 			}
+			// 处理数组类型资产
+			if (Array.isArray(asset)) {
+				parseAssetList(asset, level);
+				continue;
+			}
+			// 处理URL类型资产
+			if (!isAssetItem(asset)) {
+				asset = assetItem(
+					isCSSUrl(asset) ? AssetType.CSSUrl : AssetType.JSUrl,
+					asset,
+					level
+				)!;
+			}
+			// 生成资产HTML标签
+			const id = asset.id ? ` data-id="${asset.id}"` : '';
+			const lv = asset.level || level || AssetLevel.Environment;
+			const scriptType = asset.scriptType ? ` type="${asset.scriptType}"` : '';
+			if (asset.type === AssetType.JSUrl) {
+				scripts[lv].push(
+					`<script src="${asset.content}"${id}${scriptType}></script>`
+				);
+			} else if (asset.type === AssetType.JSText) {
+				scripts[lv].push(`<script${id}${scriptType}>${asset.content}</script>`);
+			} else if (asset.type === AssetType.CSSUrl) {
+				styles[lv].push(
+					`<link rel="stylesheet" href="${asset.content}"${id} />`
+				);
+			} else if (asset.type === AssetType.CSSText) {
+				styles[lv].push(`<style type="text/css"${id}>${asset.content}</style>`);
+			}
+		}
+	}
 
-			// 解析资源列表
-			parseAssetList(vendors);
+	// 解析资源列表
+	parseAssetList(vendors);
 
-			// 生成HTML片段
-			const styleFrags = Object.keys(styles)
-				.map((key) => `${styles[key].join('\n')}<meta level="${key}" />`)
-				.join('');
-			const scriptFrags = Object.keys(scripts)
-				.map((key) => scripts[key].join('\n'))
-				.join('');
+	// 生成HTML片段
+	const styleFrags = Object.keys(styles)
+		.map((key) => `${styles[key].join('\n')}<meta level="${key}" />`)
+		.join('');
+	const scriptFrags = Object.keys(scripts)
+		.map((key) => scripts[key].join('\n'))
+		.join('');
 
-			// 写入HTML文档
-			doc.open();
-			doc.write(
-				`
+	// 写入HTML文档
+	doc.open();
+	doc.write(
+		`
         <!DOCTYPE html>
         <html class="engine-design-mode">
             <head>
@@ -135,25 +119,19 @@ export function createSimulator(
 			</body>
 		</html>
         `
-			);
-			doc.close();
+	);
+	doc.close();
 
-			// 等待渲染器加载完成
-			const renderer = win.SimulatorRenderer;
-			if (renderer) {
-				resolve(renderer);
-			}
-			const loaded = () => {
-				resolve(win.SimulatorRenderer || host.renderer);
-				win.removeEventListener('load', loaded);
-			};
-			win.addEventListener('load', loaded);
-		};
-
-		if (iframe.contentWindow) {
-			init();
-		} else {
-			iframe.onload = init;
+	return new Promise((resolve) => {
+		const renderer = win.SimulatorRenderer;
+		if (renderer) {
+			// eslint-disable-next-line no-promise-executor-return
+			return resolve(renderer);
 		}
+		const loaded = () => {
+			resolve(win.SimulatorRenderer || host.renderer);
+			win.removeEventListener('load', loaded);
+		};
+		win.addEventListener('load', loaded);
 	});
 }

@@ -368,8 +368,8 @@ export class BuiltinSimulatorHost
 
 		const renderer: any = await createSimulator(this, iframe, vendors);
 
-		// TODO bug资源消费问题没用解决
-		// await this.componentsConsumer.waitFirstConsume();
+		await this.componentsConsumer.waitFirstConsume();
+		// TODO 资源消费问题没用解决
 		// await this.injectionConsumer.waitFirstConsume();
 		// TODO 加载异步 Library
 

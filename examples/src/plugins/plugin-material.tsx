@@ -1,6 +1,8 @@
 import { IPublicModelPluginContext } from '@arvin-shu/microcode-types';
 import { TestButton } from './materials/Button';
 import { FCell } from './materials/FCell';
+import { TestTable } from './materials/table';
+import { AntdButton } from './materials/antd';
 
 const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 	async init() {
@@ -23,6 +25,43 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 				// 	],
 				// 	library: 'ant-design-vue',
 				// },
+
+				{
+					package: 'xe-utils',
+					library: 'XEUtils',
+					version: '3.5.32',
+					urls: [
+						'https://cdn.jsdelivr.net/npm/xe-utils@3.5.32/dist/xe-utils.umd.min.js',
+					],
+				},
+				{
+					package: 'VxeUi',
+					library: 'VxeUi',
+					version: '4.3.16',
+					urls: [
+						'https://cdn.jsdelivr.net/npm/vxe-pc-ui@4.3.16/lib/index.umd.min.js',
+						'https://cdn.jsdelivr.net/npm/vxe-pc-ui@4.3.16/lib/style.min.css',
+					],
+				},
+				{
+					package: 'vxe-table',
+					library: 'VXETable',
+					version: '4.9.15',
+					urls: [
+						'https://cdn.jsdelivr.net/npm/vxe-table@4.9.15/lib/index.umd.min.js',
+						'https://cdn.jsdelivr.net/npm/vxe-table@4.9.15/lib/style.min.css',
+					],
+				},
+
+				{
+					package: 'element-plus',
+					library: 'element-plus',
+					version: '2.4.1',
+					urls: [
+						'https://unpkg.com/element-plus/dist/index.css',
+						'https://unpkg.com/element-plus',
+					],
+				},
 				{
 					package: 'lodash',
 					library: '_',
@@ -34,7 +73,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					package: 'css',
 					version: '1.0.0',
 					library: 'css',
-					urls: ['http://127.0.0.1:8080/dist/renderer.css'],
+					urls: ['http://192.168.1.59:8080/dist/renderer.css'],
 				},
 				{
 					package: 'dayjs',
@@ -52,13 +91,13 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					],
 				},
 				{
-					package: 'ant-design-vue',
+					package: 'antd',
 					version: '4.2.6',
 					urls: [
-						'https://cdn.jsdelivr.net/npm/ant-design-vue@4.2.6/dist/antd.min.js',
-						'https://cdn.jsdelivr.net/npm/ant-design-vue@4.2.6/dist/reset.css',
+						'https://unpkg.com/browse/ant-design-vue@4.2.6/dist/antd.min.js',
+						'https://unpkg.com/browse/ant-design-vue@4.2.6/dist/reset.css',
 					],
-					library: 'ant-design-vue',
+					library: 'antd',
 				},
 			],
 			components: [
@@ -80,6 +119,54 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 								'https://img.alicdn.com/imgextra/i2/O1CN01B1NMW926IFrFxjqQT_!!6000000007638-55-tps-56-56.svg',
 							schema: {
 								componentName: 'FCell',
+							},
+						},
+					],
+				},
+				{
+					componentName: 'TestTable',
+					title: '表格',
+					configure: {
+						component: {
+							// isContainer: true,
+						},
+						advanced: {
+							view: TestTable,
+						},
+						props: [
+							{
+								name: '#styles',
+								title: {
+									type: 'i18n',
+									'zh-CN': '样式',
+									'en-US': 'Styles',
+								},
+								items: [
+									{
+										name: 'title',
+										title: {
+											label: {
+												type: 'i18n',
+												'zh-CN': '和上面联动',
+												'en-US': 'Link to above',
+											},
+											tip: '测试condition',
+										},
+										setter: {
+											componentName: 'StringSetter',
+										},
+									},
+								],
+							},
+						],
+					},
+					snippets: [
+						{
+							title: '表格',
+							screenshot:
+								'https://gw.alipayobjects.com/zos/alicdn/f-SbcX2Lx/Table.svg',
+							schema: {
+								componentName: 'TestTable',
 							},
 						},
 					],
@@ -260,6 +347,28 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 								'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
 							schema: {
 								componentName: 'TestButton',
+								props: {
+									type: 'success',
+								},
+							},
+						},
+					],
+				},
+				{
+					componentName: 'AntdButton',
+					title: 'antd按钮',
+					configure: {
+						advanced: {
+							view: AntdButton,
+						},
+					},
+					snippets: [
+						{
+							title: '按钮123',
+							screenshot:
+								'https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*BrFMQ5s7AAQAAAAAAAAAAAAADrJ8AQ/original',
+							schema: {
+								componentName: 'AntdButton',
 								props: {
 									type: 'success',
 								},

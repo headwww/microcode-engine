@@ -1,4 +1,4 @@
-import { Button as AButton } from 'ant-design-vue';
+import { ElButton, ElInput } from 'element-plus';
 import { defineComponent } from 'vue';
 
 export const TestButton = defineComponent({
@@ -6,10 +6,15 @@ export const TestButton = defineComponent({
 	props: {
 		title: {
 			type: String,
-			default: '按钮',
+			default: '组合控件',
 		},
 	},
 	setup(props) {
-		return () => <AButton type="primary">{props.title}</AButton>;
+		return () => (
+			<div>
+				<ElInput></ElInput>
+				<ElButton type="primary">{props.title}</ElButton>
+			</div>
+		);
 	},
 });

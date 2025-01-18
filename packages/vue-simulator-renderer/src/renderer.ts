@@ -1,4 +1,5 @@
 import {
+	App,
 	ComponentPublicInstance,
 	createApp,
 	markRaw,
@@ -232,6 +233,10 @@ export class SimulatorRendererContainer {
 
 	private thisRequiredInJSE: Ref<boolean> = shallowRef(false);
 
+	private disposeFunctions: Array<() => void> = [];
+
+	private app: App<any>;
+
 	constructor() {
 		this.router = markRaw(
 			createRouter({
@@ -240,84 +245,102 @@ export class SimulatorRendererContainer {
 			})
 		);
 
-		host.connect(this, () => {
-			const config = host.project.get('config') || {};
-			this.layout = config.layout ?? {};
-
-			this.disableCompMock.value = Array.isArray(config.disableCompMock)
-				? config.disableCompMock
-				: Boolean(config.disableCompMock);
-			if (
-				this.libraryMap.value !== host.libraryMap ||
-				this.componentsMap.value !== host.designer.componentsMap
-			) {
-				this.libraryMap.value = host.libraryMap || {};
-				this.componentsMap.value = host.designer.componentsMap;
-			}
-
-			// TODO
-			const comps: any = this.componentsMap.value;
-
-			this._components.value = {
-				...comps,
-			};
-
-			this.locale.value = host.locale;
-
-			this.device.value = host.device;
-
-			this.designMode.value = host.designMode;
-
-			this.requestHandlersMap.value = host.requestHandlersMap ?? {};
-
-			this.thisRequiredInJSE.value = host.thisRequiredInJSE ?? false;
-		});
-
-		host.watch(
-			() => host.project.documents,
-			async () => {
-				this._documentInstances.value = host.project.documents.map(
-					(doc: any) => {
-						let inst = this.documentInstanceMap.get(doc.id);
-						if (!inst) {
-							inst = new DocumentInstance(this, doc);
-							this.documentInstanceMap.set(doc.id, inst);
-						} else if (this.router.hasRoute(inst.id)) {
-							this.router.removeRoute(inst.id);
-						}
-						this.router.addRoute({
-							name: inst.id,
-							path: inst.path,
-							// TODO 需要处理meta
-							component: Renderer,
-							props: ((doc) => () => ({
-								documentInstance: doc,
-								simulator: this,
-							}))(inst),
-						});
-						return inst;
-					}
-				);
-
-				this.router.getRoutes().forEach((route) => {
-					const id = route.name as string;
-					const hasDoc = this.documentInstances.some((doc) => doc.id === id);
-					if (!hasDoc) {
-						this.router.removeRoute(id);
-						this.documentInstanceMap.delete(id);
-					}
-				});
-				const inst = this.getCurrentDocument();
-				if (inst) {
-					await nextTick(() => {
-						this.router.replace({ name: inst.id, force: true });
-					});
-				}
-			},
-			{
-				immediate: true,
-			}
+		this.app = markRaw(
+			createApp(SimulatorRendererView, {
+				rendererContainer: this,
+			})
 		);
+
+		this.disposeFunctions.push(
+			host.connect(this, () => {
+				const config = host.project.get('config') || {};
+				this.layout = config.layout ?? {};
+
+				this.disableCompMock.value = Array.isArray(config.disableCompMock)
+					? config.disableCompMock
+					: Boolean(config.disableCompMock);
+				if (
+					this.libraryMap.value !== host.libraryMap ||
+					this.componentsMap.value !== host.designer.componentsMap
+				) {
+					this.libraryMap.value = host.libraryMap || {};
+					this.componentsMap.value = host.designer.componentsMap;
+				}
+
+				// TODO
+				const comps: any = this.componentsMap.value;
+
+				this._components.value = {
+					...comps,
+				};
+
+				this.locale.value = host.locale;
+
+				this.device.value = host.device;
+
+				this.designMode.value = host.designMode;
+
+				this.requestHandlersMap.value = host.requestHandlersMap ?? {};
+
+				this.thisRequiredInJSE.value = host.thisRequiredInJSE ?? false;
+			})
+		);
+
+		this.disposeFunctions.push(
+			host.watch(
+				() => host.project.documents,
+				async () => {
+					this._documentInstances.value = host.project.documents.map(
+						(doc: any) => {
+							let inst = this.documentInstanceMap.get(doc.id);
+							if (!inst) {
+								inst = new DocumentInstance(this, doc);
+								this.documentInstanceMap.set(doc.id, inst);
+							} else if (this.router.hasRoute(inst.id)) {
+								this.router.removeRoute(inst.id);
+							}
+							this.router.addRoute({
+								name: inst.id,
+								path: inst.path,
+								// TODO 需要处理meta
+								component: Renderer,
+								props: ((doc) => () => ({
+									documentInstance: doc,
+									simulator: this,
+								}))(inst),
+							});
+							return inst;
+						}
+					);
+
+					this.router.getRoutes().forEach((route) => {
+						const id = route.name as string;
+						const hasDoc = this.documentInstances.some((doc) => doc.id === id);
+						if (!hasDoc) {
+							this.router.removeRoute(id);
+							this.documentInstanceMap.delete(id);
+						}
+					});
+					const inst = this.getCurrentDocument();
+					if (inst) {
+						await nextTick(() => {
+							this.router.replace({ name: inst.id, force: true });
+						});
+					}
+				},
+				{
+					immediate: true,
+				}
+			)
+		);
+
+		host.componentsConsumer.consume(async (componentsAsset: any) => {
+			if (componentsAsset) {
+				// TODO
+				//   await this.load(componentsAsset);
+				//   this.buildComponents();
+			}
+		});
 	}
 
 	getCurrentDocument() {
@@ -372,13 +395,8 @@ export class SimulatorRendererContainer {
 		}
 		document.documentElement.classList.add('engine-page');
 		document.body.classList.add('engine-document');
-		createApp(SimulatorRendererView, {
-			rendererContainer: this,
-		})
-			.use(this.router)
-			.mount(container);
-		// TODO 删除日志
-		console.log('模拟器window：', window);
+		this.app.use(this.router).mount(container);
+
 		host.project.setRendererReady(this);
 	}
 
@@ -402,7 +420,10 @@ export class SimulatorRendererContainer {
 		return getClosestNodeInstance(el, specId);
 	}
 
-	dispose() {}
+	dispose() {
+		this.app.unmount();
+		this.disposeFunctions.forEach((fn) => fn());
+	}
 }
 
 export default new SimulatorRendererContainer();
