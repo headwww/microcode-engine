@@ -73,6 +73,7 @@ export function createSimulator(
 					level
 				)!;
 			}
+
 			// 生成资产HTML标签
 			const id = asset.id ? ` data-id="${asset.id}"` : '';
 			const lv = asset.level || level || AssetLevel.Environment;

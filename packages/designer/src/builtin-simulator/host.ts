@@ -100,7 +100,12 @@ export const builtinSimulatorProps = {
 };
 
 const defaultEnvironment = [
-	assetItem(AssetType.JSText, 'window.Vue=parent.Vue', undefined, 'vue'),
+	assetItem(
+		AssetType.JSText,
+		'window.Vue=parent.Vue;window.vue=parent.Vue',
+		undefined,
+		'vue'
+	),
 ];
 
 export type BuiltinSimulatorProps = ExtractPropTypes<
@@ -275,7 +280,10 @@ export class BuiltinSimulatorHost
 		watch(source, callback, options);
 	}
 
-	purge(): void {}
+	purge(): void {
+		this._mutationObserver?.disconnect();
+		this._mutationObserver = undefined;
+	}
 
 	mountViewport(viewport: HTMLElement | null) {
 		this.viewport.mount(viewport);
@@ -366,6 +374,9 @@ export class BuiltinSimulatorHost
 			assetBundle(this.get('simulatorUrl'), AssetLevel.Runtime),
 		];
 
+		// 解决cssInJs样式问题
+		this.setMutationObserver(iframe);
+
 		const renderer: any = await createSimulator(this, iframe, vendors);
 
 		await this.componentsConsumer.waitFirstConsume();
@@ -379,6 +390,46 @@ export class BuiltinSimulatorHost
 		this.setupEvents();
 
 		// TODO 绑定热键
+	}
+
+	private _mutationObserver?: MutationObserver;
+
+	/**
+	 * 处理cssInJs产生的样式将其插入到模拟器的iframe中
+	 */
+	private setMutationObserver(iframe: HTMLIFrameElement) {
+		if (this._mutationObserver) {
+			this._mutationObserver.disconnect();
+			this._mutationObserver = undefined;
+		}
+		this._mutationObserver = new MutationObserver(() => {
+			const doc = iframe.contentDocument!;
+			const jsInCssStyles = document.head.querySelectorAll(
+				'style[data-vc-order]'
+			);
+			const iframeJsInCssStyles = doc.head.querySelectorAll(
+				'style[data-vc-order]'
+			);
+			// 移除iframe中所有旧的js-in-css样式
+			iframeJsInCssStyles?.forEach((style) => style.remove());
+
+			const clonedStyles: HTMLStyleElement[] = [];
+			jsInCssStyles.forEach((style) => {
+				const clonedStyle = style.cloneNode(true) as HTMLStyleElement;
+				clonedStyles.push(clonedStyle);
+			});
+
+			clonedStyles.reverse().forEach((style) => {
+				doc?.head?.insertBefore(style, doc.head.firstChild);
+			});
+		});
+
+		// 开始监听document.head的变化
+		this._mutationObserver.observe(document.head, {
+			childList: true,
+			subtree: true,
+			characterData: true,
+		});
 	}
 
 	async setupComponents(library: LibraryItem[]): Promise<void> {

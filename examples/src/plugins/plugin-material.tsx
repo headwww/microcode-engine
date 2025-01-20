@@ -73,14 +73,14 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					package: 'css',
 					version: '1.0.0',
 					library: 'css',
-					urls: ['http://192.168.1.59:8080/dist/renderer.css'],
+					urls: ['http://127.0.0.1:8080/dist/renderer.css'],
 				},
 				{
 					package: 'dayjs',
 					version: '1.11.10',
 					library: 'dayjs',
 					urls: [
-						'https://unpkg.com/dayjs/dayjs.min.js',
+						'https://unpkg.com/dayjs@1.11.10/dayjs.min.js',
 						'https://unpkg.com/dayjs/plugin/customParseFormat.js',
 						'https://unpkg.com/dayjs/plugin/weekday.js',
 						'https://unpkg.com/dayjs/plugin/localeData.js',
@@ -94,10 +94,43 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					package: 'antd',
 					version: '4.2.6',
 					urls: [
-						'https://unpkg.com/browse/ant-design-vue@4.2.6/dist/antd.min.js',
-						'https://unpkg.com/browse/ant-design-vue@4.2.6/dist/reset.css',
+						'https://cdn.jsdelivr.net/npm/ant-design-vue@4.2.6/dist/antd.js',
+						'https://unpkg.com/ant-design-vue@4.2.6/dist/reset.css',
 					],
 					library: 'antd',
+				},
+				{
+					package: 'dayjs-init',
+					library: 'dayjs-init',
+					version: '1.0.0',
+					urls: [
+						{
+							type: 'jsText',
+							content: `
+						  if (window.dayjs_plugin_customParseFormat) {
+							dayjs.extend(window.dayjs_plugin_customParseFormat);
+						  }
+						  if (window.dayjs_plugin_weekday) {
+							dayjs.extend(window.dayjs_plugin_weekday);
+						  }
+						  if (window.dayjs_plugin_localeData) {
+							dayjs.extend(window.dayjs_plugin_localeData);
+						  }
+						  if (window.dayjs_plugin_weekOfYear) {
+							dayjs.extend(window.dayjs_plugin_weekOfYear);
+						  }
+						  if (window.dayjs_plugin_weekYear) {
+							dayjs.extend(window.dayjs_plugin_weekYear);
+						  }
+						  if (window.dayjs_plugin_advancedFormat) {
+							dayjs.extend(window.dayjs_plugin_advancedFormat);
+						  }
+						  if (window.dayjs_plugin_quarterOfYear) {
+							dayjs.extend(window.dayjs_plugin_quarterOfYear);
+						  }
+						`,
+						},
+					],
 				},
 			],
 			components: [

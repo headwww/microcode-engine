@@ -92,6 +92,7 @@ export const Content = defineComponent({
 
 		onBeforeUnmount(() => {
 			dispose?.();
+			props.host?.purge();
 		});
 		const iframeRef = ref<HTMLIFrameElement>();
 
