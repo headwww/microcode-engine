@@ -310,7 +310,7 @@ export class Editor extends EventEmitter implements IEditor {
 		try {
 			// 执行初始化函数
 			await init(this);
-			// TODO: 注册快捷键
+			// 注册快捷键
 			// 注册钩子函数
 			this.registerHooks(hooks);
 			// 触发初始化完成事件

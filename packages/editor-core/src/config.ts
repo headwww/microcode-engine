@@ -9,9 +9,166 @@ import Preference from './utils/preference';
 
 const STRICT_PLUGIN_MODE_DEFAULT = true;
 
-// TODO 在严格模式下使用，此时只能接受此VALID_ENGINE_options中的选项
-// TODO 类型和描述仅用于开发人员的帮助，不会影响运行时
-const VALID_ENGINE_OPTIONS = {};
+//  在严格模式下使用，此时只能接受此VALID_ENGINE_OPTIONS中的选项
+//  类型和描述仅用于开发人员的帮助，不会影响运行时
+const VALID_ENGINE_OPTIONS = {
+	enableCondition: {
+		type: 'boolean',
+		description:
+			'是否开启 condition 的能力，默认在设计器中不管 condition 是啥都正常展示',
+	},
+	designMode: {
+		type: 'string',
+		enum: ['design', 'live'],
+		default: 'design',
+		description: '设计模式，live 模式将会实时展示变量值',
+	},
+	device: {
+		type: 'string',
+		enum: ['default', 'mobile', 'any string value'],
+		default: 'default',
+		description: '设备类型',
+	},
+	deviceClassName: {
+		type: 'string',
+		default: undefined,
+		description: '指定初始化的 deviceClassName，挂载到画布的顶层节点上',
+	},
+	locale: {
+		type: 'string',
+		default: 'zh-CN',
+		description: '语言',
+	},
+	renderEnv: {
+		type: 'string',
+		enum: ['react', 'any string value'],
+		default: 'react',
+		description: '渲染器类型',
+	},
+	deviceMapper: {
+		type: 'object',
+		description: '设备类型映射器，处理设计器与渲染器中 device 的映射',
+	},
+	enableStrictPluginMode: {
+		type: 'boolean',
+		default: STRICT_PLUGIN_MODE_DEFAULT,
+		description:
+			'开启严格插件模式，默认值：STRICT_PLUGIN_MODE_DEFAULT , 严格模式下，插件将无法通过 engineOptions 传递自定义配置项',
+	},
+	enableReactiveContainer: {
+		type: 'boolean',
+		default: false,
+		description: '开启拖拽组件时，即将被放入的容器是否有视觉反馈',
+	},
+	disableAutoRender: {
+		type: 'boolean',
+		default: false,
+		description: '关闭画布自动渲染，在资产包多重异步加载的场景有效',
+	},
+	disableDetecting: {
+		type: 'boolean',
+		default: false,
+		description: '关闭拖拽组件时的虚线响应，性能考虑',
+	},
+	customizeIgnoreSelectors: {
+		type: 'function',
+		default: undefined,
+		description:
+			'定制画布中点击被忽略的 selectors, eg. (defaultIgnoreSelectors: string[], e: MouseEvent) => string[]',
+	},
+	disableDefaultSettingPanel: {
+		type: 'boolean',
+		default: false,
+		description: '禁止默认的设置面板',
+	},
+	disableDefaultSetters: {
+		type: 'boolean',
+		default: false,
+		description: '禁止默认的设置器',
+	},
+	enableCanvasLock: {
+		type: 'boolean',
+		default: false,
+		description: '打开画布的锁定操作',
+	},
+	enableLockedNodeSetting: {
+		type: 'boolean',
+		default: false,
+		description:
+			'容器锁定后，容器本身是否可以设置属性，仅当画布锁定特性开启时生效',
+	},
+	stayOnTheSameSettingTab: {
+		type: 'boolean',
+		default: false,
+		description: '当选中节点切换时，是否停留在相同的设置 tab 上',
+	},
+	hideSettingsTabsWhenOnlyOneItem: {
+		type: 'boolean',
+		description: '是否在只有一个 item 的时候隐藏设置 tabs',
+	},
+	loadingComponent: {
+		type: 'ComponentType',
+		default: undefined,
+		description: '自定义 loading 组件',
+	},
+	supportVariableGlobally: {
+		type: 'boolean',
+		default: false,
+		description: '设置所有属性支持变量配置',
+	},
+	visionSettings: {
+		type: 'object',
+		description: 'Vision-polyfill settings',
+	},
+	simulatorUrl: {
+		type: 'array',
+		description: '自定义 simulatorUrl 的地址',
+	},
+	appHelper: {
+		type: 'object',
+		description: '定义 utils 和 constants 等对象',
+	},
+	requestHandlersMap: {
+		type: 'object',
+		description: '数据源引擎的请求处理器映射',
+	},
+	thisRequiredInJSE: {
+		type: 'boolean',
+		description: 'JSExpression 是否只支持使用 this 来访问上下文变量',
+	},
+	enableStrictNotFoundMode: {
+		type: 'boolean',
+		description: '当开启组件未找到严格模式时，渲染模块不会默认给一个容器组件',
+	},
+	focusNodeSelector: {
+		type: 'function',
+		description: '配置指定节点为根组件',
+	},
+	enableAutoOpenFirstWindow: {
+		type: 'boolean',
+		description: '应用级设计模式下，自动打开第一个窗口',
+		default: true,
+	},
+	enableWorkspaceMode: {
+		type: 'boolean',
+		description: '是否开启应用级设计模式',
+		default: false,
+	},
+	workspaceEmptyComponent: {
+		type: 'function',
+		description: '应用级设计模式下，窗口为空时展示的占位组件',
+	},
+	enableContextMenu: {
+		type: 'boolean',
+		description: '是否开启右键菜单',
+		default: false,
+	},
+	hideComponentAction: {
+		type: 'boolean',
+		description: '是否隐藏设计器辅助层',
+		default: false,
+	},
+};
 
 const logger = getLogger({ level: 'log', bizName: 'config' });
 
@@ -79,14 +236,13 @@ export class EngineConfig implements IEngineConfig {
 	}
 
 	/**
-	 * // TODO IPublicTypeEngineOptions还没有明确哪些配置需要设置
 	 * 设置引擎配置
 	 *
 	 * @param engineOptions 引擎配置对象
 	 */
 	setEngineOptions(engineOptions: IPublicTypeEngineOptions): void {
 		// 不是一个有效的纯对象
-		if (engineOptions || !isPlainObject(engineOptions)) {
+		if (!engineOptions || !isPlainObject(engineOptions)) {
 			return;
 		}
 		const strictMode =
