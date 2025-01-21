@@ -7,7 +7,7 @@ import { IPublicTypePluginDeclarationProperty } from '.';
  */
 export interface IPublicTypePluginDeclaration {
 	/**
-	 * 偏好项的标题，通常会显示在配置 UI 上。
+	 * 这将显示在配置 UI 上，可以是插件名称
 	 */
 	title: string;
 
