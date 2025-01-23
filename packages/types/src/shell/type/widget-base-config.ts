@@ -115,25 +115,23 @@ export interface IPublicTypePanelDockProps {
 	 */
 	title?: IPublicTypeTitleContent;
 }
-
 /**
  * 停靠面板的具体实现属性
  */
 export interface IPublicTypePanelDockPanelProps {
-	[key: string]: any;
+	[key: string]: any; // 允许任意属性
 
-	/** 是否隐藏面板顶部条 */
-	hideTitleBar?: boolean;
+	hideTitleBar?: boolean; // 控制面板顶部条的显示与隐藏
 
-	width?: number;
+	width?: number; // 面板的宽度
 
-	height?: number;
+	height?: number; // 面板的高度
 
-	maxWidth?: number;
+	maxWidth?: number; // 面板的最大宽度
 
-	maxHeight?: number;
+	maxHeight?: number; // 面板的最大高度
 
-	area?: IPublicTypeWidgetConfigArea;
+	area?: IPublicTypeWidgetConfigArea; // 面板所在的区域配置
 }
 
 export type IPublicTypeSkeletonConfig =

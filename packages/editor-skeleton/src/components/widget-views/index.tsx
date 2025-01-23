@@ -5,6 +5,8 @@ import { composeTitle, IWidget, Panel, PanelDock } from '../../widget';
 import { DockProps } from '../../types';
 import { PanelOperationRow } from './panel-operation-row';
 
+// DraggableLineView 没有设计
+
 export function DockView(props: DockProps) {
 	const { title, onClick, className, size, description, icon } = props;
 	return (

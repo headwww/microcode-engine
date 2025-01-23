@@ -154,7 +154,6 @@ export const SettingFieldView = defineComponent({
 					initialValue = defaultValue;
 				}
 			}
-			// TODO this.field.valueState  === -1
 
 			// 根据是否支持变量配置做相应的更改
 			const supportVariable = props.field?.extraProps?.supportVariable;

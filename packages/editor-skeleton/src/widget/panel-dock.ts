@@ -70,6 +70,7 @@ export class PanelDock implements IWidget {
 		readonly config: PanelDockConfig
 	) {
 		const { content, name, props, panelProps, contentProps } = config;
+
 		this.name = name;
 		this.id = uniqueId(`dock:${name}$`);
 		this.panelName = config.panelName || name;

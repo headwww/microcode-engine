@@ -1,5 +1,6 @@
 import { defineComponent, onUpdated, PropType } from 'vue';
 import { IPublicTypePanelConfig } from '@arvin-shu/microcode-types';
+import { toPx } from '@arvin-shu/microcode-utils';
 import { Area } from '../area';
 import { Panel } from '..';
 
@@ -18,7 +19,7 @@ export const LeftFixedPane = defineComponent({
 
 			const style = width
 				? {
-						width,
+						width: toPx(width),
 					}
 				: undefined;
 

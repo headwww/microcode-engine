@@ -12,6 +12,7 @@ import {
 	IPublicTypePanelConfig,
 } from '@arvin-shu/microcode-types';
 import { Focusable } from '@arvin-shu/microcode-editor-core';
+import { toPx } from '@arvin-shu/microcode-utils';
 import { Area } from '../area';
 import { Panel } from '..';
 
@@ -143,7 +144,7 @@ export const LeftFloatPane = defineComponent({
 
 			const style = width
 				? {
-						width,
+						width: toPx(width),
 					}
 				: undefined;
 

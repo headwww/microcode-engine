@@ -176,7 +176,6 @@ export class Panel implements IWidget {
 
 	setActive(flag: boolean) {
 		if (flag === this._actived.value) {
-			// TODO: 如果移动到另外一个 container，会有问题
 			return;
 		}
 
