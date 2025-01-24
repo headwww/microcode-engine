@@ -642,7 +642,7 @@ export class Designer implements IDesigner {
 				if (view) {
 					maps[key] = view;
 				} else {
-					maps[key] = config.npm;
+					maps[key] = toRaw(config.npm);
 				}
 			}
 		});

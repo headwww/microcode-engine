@@ -1,5 +1,5 @@
 import { IPublicModelPluginContext } from '@arvin-shu/microcode-types';
-import { TestButton } from './materials/Button';
+import { LtButton } from './materials/Button';
 import { FCell } from './materials/FCell';
 import { TestTable } from './materials/table';
 import { AntdButton } from './materials/antd';
@@ -11,21 +11,6 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 		await material.setAssets({
 			version: '1.0.0',
 			packages: [
-				// {
-				// 	package: 'dayjs',
-				// 	version: '1.11.10',
-				// 	library: 'dayjs',
-				// 	urls: ['https://unpkg.com/dayjs/dayjs.min.js'],
-				// },
-				// {
-				// 	package: 'ant-design-vue',
-				// 	version: '4.2.6',
-				// 	urls: [
-				// 		'https://cdn.jsdelivr.net/npm/ant-design-vue@4.2.6/dist/antd.min.js',
-				// 	],
-				// 	library: 'ant-design-vue',
-				// },
-
 				{
 					package: 'xe-utils',
 					library: 'XEUtils',
@@ -52,7 +37,6 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 						'https://cdn.jsdelivr.net/npm/vxe-table@4.9.15/lib/style.min.css',
 					],
 				},
-
 				{
 					package: 'element-plus',
 					library: 'element-plus',
@@ -205,7 +189,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					],
 				},
 				{
-					componentName: 'TestButton',
+					componentName: 'LtButton',
 					title: '按钮',
 					configure: {
 						props: [
@@ -369,7 +353,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							},
 						],
 						advanced: {
-							view: TestButton,
+							view: LtButton,
 						},
 					},
 
@@ -379,9 +363,9 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							screenshot:
 								'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
 							schema: {
-								componentName: 'TestButton',
+								componentName: 'LtButton',
 								props: {
-									type: 'success',
+									children: '按钮',
 								},
 							},
 						},
@@ -409,6 +393,25 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 						},
 					],
 				},
+				{
+					componentName: 'Switch',
+					npm: {
+						package: 'antd',
+						destructuring: true,
+						exportName: 'Switch',
+						version: '4.2.6',
+					},
+					snippets: [
+						{
+							title: '开关',
+							screenshot:
+								'https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*rtArRpBNDZcAAAAAAAAAAAAADrJ8AQ/original',
+							schema: {
+								componentName: 'Switch',
+							},
+						},
+					],
+				},
 			],
 		});
 
@@ -429,10 +432,10 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					fileName: '/',
 					children: [
 						{
-							componentName: 'TestButton',
+							componentName: 'LtButton',
 							id: 'node_sxsm4wdio232',
 							props: {
-								type: 'primary',
+								children: '按钮1',
 							},
 							hidden: false,
 							title: '',

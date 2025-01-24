@@ -28,7 +28,7 @@ export type IPublicTypePackage = EitherOr<
 		editUrls?: string[] | any;
 
 		/**
-		 * 作为全局变量引用时的名称，和webpack output.library字段含义一样，用来定义全局变量名
+		 * 作为全局变量引用时的名称
 		 */
 		library: string;
 

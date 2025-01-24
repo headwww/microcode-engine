@@ -22,13 +22,17 @@ import {
 	isComponentRecord,
 	isVNodeHTMLElement,
 	setCompRootData,
+	buildComponents,
+	getSubComponent,
 } from './utils';
 import {
 	ComponentRecord,
 	MixedComponent,
 	SimulatorViewLayout,
 } from './interface';
-import { getSubComponent } from './utils/build-components';
+import { Slot, Leaf, Page } from './buildin-components';
+
+const builtinComponents = { Slot, Leaf, Page };
 
 /**
  * 检查实例是否已挂载
@@ -265,14 +269,8 @@ export class SimulatorRendererContainer {
 				) {
 					this.libraryMap.value = host.libraryMap || {};
 					this.componentsMap.value = host.designer.componentsMap;
+					this.buildComponents();
 				}
-
-				// TODO
-				const comps: any = this.componentsMap.value;
-
-				this._components.value = {
-					...comps,
-				};
 
 				this.locale.value = host.locale;
 
@@ -341,6 +339,18 @@ export class SimulatorRendererContainer {
 				//   this.buildComponents();
 			}
 		});
+	}
+
+	private buildComponents() {
+		// TODO 第三个参数创建低代码函数的方式没有创建
+		this._components.value = buildComponents(
+			this.libraryMap.value,
+			this.componentsMap.value
+		);
+		this._components.value = {
+			...builtinComponents,
+			...this._components.value,
+		} as any;
 	}
 
 	getCurrentDocument() {
