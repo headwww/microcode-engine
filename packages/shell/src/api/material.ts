@@ -1,13 +1,19 @@
 import {
 	IPublicApiMaterial,
+	IPublicModelComponentMeta,
 	IPublicModelEditor,
 	IPublicTypeAssetsJson,
+	IPublicTypeComponentMetadata,
 	IPublicTypeDisposable,
+	IPublicTypeMetadataTransducer,
+	IPublicTypeNpmInfo,
 } from '@arvin-shu/microcode-types';
 import { globalContext } from '@arvin-shu/microcode-editor-core';
 import { getLogger } from '@arvin-shu/microcode-utils';
 import { IDesigner } from '@arvin-shu/microcode-designer';
+import { Component } from 'vue';
 import { designerSymbol, editorSymbol } from '../symbols';
+import { ComponentMeta as ShellComponentMeta } from '../model';
 
 const innerEditorSymbol = Symbol('editor');
 
@@ -40,6 +46,15 @@ export class Material implements IPublicApiMaterial {
 	}
 
 	/**
+	 * 获取组件 map 结构
+	 */
+	get componentsMap(): {
+		[key: string]: IPublicTypeNpmInfo | Component<any> | object;
+	} {
+		return this[designerSymbol].componentsMap;
+	}
+
+	/**
 	 * 获取设计器实例
 	 * 设计器实例在引擎注册初始化的时候构建的存储在editor中的
 	 */
@@ -63,6 +78,76 @@ export class Material implements IPublicApiMaterial {
 	}
 
 	/**
+	 * 加载增量的「资产包」结构，该增量包会与原有的合并
+	 * @param incrementalAssets
+	 * @returns
+	 */
+	loadIncrementalAssets(incrementalAssets: IPublicTypeAssetsJson) {
+		return this[designerSymbol].loadIncrementalAssets(incrementalAssets);
+	}
+
+	/**
+	 * 注册物料元数据管道函数
+	 * @param transducer
+	 * @param level
+	 * @param id
+	 */
+	registerMetadataTransducer = (
+		transducer: IPublicTypeMetadataTransducer,
+		level?: number,
+		id?: string | undefined
+	) => {
+		this[designerSymbol].componentActions.registerMetadataTransducer(
+			transducer,
+			level,
+			id
+		);
+	};
+
+	/**
+	 * 获取所有物料元数据管道函数
+	 * @returns
+	 */
+	getRegisteredMetadataTransducers() {
+		return this[
+			designerSymbol
+		].componentActions.getRegisteredMetadataTransducers();
+	}
+
+	/**
+	 * 获取指定名称的物料元数据
+	 * @param componentName
+	 * @returns
+	 */
+	getComponentMeta(componentName: string): IPublicModelComponentMeta | null {
+		const innerMeta = this[designerSymbol].getComponentMeta(componentName);
+		return ShellComponentMeta.create(innerMeta);
+	}
+
+	createComponentMeta(metadata: IPublicTypeComponentMetadata) {
+		return ShellComponentMeta.create(
+			this[designerSymbol].createComponentMeta(metadata)
+		);
+	}
+
+	isComponentMeta(obj: any): boolean {
+		return this.isComponentMeta(obj);
+	}
+
+	/**
+	 * 获取所有已注册的物料元数据
+	 * @returns
+	 */
+	getComponentMetasMap(): Map<string, IPublicModelComponentMeta> {
+		const map = new Map<string, IPublicModelComponentMeta>();
+		const originalMap = this[designerSymbol].getComponentMetasMap();
+		for (const componentName of originalMap.keys()) {
+			map.set(componentName, this.getComponentMeta(componentName)!);
+		}
+		return map;
+	}
+
+	/**
 	 * 监听 assets 变化的事件
 	 * @param fn
 	 */
@@ -77,4 +162,6 @@ export class Material implements IPublicApiMaterial {
 			disable.forEach((d) => d && d());
 		};
 	}
+
+	// TODO: 其他方法
 }

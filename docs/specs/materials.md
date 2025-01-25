@@ -146,3 +146,171 @@ const customComponentNpmInfo: IPublicTypeNpmInfo = {
 3. 正确配置 `main` 字段以确保打包工具可以找到正确的入口文件
 4. 当使用组件库的子组件时，确保正确配置 `subName`
 
+## 属性信息(Props)
+
+`IPublicTypePropConfig` 是一个用于定义组件属性信息的接口，它包含了属性的基本信息，如名称、类型、描述和默认值。
+
+### 属性说明
+
+| 属性名       | 类型                | 必填 | 说明           |
+| ------------ | ------------------- | ---- | -------------- |
+| name         | string              | 是   | 属性的名称标识 |
+| propType     | IPublicTypePropType | 是   | 属性的数据类型 |
+| description  | string              | 否   | 属性的详细描述 |
+| defaultValue | any                 | 否   | 属性的默认值   |
+
+### 使用示例
+
+```typescript
+// 组件源码
+<template>
+	<div></div>
+</template>
+<script setup lang="ts">
+defineProps({
+	title: String,
+	size: Number,
+	options: Array,
+});
+
+defineEmits(['change'])
+</script>
+
+
+```
+
+
+
+```typescript
+{
+  name: 'title',
+  propType: 'string',
+  description: '标题文本',
+  defaultValue: '默认标题'
+}
+{
+  name: 'size',
+  propType: 'number',
+  description: '尺寸大小',
+  defaultValue: 16
+}
+```
+
+### 复杂类型属性
+```typescript
+{
+  name: 'style',
+  propType: 'object',
+  description: '自定义样式对象',
+  defaultValue: { color: '#000' }
+}
+
+{
+  name: 'options',
+  propType: 'array',
+  description: '选项列表',
+  defaultValue: []
+}
+```
+
+### 函数类型属性
+```typescript
+{
+  name: 'onChange',
+  propType: 'func',
+  description: '值变化时的回调函数'
+}
+```
+
+#### propType**基本类型**
+
+| propType 值                                          | 类型描述               | 参考 PropTypes 类型       |
+| ---------------------------------------------------- | ---------------------- | ------------------------- |
+| 'array'                                              | 数组类型               | PropTypes.array           |
+| 'bool'                                               | 布尔类型               | PropTypes.bool            |
+| 'func'                                               | 函数类型               | PropTypes.func            |
+| 'number'                                             | 数字类型               | PropTypes.number          |
+| 'object'                                             | 对象类型               | PropTypes.object          |
+| 'string'                                             | 字符串类型             | PropTypes.string          |
+| 'node'                                               | 节点类型               | PropTypes.node            |
+| 'element'                                            | 元素类型               | PropTypes.element         |
+| 'any'                                                | 任意值类型             | PropTypes.any             |
+| {<br />  type: 'xxx',<br />  isRequired: true<br />} | 指定类型，且是必要属性 | PropTypes.xxxx.isRequired |
+
+> 注意：上述类型均支持 PropTypes.xxx.isRequired 链式描述方式描述该属性是否为**必要属性**。
+
+
+
+
+**复合类型**
+
+
+| propType 值                                                  | 类型描述                                         |
+| ------------------------------------------------------------ | ------------------------------------------------ |
+| {<br />  type: 'oneOf',<br />  value: ['a', 'b', 'c', '...']<br />} | 枚举值类型                                       |
+| {<br />  type: 'oneOfType',<br />  value: ['string', 'number', {<br />    type: 'array',<br />    isRequired: true<br />  }]<br />} | 指定类型中的一种，支持递归描述                   |
+| {<br />  type: 'arrayOf',<br />  value: 'number'<br />}      | 指定统一成员**值类型**的数组类型                 |
+| {<br />  type: 'objectOf',<br />  value: 'string'<br />}     | 指定统一对象属性**值类型**的对象类型             |
+| {<br />  type: 'shape',<br />  value: [{<br />    name: 'color',<br />    propType: 'string'<br />  }, {<br />    name: 'fontSize',<br />    propType: {<br />      type: 'number',<br />      isRequied: true  <br />    }  <br />  }]<br />} | 指定对象的部分**属性名**和**值类型**的对象类型   |
+| {<br />  type: 'exact',<br />  value: [{<br />    name: 'name',<br />    propType: 'string'  <br />  }, {<br />    name: 'quantity',<br />    propType: 'number'<br />  }]<br />} | 严格指定对象全部**属性名**和**值类型**的对象类型 |
+| {<br />  type: 'instanceOf',<br />  value:SomeClass,<br />}  | 用于指定一个属性的类型为某个特定的类实例         |
+
+
+描述举例：
+
+```javascript
+// 组件属性描述
+{
+  props: [{
+    name: 'title',
+    propType: {
+      type: 'oneOf',
+      value: ['a', 'b'],
+    },
+    description: '这是用于描述标题',
+    defaultValue: '标题一',
+  }, {
+    name: 'message',
+    propType: {
+      type: 'oneOfType',
+      value: ['string', 'number', {
+        type: 'array',
+        isRequired: true,
+      }],
+    },
+    description: '这是用于描述消息内容',
+    defaultValue: 'xxx',
+  }, {
+    name: 'size',
+    propType: {
+      type: 'arrayOf',
+      value: 'number',
+    },
+    description: '这是用于描述大小列表',
+    defaultValue: [1, 2, 3],
+  }], {
+    name: 'bodyStyle',
+    propType: {
+      type: 'shape',
+      value: [{
+        name: 'color',
+        propType: 'string',
+      }, {
+        name: 'fontSize',
+        propType: {
+          type: 'number',
+          isRequied: true,
+        }
+      }],
+    },
+    description: '这是用于描述主体样式',
+    defaultValue: [1, 2, 3],
+  },
+    {
+      type: 'instanceOf',
+      value: SomeClass,
+      isRequired: true
+    }
+  ],
+}
+```

@@ -121,7 +121,11 @@ export const Toolbar = defineComponent({
 				actions.push(createAction(content, name, node));
 			});
 
-			return <div class="mtc-borders-actions">{...actions}</div>;
+			return (
+				<div class="mtc-borders-actions" style={style}>
+					{...actions}
+				</div>
+			);
 		};
 	},
 });

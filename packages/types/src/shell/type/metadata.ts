@@ -1,5 +1,6 @@
 import { IPublicModelNode } from '../model';
 import { IPublicTypeComponentAction } from './component-action';
+import { IPublicTypePropType } from './prop-types';
 
 /**
  * children 内容是纯文本，支持双击直接编 的可配置项目
@@ -60,10 +61,50 @@ export interface IPublicTypeNestingRule {
 	ancestorWhitelist?: string[] | string | RegExp | IPublicTypeNestingFilter;
 }
 
+export type ConfigureSupportEvent = string | ConfigureSupportEventConfig;
+
+export interface ConfigureSupportEventConfig {
+	name: string;
+	propType?: IPublicTypePropType;
+	description?: string;
+	template?: string;
+}
+
 /**
- * TODO 还没定义 通用扩展面板支持性配置
+ *   通用扩展面板支持性配置
  */
-export interface ConfigureSupport {}
+export interface ConfigureSupport {
+	/**
+	 * 支持事件列表
+	 */
+	events?: ConfigureSupportEvent[];
+
+	/**
+	 * 支持 className 设置
+	 */
+	className?: boolean;
+
+	/**
+	 * 支持样式设置
+	 */
+	style?: boolean;
+
+	/**
+	 * 支持生命周期设置
+	 */
+	lifecycles?: any[];
+
+	// general?: boolean;
+	/**
+	 * 支持循环设置
+	 */
+	loop?: boolean;
+
+	/**
+	 * 支持条件式渲染设置
+	 */
+	condition?: boolean;
+}
 
 /**
  * 组件能力配置

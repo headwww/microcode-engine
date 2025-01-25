@@ -14,6 +14,7 @@ import {
 } from '@arvin-shu/microcode-editor-core';
 import {
 	Skeleton as InnerSkeleton,
+	registerBuiltinTransducer,
 	Workbench,
 } from '@arvin-shu/microcode-editor-skeleton';
 import {
@@ -101,6 +102,7 @@ const componentMetaParserPlugin = componentMetaParser(designer);
 async function registryInnerPlugin() {
 	await plugins.register(defaultPanelRegistryPlugin);
 	await plugins.register(componentMetaParserPlugin);
+	await plugins.register(registerBuiltinTransducer, {}, { autoInit: true });
 }
 
 // TODO 设置一个渲染模拟器插件

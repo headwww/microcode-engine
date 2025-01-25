@@ -39,8 +39,7 @@ export type IPublicTypeComplexType =
 	| IPublicTypeInstanceOf;
 
 /**
- * IPublicTypeRequiredType 接口表示一个带有必需性检查的基础类型。
- * 可以通过 `isRequired` 属性指定该类型是否为必填。
+ * IPublicTypeRequiredType 描述了一个属性的基本类型及其是否为必需。
  */
 export interface IPublicTypeRequiredType {
 	type: IPublicTypeBasicType;
@@ -48,8 +47,7 @@ export interface IPublicTypeRequiredType {
 }
 
 /**
- * IPublicTypeOneOf 接口表示该属性的值必须是 `value` 数组中的某一项。
- * 用于定义一组选项中的一种，类似于枚举。
+ * 枚举值类型
  */
 export interface IPublicTypeOneOf {
 	type: 'oneOf';
@@ -58,8 +56,7 @@ export interface IPublicTypeOneOf {
 }
 
 /**
- * IPublicTypeOneOfType 接口表示该属性的类型必须是 `value` 数组中的某一类型。
- * 用于类型的组合，比如可以是 'string' 或 'number'。
+ * 指定类型中的一种，支持递归描述
  */
 export interface IPublicTypeOneOfType {
 	type: 'oneOfType';
@@ -68,8 +65,7 @@ export interface IPublicTypeOneOfType {
 }
 
 /**
- * IPublicTypeArrayOf 接口表示该属性是一个数组，数组内的每一项都为指定的类型。
- * 例如：一个字符串数组 `arrayOf: 'string'`。
+ * 指定统一成员值类型的数组类型
  */
 export interface IPublicTypeArrayOf {
 	type: 'arrayOf';
@@ -78,8 +74,7 @@ export interface IPublicTypeArrayOf {
 }
 
 /**
- * IPublicTypeObjectOf 接口表示该属性是一个对象，对象的每个属性值均为指定类型。
- * 例如：一个键值对的对象，所有值为 'number' 类型。
+ * 指定统一对象属性值类型的对象类型
  */
 export interface IPublicTypeObjectOf {
 	type: 'objectOf';
@@ -88,8 +83,7 @@ export interface IPublicTypeObjectOf {
 }
 
 /**
- * IPublicTypeShape 接口表示该属性是一个对象，且对象的每个属性都由 `value` 数组定义。
- * 用于描述对象的结构，每个子属性都可以有特定的类型。
+ * 指定对象的部分属性名和值类型的对象类型
  */
 export interface IPublicTypeShape {
 	type: 'shape';
@@ -98,8 +92,21 @@ export interface IPublicTypeShape {
 }
 
 /**
- * IPublicTypeExact 接口表示该属性是一个精确的对象结构。
- * 其内容与 `shape` 类似，但该对象不允许有多余的属性。
+ * 严格指定对象全部属性名和值类型的对象类型
+ * 示例：
+ * {
+ *   type: 'exact',
+ *   value: [
+ *     {
+ *       name: 'name',
+ *       propType: 'string'
+ *     },
+ *     {
+ *       name: 'quantity',
+ *       propType: 'number'
+ *     }
+ *   ]
+ * }
  */
 export interface IPublicTypeExact {
 	type: 'exact';
@@ -108,8 +115,14 @@ export interface IPublicTypeExact {
 }
 
 /**
- * IPublicTypeInstanceOf 接口表示该属性的值必须是特定类的实例。
- * 例如：一个 `Date` 实例。
+ * 用于指定一个属性的类型为某个特定的类实例。
+ * 这可以用于确保传入的属性是某个特定类的实例。
+ * 示例：
+ * {
+ *   type: 'instanceOf',
+ *   value: SomeClass,
+ *   isRequired: true
+ * }
  */
 export interface IPublicTypeInstanceOf {
 	type: 'instanceOf';
