@@ -180,34 +180,129 @@ export interface IPublicTypeComponentConfigure {
  * 配置 callbacks 可捕获引擎抛出的一些事件，例如 onNodeAdd、onResize 等
  */
 export interface IPublicTypeCallbacks {
+	/**
+	 * 鼠标按下事件的钩子函数
+	 * @param e 鼠标事件对象
+	 * @param currentNode 当前节点
+	 */
 	onMouseDownHook?: (
 		e: MouseEvent,
 		currentNode: IPublicModelNode | null
 	) => any;
-	/** 选中 hook，如果返回值是 false，可以控制组件不可被选中 */
-	onSelectHook?: (currentNode: IPublicModelNode) => boolean;
+
+	/**
+	 * 双击事件的钩子函数
+	 * @param e 鼠标事件对象
+	 * @param currentNode 当前节点
+	 */
+	onDblClickHook?: (e: MouseEvent, currentNode: IPublicModelNode | null) => any;
+
+	/**
+	 * 点击事件的钩子函数
+	 * @param e 鼠标事件对象
+	 * @param currentNode 当前节点
+	 */
 	onClickHook?: (e: MouseEvent, currentNode: IPublicModelNode | null) => any;
+
+	/**
+	 * 移动事件的钩子函数
+	 * @param currentNode 当前节点
+	 * @returns 是否成功移动
+	 */
+	onMoveHook?: (currentNode: IPublicModelNode) => boolean;
+
+	/**
+	 * 悬停事件的钩子函数
+	 * @param currentNode 当前节点
+	 * @returns 是否允许悬停
+	 */
+	onHoverHook?: (currentNode: IPublicModelNode) => boolean;
+
+	/**
+	 * 选中 hook，如果返回值是 false，可以控制组件不可被选中
+	 * @param currentNode 当前节点
+	 * @returns 是否被选中
+	 */
+	onSelectHook?: (currentNode: IPublicModelNode) => boolean;
+
+	/**
+	 * 子节点移动事件的钩子函数
+	 * @param childNode 移动的子节点
+	 * @param currentNode 当前节点
+	 * @returns 是否允许移动
+	 */
 	onChildMoveHook?: (
 		childNode: IPublicModelNode,
 		currentNode: IPublicModelNode
 	) => boolean;
 
 	// events
+	/**
+	 * 节点移除事件的钩子函数
+	 * @param removedNode 被移除的节点
+	 * @param currentNode 当前节点
+	 */
 	onNodeRemove?: (
 		removedNode: IPublicModelNode | null,
 		currentNode: IPublicModelNode | null
 	) => void;
+
+	/**
+	 * 节点添加事件的钩子函数
+	 * @param addedNode 被添加的节点
+	 * @param currentNode 当前节点
+	 */
 	onNodeAdd?: (
 		addedNode: IPublicModelNode | null,
 		currentNode: IPublicModelNode | null
 	) => void;
 
-	onSubtreeModified?: (currentNode: IPublicModelNode, options: any) => void;
 	/**
-	 * 移动 hook，如果返回值是 false，可以控制组件不可被移动
+	 * 子树修改事件的钩子函数
+	 * @param currentNode 当前节点
+	 * @param options 其他选项
 	 */
-	onMoveHook?: (currentNode: IPublicModelNode) => boolean;
+	onSubtreeModified?: (currentNode: IPublicModelNode, options: any) => void;
 
-	// thinkof 限制性拖拽
-	onHoverHook?: (currentNode: IPublicModelNode) => boolean;
+	/**
+	 * 调整大小事件的钩子函数
+	 * @param e 鼠标事件对象
+	 * @param currentNode 当前节点
+	 */
+	onResize?: (
+		e: MouseEvent & {
+			trigger: string;
+			deltaX?: number;
+			deltaY?: number;
+		},
+		currentNode: any
+	) => void;
+
+	/**
+	 * 调整大小开始事件的钩子函数
+	 * @param e 鼠标事件对象
+	 * @param currentNode 当前节点
+	 */
+	onResizeStart?: (
+		e: MouseEvent & {
+			trigger: string;
+			deltaX?: number;
+			deltaY?: number;
+		},
+		currentNode: any
+	) => void;
+
+	/**
+	 * 调整大小结束事件的钩子函数
+	 * @param e 鼠标事件对象
+	 * @param currentNode 当前节点
+	 */
+	onResizeEnd?: (
+		e: MouseEvent & {
+			trigger: string;
+			deltaX?: number;
+			deltaY?: number;
+		},
+		currentNode: IPublicModelNode
+	) => void;
 }

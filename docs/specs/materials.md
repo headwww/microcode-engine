@@ -146,7 +146,7 @@ const customComponentNpmInfo: IPublicTypeNpmInfo = {
 3. 正确配置 `main` 字段以确保打包工具可以找到正确的入口文件
 4. 当使用组件库的子组件时，确保正确配置 `subName`
 
-## 属性信息(Props)
+## 属性信息(props)
 
 `IPublicTypePropConfig` 是一个用于定义组件属性信息的接口，它包含了属性的基本信息，如名称、类型、描述和默认值。
 
@@ -312,5 +312,155 @@ defineEmits(['change'])
       isRequired: true
     }
   ],
+}
+```
+
+## 编辑体验增强(configure)
+
+按照组件结构描述完组件的基本属性之后会自动通过管道函数产出一套具有基本编辑行为能力的描述文件，但是当这份描述文件无法满足需求的时候就需要一些额外的配置来增强优化搭建产品的编辑体验，定制编辑能力的配置信息，通过能力抽象分类，主要包含如下几个维度的配置项：
+
+| 字段      | 字段描述               | 字段类型 | 备注                                                         |
+| --------- | ---------------------- | -------- | ------------------------------------------------------------ |
+| props     | 属性面板配置           | Array    | 用于属性面板能力描述                                         |
+| component | 组件能力配置           | Object   | 与组件相关的能力、约束、行为等描述，有些信息可从组件视图实例上直接获取 |
+| supports  | 通用扩展配置能力支持性 | Object   | 用于通用扩展面板能力描述                                     |
+| advanced  | 高级特性配置           | Object   | 用户可以在这些配置通过引擎上下文控制组件在设计器中的表现，例如自动初始化组件的子组件、截获组件的操作事件进行个性化处理等 |
+
+### 属性面板配置 props
+
+对于描述的直接的props的一种增强，configure内的props 数组下对象字段描述：
+
+| 字段                | 字段描述                                                     | 字段类型                                       | 备注                                                         |
+| ------------------- | ------------------------------------------------------------ | ---------------------------------------------- | ------------------------------------------------------------ |
+| type                | 指定类型                                                     | Enum                                           | 可选值为 `'field'                                            |
+| display             | 指定类型                                                     | Enum                                           | 可选值为 `'accordion' \| 'inline' \| 'block' \| 'plain' \| 'popup' \| 'entry'` ，默认为 'inline' |
+| title               | 分类标题                                                     | 属性标题                                       | String                                                       |
+| items               | 分类下的属性列表                                             | Array\<Object>                                 | type = 'group' 生效                                          |
+| name                | 属性名                                                       | String                                         | type = 'field' 生效                                          |
+| defaultValue        | 默认值                                                       | Any(视字段类型而定)                            | type = 'field' 生效                                          |
+| supportVariable     | 是否支持配置变量                                             | Boolean                                        | type = 'field' 生效                                          |
+| condition           | 配置当前 prop 是否展示                                       | (target: IPublicModelSettingField) => boolean; | -                                                            |
+| ignoreDefaultValue  | 配置当前 prop 是否忽略默认值处理逻辑，如果返回值是 true 引擎不会处理默认值 | (target: IPublicModelSettingField) => boolean; | -                                                            |
+| setter              | 单个控件 (setter) 描述，搭建基础协议组件的描述对象，支持 JSExpression / JSFunction / JSSlot | `String\|Object\|Function`                     | type = 'field' 生效                                          |
+| extraProps          | 其他配置属性（不做流通要求）                                 | Object                                         | 其他配置                                                     |
+| extraProps.getValue | setter 渲染时被调用，setter 会根据该函数的返回值设置 setter 当前值 | Function                                       | (target: IPublicModelSettingField, value: any) => any;       |
+| extraProps.setValue | setter 内容修改时调用，开发者可在该函数内部修改节点 schema 或者进行其他操作 | Function                                       | (target: IPublicModelSettingField, value: any) => void;      |
+
+### 通用扩展面板支持性配置 supports
+
+样式配置面板能力描述，描述是否支持行业样式编辑、是否支持类名设置等。
+
+```json
+{
+  "configure": {
+    // 支持的事件枚举
+    "supports": {
+      // 支持事件列表
+      "events": ["onClick", "onChange"],
+      // 支持循环设置
+      "loop": true,
+      // 支持条件设置
+      "condition": true,
+      // 支持样式设置
+      "style": true,
+    }
+  }
+}
+```
+
+
+
+### 组件能力配置 component[]
+
+与组件相关的能力、约束、行为等描述，有些信息可从组件视图实例上直接获取，包含如下字段：
+
+| 字段                            | 用途                                                         | 类型               |
+| ------------------------------- | ------------------------------------------------------------ | ------------------ |
+| isContainer                     | 是否容器组件                                                 | Boolean            |
+| isModal                         | 组件是否带浮层，浮层组件拖入设计器时会遮挡画布区域，此时应当辅助一些交互以防止阻挡 | Boolean            |
+| descriptor                      | 组件树描述信息                                               | String             |
+| nestingRule                     | 嵌套控制：防止错误的节点嵌套，比如 a 嵌套 a, FormField 只能在 Form 容器下，Column 只能在 Table 下等 | Object             |
+| nestingRule.childWhitelist      | 子节点类型白名单                                             | `String\|Function` |
+| nestingRule.parentWhitelist     | 父节点类型白名单                                             | `String\|Function` |
+| nestingRule.descendantBlacklist | 后裔节点类型黑名单                                           | `String\|Function` |
+| nestingRule.ancestorWhitelist   | 祖父节点类型白名单                                           | `String\|Function` |
+| isNullNode                      | 是否存在渲染的根节点                                         | Boolean            |
+| isLayout                        | 是否是 layout 布局组件                                       | Boolean            |
+| rootSelector                    | 组件选中框的 cssSelector                                     | String             |
+| disableBehaviors                | 用于屏蔽在设计器中选中组件时提供的操作项，默认操作项有 copy、hide、remove | String[]           |
+| actions                         | 用于详细配置上述操作项的内容                                 | Object             |
+| isMinimalRenderUnit             | 是否是最小渲染单元，最小渲染单元下的组件渲染和更新都从单元的根节点开始渲染和更新。如果嵌套了多层最小渲染单元，渲染会从最外层的最小渲染单元开始渲染。 | Boolean            |
+
+描述举例：
+
+```js
+{
+  configure: {
+    component: {
+      isContainer: true,
+      isModal: false,
+      descriptor: 'title',
+      nestingRule: {
+        childWhitelist: ['SelectOption'],
+        parentWhitelist: ['Select', 'Table'],
+      },
+      rootSelector: '.next-dialog',
+      disableBehaviors: ['copy', 'remove'],
+      actions: {
+        name: 'copy', // string;
+        content: '＋', // string | ReactNode | ActionContentObject;
+        items: [], // ComponentAction[];
+        condition: 'always', // boolean | ((currentNode: any) => boolean) | 'always';
+        important: true, // boolean;
+      },
+    },
+  },
+}
+```
+
+
+
+### 高级功能配置 advanced
+
+组件在低代码引擎设计器中的事件回调和 hooks 等高级功能配置，包含如下字段：
+
+| 字段                        | 用途                                                         | 类型                           | 备注                                                |
+| --------------------------- | ------------------------------------------------------------ | ------------------------------ | --------------------------------------------------- |
+| initialChildren             | 组件拖入“设计器”时根据此配置自动生成 children 节点 schema    | NodeData[]/Function NodeData[] | ((target: IPublicModelSettingField) => NodeData[]); |
+| getResizingHandlers         | 用于配置设计器中组件 resize 操作工具的样式和内容             | Function                       | (currentNode: any) => Array<{ type: 'N'             |
+| callbacks                   | 配置 callbacks 可捕获引擎抛出的一些事件，例如 onNodeAdd、onResize 等 | Callback                       | -                                                   |
+| callbacks.onNodeAdd         | 在容器中拖入组件时触发的事件回调                             | Function                       | (e: MouseEvent, currentNode: any) => any            |
+| callbacks.onNodeRemove      | 在容器中删除组件时触发的事件回调                             | Function                       | (e: MouseEvent, currentNode: any) => any            |
+| callbacks.onResize          | 调整容器尺寸时触发的事件回调，常常与 getResizingHandlers 搭配使用 | Function                       | 详见 Types 定义                                     |
+| callbacks.onResizeStart     | 调整容器尺寸开始时触发的事件回调，常常与 getResizingHandlers 搭配使用 | Function                       | 详见 Types 定义                                     |
+| callbacks.onResizeEnd       | 调整容器尺寸结束时触发的事件回调，常常与 getResizingHandlers 搭配使用 | Function                       | 详见 Types 定义                                     |
+| callbacks.onSubtreeModified | 容器节点结构树发生变化时触发的回调                           | Function                       | (currentNode: any, options: any) => void;           |
+| callbacks.onMouseDownHook   | 鼠标按下操作回调                                             | Function                       | (e: MouseEvent, currentNode: any) => any;           |
+| callbacks.onClickHook       | 鼠标单击操作回调                                             | Function                       | (e: MouseEvent, currentNode: any) => any;           |
+| callbacks.onDblClickHook    | 鼠标双击操作回调                                             | Function                       | (e: MouseEvent, currentNode: any) => any;           |
+| callbacks.onMoveHook        | 节点被拖动回调                                               | Function                       | (currentNode: any) => boolean;                      |
+| callbacks.onHoverHook       | 节点被 hover 回调                                            | Function                       | (currentNode: any) => boolean;                      |
+| callbacks.onChildMoveHook   | 容器节点的子节点被拖动回调                                   | Function                       | (childNode: any, currentNode: any) => boolean;      |
+
+```js
+{
+  configure: {
+    advanced: {
+      callbacks: {
+        onNodeAdd: (dragment, currentNode) => {
+
+        }
+      },
+      getResizingHandlers: () => {
+        return [ 'E' ];
+      },
+      initials: [
+        {
+          name: 'linkType',
+          initial: () => 'link'
+        },
+      ]
+    },
+  }
 }
 ```

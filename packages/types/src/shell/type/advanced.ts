@@ -11,14 +11,11 @@ import { IPublicTypeNodeData } from './node-data';
  */
 export interface IPublicTypeAdvanced {
 	/**
-	 * 是否绝对布局容器
-	 */
-	isAbsoluteLayoutContainer?: boolean;
-
-	/**
 	 * 配置 callbacks 可捕获引擎抛出的一些事件，例如 onNodeAdd、onResize 等
 	 */
 	callbacks?: IPublicTypeCallbacks;
+
+	// TODO getResizingHandlers
 
 	/**
 	 * 拖入容器时，自动带入 children 列表
@@ -26,6 +23,16 @@ export interface IPublicTypeAdvanced {
 	initialChildren?:
 		| IPublicTypeNodeData[]
 		| ((target: IPublicModelNode) => IPublicTypeNodeData[]);
+
+	/**
+	 * 是否绝对布局容器
+	 */
+	isAbsoluteLayoutContainer?: boolean;
+
+	/**
+	 * 是否隐藏选中工具
+	 */
+	hideSelectTools?: boolean;
 
 	/**
 	 * Live Text Editing：如果 children 内容是纯文本，支持双击直接编辑

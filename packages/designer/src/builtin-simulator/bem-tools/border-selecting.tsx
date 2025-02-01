@@ -53,8 +53,12 @@ export const BorderSelectingInstance = defineComponent({
 			if (!observed?.hasOffset.value) {
 				return <></>;
 			}
+			const { hideSelectTools } = observed.node.componentMeta.advanced;
 
 			const hideComponentAction = engineConfig.get('hideComponentAction');
+			if (hideSelectTools) {
+				return <></>;
+			}
 
 			return (
 				<div class={className.value} style={style.value}>

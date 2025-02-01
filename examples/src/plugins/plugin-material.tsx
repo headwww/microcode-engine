@@ -374,21 +374,20 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					},
 					props: [
 						{
-							name: 'autofocus',
-							description: '自动聚焦',
-							propType: 'bool',
-						},
-						{
-							name: 'checked',
-							description: '是否选中',
-							propType: 'bool',
-						},
-						{
 							name: 'loading',
 							description: '加载中',
 							propType: 'bool',
 						},
 					],
+					configure: {
+						props: [
+							{
+								name: 'loading',
+								setter: 'BoolSetter',
+								defaultValue: false,
+							},
+						],
+					},
 					snippets: [
 						{
 							title: '开关',
@@ -408,7 +407,13 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 						exportName: 'Calendar',
 						version: '4.2.6',
 					},
-					props: [],
+					props: [
+						{
+							name: 'fullscreen',
+							description: '全屏',
+							propType: 'bool',
+						},
+					],
 					snippets: [
 						{
 							title: '日历',

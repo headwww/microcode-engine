@@ -1,22 +1,10 @@
-import { Switch } from 'ant-design-vue';
+import { Button } from 'ant-design-vue';
 import { defineComponent } from 'vue';
 
 export const AntdButton = defineComponent({
 	name: 'AntdButton',
 	props: {},
 	setup() {
-		return () => (
-			<div>
-				<Switch></Switch>
-				<Switch></Switch>
-				<Switch></Switch>
-				<Switch></Switch>
-				<Switch></Switch>
-				<Switch></Switch>
-				<Switch></Switch>
-				<Switch></Switch>
-				<Switch></Switch>
-			</div>
-		);
+		return () => <Button>自定义按钮</Button>;
 	},
 });
