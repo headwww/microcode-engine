@@ -129,7 +129,6 @@ export const BorderDetecting = defineComponent({
 			}
 
 			// TODO 假如当前节点就是 locked 状态
-
 			const instances = props.host?.getComponentInstances(current.value as any);
 			if (!instances || instances.length < 1) {
 				return <></>;

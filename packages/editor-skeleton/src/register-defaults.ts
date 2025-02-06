@@ -133,7 +133,6 @@ function parseProps(
 	metadata: IPublicTypeTransformedComponentMetadata
 ): IPublicTypeTransformedComponentMetadata {
 	const { configure = {} } = metadata;
-	// TODO types后续补充
 	let extendsProps: any = null;
 	if (configure.props) {
 		if (Array.isArray(configure.props)) {

@@ -19,15 +19,22 @@ export const defaultPanelRegistry = (editor: any) => {
 				),
 			});
 
-			// TODO disableDefaultSettingPanel
-			skeleton.add({
-				area: 'rightArea',
-				name: 'settingsPane',
-				type: 'Panel',
-				content: (
-					<SettingsPrimaryPane engineEditor={editor}></SettingsPrimaryPane>
-				),
-			});
+			if (!config.get('disableDefaultSettingPanel')) {
+				skeleton.add({
+					area: 'rightArea',
+					name: 'settingsPane',
+					type: 'Panel',
+					content: (
+						<SettingsPrimaryPane engineEditor={editor}></SettingsPrimaryPane>
+					),
+					props: {
+						ignoreRoot: true,
+					},
+					panelProps: {
+						...(config.get('defaultSettingPanelProps') || {}),
+					},
+				});
+			}
 		},
 	});
 

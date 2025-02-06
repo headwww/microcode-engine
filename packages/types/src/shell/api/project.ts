@@ -1,8 +1,10 @@
 import { IPublicEnumTransformStage } from '../enum';
 import { IPublicModelDocumentModel } from '../model';
 import {
+	IPublicTypeAppConfig,
 	IPublicTypeDisposable,
 	IPublicTypeProjectSchema,
+	IPublicTypePropsTransducer,
 	IPublicTypeRootSchema,
 } from '../type';
 import { IPublicApiSimulatorHost } from './simulator-host';
@@ -68,12 +70,14 @@ export interface IBaseApiProject<DocumentModel> {
 	getCurrentDocument(): DocumentModel | null;
 
 	/**
-	 * TODO 增加一个属性的管道处理函数
+	 * 增加一个属性的管道处理函数
+	 * @param transducer
+	 * @param stage
 	 */
-	// addPropsTransducer(
-	// 	transducer: IPublicTypePropsTransducer,
-	// 	stage: IPublicEnumTransformStage
-	// ): void;
+	addPropsTransducer(
+		transducer: IPublicTypePropsTransducer,
+		stage: IPublicEnumTransformStage
+	): void;
 
 	/**
 	 * 绑定删除文档事件
@@ -103,7 +107,15 @@ export interface IBaseApiProject<DocumentModel> {
 	 */
 	setI18n(value: object): void;
 
-	// TODO setConfig
+	/**
+	 * 设置当前项目配置
+	 *
+	 */
+	setConfig<T extends keyof IPublicTypeAppConfig>(
+		key: T,
+		value: IPublicTypeAppConfig[T]
+	): void;
+	setConfig(value: IPublicTypeAppConfig): void;
 }
 export interface IPublicApiProject
 	extends IBaseApiProject<IPublicModelDocumentModel> {}

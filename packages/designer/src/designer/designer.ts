@@ -32,6 +32,7 @@ import {
 	isDragNodeObject,
 	isLocationChildrenDetail,
 	isNodeSchema,
+	Logger,
 	mergeAssets,
 } from '@arvin-shu/microcode-utils';
 import { DocumentModel, INode, insertChildren, Node } from '../document';
@@ -46,6 +47,8 @@ import { createOffsetObserver, OffsetObserver } from './offset-observer';
 import { ISelection } from '../document/selection';
 import { ComponentActions } from '../component-actions';
 import { ISettingTopEntry, SettingTopEntry } from './setting';
+
+const logger = new Logger({ level: 'warn', bizName: 'designer' });
 
 export const designerProps = {
 	editor: {
@@ -162,6 +165,11 @@ export interface IDesigner {
 	): IComponentMeta | null;
 
 	getComponentMetasMap(): Map<string, IComponentMeta>;
+
+	addPropsReducer(
+		reducer: IPublicTypePropsTransducer,
+		stage: IPublicEnumTransformStage
+	): void;
 
 	transformProps(
 		props: IPublicTypeCompositeObject | IPublicTypePropsList,
@@ -687,7 +695,21 @@ export class Designer implements IDesigner {
 		}, props);
 	}
 
-	// TODO addPropsReducer
+	addPropsReducer(
+		reducer: IPublicTypePropsTransducer,
+		stage: IPublicEnumTransformStage
+	) {
+		if (!reducer) {
+			logger.error('reducer is not available');
+			return;
+		}
+		const reducers = this.propsReducers.get(stage);
+		if (reducers) {
+			reducers.push(reducer);
+		} else {
+			this.propsReducers.set(stage, [reducer]);
+		}
+	}
 
 	// TODO autorun
 }

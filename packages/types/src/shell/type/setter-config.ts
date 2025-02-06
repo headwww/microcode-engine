@@ -30,7 +30,7 @@ export interface IPublicTypeSetterConfig {
 	/**
 	 * Setter 的初始值
 	 *
-	 * @todo initialValue 可能要和 defaultValue 二选一
+	 *  initialValue 可能要和 defaultValue 二选一
 	 */
 	initialValue?: any | ((target: IPublicModelSettingField) => any);
 
@@ -49,7 +49,7 @@ export interface IPublicTypeSetterConfig {
 	/**
 	 * 给 MixedSetter，切换值时声明类型
 	 *
-	 * @todo 物料协议推进
+	 *  物料协议推进
 	 */
 	valueType?: IPublicTypeCompositeValue[];
 

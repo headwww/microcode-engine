@@ -79,7 +79,7 @@ export interface IBaseNode<
 
 	get componentMeta(): IComponentMeta;
 
-	// TODO   get settingEntry(): ISettingTopEntry;
+	get settingEntry(): ISettingTopEntry;
 
 	get isPurged(): boolean;
 
@@ -1066,7 +1066,7 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 		}
 		this.purged = true;
 		this.props.purge();
-		// TODO settingEntry未注销
+		this.settingEntry?.purge();
 	}
 
 	internalPurgeStart() {

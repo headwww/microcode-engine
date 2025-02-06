@@ -1,4 +1,6 @@
 import { EitherOr } from '../../utils';
+import { IPublicTypeComponentSchema } from './component-schema';
+import { IPublicTypeProjectSchema } from './project-schema';
 
 export type IPublicTypePackage = EitherOr<
 	{
@@ -51,6 +53,11 @@ export type IPublicTypePackage = EitherOr<
 		 * 组件描述导出名字，可以通过 window[exportName] 获取到组件描述的 Object 内容；
 		 */
 		exportName?: string;
+
+		/**
+		 * 低代码组件 schema 内容
+		 */
+		schema?: IPublicTypeProjectSchema<IPublicTypeComponentSchema>;
 	},
 	'package',
 	'id'

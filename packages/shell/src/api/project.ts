@@ -13,6 +13,7 @@ import {
 	IPublicTypeAppConfig,
 	IPublicTypeDisposable,
 	IPublicTypeProjectSchema,
+	IPublicTypePropsTransducer,
 	IPublicTypeRootSchema,
 } from '@arvin-shu/microcode-types';
 import {
@@ -178,16 +179,16 @@ export class Project implements IPublicApiProject {
 	}
 
 	/**
-	 * TODO 增加一个属性的管道处理函数
+	 * 增加一个属性的管道处理函数
 	 * @param transducer
 	 * @param stage
 	 */
-	// addPropsTransducer(
-	// 	transducer: IPublicTypePropsTransducer,
-	// 	stage: IPublicEnumTransformStage
-	// ): void {
-	// 	this[projectSymbol].designer.addPropsReducer(transducer, stage);
-	// }
+	addPropsTransducer(
+		transducer: IPublicTypePropsTransducer,
+		stage: IPublicEnumTransformStage
+	): void {
+		this[projectSymbol].designer.addPropsReducer(transducer, stage);
+	}
 
 	/**
 	 * 绑定删除文档事件

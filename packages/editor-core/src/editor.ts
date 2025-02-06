@@ -257,10 +257,8 @@ export class Editor extends EventEmitter implements IEditor {
 				);
 			}
 		}
-		// TODO 转换成符合标准格式的资源对象没有完成
 		const innerAssets = assetsTransform(assets);
 		// 设置资源到上下文
-
 		this.context.set('assets', innerAssets);
 		// 通知资源更新
 		this.notifyGot('assets');

@@ -84,7 +84,6 @@ export function createIntl(instance: string | object): {
 	})();
 
 	function intl(key: string, params?: object): string {
-		// TODO: tries lost language
 		const str = data[key];
 
 		if (str == null) {

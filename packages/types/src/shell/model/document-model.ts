@@ -10,6 +10,7 @@ import {
 	IPublicTypePropChangeOptions,
 	IPublicTypeRootSchema,
 } from '../type';
+import { IPublicModelDetecting } from './detecting';
 import { IPublicModelDropLocation } from './drop-location';
 import { IPublicModelNode } from './node';
 import { IPublicModelSelection } from './selection';
@@ -20,7 +21,11 @@ export interface IPublicModelDocumentModel<
 	DropLocation = IPublicModelDropLocation,
 	Project = IPublicApiProject,
 > {
-	// TODO Detecting 好几个属性美设置
+	/**
+	 * 画布节点 hover 区模型实例
+	 */
+	detecting: IPublicModelDetecting;
+
 	/**
 	 * 节点选中区模型实例
 	 */
@@ -35,14 +40,12 @@ export interface IPublicModelDocumentModel<
 
 	/**
 	 * 获取当前文档所属的 project
-	 * get project which this documentModel belongs to
 	 * @returns
 	 */
 	get project(): Project;
 
 	/**
 	 * 获取文档的根节点
-	 * root node of this documentModel
 	 * @returns
 	 */
 	get root(): Node | null;
@@ -59,7 +62,6 @@ export interface IPublicModelDocumentModel<
 
 	/**
 	 * 根据 nodeId 返回 Node 实例
-	 * get node by nodeId
 	 * @param nodeId
 	 * @returns
 	 */
@@ -67,14 +69,12 @@ export interface IPublicModelDocumentModel<
 
 	/**
 	 * 导入 schema
-	 * import schema data
 	 * @param schema
 	 */
 	importSchema(schema: IPublicTypeRootSchema): void;
 
 	/**
 	 * 导出 schema
-	 * export schema
 	 * @param stage
 	 * @returns
 	 */
@@ -84,7 +84,6 @@ export interface IPublicModelDocumentModel<
 
 	/**
 	 * 插入节点
-	 * insert a node
 	 */
 	insertNode(
 		parent: Node,
@@ -95,7 +94,6 @@ export interface IPublicModelDocumentModel<
 
 	/**
 	 * 创建一个节点
-	 * create a node
 	 * @param data
 	 * @returns
 	 */
@@ -103,7 +101,6 @@ export interface IPublicModelDocumentModel<
 
 	/**
 	 * 移除指定节点/节点id
-	 * remove a node by node instance or nodeId
 	 * @param idOrNode
 	 */
 	removeNode(idOrNode: string | Node): void;
@@ -117,7 +114,6 @@ export interface IPublicModelDocumentModel<
 
 	/**
 	 * 检查拖拽放置的目标节点是否可以放置该拖拽对象
-	 * check if dragOjbect can be put in this dragTarget
 	 * @param dropTarget 拖拽放置的目标节点
 	 * @param dragObject 拖拽的对象
 	 * @returns boolean 是否可以放置
@@ -130,31 +126,32 @@ export interface IPublicModelDocumentModel<
 
 	/**
 	 * 当前 document 新增节点事件
-	 * set callback for event on node is created for a document
 	 */
 	onAddNode(fn: (node: Node) => void): IPublicTypeDisposable;
 
 	/**
 	 * 当前 document 新增节点事件，此时节点已经挂载到 document 上
-	 * set callback for event on node is mounted to canvas
 	 */
 	onMountNode(fn: (payload: { node: Node }) => void): IPublicTypeDisposable;
 
 	/**
 	 * 当前 document 删除节点事件
-	 * set callback for event on node is removed
 	 */
 	onRemoveNode(fn: (node: Node) => void): IPublicTypeDisposable;
 
 	/**
+	 * 当前 document 的 hover 变更事件
+	 *
+	 */
+	onChangeDetecting(fn: (node: Node) => void): IPublicTypeDisposable;
+
+	/**
 	 * 当前 document 的选中变更事件
-	 * set callback for event on selection changed
 	 */
 	onChangeSelection(fn: (ids: string[]) => void): IPublicTypeDisposable;
 
 	/**
 	 * 当前 document 的节点显隐状态变更事件
-	 * set callback for event on visibility changed for certain node
 	 * @param fn
 	 */
 	onChangeNodeVisible(
@@ -180,31 +177,30 @@ export interface IPublicModelDocumentModel<
 	/**
 	 * import schema event
 	 * @param fn
-	 * @since v1.0.15
 	 */
 	onImportSchema(
 		fn: (schema: IPublicTypeRootSchema) => void
 	): IPublicTypeDisposable;
 
 	/**
+	 * 判断是否当前节点处于被探测状态
+	 * @param node
+	 */
+	isDetectingNode(node: Node): boolean;
+
+	/**
 	 * 获取当前的 DropLocation 信息
-	 * get current drop location
-	 * @since v1.1.0
 	 */
 	get dropLocation(): DropLocation | null;
 
 	/**
 	 * 设置当前的 DropLocation 信息
-	 * set current drop location
-	 * @since v1.1.0
 	 */
 	set dropLocation(loc: DropLocation | null);
 
 	/**
 	 * 设置聚焦节点变化的回调
-	 * triggered focused node is set mannually from plugin
 	 * @param fn
-	 * @since v1.1.0
 	 */
 	onFocusNodeChanged(
 		fn: (doc: IPublicModelDocumentModel, focusNode: Node) => void
@@ -212,9 +208,7 @@ export interface IPublicModelDocumentModel<
 
 	/**
 	 * 设置 DropLocation 变化的回调
-	 * triggered when drop location changed
 	 * @param fn
-	 * @since v1.1.0
 	 */
 	onDropLocationChanged(
 		fn: (doc: IPublicModelDocumentModel) => void
