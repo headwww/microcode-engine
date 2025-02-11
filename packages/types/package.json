@@ -17,5 +17,8 @@
     },
     "keywords": [],
     "author": "",
-    "license": "ISC"
+    "license": "ISC",
+    "dependencies": {
+        "@arvin-shu/microcode-datasource-types": "^1.0.1"
+    }
 }

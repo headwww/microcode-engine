@@ -44,7 +44,6 @@ export const Renderer = defineComponent({
 	},
 
 	setup(props) {
-		// TODO 模拟组件库
 		return () => {
 			const { documentInstance, simulator } = props;
 			const { components } = simulator;

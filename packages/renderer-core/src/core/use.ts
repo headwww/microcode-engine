@@ -24,6 +24,7 @@ import {
 	toDisplayString,
 	toRaw,
 	VNode,
+	VNodeChild,
 } from 'vue';
 import { INode } from '@arvin-shu/microcode-designer';
 import {
@@ -63,9 +64,16 @@ import {
 	isObject,
 	createObjectSplitter,
 	toString,
+	addToScope,
+	AccessTypes,
+	getI18n,
+	isPromise,
+	fromPairs,
+	getCurrentNodeKey,
 } from '../utils';
 import { Live } from './leaf/live';
 import { createHookCaller } from './lifecycles';
+import { create } from '../data-source';
 
 export type RenderComponent = (
 	nodeSchema: IPublicTypeNodeData,
@@ -104,6 +112,36 @@ export const LIFT_CYCLES_MAP = {
 // 定义注入键，用于在 Vue 组件间传递锁定状态
 const IS_LOCKED: InjectionKey<Ref<boolean>> = Symbol('IS_LOCKED');
 const IS_ROOT_NODE: InjectionKey<boolean> = Symbol('IS_ROOT_NODE');
+
+export function isLifecycleKey(
+	key: string
+): key is keyof typeof LIFT_CYCLES_MAP {
+	return key in LIFT_CYCLES_MAP;
+}
+
+export function isVueLifecycleKey(
+	key: string
+): key is keyof typeof VUE_LIFT_CYCLES_MAP {
+	return key in VUE_LIFT_CYCLES_MAP;
+}
+
+export function isReactLifecycleKey(
+	key: string
+): key is keyof typeof REACT_ADAPT_LIFT_CYCLES_MAP {
+	return key in REACT_ADAPT_LIFT_CYCLES_MAP;
+}
+
+export function pickLifeCycles(lifeCycles: unknown) {
+	const res: Record<string, unknown> = {};
+	if (isObject(lifeCycles)) {
+		for (const key in lifeCycles) {
+			if (key in LIFT_CYCLES_MAP) {
+				res[key] = lifeCycles[key];
+			}
+		}
+	}
+	return res;
+}
 
 /**
  * 管理组件的锁定状态的自定义 hook
@@ -183,6 +221,12 @@ export function useLeaf(
 	const node = leafProps.__schema.id ? getNode(leafProps.__schema.id) : null;
 
 	const locked = node ? useLocked(node.isLocked) : ref(false);
+
+	provide(getCurrentNodeKey, {
+		mode: designMode,
+		node,
+		isDesignerEnv: isDesignMode,
+	});
 
 	/**
 	 * 渲染节点 vnode
@@ -741,24 +785,150 @@ export function useRenderer(rendererProps: RendererProps, scope: RuntimeScope) {
 		__schema: rendererProps.__schema,
 	};
 
-	return { schemaRef, componentsRef, ...useLeaf(leafProps) };
+	const designModeRef = computed(() => rendererProps.__designMode ?? 'live');
+
+	return {
+		scope,
+		schemaRef,
+		designModeRef,
+		componentsRef,
+		...useLeaf(leafProps),
+	};
 }
 
-export function useRootScope(rendererProps: RendererProps) {
-	const { __schema: schema, __parser: parser } = rendererProps;
+export function useRootScope(rendererProps: RendererProps, setupConext: any) {
+	const {
+		__schema: schema,
+		__scope: extraScope,
+		__parser: parser,
+		__appHelper: appHelper,
+		__requestHandlersMap: requestHandlersMap,
+	} = rendererProps;
+
+	// 协议中定义的参数
+	const {
+		props: propsSchema,
+		methods: methodsSchema,
+		state: stateSchema,
+		lifeCycles: lifeCyclesSchema,
+	} = schema ?? {};
 
 	const instance = getCurrentInstance()!;
 	const scope = instance.proxy as RuntimeScope;
 
 	const callHook = createHookCaller(schema, scope, parser);
 
-	// TODO vue的各种生命周期，props，setup，render，在界面上定义
-
 	callHook('initEmits');
 	callHook('beforeCreate');
 
 	// 处理 props
 	callHook('initProps');
+	if (propsSchema) {
+		const props = parser.parseOnlyJsValue<object>(propsSchema);
+		addToScope(scope, AccessTypes.PROPS, props);
+	}
+
+	const setupResult = callHook('setup', instance.props, setupConext);
+
+	callHook('initInject');
+
+	// 处理 methods
+	if (methodsSchema) {
+		const methods = parser.parseSchema(methodsSchema, scope);
+		methods && addToScope(scope, AccessTypes.CONTEXT, methods);
+	}
+
+	callHook('initData');
+	if (stateSchema) {
+		const states = parser.parseSchema<object>(stateSchema);
+		states && addToScope(scope, AccessTypes.DATA, states);
+	}
+
+	callHook('initComputed');
+	callHook('initWatch');
+	callHook('initProvide');
+
+	// 处理 lifecycle
+	const lifeCycles = parser.parseSchema(
+		pickLifeCycles(lifeCyclesSchema),
+		scope
+	);
+	if (Object.keys(lifeCycles).length > 0) {
+		Object.keys(lifeCycles).forEach((lifeCycle) => {
+			if (isLifecycleKey(lifeCycle)) {
+				const callback = lifeCycles[lifeCycle];
+				if (isFunction(callback)) {
+					LIFT_CYCLES_MAP[lifeCycle](callback, instance);
+				}
+			}
+		});
+	}
+
+	handleStyle(schema.css, schema.id);
+
+	// 处理 i18n
+	const i18n = (key: string, values?: any) => {
+		const { __locale: locale, __messages: messages } = rendererProps;
+		return getI18n(key, values, locale, messages as any);
+	};
+
+	const currentLocale = computed(() => rendererProps.__locale);
+	addToScope(scope, AccessTypes.CONTEXT, { i18n, $t: i18n });
+	addToScope(scope, AccessTypes.DATA, { currentLocale });
+
+	// 处理 dataSource
+	const { dataSourceMap, reloadDataSource } = create(
+		schema.dataSource ?? { list: [], dataHandler: undefined },
+		scope,
+		requestHandlersMap
+	);
+
+	const shouldInit = () =>
+		Object.keys(dataSourceMap).some((id) => dataSourceMap[id].isInit);
+
+	const dataSourceData = Object.keys(dataSourceMap)
+		.filter((key) => !(key in scope))
+		.map((key) => [key, ref()]);
+	addToScope(scope, AccessTypes.CONTEXT, {
+		dataSourceMap,
+		reloadDataSource,
+	});
+
+	addToScope(scope, AccessTypes.SETUP, fromPairs(dataSourceData));
+
+	// 处理 renderer 额外传入的 scope
+	if (extraScope) {
+		addToScope(scope, AccessTypes.SETUP, extraScope);
+	}
+
+	callHook('created');
+
+	const wrapRender = (render: () => VNodeChild | null) => {
+		const promises: Promise<unknown>[] = [];
+		isPromise(setupResult) && promises.push(setupResult);
+		shouldInit() && promises.push(reloadDataSource());
+		return promises.length > 0
+			? Promise.all(promises).then(() => render)
+			: render;
+	};
+
+	// 初始化 loop ref states
+	addToScope(scope, AccessTypes.CONTEXT, {
+		__loopScope: false,
+		__loopRefIndex: null,
+		__loopRefOffset: 0,
+	});
+
+	// 初始化 appHelper
+	addToScope(
+		scope,
+		AccessTypes.CONTEXT,
+		Object.keys(appHelper).reduce((res: Record<string, unknown>, key) => {
+			const globalKey = key.startsWith('$') ? key : `$${key}`;
+			res[globalKey] = appHelper[key];
+			return res;
+		}, {})
+	);
 
 	const unscopables = {
 		_: true,
@@ -795,7 +965,31 @@ export function useRootScope(rendererProps: RendererProps) {
 					])
 				),
 		}),
+		wrapRender,
 	};
+}
+
+export function handleStyle(css: string | undefined, id: string | undefined) {
+	// 处理 css
+	let style: HTMLStyleElement | null = null;
+	if (id) {
+		style = document.querySelector(`style[data-id="${id}"]`);
+	}
+	if (css) {
+		if (!style) {
+			style = document.createElement('style');
+			if (id) {
+				style.setAttribute('data-id', id);
+			}
+			const head = document.head || document.getElementsByTagName('head')[0];
+			head.appendChild(style);
+		}
+		if (style.innerHTML !== css) {
+			style.innerHTML = css;
+		}
+	} else if (style) {
+		style.parentElement?.removeChild(style);
+	}
 }
 
 /**

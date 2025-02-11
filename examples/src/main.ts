@@ -12,6 +12,7 @@ import InitSkeleton from './plugins/plugin-init-skeleton';
 import InitMaterial from './plugins/plugin-material';
 import InitSetter from './plugins/plugin-init-setter';
 import ComponentPanelPlugin from './plugins/plugin-components-pane';
+import InitVueCodeEditor from './plugins/plugin-vue-code-editor/index';
 
 window.Vue = Vue;
 const app = Vue.createApp(App);
@@ -25,7 +26,7 @@ await plugins.register(ComponentPanelPlugin);
 await plugins.register(InitSkeleton);
 await plugins.register(InitMaterial);
 await plugins.register(InitSetter);
-
+await plugins.register(InitVueCodeEditor);
 await init(preference);
 
 app.mount('#app');

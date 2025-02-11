@@ -16,14 +16,12 @@ export const PageRenderer = defineComponent({
 	name: 'PageRenderer',
 	props: rendererProps,
 	__renderer__: true,
-	setup(props) {
-		const { scope } = useRootScope(props);
+	setup(props, context) {
+		const { scope, wrapRender } = useRootScope(props, context);
+		const { renderComp, componentsRef, schemaRef } = useRenderer(props, scope);
 
-		const { schemaRef, componentsRef, renderComp } = useRenderer(props, scope);
-
-		// TODO 缺少wrapRender
-
-		return () =>
-			renderComp(schemaRef.value, scope, componentsRef.value.Page || Page);
+		return wrapRender(() =>
+			renderComp(schemaRef.value, scope, componentsRef.value.Page || Page)
+		);
 	},
 });

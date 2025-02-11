@@ -9,6 +9,7 @@ import {
 	shallowRef,
 } from 'vue';
 import { createMemoryHistory, createRouter, type Router } from 'vue-router';
+import { AssetLoader } from '@arvin-shu/microcode-utils';
 import { Renderer, SimulatorRendererView } from './renderer-view';
 import { host } from './host';
 import {
@@ -24,6 +25,7 @@ import {
 	setCompRootData,
 	buildComponents,
 	getSubComponent,
+	setNativeSelection,
 } from './utils';
 import {
 	ComponentRecord,
@@ -196,7 +198,12 @@ export class DocumentInstance {
 	getComponentInstance(cid: number) {
 		return this.vueInstanceMap.get(cid);
 	}
+
+	rerender() {}
 }
+
+// TODO 包导入问题，考虑打包成UMD的情况AssetLoader是从@arvin-shu/microcode-utils导入的
+const loader = new AssetLoader();
 
 export class SimulatorRendererContainer {
 	private _running = false;
@@ -242,16 +249,16 @@ export class SimulatorRendererContainer {
 	private app: App<any>;
 
 	constructor() {
+		this.app = markRaw(
+			createApp(SimulatorRendererView, {
+				rendererContainer: this,
+			})
+		);
+
 		this.router = markRaw(
 			createRouter({
 				history: createMemoryHistory('/'),
 				routes: [],
-			})
-		);
-
-		this.app = markRaw(
-			createApp(SimulatorRendererView, {
-				rendererContainer: this,
 			})
 		);
 
@@ -281,6 +288,10 @@ export class SimulatorRendererContainer {
 				this.requestHandlersMap.value = host.requestHandlersMap ?? {};
 
 				this.thisRequiredInJSE.value = host.thisRequiredInJSE ?? false;
+
+				this.documentInstances.forEach((doc) => doc.rerender());
+
+				// TODO setupLowCodeRouteGuard 配置中定义路由相关的行为
 			})
 		);
 
@@ -300,7 +311,9 @@ export class SimulatorRendererContainer {
 							this.router.addRoute({
 								name: inst.id,
 								path: inst.path,
-								// TODO 需要处理meta
+								meta: {
+									// TODO [MICROCODE_ROUTE_META]: doc.schema,
+								},
 								component: Renderer,
 								props: ((doc) => () => ({
 									documentInstance: doc,
@@ -334,9 +347,8 @@ export class SimulatorRendererContainer {
 
 		host.componentsConsumer.consume(async (componentsAsset: any) => {
 			if (componentsAsset) {
-				// TODO
-				//   await this.load(componentsAsset);
-				//   this.buildComponents();
+				await this.load(componentsAsset);
+				this.buildComponents();
 			}
 		});
 	}
@@ -391,23 +403,28 @@ export class SimulatorRendererContainer {
 		return getClientRects(element);
 	}
 
-	run() {
-		if (this._running) {
-			return;
-		}
-		this._running = true;
-		const containerId = 'simulator-app';
-		let container = document.getElementById(containerId);
-		if (!container) {
-			container = document.createElement('div');
-			document.body.appendChild(container);
-			container.id = containerId;
-		}
-		document.documentElement.classList.add('engine-page');
-		document.body.classList.add('engine-document');
-		this.app.use(this.router).mount(container);
+	setNativeSelection(enableFlag: boolean) {
+		setNativeSelection(enableFlag);
+	}
 
-		host.project.setRendererReady(this);
+	// TODO setDraggingState 设置拖拽状态
+	// TODO setCopyState 设置复制状态
+	// TODO clearState 清除状态
+
+	rerender() {
+		this.documentInstances.forEach((doc) => {
+			// TODO rerender还不知道怎么实现
+			doc.rerender();
+		});
+	}
+
+	load(asset: any): Promise<any> {
+		return loader.load(asset);
+	}
+
+	async loadAsyncLibrary(asyncLibraryMap: Record<string, any>) {
+		await loader.loadAsyncLibrary(asyncLibraryMap);
+		this.buildComponents();
 	}
 
 	findDOMNodes(instance: ComponentRecord): Array<Element | Text> | null {
@@ -433,6 +450,25 @@ export class SimulatorRendererContainer {
 	dispose() {
 		this.app.unmount();
 		this.disposeFunctions.forEach((fn) => fn());
+	}
+
+	run() {
+		if (this._running) {
+			return;
+		}
+		this._running = true;
+		const containerId = 'simulator-app';
+		let container = document.getElementById(containerId);
+		if (!container) {
+			container = document.createElement('div');
+			document.body.appendChild(container);
+			container.id = containerId;
+		}
+		document.documentElement.classList.add('engine-page');
+		document.body.classList.add('engine-document');
+		this.app.use(this.router).mount(container);
+
+		host.project.setRendererReady(this);
 	}
 }
 

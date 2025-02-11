@@ -87,5 +87,6 @@ module.exports = {
         "no-new-func": 0,
         "no-dupe-class-members": 0,
         "prefer-destructuring": 0,
+        "guard-for-in": 0,
     },
 }

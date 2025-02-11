@@ -1,3 +1,4 @@
+import { InterpretDataSource as DataSource } from '@arvin-shu/microcode-datasource-types'; // 修正模块名称
 import { IPublicTypeAppConfig } from './app-config';
 import { IPublicTypeI18nMap } from './i18n-map';
 import { IPublicTypeComponentsMap } from './npm';
@@ -36,6 +37,16 @@ export interface IPublicTypeProjectSchema<T = IPublicTypeRootSchema> {
 	 *
 	 */
 	config?: IPublicTypeAppConfig & Record<string, unknown>;
+
+	/**
+	 * 应用范围内的全局样式
+	 */
+	css?: string;
+
+	/**
+	 * 数据源
+	 */
+	dataSource?: DataSource;
 
 	// TODO 还有很多属性没有实现
 }

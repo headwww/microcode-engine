@@ -11,6 +11,7 @@ import {
 	ExtractPropTypes,
 	PropType,
 } from 'vue';
+import { RequestHandler } from '@arvin-shu/microcode-datasource-types';
 import { BlockScope, SchemaParser } from '../utils';
 
 export const rendererProps = {
@@ -56,7 +57,10 @@ export const rendererProps = {
 		type: Boolean,
 		default: true,
 	},
-	// TODO   __requestHandlersMap没处理
+	__requestHandlersMap: {
+		type: Object as PropType<Record<string, RequestHandler>>,
+		default: () => ({}),
+	},
 	__props: {
 		type: Object,
 		default: () => ({}),

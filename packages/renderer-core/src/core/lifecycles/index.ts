@@ -4,12 +4,24 @@ import { RuntimeScope, SchemaParser } from '../../utils';
 import { beforeCreate } from './beforeCreate';
 import { initProps } from './init-props';
 import { setup } from './setup';
+import { initInject } from './init-inject';
+import { initData } from './init-data';
+import { initComputed } from './init-computed';
+import { initWatch } from './init-watch';
+import { initProvide } from './init-provide';
+import { created } from './created';
 
 const VUE_MICROCODE_LIFTCYCLES_MAP = {
 	setup,
-	initEmits,
+	created,
 	beforeCreate,
+	initInject,
+	initProvide,
+	initEmits,
 	initProps,
+	initData,
+	initWatch,
+	initComputed,
 };
 
 export type MicrocodeHookMap = typeof VUE_MICROCODE_LIFTCYCLES_MAP;
