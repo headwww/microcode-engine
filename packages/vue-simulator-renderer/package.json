@@ -12,6 +12,8 @@
 	"license": "ISC",
 	"dependencies": {
 		"@arvin-shu/microcode-renderer-core": "^1.0.4",
+		"@arvin-shu/microcode-utils": "^1.0.0",
+		"lodash": "^4.17.21",
 		"vue-router": "^4.4.5"
 	}
 }

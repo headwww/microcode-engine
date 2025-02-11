@@ -10,6 +10,7 @@ import {
 } from 'vue';
 import { createMemoryHistory, createRouter, type Router } from 'vue-router';
 import { AssetLoader } from '@arvin-shu/microcode-utils';
+import { merge } from 'lodash';
 import { Renderer, SimulatorRendererView } from './renderer-view';
 import { host } from './host';
 import {
@@ -200,6 +201,10 @@ export class DocumentInstance {
 	}
 
 	rerender() {}
+
+	get key() {
+		return `${this.document.id}:${Date.now()}`;
+	}
 }
 
 // TODO 包导入问题，考虑打包成UMD的情况AssetLoader是从@arvin-shu/microcode-utils导入的
@@ -225,24 +230,25 @@ export class SimulatorRendererContainer {
 
 	private documentInstanceMap = new Map<string, DocumentInstance>();
 
-	private layout: Ref<SimulatorViewLayout> = shallowRef({});
+	layout: Ref<SimulatorViewLayout> = shallowRef({});
 
-	private disableCompMock: Ref<boolean | string[]> = shallowRef(true);
+	disableCompMock: Ref<boolean | string[]> = shallowRef(true);
 
-	private libraryMap: Ref<Record<string, string>> = shallowRef({});
+	libraryMap: Ref<Record<string, string>> = shallowRef({});
 
-	private componentsMap: Ref<Record<string, MixedComponent>> = shallowRef({});
+	componentsMap: Ref<Record<string, MixedComponent>> = shallowRef({});
 
-	private device: Ref<string> = shallowRef('default');
+	device: Ref<string> = shallowRef('default');
 
-	private locale: Ref<string | undefined> = shallowRef();
+	locale: Ref<string | undefined> = shallowRef();
 
-	private designMode: Ref<boolean> = shallowRef(false);
+	designMode: Ref<'design' | 'live'> = shallowRef('design');
 
-	private requestHandlersMap: Ref<Record<string, CallableFunction>> =
-		shallowRef({});
+	requestHandlersMap: Ref<Record<string, CallableFunction>> = shallowRef({});
 
-	private thisRequiredInJSE: Ref<boolean> = shallowRef(false);
+	thisRequiredInJSE: Ref<boolean> = shallowRef(false);
+
+	context: any = shallowRef({});
 
 	private disposeFunctions: Array<() => void> = [];
 
@@ -350,6 +356,37 @@ export class SimulatorRendererContainer {
 				await this.load(componentsAsset);
 				this.buildComponents();
 			}
+		});
+
+		this.context.value = {
+			utils: {
+				i18n: {
+					setLocale: (loc: string) => {
+						this.context.value.utils.i18n.currentLocale = loc;
+						this.locale.value = loc;
+					},
+					currentLocale: this.locale.value,
+					messages: {},
+				},
+			},
+			constants: {},
+			requestHandlersMap: this.requestHandlersMap.value,
+		};
+
+		host.injectionConsumer.consume((data: any) => {
+			const newCtx = {
+				...this.context.value,
+			};
+			merge(newCtx, data.appHelper || {});
+			this.context.value = newCtx;
+		});
+
+		host.i18nConsumer.consume((data: any) => {
+			const newCtx = {
+				...this.context.value,
+			};
+			newCtx.utils.i18n.messages = data || {};
+			this.context.value = newCtx;
 		});
 	}
 
