@@ -27,7 +27,10 @@ import {
 	Project,
 	Setters,
 } from '@arvin-shu/microcode-shell';
-import { IPublicTypePluginMeta } from '@arvin-shu/microcode-types';
+import {
+	IPublicTypeEngineOptions,
+	IPublicTypePluginMeta,
+} from '@arvin-shu/microcode-types';
 import { Logger } from '@arvin-shu/microcode-utils';
 import { h } from 'vue';
 import { defaultPanelRegistry } from './inner-plugins/default-panel-registry';
@@ -111,8 +114,14 @@ editor.set(
 	`http://127.0.0.1:8081/dist/dist/js/index.js?${Math.random().toString(36).substring(2, 15)}`
 );
 
-export async function init(pluginPreference?: PluginPreference) {
+export async function init(
+	pluginPreference?: PluginPreference,
+	options?: IPublicTypeEngineOptions
+) {
 	await plugins.init(pluginPreference);
+
+	engineConfig.setEngineOptions(options as any);
+
 	// TODO 先模拟环境 后期如果engine-core打包成umd，则需要将此代码注释掉
 	window.ArvinMicrocodeEngine = innerPlugins._getMicrocodePluginContext(
 		{} as any

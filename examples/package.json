@@ -23,6 +23,7 @@
         "@arvin-shu/microcode-engine": "workspace:^",
         "@arvin-shu/microcode-theme": "workspace:^",
         "@arvin-shu/microcode-vue-simulator-renderer": "workspace:^",
+        "axios": "^1.7.9",
         "element-plus": "^2.9.3",
         "vue-router": "^4.4.5",
         "vxe-pc-ui": "^4.3.75",

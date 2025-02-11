@@ -86,7 +86,7 @@ export const builtinSimulatorProps = {
 	},
 	deviceClassName: String,
 	environment: [Object, String] as PropType<Asset>,
-	// TODO requestHandlersMap
+	requestHandlersMap: Object as PropType<any>,
 	extraEnvironment: [Object, String] as PropType<Asset>,
 	library: Array as PropType<LibraryItem[]>,
 	// TODO utilsMetadata
@@ -187,6 +187,14 @@ export class BuiltinSimulatorHost
 	private readonly computedDesignMode = computed(
 		() => this.get('designMode') || 'design'
 	);
+
+	private readonly computedRequestHandlersMap = computed(
+		() => this.get('requestHandlersMap') || null
+	);
+
+	get requestHandlersMap() {
+		return this.computedRequestHandlersMap.value;
+	}
 
 	get designMode() {
 		return this.computedDesignMode.value;
@@ -380,8 +388,9 @@ export class BuiltinSimulatorHost
 		const renderer: any = await createSimulator(this, iframe, vendors);
 
 		await this.componentsConsumer.waitFirstConsume();
-		// TODO 资源消费问题没用解决
-		// await this.injectionConsumer.waitFirstConsume();
+
+		await this.injectionConsumer.waitFirstConsume();
+
 		// TODO 加载异步 Library
 
 		renderer.run();

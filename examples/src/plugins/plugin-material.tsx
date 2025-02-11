@@ -442,13 +442,44 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							height: '100%',
 						},
 					},
+					state: {
+						text: '响应式绑定的变量',
+					},
+					dataSource: {
+						list: [
+							{
+								type: 'fetch',
+								isInit: true,
+								options: {
+									params: {},
+									method: 'GET',
+									isCors: true,
+									timeout: 5000,
+									headers: {},
+									uri: 'https://jsonplaceholder.typicode.com/posts',
+								},
+								id: 'posts',
+							},
+						],
+					},
 					fileName: '/',
+					lifeCycles: {
+						mounted: {
+							type: 'JSFunction',
+							value:
+								"function () {\n  this.dataSourceMap.posts.load();     console.log('mounted', this\n);\n  }",
+						},
+					},
 					children: [
 						{
 							componentName: 'LtButton',
 							id: 'node_sxsm4wdio232',
 							props: {
-								children: '按钮1',
+								children: {
+									type: 'JSExpression',
+									value: 'this.$data.text',
+									mock: '按钮',
+								},
 							},
 							hidden: false,
 							title: '',

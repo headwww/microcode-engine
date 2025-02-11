@@ -4,6 +4,7 @@ import {
 	plugins,
 	registryInnerPlugin,
 } from '@arvin-shu/microcode-engine';
+import axios from 'axios';
 import App from './App.vue';
 import '@arvin-shu/microcode-theme/src/index.scss';
 import './rest.scss';
@@ -27,6 +28,35 @@ await plugins.register(InitSkeleton);
 await plugins.register(InitMaterial);
 await plugins.register(InitSetter);
 await plugins.register(InitVueCodeEditor);
-await init(preference);
+
+function createAxiosFetchHandler(config?: Record<string, unknown>) {
+	// eslint-disable-next-line func-names
+	return async function (options: any) {
+		const requestConfig = {
+			...options,
+			url: options.uri,
+			method: options.method,
+			data: options.params,
+			headers: options.headers,
+			...config,
+		};
+		const response = await axios(requestConfig as any);
+		return response;
+	};
+}
+
+const appHelper = {
+	requestHandlersMap: {
+		fetch: createAxiosFetchHandler(),
+	},
+};
+
+await init(preference, {
+	locale: 'zh-CN',
+	requestHandlersMap: {
+		fetch: createAxiosFetchHandler(),
+	},
+	appHelper,
+} as any);
 
 app.mount('#app');
