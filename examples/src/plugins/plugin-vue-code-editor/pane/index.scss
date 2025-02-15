@@ -1,0 +1,19 @@
+.mtc-code-pane-tabs {
+	height: 100%;
+
+	.mtc-code-pane-tabs-nav {
+		margin: 0 !important;
+	}
+
+	.mtc-code-pane-tabs-content-holder {
+		position: relative;
+		inset: 0;
+		height: 100%;
+	}
+
+	.mtc-code-pane-tabs-content {
+		position: absolute;
+		inset: 0;
+		overflow: hidden;
+	}
+}

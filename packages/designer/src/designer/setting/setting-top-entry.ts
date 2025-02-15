@@ -268,7 +268,7 @@ export class SettingTopEntry implements ISettingTopEntry {
 		this.disposeItems();
 		this._settingFieldMap = {};
 		this.emitter.removeAllListeners();
-		this.disposeFunctions.forEach((f) => f());
+		this.disposeFunctions?.forEach((f) => f?.());
 		this.disposeFunctions = [];
 	}
 

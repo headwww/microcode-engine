@@ -21,10 +21,14 @@
     "dependencies": {
         "@arvin-shu/microcode-editor-core": "workspace:^",
         "@arvin-shu/microcode-engine": "workspace:^",
+        "@arvin-shu/microcode-plugin-base-monaco-editor": "^1.0.0",
         "@arvin-shu/microcode-theme": "workspace:^",
         "@arvin-shu/microcode-vue-simulator-renderer": "workspace:^",
+        "acorn": "^8.14.0",
         "axios": "^1.7.9",
         "element-plus": "^2.9.3",
+        "magic-string": "^0.30.17",
+        "short-uuid": "^5.2.0",
         "vue-router": "^4.4.5",
         "vxe-pc-ui": "^4.3.75",
         "vxe-table": "^4.10.5"

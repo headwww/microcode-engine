@@ -378,11 +378,21 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							description: '加载中',
 							propType: 'bool',
 						},
+						{
+							name: 'checked',
+							description: '选中',
+							propType: 'bool',
+						},
 					],
 					configure: {
 						props: [
 							{
 								name: 'loading',
+								setter: 'BoolSetter',
+								defaultValue: false,
+							},
+							{
+								name: 'checked',
 								setter: 'BoolSetter',
 								defaultValue: false,
 							},
@@ -435,15 +445,21 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 			componentsTree: [
 				{
 					componentName: 'Page',
+					fileName: '/',
 					id: 'node_dockcviv8fo1',
 					props: {
-						ref: 'outerView',
-						style: {
-							height: '100%',
-						},
+						style: {},
 					},
 					state: {
-						text: '响应式绑定的变量',
+						text: 'outer',
+						isShowDialog: false,
+						info: {
+							info: '',
+							user: {
+								username: '',
+								password: '',
+							},
+						},
 					},
 					dataSource: {
 						list: [
@@ -456,20 +472,42 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 									isCors: true,
 									timeout: 5000,
 									headers: {},
-									uri: 'https://jsonplaceholder.typicode.com/posts',
+									uri: {
+										type: 'JSExpression',
+										value: 'this.url',
+									},
 								},
-								id: 'posts',
+								id: 'info111',
+								willFetch: {
+									type: 'JSFunction',
+									value:
+										'function(options) { \n  console.log("测试",options,this)\n  return options; }',
+								},
 							},
 						],
 					},
-					fileName: '/',
+					css: 'body {\n  font-size: 12px;\n }\n\n',
 					lifeCycles: {
 						mounted: {
 							type: 'JSFunction',
-							value:
-								"function () {\n  this.dataSourceMap.posts.load();     console.log('mounted', this\n);\n  }",
+							value: "function () {\n    console.log('did mount',this);\n  }",
+						},
+						beforeMount: {
+							type: 'JSFunction',
+							value: "function () {\n    console.log('will unmount');\n  }",
 						},
 					},
+					methods: {
+						testFunc: {
+							type: 'JSFunction',
+							value: "function () {\n      console.log('test func');\n    }",
+						},
+						testFunc222: {
+							type: 'JSFunction',
+							value: "function () {\n      console.log('test func');\n    }",
+						},
+					},
+					originCode: code,
 					children: [
 						{
 							componentName: 'LtButton',
@@ -488,7 +526,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							conditionGroup: '',
 						},
 					],
-				},
+				} as any,
 			],
 		});
 	},
@@ -497,3 +535,33 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 InitMaterial.pluginName = 'InitMaterial';
 
 export default InitMaterial;
+
+const code = `import { defineComponent } from 'vue';
+
+export default defineComponent({
+  data: () => ({
+    text: "outer",
+    isShowDialog: false,
+  }),		
+  watch: {
+    text(newValue, oldValue) {
+      console.log('text changed:', oldValue, '->', newValue);
+    },
+  },
+  methods: {
+    testFunc() {
+      console.log('test func');
+    },
+    testFunc222() {
+      console.log('test func');
+    },
+  },
+  mounted() {
+    this.$data.text = "9io"
+    console.log('did mount', this.$data.text);
+  },
+  beforeMount() {
+    console.log('will unmount');
+  },
+})
+`;

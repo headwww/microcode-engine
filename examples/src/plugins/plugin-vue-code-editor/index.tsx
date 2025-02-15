@@ -1,5 +1,7 @@
 import { CodeOutlined } from '@ant-design/icons-vue';
 import { IPublicModelPluginContext } from '@arvin-shu/microcode-types';
+import { VueCodeEditorPane } from './pane';
+import '@arvin-shu/microcode-plugin-base-monaco-editor/theme/index.css';
 
 const InitVueCodeEditor = ({
 	project,
@@ -8,7 +10,7 @@ const InitVueCodeEditor = ({
 	material,
 }: IPublicModelPluginContext) => ({
 	init() {
-		skeleton.add({
+		const codePane = skeleton.add({
 			area: 'leftArea',
 			name: 'codeEditor',
 			type: 'PanelDock',
@@ -17,17 +19,22 @@ const InitVueCodeEditor = ({
 				description: '源码面板',
 			},
 			panelProps: {
-				width: '500px',
+				width: '600px',
 				title: '源码面板',
 			},
 			content: (
-				<div
+				<VueCodeEditorPane
 					material={material}
 					project={project}
 					skeleton={skeleton}
 					event={event}
 				/>
 			),
+		});
+
+		codePane && codePane.disable?.();
+		project.onSimulatorRendererReady(() => {
+			codePane?.enable?.();
 		});
 	},
 });

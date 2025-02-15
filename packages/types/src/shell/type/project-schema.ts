@@ -48,5 +48,9 @@ export interface IPublicTypeProjectSchema<T = IPublicTypeRootSchema> {
 	 */
 	dataSource?: DataSource;
 
+	/**
+	 * 当前应用元数据信息
+	 */
+	meta?: Record<string, any>;
 	// TODO 还有很多属性没有实现
 }
