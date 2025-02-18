@@ -1,7 +1,7 @@
 import { defineComponent } from 'vue';
 
 export const ImportIcon = defineComponent({
-	name: 'Import',
+	name: 'ImportIcon',
 	setup() {
 		return () => (
 			<svg

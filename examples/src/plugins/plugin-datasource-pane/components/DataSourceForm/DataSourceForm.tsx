@@ -1,5 +1,5 @@
 import { computed, defineComponent, PropType } from 'vue';
-import { Button, Form, Input, Switch, Textarea } from 'ant-design-vue';
+import { Button, Form, Input, Switch } from 'ant-design-vue';
 import { InterpretDataSourceConfig as DataSourceConfig } from '@arvin-shu/microcode-datasource-types';
 
 import './form.scss';
@@ -75,12 +75,6 @@ export const DataSourceForm = defineComponent({
 						</Form.Item>
 						<Form.Item name="isInit" label="自动加载">
 							<Switch v-model:checked={value.value.isInit}></Switch>
-						</Form.Item>
-						<Form.Item name="options.uri" label="请求地址">
-							<Textarea
-								autoSize={{ minRows: 3, maxRows: 5 }}
-								v-model:value={value.value.options?.uri}
-							></Textarea>
 						</Form.Item>
 					</Form>
 				</div>

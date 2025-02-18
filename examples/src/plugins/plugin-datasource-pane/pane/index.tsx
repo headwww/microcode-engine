@@ -59,9 +59,7 @@ export const DataSourcePane = defineComponent({
 	setup(props) {
 		const { initialSchema } = props;
 
-		const dataSourceList = ref<Array<DataSourceConfig>>(
-			initialSchema?.list || []
-		);
+		const dataSourceList = ref<any>(initialSchema?.list || []);
 
 		const open = ref(false);
 
@@ -76,7 +74,6 @@ export const DataSourcePane = defineComponent({
 				isInit: true,
 				isSync: false,
 			};
-			// @ts-check
 			dataSourceList.value.push(newDataSource);
 			currentDataSource.value =
 				dataSourceList.value[dataSourceList.value.length - 1];
@@ -95,7 +92,7 @@ export const DataSourcePane = defineComponent({
 			}
 			if (action === 'delete') {
 				dataSourceList.value = dataSourceList.value.filter(
-					(item) => item.id !== dataSource.id
+					(item: DataSourceConfig) => item.id !== dataSource.id
 				);
 				if (currentDataSource.value?.id === dataSource.id) {
 					open.value = false;

@@ -1,14 +1,9 @@
-import {
-	PartitionOutlined,
-	SlackOutlined,
-	WalletFilled,
-} from '@ant-design/icons-vue';
+import { PartitionOutlined, WalletFilled } from '@ant-design/icons-vue';
 import {
 	IPublicEnumTransformStage,
 	IPublicModelPluginContext,
 } from '@arvin-shu/microcode-types';
 import { Button } from 'ant-design-vue';
-import { ComponentPane } from './ComponentPane';
 
 const InitSkeleton = (ctx: IPublicModelPluginContext) => ({
 	async init() {
@@ -60,21 +55,6 @@ const InitSkeleton = (ctx: IPublicModelPluginContext) => ({
 			content: <div>大纲树内容</div>,
 			panelProps: {
 				title: '大纲树',
-			},
-		});
-		skeleton.add({
-			name: 'leftArea-PaneDock-2',
-			area: 'leftArea',
-			type: 'PanelDock',
-			props: {
-				align: 'top',
-				icon: <SlackOutlined />,
-				description: '组件库',
-			},
-			content: <ComponentPane></ComponentPane>,
-			panelProps: {
-				title: '组件',
-				width: '1200px',
 			},
 		});
 	},

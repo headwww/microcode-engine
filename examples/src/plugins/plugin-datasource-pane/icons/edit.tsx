@@ -1,7 +1,7 @@
 import { defineComponent } from 'vue';
 
 export const EditIcon = defineComponent({
-	name: 'Edit',
+	name: 'EditIcon',
 	setup() {
 		return () => (
 			<svg

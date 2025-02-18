@@ -1,7 +1,7 @@
 import { defineComponent } from 'vue';
 
 export const CopyIcon = defineComponent({
-	name: 'Copy',
+	name: 'CopyIcon',
 	setup() {
 		return () => (
 			<svg

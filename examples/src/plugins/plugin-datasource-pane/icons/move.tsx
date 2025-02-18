@@ -1,7 +1,7 @@
 import { defineComponent } from 'vue';
 
 export const MoveIcon = defineComponent({
-	name: 'Move',
+	name: 'MoveIcon',
 	setup() {
 		return () => (
 			<svg
