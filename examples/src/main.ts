@@ -14,6 +14,7 @@ import InitMaterial from './plugins/plugin-material';
 import InitSetter from './plugins/plugin-init-setter';
 import ComponentPanelPlugin from './plugins/plugin-components-pane';
 import InitVueCodeEditor from './plugins/plugin-vue-code-editor/index';
+import DataSourcePane from './plugins/plugin-datasource-pane/index';
 
 window.Vue = Vue;
 const app = Vue.createApp(App);
@@ -28,6 +29,7 @@ await plugins.register(InitSkeleton);
 await plugins.register(InitMaterial);
 await plugins.register(InitSetter);
 await plugins.register(InitVueCodeEditor);
+await plugins.register(DataSourcePane);
 
 function createAxiosFetchHandler(config?: Record<string, unknown>) {
 	// eslint-disable-next-line func-names

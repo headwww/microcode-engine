@@ -472,12 +472,45 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 									isCors: true,
 									timeout: 5000,
 									headers: {},
-									uri: {
-										type: 'JSExpression',
-										value: 'this.url',
-									},
+									uri: 'ltApi/api/login',
 								},
 								id: 'info111',
+								willFetch: {
+									type: 'JSFunction',
+									value:
+										'function(options) { \n  console.log("测试",options,this)\n  return options; }',
+								},
+							},
+							{
+								type: 'fetch',
+								isInit: true,
+								options: {
+									params: {},
+									method: 'Post',
+									isCors: true,
+									timeout: 5000,
+									headers: {},
+									uri: 'https://api.github.com/users/octocat',
+								},
+								id: 'info222',
+								willFetch: {
+									type: 'JSFunction',
+									value:
+										'function(options) { \n  console.log("测试",options,this)\n  return options; }',
+								},
+							},
+							{
+								type: 'fetch',
+								isInit: true,
+								options: {
+									params: ['system', 'mes123'],
+									method: 'POST',
+									isCors: true,
+									timeout: 5000,
+									headers: {},
+									uri: 'ltApi/api/login',
+								},
+								id: 'login',
 								willFetch: {
 									type: 'JSFunction',
 									value:

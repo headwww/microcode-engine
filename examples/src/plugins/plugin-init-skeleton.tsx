@@ -1,5 +1,4 @@
 import {
-	DatabaseOutlined,
 	PartitionOutlined,
 	SlackOutlined,
 	WalletFilled,
@@ -76,18 +75,6 @@ const InitSkeleton = (ctx: IPublicModelPluginContext) => ({
 			panelProps: {
 				title: '组件',
 				width: '1200px',
-			},
-		});
-		skeleton.add({
-			name: 'leftArea-PaneDock-3',
-			area: 'leftArea',
-			type: 'PanelDock',
-			props: {
-				icon: <DatabaseOutlined />,
-			},
-			content: <div>数据源</div>,
-			panelProps: {
-				title: '数据源',
 			},
 		});
 	},

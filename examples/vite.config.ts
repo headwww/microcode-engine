@@ -10,6 +10,13 @@ export default defineConfig({
 		host: '0.0.0.0',
 		port: 9099,
 		open: true, // 自动打开浏览器
+		proxy: {
+			'/ltApi': {
+				target: 'http://ltscm.tpddns.cn:8081/',
+				changeOrigin: true,
+				rewrite: (path) => path.replace(/^\/ltApi/, ''),
+			},
+		},
 	},
 	build: {
 		target: 'esnext', // 或 'es2022'

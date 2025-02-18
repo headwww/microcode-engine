@@ -1,0 +1,36 @@
+.datasource-form-wrapper {
+	position: absolute;
+	left: 320px;
+	top: 0;
+	bottom: 0;
+	min-width: 600px;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	flex-direction: column;
+	background: rgb(255 255 255);
+	border-left: 1px solid rgb(221 221 221);
+	border-right: 1px solid rgb(221 221 221);
+
+	.datasource-form-header {
+		background: var(--color-block-background-light, rgb(31 56 88 / 4%));
+		padding: 0 12px;
+		width: 600px;
+		line-height: 44px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		.datasource-form-header-title {
+			font-weight: 300;
+			font-size: 16px;
+		}
+	}
+
+	.datasource-form-content {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		padding: 20px 50px 0;
+	}
+}
