@@ -59,6 +59,7 @@ await init(preference, {
 		fetch: createAxiosFetchHandler(),
 	},
 	appHelper,
+	supportVariableGlobally: true,
 } as any);
 
 app.mount('#app');

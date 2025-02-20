@@ -1,4 +1,5 @@
 import {
+	IComponentMeta,
 	ISettingEntry,
 	ISettingField,
 	ISettingTopEntry,
@@ -16,6 +17,20 @@ import { engineConfig, shallowIntl } from '@arvin-shu/microcode-editor-core';
 import { createField } from '../field';
 import { PopupPipe, PopupService } from '../popup';
 import { Skeleton } from '../../skeleton';
+
+/**
+ * 判断是否为标准组件
+ * @param componentMeta 组件元数据
+ * @returns 如果是标准组件返回true,否则返回false
+ * 标准组件的判断依据:
+ * 1. componentMeta不为空
+ * 2. prototype属性为null
+ */
+function isStandardComponent(componentMeta: IComponentMeta | null) {
+	if (!componentMeta) return false;
+	const { prototype } = componentMeta;
+	return prototype == null;
+}
 
 export const SettingPane = defineComponent({
 	name: 'SettingPane',
@@ -122,7 +137,7 @@ export const SettingFieldView = defineComponent({
 		}
 
 		const setterInfo = computed(() => {
-			const { setter, extraProps } = props.field!;
+			const { setter, extraProps, componentMeta } = props.field!;
 
 			const { defaultValue } = extraProps;
 
@@ -157,14 +172,16 @@ export const SettingFieldView = defineComponent({
 
 			// 根据是否支持变量配置做相应的更改
 			const supportVariable = props.field?.extraProps?.supportVariable;
-			const supportVariableGlobally = engineConfig.get(
-				'supportVariableGlobally',
-				false
-			);
+
+			const supportVariableGlobally =
+				engineConfig.get('supportVariableGlobally', false) &&
+				isStandardComponent(componentMeta);
+
 			const isUseVariableSetter = shouldUseVariableSetter(
 				supportVariable,
 				supportVariableGlobally
 			);
+
 			if (isUseVariableSetter === false) {
 				return {
 					setterProps,

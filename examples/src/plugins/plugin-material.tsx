@@ -143,6 +143,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 				{
 					componentName: 'TestTable',
 					title: '表格',
+
 					configure: {
 						component: {
 							// isContainer: true,
@@ -184,13 +185,33 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					configure: {
 						props: [
 							{
+								name: 'children',
+								title: {
+									label: '内容',
+									tip: 'children | 内容',
+								},
+								defaultValue: '按钮',
+								setter: ['StringSetter', 'VariableSetter'],
+							},
+							{
+								name: 'test',
+								title: {
+									label: {
+										type: 'i18n',
+										'zh-CN': '按钮类型',
+										'en-US': 'Type',
+									},
+								},
+								setter: ['StringSetter', 'VariableSetter'],
+							},
+							{
 								name: 'type',
 								title: {
 									type: 'i18n',
 									'zh-CN': '按钮类型',
 									'en-US': 'Type',
 								},
-								setter: 'StringSetter',
+								setter: ['StringSetter', 'VariableSetter', 'BoolSetter'],
 								extraProps: {
 									display: 'inline',
 								},
@@ -453,13 +474,6 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					state: {
 						text: 'outer',
 						isShowDialog: false,
-						info: {
-							info: '',
-							user: {
-								username: '',
-								password: '',
-							},
-						},
 					},
 					dataSource: {
 						list: [
@@ -545,13 +559,13 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 						{
 							componentName: 'LtButton',
 							id: 'node_sxsm4wdio232',
-							props: {
-								children: {
-									type: 'JSExpression',
-									value: 'this.$data.text',
-									mock: '按钮',
-								},
-							},
+							// props: {
+							// 	children: {
+							// 		type: 'JSExpression',
+							// 		value: 'this.$data.text',
+							// 		mock: '按钮',
+							// 	},
+							// },
 							hidden: false,
 							title: '',
 							isLocked: false,
@@ -590,8 +604,7 @@ export default defineComponent({
     },
   },
   mounted() {
-    this.$data.text = "9io"
-    console.log('did mount', this.$data.text);
+    console.log('did mount', this);
   },
   beforeMount() {
     console.log('will unmount');

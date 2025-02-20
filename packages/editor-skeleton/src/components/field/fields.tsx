@@ -183,7 +183,7 @@ export const Field = defineComponent({
 							{isAccordion && <DownOutlined class="mtc-field-icon" />}
 						</div>
 					)}
-					<div key="body" ref="body" class="mtc-field-body">
+					<div key="body" ref={body} class="mtc-field-body">
 						{children}
 					</div>
 				</div>

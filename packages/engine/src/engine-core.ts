@@ -138,6 +138,7 @@ export {
 	config,
 	event,
 	setters,
+	project,
 	material,
 	MicrocodeWorkbench,
 	// TODO 先模拟环境 这块需要考虑内置插件和外部插件的加载顺序
