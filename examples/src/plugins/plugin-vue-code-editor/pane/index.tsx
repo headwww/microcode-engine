@@ -7,7 +7,7 @@ import {
 	IPublicApiSkeleton,
 	IPublicEnumTransformStage,
 } from '@arvin-shu/microcode-types';
-import { TabPane, Tabs } from 'ant-design-vue';
+import { TabPane, Tabs, Button } from 'ant-design-vue';
 import './index.scss';
 import { debounce, isString } from 'lodash';
 import { defaultCode } from '../config';
@@ -96,8 +96,15 @@ export const VueCodeEditorPane = defineComponent({
 		function renderTabBar(props: any) {
 			const { DefaultTabBar } = props;
 			return (
-				<div style={{ position: 'relative' }}>
+				<div>
 					<DefaultTabBar {...props} />
+					<Button
+						onClick={updateCssCode}
+						type="primary"
+						class="mtc-code-pane-save-btn"
+					>
+						保存
+					</Button>
 				</div>
 			);
 		}
@@ -120,7 +127,6 @@ export const VueCodeEditorPane = defineComponent({
 		}, 250);
 
 		// TODO 设置MonacoEditor的path
-
 		return () => (
 			<Tabs
 				size="small"
@@ -134,7 +140,6 @@ export const VueCodeEditorPane = defineComponent({
 						ref={jsEditor}
 						code={jsCode.value}
 						material={props.material!}
-						onChange={updateCssCode}
 					></JsEditor>
 				</TabPane>
 				<TabPane key="css" tab="index.css">
@@ -146,7 +151,6 @@ export const VueCodeEditorPane = defineComponent({
 						supportFullScreen
 						onChange={(value) => {
 							cssCode.value = value;
-							updateCssCode();
 						}}
 					></MonacoEditor>
 				</TabPane>

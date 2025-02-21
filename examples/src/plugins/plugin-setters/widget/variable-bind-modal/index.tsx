@@ -55,7 +55,7 @@ export const VariableBindModal = defineComponent({
 		});
 
 		function initCode() {
-			const fieldValue = field.value?.getValue();
+			const fieldValue = field.value.getValue();
 			jsCode.value = fieldValue?.value;
 		}
 
@@ -192,22 +192,25 @@ export const VariableBindModal = defineComponent({
 			visible.value = false;
 		}
 
+		const removeTheBinding = () => {
+			visible.value = false;
+			const fieldValue = field.value.getValue();
+			const value =
+				Object.prototype.toString.call(fieldValue) === '[object Object]'
+					? fieldValue.mock
+					: fieldValue;
+			field.value.setValue(value);
+		};
+
 		function renderFooter() {
 			return (
 				<div style="display: flex; justify-content: space-between;">
-					<Button
-						danger
-						onClick={() => {
-							visible.value = false;
-						}}
-					>
+					<Button danger onClick={removeTheBinding}>
 						移除绑定
 					</Button>
 					<div>
 						<Button
-							onClick={() => {
-								handleBind();
-							}}
+							onClick={handleBind}
 							type="primary"
 							disabled={!jsCode.value}
 						>
@@ -227,6 +230,7 @@ export const VariableBindModal = defineComponent({
 		return () => (
 			<div>
 				<Modal
+					maskClosable={false}
 					width="80vm"
 					centered
 					title="变量绑定"
@@ -246,6 +250,7 @@ export const VariableBindModal = defineComponent({
 								<div className="variable-modal-title">绑定</div>
 								<MonacoEditor
 									language="javascript"
+									value={jsCode.value}
 									style="height: calc(100% - 178px);border:1px solid var(--color-field-border,rgba(31,56,88,.3))!important"
 									editorDidMount={(_, editor) => {
 										editorDidMount.call(this, editor);
