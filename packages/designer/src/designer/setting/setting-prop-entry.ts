@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, toRaw } from 'vue';
 import { isJSExpression, uniqueId } from '@arvin-shu/microcode-utils';
 import {
 	GlobalEvent,
@@ -162,12 +162,13 @@ export class SettingPropEntry implements ISettingPropEntry {
 	 */
 	getValue(): any {
 		let val: any;
-		if (this.type === 'field' && this.name?.toString()) {
-			val = this.parent.getPropValue(this.name);
+		const self = toRaw(this);
+		if (self.type === 'field' && self.name?.toString()) {
+			val = toRaw(self.parent).getPropValue(self.name);
 		}
-		const { getValue } = this.extraProps;
+		const { getValue } = self.extraProps;
 		try {
-			return getValue ? getValue(this.internalToShellField()!, val) : val;
+			return getValue ? getValue(self.internalToShellField()!, val) : val;
 		} catch (e) {
 			// eslint-disable-next-line no-console
 			console.warn(e);
@@ -184,25 +185,22 @@ export class SettingPropEntry implements ISettingPropEntry {
 		force?: boolean,
 		extraOptions?: IPublicTypeSetValueOptions
 	) {
-		const oldValue = this.getValue();
-		if (this.type === 'field') {
-			this.name?.toString() && this.parent.setPropValue(this.name, val);
+		const self = toRaw(this);
+		const oldValue = self.getValue();
+		if (self.type === 'field') {
+			self.name?.toString() && toRaw(self.parent).setPropValue(self.name, val);
 		}
 
-		const { setValue } = this.extraProps;
+		const { setValue } = self.extraProps;
 		if (setValue && !extraOptions?.disableMutator) {
 			try {
-				setValue(this.internalToShellField()!, val);
+				setValue(self.internalToShellField()!, val);
 			} catch (e) {
 				// eslint-disable-next-line no-console
 				console.warn(e);
 			}
 		}
-		this.notifyValueChange(oldValue, val);
-		// TODO 废弃 如果 fromSetHotValue，那么在 setHotValue 中已经调用过 valueChange 了
-		// if (!extraOptions?.fromSetHotValue) {
-		// 	this.valueChange(extraOptions);
-		// }
+		self.notifyValueChange(oldValue, val);
 	}
 
 	/**

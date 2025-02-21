@@ -5,12 +5,14 @@ import {
 	markRaw,
 	nextTick,
 	onUnmounted,
+	ref,
 	Ref,
 	shallowRef,
 } from 'vue';
 import { createMemoryHistory, createRouter, type Router } from 'vue-router';
 import { AssetLoader } from '@arvin-shu/microcode-utils';
 import { merge } from 'lodash';
+import { SchemaParser } from '@arvin-shu/microcode-renderer-core';
 import { Renderer, SimulatorRendererView } from './renderer-view';
 import { host } from './host';
 import {
@@ -52,6 +54,8 @@ export class DocumentInstance {
 
 	/** 记录 vue 组件实例和组件 uid 的映射关系 */
 	vueInstanceMap = new Map<number, ComponentPublicInstance>();
+
+	timestamp = ref(Date.now());
 
 	get id() {
 		return this.document.id;
@@ -200,10 +204,21 @@ export class DocumentInstance {
 		return this.vueInstanceMap.get(cid);
 	}
 
-	rerender() {}
+	rerender() {
+		const now = Date.now();
+		if (this.container.context.suspense) {
+			Object.assign(this.timestamp, {
+				_value: now,
+				_rawValue: now,
+			});
+		} else {
+			this.timestamp.value = now;
+		}
+		SchemaParser.cleanCachedModules();
+	}
 
 	get key() {
-		return `${this.document.id}:${Date.now()}`;
+		return `${this.document.id}:${this.timestamp.value}`;
 	}
 }
 
@@ -340,9 +355,16 @@ export class SimulatorRendererContainer {
 					});
 					const inst = this.getCurrentDocument();
 					if (inst) {
-						await nextTick(() => {
-							this.router.replace({ name: inst.id, force: true });
-						});
+						try {
+							await nextTick(() => {
+								this.context.suspense = false;
+								this.router.replace({ name: inst.id, force: true });
+							});
+						} catch (error) {
+							this.context.suspense = false;
+							// eslint-disable-next-line no-console
+							console.error(error);
+						}
 					}
 				},
 				{

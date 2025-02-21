@@ -479,7 +479,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 						list: [
 							{
 								type: 'fetch',
-								isInit: true,
+								isInit: false,
 								options: {
 									params: {},
 									method: 'GET',
@@ -497,7 +497,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							},
 							{
 								type: 'fetch',
-								isInit: true,
+								isInit: false,
 								options: {
 									params: {},
 									method: 'Post',
@@ -515,7 +515,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							},
 							{
 								type: 'fetch',
-								isInit: true,
+								isInit: false,
 								options: {
 									params: ['system', 'mes123'],
 									method: 'POST',
@@ -559,13 +559,14 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 						{
 							componentName: 'LtButton',
 							id: 'node_sxsm4wdio232',
-							// props: {
-							// 	children: {
-							// 		type: 'JSExpression',
-							// 		value: 'this.$data.text',
-							// 		mock: '按钮',
-							// 	},
-							// },
+							props: {
+								children: '按钮',
+								// children: {
+								// 	type: 'JSExpression',
+								// 	value: 'this.$data.text',
+								// 	mock: '按钮',
+								// },
+							},
 							hidden: false,
 							title: '',
 							isLocked: false,
