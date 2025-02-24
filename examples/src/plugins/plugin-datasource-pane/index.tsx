@@ -2,6 +2,7 @@ import { DatabaseOutlined } from '@ant-design/icons-vue';
 import { IPublicModelPluginContext } from '@arvin-shu/microcode-types';
 import { DataSourcePaneWrapper } from './pane';
 
+// TODO 数据源面板 临时使用后期还有很多优化可以做
 const plugin = (ctx: IPublicModelPluginContext, options: any) => ({
 	init() {
 		options;

@@ -10,9 +10,13 @@ import './list.scss';
 export const DataSourceList = defineComponent({
 	name: 'DataSourceList',
 	inheritAttrs: false,
-	emits: ['action', 'update:value', 'update:dataSource'],
+	emits: ['action', 'update:value', 'update:dataSources'],
 	props: {
-		dataSource: {
+		draggable: {
+			type: Boolean,
+			default: true,
+		},
+		dataSources: {
 			type: Array as PropType<DataSourceConfig[]>,
 		},
 		value: {
@@ -22,10 +26,10 @@ export const DataSourceList = defineComponent({
 	setup(props, { emit }) {
 		const dataSourceList = computed({
 			get() {
-				return props.dataSource as DataSourceConfig[];
+				return props.dataSources as DataSourceConfig[];
 			},
 			set(value) {
-				emit('update:dataSource', value);
+				emit('update:dataSources', value);
 			},
 		});
 
@@ -79,8 +83,10 @@ export const DataSourceList = defineComponent({
 						}`}
 					>
 						<div class="datasource-list-item-title">
-							<MoveIcon class="datasource-list-item-handle move"></MoveIcon>
-							{item.id}
+							{props.draggable && (
+								<MoveIcon class="datasource-list-item-handle move"></MoveIcon>
+							)}
+							<span style="margin-left: 8px">{item.id}</span>
 						</div>
 						<div class="datasource-list-item-actions">
 							<EditIcon

@@ -3,18 +3,19 @@ import {
 	IPublicApiProject,
 	IPublicEnumTransformStage,
 } from '@arvin-shu/microcode-types';
-import { get } from 'lodash';
-import { defineComponent, PropType, ref } from 'vue';
+import { cloneDeep, get } from 'lodash';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import {
 	InterpretDataSource as DataSource,
 	InterpretDataSourceConfig as DataSourceConfig,
 } from '@arvin-shu/microcode-datasource-types';
-import { Button } from 'ant-design-vue';
+import { Button, message } from 'ant-design-vue';
 import { correctSchema, isSchemaValid } from '../utils';
 import {
 	DataSourceFilter,
 	DataSourceForm,
 	DataSourceList,
+	IDataSourceFilter,
 } from '../components';
 
 import './pane.scss';
@@ -63,16 +64,27 @@ export const DataSourcePane = defineComponent({
 
 		const open = ref(false);
 
-		const currentDataSource = ref();
+		const currentDataSource = ref<DataSourceConfig>();
+
+		const mode = ref<'create' | 'edit' | 'copy' | 'delete'>('edit');
 
 		function handleCreate() {
+			if (mode.value === 'create' || mode.value === 'copy') {
+				message.warning('存在未保存的数据源，请先保存！');
+				return;
+			}
 			open.value = true;
+			mode.value = 'create';
 			const newId = `dp_${Date.now().toString(36).toLowerCase()}`;
 			const newDataSource: DataSourceConfig = {
 				id: newId,
 				description: '',
 				isInit: true,
 				isSync: false,
+				options: {
+					uri: '',
+					method: 'POST',
+				},
 			};
 			dataSourceList.value.push(newDataSource);
 			currentDataSource.value =
@@ -87,10 +99,15 @@ export const DataSourcePane = defineComponent({
 			dataSource: DataSourceConfig;
 		}) {
 			if (action === 'edit') {
-				currentDataSource.value = dataSource;
+				if (mode.value === 'create' || mode.value === 'copy') {
+					message.warning('存在未保存的数据源，请先保存！');
+					return;
+				}
+				mode.value = 'edit';
 				open.value = true;
 			}
 			if (action === 'delete') {
+				mode.value = 'delete';
 				dataSourceList.value = dataSourceList.value.filter(
 					(item: DataSourceConfig) => item.id !== dataSource.id
 				);
@@ -99,6 +116,11 @@ export const DataSourcePane = defineComponent({
 				}
 			}
 			if (action === 'copy') {
+				if (mode.value === 'create' || mode.value === 'copy') {
+					message.warning('存在未保存的数据源，请先保存！');
+					return;
+				}
+				mode.value = 'copy';
 				const newDataSource = { ...dataSource };
 				newDataSource.id = `dp_${Date.now().toString(36).toLowerCase()}`;
 				dataSourceList.value.push(newDataSource);
@@ -107,10 +129,39 @@ export const DataSourcePane = defineComponent({
 			}
 		}
 
+		const filter = ref<IDataSourceFilter>({
+			method: 'ALL',
+			keyword: '',
+		});
+
+		const filteredDataSources = computed(() =>
+			dataSourceList.value.filter((item: DataSourceConfig) => {
+				// 根据关键字筛选
+				const description: string = (item?.description as string) || '';
+				const matchKeyword = filter.value.keyword
+					? description
+							.toLowerCase()
+							.includes(filter.value.keyword.toLowerCase()) ||
+						item.id.toLowerCase().includes(filter.value.keyword.toLowerCase())
+					: true;
+				// 根据请求方法筛选
+				const matchMethod =
+					filter.value.method === 'ALL'
+						? true
+						: item.options?.method === filter.value.method;
+
+				return matchKeyword && matchMethod;
+			})
+		);
+
+		const isFiltering = computed(
+			() => filter.value.keyword !== '' || filter.value.method !== 'ALL'
+		);
+
 		return () => (
 			<div class="datasource-pane">
 				<div class="datasource-pane-header">数据源</div>
-				<DataSourceFilter></DataSourceFilter>
+				<DataSourceFilter v-model:filter={filter.value}></DataSourceFilter>
 				<Button
 					class="datasource-pane-create-button"
 					type="primary"
@@ -119,16 +170,44 @@ export const DataSourcePane = defineComponent({
 					创建
 				</Button>
 				<DataSourceList
-					v-model:value={currentDataSource.value}
-					dataSource={dataSourceList.value}
+					draggable={!isFiltering.value}
+					value={currentDataSource.value}
+					onUpdate:value={(v) => {
+						if (mode.value === 'edit') {
+							currentDataSource.value = v;
+						}
+					}}
+					dataSources={filteredDataSources.value}
+					onUpdate:dataSources={(v) => {
+						dataSourceList.value = v;
+					}}
 					onAction={handleAction}
 				/>
-				{open.value && (
-					<DataSourceForm
-						v-model:open={open.value}
-						value={currentDataSource.value}
-					/>
-				)}
+				<DataSourceForm
+					v-model:open={open.value}
+					value={currentDataSource.value}
+					mode={mode.value}
+					onUpdate:value={(value) => {
+						mode.value = 'edit';
+						const newDataSource = cloneDeep(value);
+						const index = dataSourceList.value.findIndex(
+							(item: DataSourceConfig) =>
+								item.id === currentDataSource.value?.id
+						);
+						if (index !== -1) {
+							currentDataSource.value = newDataSource;
+							dataSourceList.value[index] = newDataSource;
+						}
+					}}
+					onDelete={() => {
+						dataSourceList.value = dataSourceList.value.filter(
+							(item: DataSourceConfig) =>
+								item.id !== currentDataSource.value?.id
+						);
+						mode.value = 'delete';
+						open.value = false;
+					}}
+				/>
 			</div>
 		);
 	},

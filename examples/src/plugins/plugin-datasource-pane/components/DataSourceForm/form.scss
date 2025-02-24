@@ -13,7 +13,7 @@
 	border-right: 1px solid rgb(221 221 221);
 
 	.datasource-form-header {
-		background: var(--color-block-background-light, rgb(31 56 88 / 4%));
+		background: rgb(31 56 88 / 4%);
 		padding: 0 12px;
 		width: 600px;
 		line-height: 44px;
@@ -32,5 +32,42 @@
 		display: flex;
 		flex-direction: column;
 		padding: 20px 50px 0;
+		overflow-y: auto;
+	}
+}
+
+.datasource-func-wrapper {
+	.datasource-func-header {
+		display: flex;
+		justify-content: space-between;
+		font-size: 14px;
+		align-items: center;
+		color: rgb(0 0 0 / 88%);
+		margin: 10px 0;
+	}
+
+	.datasource-func-list {
+		margin-bottom: 20px;
+
+		.datasource-func-item {
+			margin-left: 20px;
+
+			.datasource-func-item-title {
+				font-size: 14px;
+				width: 450px;
+				margin: 10px 0 5px;
+				justify-content: space-between;
+				height: 32px;
+				display: flex;
+				align-items: center;
+				font-weight: 500;
+				background: var(--color-block-background-shallow, rgb(31 56 88 / 6%));
+				border-top: 1px solid var(--color-line-normal, rgb(31 56 88 / 10%));
+				border-bottom: 1px solid var(--color-line-normal, rgb(31 56 88 / 10%));
+				color: var(--color-title);
+				padding: 0 12px;
+				user-select: none;
+			}
+		}
 	}
 }

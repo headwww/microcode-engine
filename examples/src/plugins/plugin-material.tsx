@@ -479,46 +479,10 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 						list: [
 							{
 								type: 'fetch',
-								isInit: false,
-								options: {
-									params: {},
-									method: 'GET',
-									isCors: true,
-									timeout: 5000,
-									headers: {},
-									uri: 'ltApi/api/login',
-								},
-								id: 'info111',
-								willFetch: {
-									type: 'JSFunction',
-									value:
-										'function(options) { \n  console.log("测试",options,this)\n  return options; }',
-								},
-							},
-							{
-								type: 'fetch',
-								isInit: false,
-								options: {
-									params: {},
-									method: 'Post',
-									isCors: true,
-									timeout: 5000,
-									headers: {},
-									uri: 'https://api.github.com/users/octocat',
-								},
-								id: 'info222',
-								willFetch: {
-									type: 'JSFunction',
-									value:
-										'function(options) { \n  console.log("测试",options,this)\n  return options; }',
-								},
-							},
-							{
-								type: 'fetch',
-								isInit: false,
+								isInit: true,
 								options: {
 									params: ['system', 'mes123'],
-									method: 'POST',
+									method: 'GET',
 									isCors: true,
 									timeout: 5000,
 									headers: {},
@@ -528,8 +492,21 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 								willFetch: {
 									type: 'JSFunction',
 									value:
-										'function(options) { \n  console.log("测试",options,this)\n  return options; }',
+										'function willFetch(options) { \n  console.log("测试",options,this)\n  return options; }',
 								},
+							},
+							{
+								type: 'fetch',
+								isInit: false,
+								options: {
+									params: {},
+									method: 'POST',
+									isCors: true,
+									timeout: 5000,
+									headers: {},
+									uri: 'https://api.github.com/users/octocat',
+								},
+								id: 'octocat',
 							},
 						],
 					},
