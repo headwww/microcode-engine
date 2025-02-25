@@ -3,8 +3,8 @@ import {
 	IPublicApiProject,
 	IPublicEnumTransformStage,
 } from '@arvin-shu/microcode-types';
-import { cloneDeep, get } from 'lodash';
-import { computed, defineComponent, PropType, ref } from 'vue';
+import { cloneDeep, get, isEmpty, set } from 'lodash';
+import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import {
 	InterpretDataSource as DataSource,
 	InterpretDataSourceConfig as DataSourceConfig,
@@ -32,6 +32,17 @@ export const DataSourcePaneWrapper = defineComponent({
 		},
 	},
 	setup(props) {
+		function handleSchemaChange(schema: DataSource) {
+			const { project } = props;
+			if (project) {
+				const docSchema = project.exportSchema(IPublicEnumTransformStage.Save);
+				if (!isEmpty(docSchema)) {
+					set(docSchema, 'componentsTree[0].dataSource.list', schema);
+					project.importSchema(docSchema);
+				}
+			}
+		}
+
 		return () => {
 			const { project } = props;
 			const projectSchema =
@@ -44,7 +55,12 @@ export const DataSourcePaneWrapper = defineComponent({
 			if (!isSchemaValid(schema)) {
 				schema = correctSchema(schema);
 			}
-			return <DataSourcePane initialSchema={schema} />;
+			return (
+				<DataSourcePane
+					initialSchema={schema}
+					onOnSchemaChange={handleSchemaChange}
+				/>
+			);
 		};
 	},
 });
@@ -52,12 +68,13 @@ export const DataSourcePaneWrapper = defineComponent({
 export const DataSourcePane = defineComponent({
 	name: 'DataSourcePane',
 	inheritAttrs: false,
+	emits: ['onSchemaChange'],
 	props: {
 		initialSchema: {
 			type: Object as PropType<DataSource>,
 		},
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const { initialSchema } = props;
 
 		const dataSourceList = ref<any>(initialSchema?.list || []);
@@ -156,6 +173,16 @@ export const DataSourcePane = defineComponent({
 
 		const isFiltering = computed(
 			() => filter.value.keyword !== '' || filter.value.method !== 'ALL'
+		);
+
+		watch(
+			dataSourceList,
+			(v) => {
+				emit('onSchemaChange', v);
+			},
+			{
+				deep: true,
+			}
 		);
 
 		return () => (

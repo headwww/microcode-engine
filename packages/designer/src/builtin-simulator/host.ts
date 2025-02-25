@@ -8,7 +8,6 @@ import {
 	ref,
 	shallowReactive,
 	toRaw,
-	watch,
 	watchEffect,
 } from 'vue';
 import {
@@ -284,8 +283,8 @@ export class BuiltinSimulatorHost
 		return watchEffect(effect, options);
 	}
 
-	watch(source: any, callback: any, options?: any) {
-		watch(source, callback, options);
+	watchEffect(callback: any, options?: any) {
+		return watchEffect(callback, options);
 	}
 
 	purge(): void {

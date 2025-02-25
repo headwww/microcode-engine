@@ -3,7 +3,6 @@ import {
 	ComponentPublicInstance,
 	createApp,
 	markRaw,
-	nextTick,
 	onUnmounted,
 	ref,
 	Ref,
@@ -73,12 +72,22 @@ export class DocumentInstance {
 		return this.document.getNode(id);
 	}
 
+	private _document: any;
+
+	get document(): any {
+		return this._document;
+	}
+
+	set document(doc: any) {
+		this._document = doc;
+	}
+
 	// eslint-disable-next-line no-useless-constructor
 	constructor(
 		readonly container: SimulatorRendererContainer,
-		readonly document: any
+		document: any
 	) {
-		//
+		this._document = document;
 	}
 
 	setHostInstance = (
@@ -317,60 +326,58 @@ export class SimulatorRendererContainer {
 		);
 
 		this.disposeFunctions.push(
-			host.watch(
-				() => host.project.documents,
-				async () => {
-					this._documentInstances.value = host.project.documents.map(
-						(doc: any) => {
-							let inst = this.documentInstanceMap.get(doc.id);
-							if (!inst) {
-								inst = new DocumentInstance(this, doc);
-								this.documentInstanceMap.set(doc.id, inst);
-							} else if (this.router.hasRoute(inst.id)) {
-								this.router.removeRoute(inst.id);
-							}
-							this.router.addRoute({
-								name: inst.id,
-								path: inst.path,
-								meta: {
-									// TODO [MICROCODE_ROUTE_META]: doc.schema,
-								},
-								component: Renderer,
-								props: ((doc) => () => ({
-									documentInstance: doc,
-									simulator: this,
-								}))(inst),
-							});
-							return inst;
+			host.watchEffect(async () => {
+				this._documentInstances.value = host.project.documents.map(
+					(doc: any) => {
+						let inst = this.documentInstanceMap.get(doc.id);
+						if (inst) {
+							// TODO 更新一下doc
+							inst.document = doc;
 						}
-					);
-
-					this.router.getRoutes().forEach((route) => {
-						const id = route.name as string;
-						const hasDoc = this.documentInstances.some((doc) => doc.id === id);
-						if (!hasDoc) {
-							this.router.removeRoute(id);
-							this.documentInstanceMap.delete(id);
+						if (!inst) {
+							inst = new DocumentInstance(this, doc);
+							this.documentInstanceMap.set(doc.id, inst);
+						} else if (this.router.hasRoute(inst.id)) {
+							this.router.removeRoute(inst.id);
 						}
-					});
-					const inst = this.getCurrentDocument();
-					if (inst) {
-						try {
-							await nextTick(() => {
-								this.context.suspense = false;
-								this.router.replace({ name: inst.id, force: true });
-							});
-						} catch (error) {
-							this.context.suspense = false;
-							// eslint-disable-next-line no-console
-							console.error(error);
-						}
+						this.router.addRoute({
+							name: inst.id,
+							path: inst.path,
+							meta: {
+								// TODO [MICROCODE_ROUTE_META]: doc.schema,
+							},
+							component: Renderer,
+							props: ((doc) => () => ({
+								documentInstance: doc,
+								simulator: this,
+							}))(inst),
+						});
+						return inst;
 					}
-				},
-				{
-					immediate: true,
+				);
+
+				this.router.getRoutes().forEach((route) => {
+					const id = route.name as string;
+					const hasDoc = this.documentInstances.some((doc) => doc.id === id);
+					if (!hasDoc) {
+						this.router.removeRoute(id);
+						this.documentInstanceMap.delete(id);
+					}
+				});
+				const inst = this.getCurrentDocument();
+				if (inst) {
+					try {
+						this.context.suspense = true;
+						if (this.router.currentRoute.value.name !== inst.id) {
+							await this.router.replace({ name: inst.id, force: true });
+						}
+					} catch (error) {
+						this.context.suspense = false;
+						// eslint-disable-next-line no-console
+						console.error(error);
+					}
 				}
-			)
+			})
 		);
 
 		host.componentsConsumer.consume(async (componentsAsset: any) => {
