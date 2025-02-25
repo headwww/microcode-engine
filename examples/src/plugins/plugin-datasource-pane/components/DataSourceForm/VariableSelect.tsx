@@ -34,7 +34,7 @@ export const VariableSelect = defineComponent({
 			for (const key in stateMap) {
 				if (Object.prototype.hasOwnProperty.call(stateMap, key) && key) {
 					dataSource.push({
-						key: `this.state.$data.${key}`,
+						key: `this.$data.${key}`,
 						title: key,
 					});
 				}
@@ -51,7 +51,7 @@ export const VariableSelect = defineComponent({
 			for (const key in methodsMap) {
 				if (Object.prototype.hasOwnProperty.call(methodsMap, key) && key) {
 					methods.push({
-						key: `this.state.${key}()`,
+						key: `this.${key}()`,
 						title: key,
 					});
 				}

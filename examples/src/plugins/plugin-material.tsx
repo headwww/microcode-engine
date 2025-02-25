@@ -488,7 +488,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 									uri: 'ltApi/api/login',
 									params: {
 										type: 'JSExpression',
-										value: 'this.state.$data.data',
+										value: 'this.$data.data',
 									},
 								},
 								id: 'login',

@@ -13,7 +13,6 @@ export function create(
 	return createDataSourceEngine(
 		config,
 		{
-			...scope,
 			state: scope,
 			setState(state) {
 				const needAddScope: Record<string, unknown> = {};
