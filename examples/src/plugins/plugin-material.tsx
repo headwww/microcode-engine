@@ -53,11 +53,17 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					urls: ['https://g.alicdn.com/platform/c/lodash/4.6.1/lodash.min.js'],
 				},
 
+				// {
+				// 	package: 'css',
+				// 	version: '1.0.0',
+				// 	library: 'css',
+				// 	urls: ['http://192.168.1.59:8080/dist/renderer.css'],
+				// },
 				{
-					package: 'css',
+					package: 'css1',
 					version: '1.0.0',
-					library: 'css',
-					urls: ['http://192.168.1.59:8080/dist/renderer.css'],
+					library: 'css1',
+					urls: ['http://127.0.0.1:8080/dist/renderer.css'],
 				},
 				{
 					package: 'dayjs',
@@ -480,7 +486,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 						list: [
 							{
 								type: 'fetch',
-								isInit: true,
+								isInit: false,
 								options: {
 									method: 'POST',
 									isCors: true,

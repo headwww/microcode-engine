@@ -71,3 +71,13 @@
 		}
 	}
 }
+
+.variable-binded {
+	background: var(--color-brand, #006cff);
+	color: #fff !important;
+	border-radius: 3px;
+
+	.mtc-title-icon svg {
+		fill: #fff;
+	}
+}

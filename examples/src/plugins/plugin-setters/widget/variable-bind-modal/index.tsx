@@ -29,6 +29,8 @@ export const VariableBindModal = defineComponent({
 
 		const jsCode = ref('');
 
+		const scope = ref('');
+
 		const exportSchema = computed(
 			() => props.config?.props?.getSchema?.() || project.exportSchema()
 		);
@@ -46,8 +48,9 @@ export const VariableBindModal = defineComponent({
 		onMounted(() => {
 			event.on(
 				'common:variableBindModal.openModal',
-				({ field: fieldValue }) => {
+				({ field: fieldValue, scope: scopeValue }) => {
 					field.value = fieldValue;
+					scope.value = scopeValue || '';
 					initCode();
 					openModal();
 				}
@@ -95,7 +98,7 @@ export const VariableBindModal = defineComponent({
 			for (const key in stateMap) {
 				if (Object.prototype.hasOwnProperty.call(stateMap, key) && key) {
 					dataSource.push({
-						key: `this.$data.${key}`,
+						key: `this.${scope.value}$data.${key}`,
 						title: key,
 					});
 				}
@@ -112,7 +115,7 @@ export const VariableBindModal = defineComponent({
 			for (const key in methodsMap) {
 				if (Object.prototype.hasOwnProperty.call(methodsMap, key) && key) {
 					methods.push({
-						key: `this.${key}()`,
+						key: `this.${scope.value}${key}()`,
 						title: key,
 					});
 				}
@@ -136,7 +139,7 @@ export const VariableBindModal = defineComponent({
 				if (item && item.id) {
 					dataSource.push({
 						title: item.id,
-						key: `this.dataSourceMap.${item.id}`,
+						key: `this.${scope.value}dataSourceMap.${item.id}`,
 					});
 				}
 			}

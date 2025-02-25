@@ -34,7 +34,6 @@ await plugins.register(DataSourcePane);
 function createAxiosFetchHandler(config?: Record<string, unknown>) {
 	// eslint-disable-next-line func-names
 	return async function (options: any) {
-		console.log(options, config);
 		const requestConfig = {
 			url: options.uri,
 			method: options.method,
@@ -45,8 +44,7 @@ function createAxiosFetchHandler(config?: Record<string, unknown>) {
 			},
 		};
 
-		console.log(requestConfig);
-
+		config;
 		const response = await axios(requestConfig as any);
 		return response;
 	};

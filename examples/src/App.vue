@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { MicrocodeWorkbench } from '@arvin-shu/microcode-engine';
 import { EditorConfig } from '@arvin-shu/microcode-types';
-import { defaultScope } from './scope';
 
 const config: EditorConfig = {
 	lifeCycles: {
@@ -32,7 +31,6 @@ const config: EditorConfig = {
 </script>
 
 <template>
-	<defaultScope></defaultScope>
 	<MicrocodeWorkbench
 		:config="config"
 		className="engine-main"

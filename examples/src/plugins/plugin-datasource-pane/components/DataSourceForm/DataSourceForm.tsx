@@ -4,7 +4,7 @@ import {
 	Input,
 	Tooltip,
 	Switch,
-	Textarea,
+	// Textarea,
 	Segmented,
 	Dropdown,
 	Menu,
@@ -13,16 +13,16 @@ import {
 import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import { InterpretDataSourceConfig as DataSourceConfig } from '@arvin-shu/microcode-datasource-types';
 import { cloneDeep, set } from 'lodash';
-import { VariableSelect } from './VariableSelect';
 import { AddIcon } from '../../icons/add';
 import {
 	monacoEditorConfigs,
 	transformDataSourceFuncList,
 } from './jsDefaultValue';
-
-import './form.scss';
 import { JsMonacoEditor } from './JsMonacoEditor';
 import { DeleteIcon } from '../../icons/delete';
+import { MixFormItem } from './MixFormItem';
+
+import './form.scss';
 
 export const DataSourceForm = defineComponent({
 	name: 'DataSourceForm',
@@ -93,7 +93,6 @@ export const DataSourceForm = defineComponent({
 		);
 
 		const handleUpdate = (key: string, value: any) => {
-			// @ts-ignore
 			set(formState.value, key, value);
 			if (props.mode === 'edit') {
 				emit('update:value', formState.value);
@@ -158,23 +157,34 @@ export const DataSourceForm = defineComponent({
 					},
 				],
 				component: (
-					<Textarea
-						value={formState.value.options?.uri as string}
+					<MixFormItem
+						setter="Textarea"
+						value={formState.value.options?.uri}
 						onUpdate:value={(value) => handleUpdate('options.uri', value)}
-						autoSize={{ minRows: 3, maxRows: 5 }}
-					></Textarea>
+					></MixFormItem>
 				),
 			},
 			{
 				key: ['options', 'params'],
 				label: '请求参数',
 				component: (
-					<VariableSelect
+					<MixFormItem
+						setter="Binded"
 						value={formState.value.options?.params}
 						onUpdate:value={(value) => handleUpdate('options.params', value)}
-					></VariableSelect>
+					></MixFormItem>
 				),
 			},
+			// {
+			// 	key: ['options', 'params'],
+			// 	label: '请求参数',
+			// 	component: (
+			// 		<VariableSelect
+			// 			value={formState.value.options?.params}
+			// 			onUpdate:value={(value) => handleUpdate('options.params', value)}
+			// 		></VariableSelect>
+			// 	),
+			// },
 			{
 				key: ['options', 'method'],
 				label: '请求方式',

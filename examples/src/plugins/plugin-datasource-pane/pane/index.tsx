@@ -40,31 +40,33 @@ export const DataSourcePaneWrapper = defineComponent({
 		},
 	},
 	setup(props) {
-		const dataSource = ref<DataSource>();
+		const dataSource = ref<DataSourceConfig[]>();
 
 		onMounted(() => {
 			const { skeleton } = props;
 
 			skeleton?.onHidePanel((paneName) => {
 				if (paneName === 'dataSourcePane') {
-					const { project } = props;
-					if (project) {
-						const docSchema = project.exportSchema(
-							IPublicEnumTransformStage.Save
-						);
-						if (!isEmpty(docSchema)) {
-							set(docSchema, 'componentsTree[0].dataSource', {
-								list: toRaw(dataSource.value),
-							});
-							project.importSchema(docSchema);
-						}
-					}
+					hide();
 				}
 			});
 		});
 
-		function handleSchemaChange(data: DataSource) {
-			dataSource.value = data;
+		function hide() {
+			const { project } = props;
+			if (project) {
+				const docSchema = project.exportSchema(IPublicEnumTransformStage.Save);
+				if (!isEmpty(docSchema)) {
+					set(docSchema, 'componentsTree[0].dataSource', {
+						list: toRaw(dataSource.value),
+					});
+					project.importSchema(docSchema);
+				}
+			}
+		}
+
+		function handleSchemaChange(data: DataSourceConfig[]) {
+			dataSource.value = [...data];
 		}
 
 		return () => {
@@ -80,12 +82,10 @@ export const DataSourcePaneWrapper = defineComponent({
 				schema = correctSchema(schema);
 			}
 
-			dataSource.value = schema?.list || [];
-
 			return (
 				<DataSourcePane
 					initialSchema={schema}
-					onOnSchemaChange={handleSchemaChange}
+					onSchemaChange={handleSchemaChange}
 				/>
 			);
 		};
@@ -95,7 +95,7 @@ export const DataSourcePaneWrapper = defineComponent({
 export const DataSourcePane = defineComponent({
 	name: 'DataSourcePane',
 	inheritAttrs: false,
-	emits: ['onSchemaChange'],
+	emits: ['schemaChange'],
 	props: {
 		initialSchema: {
 			type: Object as PropType<DataSource>,
@@ -120,10 +120,10 @@ export const DataSourcePane = defineComponent({
 			open.value = true;
 			mode.value = 'create';
 			const newId = `dp_${Date.now().toString(36).toLowerCase()}`;
-			const newDataSource: DataSourceConfig = {
+			const newDataSource = {
 				id: newId,
 				description: '',
-				isInit: true,
+				isInit: false,
 				isSync: false,
 				options: {
 					uri: '',
@@ -147,6 +147,7 @@ export const DataSourcePane = defineComponent({
 					message.warning('存在未保存的数据源，请先保存！');
 					return;
 				}
+				currentDataSource.value = { ...dataSource };
 				mode.value = 'edit';
 				open.value = true;
 			}
@@ -179,7 +180,7 @@ export const DataSourcePane = defineComponent({
 		});
 
 		const filteredDataSources = computed(() =>
-			dataSourceList.value.filter((item: DataSourceConfig) => {
+			dataSourceList.value.filter((item: any) => {
 				// 根据关键字筛选
 				const description: string = (item?.description as string) || '';
 				const matchKeyword = filter.value.keyword
@@ -205,7 +206,7 @@ export const DataSourcePane = defineComponent({
 		watch(
 			dataSourceList,
 			(v) => {
-				emit('onSchemaChange', v);
+				emit('schemaChange', v);
 			},
 			{
 				deep: true,
