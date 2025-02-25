@@ -7,7 +7,7 @@ const plugin = (ctx: IPublicModelPluginContext, options: any) => ({
 	init() {
 		options;
 		const { skeleton, project } = ctx;
-		skeleton.add({
+		const pane = skeleton.add({
 			area: 'leftArea',
 			name: 'dataSourcePane',
 			type: 'PanelDock',
@@ -19,7 +19,11 @@ const plugin = (ctx: IPublicModelPluginContext, options: any) => ({
 				title: '数据源',
 				hideTitleBar: true,
 			},
-			content: <DataSourcePaneWrapper project={project} />,
+			content: <DataSourcePaneWrapper skeleton={skeleton} project={project} />,
+		});
+
+		ctx.project.onSimulatorRendererReady(() => {
+			pane?.enable();
 		});
 	},
 });

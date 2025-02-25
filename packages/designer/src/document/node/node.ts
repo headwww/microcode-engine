@@ -945,7 +945,6 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 		stage: IPublicEnumTransformStage = IPublicEnumTransformStage.Save,
 		options: any = {}
 	): T {
-		options;
 		const baseSchema: any = {
 			componentName: this.componentName,
 		};

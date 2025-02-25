@@ -12,7 +12,8 @@ export default defineConfig({
 		open: true, // 自动打开浏览器
 		proxy: {
 			'/ltApi': {
-				target: 'http://ltscm.tpddns.cn:8081/',
+				// target: 'http://ltscm.tpddns.cn:8081/',
+				target: 'http://192.168.1.241:9090/',
 				changeOrigin: true,
 				rewrite: (path) => path.replace(/^\/ltApi/, ''),
 			},

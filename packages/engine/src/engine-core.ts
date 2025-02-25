@@ -111,7 +111,7 @@ async function registryInnerPlugin() {
 // TODO 设置一个渲染模拟器插件
 editor.set(
 	'simulatorUrl',
-	`http://127.0.0.1:8081/dist/dist/js/index.js?${Math.random().toString(36).substring(2, 15)}`
+	`http://192.168.1.59:8081/dist/dist/js/index.js?${Math.random().toString(36).substring(2, 15)}`
 );
 
 export async function init(

@@ -1,10 +1,18 @@
 import {
-	IPublicApiEvent,
 	IPublicApiProject,
+	IPublicApiSkeleton,
 	IPublicEnumTransformStage,
 } from '@arvin-shu/microcode-types';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
-import { computed, defineComponent, PropType, ref, watch } from 'vue';
+import {
+	computed,
+	defineComponent,
+	onMounted,
+	PropType,
+	ref,
+	toRaw,
+	watch,
+} from 'vue';
 import {
 	InterpretDataSource as DataSource,
 	InterpretDataSourceConfig as DataSourceConfig,
@@ -27,20 +35,36 @@ export const DataSourcePaneWrapper = defineComponent({
 		project: {
 			type: Object as PropType<IPublicApiProject>,
 		},
-		event: {
-			type: Object as PropType<IPublicApiEvent>,
+		skeleton: {
+			type: Object as PropType<IPublicApiSkeleton>,
 		},
 	},
 	setup(props) {
-		function handleSchemaChange(schema: DataSource) {
-			const { project } = props;
-			if (project) {
-				const docSchema = project.exportSchema(IPublicEnumTransformStage.Save);
-				if (!isEmpty(docSchema)) {
-					set(docSchema, 'componentsTree[0].dataSource.list', schema);
-					project.importSchema(docSchema);
+		const dataSource = ref<DataSource>();
+
+		onMounted(() => {
+			const { skeleton } = props;
+
+			skeleton?.onHidePanel((paneName) => {
+				if (paneName === 'dataSourcePane') {
+					const { project } = props;
+					if (project) {
+						const docSchema = project.exportSchema(
+							IPublicEnumTransformStage.Save
+						);
+						if (!isEmpty(docSchema)) {
+							set(docSchema, 'componentsTree[0].dataSource', {
+								list: toRaw(dataSource.value),
+							});
+							project.importSchema(docSchema);
+						}
+					}
 				}
-			}
+			});
+		});
+
+		function handleSchemaChange(data: DataSource) {
+			dataSource.value = data;
 		}
 
 		return () => {
@@ -55,6 +79,9 @@ export const DataSourcePaneWrapper = defineComponent({
 			if (!isSchemaValid(schema)) {
 				schema = correctSchema(schema);
 			}
+
+			dataSource.value = schema?.list || [];
+
 			return (
 				<DataSourcePane
 					initialSchema={schema}

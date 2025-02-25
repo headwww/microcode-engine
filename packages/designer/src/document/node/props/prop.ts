@@ -6,7 +6,14 @@ import {
 	isPlainObject,
 	uniqueId,
 } from '@arvin-shu/microcode-utils';
-import { computed, Ref, ref, ShallowReactive, shallowReactive } from 'vue';
+import {
+	computed,
+	Ref,
+	ref,
+	ShallowReactive,
+	shallowReactive,
+	toRaw,
+} from 'vue';
 import {
 	GlobalEvent,
 	IPublicEnumTransformStage,
@@ -353,6 +360,7 @@ export class Prop implements IProp {
 		stage: IPublicEnumTransformStage = IPublicEnumTransformStage.Save
 	): IPublicTypeCompositeValue {
 		const type = this._type.value;
+		const value = toRaw(this._value.value);
 		if (
 			stage === IPublicEnumTransformStage.Render &&
 			this.key.value === '___condition___'
@@ -362,7 +370,7 @@ export class Prop implements IProp {
 			if (engineConfig?.get('enableCondition') !== true) {
 				return true;
 			}
-			return this._value.value;
+			return value;
 		}
 
 		if (type === 'unset') {
@@ -370,7 +378,7 @@ export class Prop implements IProp {
 		}
 
 		if (type === 'literal' || type === 'expression') {
-			return this._value.value;
+			return value;
 		}
 		if (type === 'slot') {
 			const schema = this._slotNode?.export(stage) || ({} as any);
@@ -395,7 +403,7 @@ export class Prop implements IProp {
 		if (type === 'map') {
 			// 如果子属性列表不存在，则返回当前值
 			if (!this._items) {
-				return this._value.value;
+				return value;
 			}
 			let maps: any;
 			this.items!.forEach((prop, key) => {
@@ -412,7 +420,7 @@ export class Prop implements IProp {
 
 		if (type === 'list') {
 			if (!this._items) {
-				return this._value.value;
+				return value;
 			}
 			return this.items!.map((prop) => prop?.export(stage));
 		}

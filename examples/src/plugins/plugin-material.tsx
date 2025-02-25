@@ -57,7 +57,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					package: 'css',
 					version: '1.0.0',
 					library: 'css',
-					urls: ['http://127.0.0.1:8080/dist/renderer.css'],
+					urls: ['http://192.168.1.59:8080/dist/renderer.css'],
 				},
 				{
 					package: 'dayjs',
@@ -474,6 +474,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					state: {
 						text: 'outer',
 						isShowDialog: false,
+						data: ['system', '123456'],
 					},
 					dataSource: {
 						list: [
@@ -481,12 +482,14 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 								type: 'fetch',
 								isInit: true,
 								options: {
-									params: ['system', 'mes123'],
-									method: 'GET',
+									method: 'POST',
 									isCors: true,
 									timeout: 5000,
-									headers: {},
 									uri: 'ltApi/api/login',
+									params: {
+										type: 'JSExpression',
+										value: 'this.state.$data.data',
+									},
 								},
 								id: 'login',
 								willFetch: {
