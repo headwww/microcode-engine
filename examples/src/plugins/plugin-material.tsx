@@ -402,6 +402,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					configure: {
 						component: {
 							isModal: true,
+							isContainer: true,
 							rootSelector: '.ant-modal-content',
 						},
 					},

@@ -1,4 +1,4 @@
-import { PartitionOutlined, WalletFilled } from '@ant-design/icons-vue';
+import { WalletFilled } from '@ant-design/icons-vue';
 import {
 	IPublicEnumTransformStage,
 	IPublicModelPluginContext,
@@ -45,18 +45,18 @@ const InitSkeleton = (ctx: IPublicModelPluginContext) => ({
 			},
 		});
 
-		skeleton.add({
-			name: 'leftArea-PaneDock-1',
-			area: 'leftArea',
-			type: 'PanelDock',
-			props: {
-				icon: <PartitionOutlined />,
-			},
-			content: <div>大纲树内容</div>,
-			panelProps: {
-				title: '大纲树',
-			},
-		});
+		// skeleton.add({
+		// 	name: 'leftArea-PaneDock-1',
+		// 	area: 'leftArea',
+		// 	type: 'PanelDock',
+		// 	props: {
+		// 		icon: <PartitionOutlined />,
+		// 	},
+		// 	content: <div>大纲树内容</div>,
+		// 	panelProps: {
+		// 		title: '大纲树',
+		// 	},
+		// });
 	},
 });
 

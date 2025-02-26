@@ -15,6 +15,7 @@ import InitSetter from './plugins/plugin-init-setter';
 import ComponentPanelPlugin from './plugins/plugin-components-pane';
 import InitVueCodeEditor from './plugins/plugin-vue-code-editor/index';
 import DataSourcePane from './plugins/plugin-datasource-pane/index';
+import LayersPane from './plugins/plugin-layers-pane/index';
 
 window.Vue = Vue;
 const app = Vue.createApp(App);
@@ -24,6 +25,7 @@ preference.set('testPlungin-1', {
 	scenarioName: '01010101',
 });
 registryInnerPlugin();
+await plugins.register(LayersPane);
 await plugins.register(ComponentPanelPlugin);
 await plugins.register(InitSkeleton);
 await plugins.register(InitMaterial);
