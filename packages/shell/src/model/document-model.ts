@@ -7,6 +7,7 @@ import {
 	IPublicModelDocumentModel,
 	IPublicModelDropLocation,
 	IPublicModelEditor,
+	IPublicModelModalNodesManager,
 	IPublicModelNode,
 	IPublicModelSelection,
 	IPublicTypeDisposable,
@@ -29,6 +30,7 @@ import { Detecting as ShellDetecting } from './detecting';
 import { Project as ShellProject, Canvas as ShellCanvas } from '../api';
 import { DropLocation as ShellDropLocation } from './drop-location';
 import { Prop as ShellProp } from './prop';
+import { ModalNodesManager } from './modal-nodes-manager';
 
 const shellDocSymbol = Symbol('shellDocSymbol');
 
@@ -123,13 +125,12 @@ export class DocumentModel implements IPublicModelDocumentModel {
 		return map;
 	}
 
-	// TODO
 	/**
 	 * 模态节点管理
 	 */
-	//    get modalNodesManager(): IPublicModelModalNodesManager | null {
-	//     return ModalNodesManager.create(this[documentSymbol].modalNodesManager);
-	//   }
+	get modalNodesManager(): IPublicModelModalNodesManager | null {
+		return ModalNodesManager.create(this[documentSymbol].modalNodesManager);
+	}
 
 	get dropLocation(): IPublicModelDropLocation | null {
 		return ShellDropLocation.create(this[documentSymbol].dropLocation);

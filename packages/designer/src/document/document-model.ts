@@ -30,7 +30,15 @@ import {
 } from '@arvin-shu/microcode-editor-core';
 import { ref, shallowReactive, toRaw } from 'vue';
 import { IProject } from '../project';
-import { INode, insertChild, insertChildren, IRootNode, Node } from './node';
+import {
+	IModalNodesManager,
+	INode,
+	insertChild,
+	insertChildren,
+	IRootNode,
+	ModalNodesManager,
+	Node,
+} from './node';
 import { ISimulatorHost } from '../simulator';
 import { IDesigner, IDropLocation } from '../designer';
 import { EDITOR_EVENT } from '../types';
@@ -56,7 +64,13 @@ export type GetDataType<T, NodeType> = T extends undefined
 
 export interface IDocumentModel
 	extends Omit<
-		IPublicModelDocumentModel<ISelection, INode, IDropLocation, IProject>,
+		IPublicModelDocumentModel<
+			ISelection,
+			INode,
+			IDropLocation,
+			IModalNodesManager,
+			IProject
+		>,
 		| 'detecting'
 		| 'checkNesting'
 		| 'getNodeById'
@@ -193,6 +207,8 @@ export class DocumentModel implements IDocumentModel {
 		return this.project.simulator;
 	}
 
+	modalNodesManager: IModalNodesManager;
+
 	get nodesMap(): Map<string, INode> {
 		return this._nodesMap;
 	}
@@ -221,7 +237,7 @@ export class DocumentModel implements IDocumentModel {
 	// 聚焦节点
 	private _drillDownNode = ref<INode | null>(null);
 
-	// TODO _modalNode
+	private _modalNode?: INode;
 
 	// 是否是空白文档
 	private _blank?: boolean;
@@ -232,11 +248,12 @@ export class DocumentModel implements IDocumentModel {
 	// 将要被删除的节点
 	private willPurgeSpace = shallowReactive<INode[]>([]);
 
-	// TODO modalNode
+	get modalNode() {
+		return this._modalNode;
+	}
 
 	get currentRoot() {
-		// TODO 没有考虑modal的情况
-		return this.focusNode;
+		return this.modalNode || this.focusNode;
 	}
 
 	private _dropLocation = ref<IDropLocation | null>(null);
@@ -307,9 +324,8 @@ export class DocumentModel implements IDocumentModel {
 		);
 
 		// TODO 历史记录的功能
-		// TODO modal情况的处理
-		// TODO Modal窗口管理
 
+		this.modalNodesManager = new ModalNodesManager(this);
 		// 初始化完成
 		this.inited = true;
 	}
@@ -604,7 +620,7 @@ export class DocumentModel implements IDocumentModel {
 				this.internalRemoveAndPurgeNode(node, true);
 			});
 			this.rootNode?.import(schema as any, checkId);
-			// TODO model节点没有导入
+			this.modalNodesManager = new ModalNodesManager(this);
 
 			if (drillDownNodeId) {
 				this.drillDown(this.getNode(drillDownNodeId));

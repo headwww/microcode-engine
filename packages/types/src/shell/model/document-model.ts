@@ -12,6 +12,7 @@ import {
 } from '../type';
 import { IPublicModelDetecting } from './detecting';
 import { IPublicModelDropLocation } from './drop-location';
+import { IPublicModelModalNodesManager } from './modal-nodes-manager';
 import { IPublicModelNode } from './node';
 import { IPublicModelSelection } from './selection';
 
@@ -19,6 +20,7 @@ export interface IPublicModelDocumentModel<
 	Selection = IPublicModelSelection,
 	Node = IPublicModelNode,
 	DropLocation = IPublicModelDropLocation,
+	ModalNodesManager = IPublicModelModalNodesManager,
 	Project = IPublicApiProject,
 > {
 	/**
@@ -59,6 +61,12 @@ export interface IPublicModelDocumentModel<
 	 * @returns
 	 */
 	get nodesMap(): Map<string, Node>;
+
+	/**
+	 * 模态节点管理
+	 * get instance of modalNodesManager
+	 */
+	get modalNodesManager(): ModalNodesManager | null;
 
 	/**
 	 * 根据 nodeId 返回 Node 实例

@@ -392,6 +392,39 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					],
 				},
 				{
+					componentName: 'Modal',
+					npm: {
+						package: 'antd',
+						destructuring: true,
+						exportName: 'Modal',
+						version: '4.2.6',
+					},
+					configure: {
+						component: {
+							isModal: true,
+							rootSelector: '.ant-modal-content',
+						},
+					},
+					snippets: [
+						{
+							title: '普通型',
+							screenshot:
+								'https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*wM3qQ5XrhlcAAAAAAAAAAAAADrJ8AQ/original',
+							schema: {
+								componentName: 'Modal',
+								props: {
+									title: 'Basic Modal',
+									okText: '确认',
+									cancelText: '取消',
+									open: true,
+									destroyOnClose: true,
+								},
+								children: [],
+							},
+						},
+					],
+				},
+				{
 					componentName: 'Switch',
 					npm: {
 						package: 'antd',

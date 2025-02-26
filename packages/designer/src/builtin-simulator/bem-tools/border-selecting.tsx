@@ -18,6 +18,7 @@ import {
 import { BuiltinSimulatorHost } from '../host';
 import { INode } from '../../document';
 import { OffsetObserver } from '../../designer/offset-observer';
+import { InstanceNodeSelector as NodeSelector } from '../node-selector';
 
 export const BorderSelectingInstance = defineComponent({
 	name: 'BorderSelectingInstance',
@@ -128,6 +129,7 @@ export const Toolbar = defineComponent({
 			return (
 				<div class="mtc-borders-actions" style={style}>
 					{...actions}
+					<NodeSelector node={node} />
 				</div>
 			);
 		};
