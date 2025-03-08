@@ -1,5 +1,6 @@
 import {
 	IPublicApiCanvas,
+	IPublicModelActiveTracker,
 	IPublicModelDragon,
 	IPublicModelDropLocation,
 	IPublicModelEditor,
@@ -14,7 +15,10 @@ import {
 	ScrollTarget as InnerScrollTarget,
 } from '@arvin-shu/microcode-designer';
 import { designerSymbol, editorSymbol, nodeSymbol } from '../symbols';
-import { Dragon as ShellDragon } from '../model';
+import {
+	Dragon as ShellDragon,
+	ActiveTracker as ShellActiveTracker,
+} from '../model';
 
 // TODO 还有很多功能没有添加进去
 
@@ -30,6 +34,13 @@ export class Canvas implements IPublicApiCanvas {
 		readonly workspaceMode: boolean = false
 	) {
 		this[editorSymbol] = editor;
+	}
+
+	get activeTracker(): IPublicModelActiveTracker | null {
+		const activeTracker = new ShellActiveTracker(
+			this[designerSymbol].activeTracker
+		);
+		return activeTracker;
 	}
 
 	createScrollTarget(shell: HTMLDivElement): IPublicModelScrollTarget {

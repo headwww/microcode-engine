@@ -47,6 +47,7 @@ import { createOffsetObserver, OffsetObserver } from './offset-observer';
 import { ISelection } from '../document/selection';
 import { ComponentActions } from '../component-actions';
 import { ISettingTopEntry, SettingTopEntry } from './setting';
+import { ActiveTracker, IActiveTracker } from './active-tracker';
 
 const logger = new Logger({ level: 'warn', bizName: 'designer' });
 
@@ -127,6 +128,8 @@ export interface IDesigner {
 
 	get detecting(): Detecting;
 
+	get activeTracker(): IActiveTracker;
+
 	get simulatorComponent(): Component<any> | VNode | undefined;
 
 	get currentSelection(): ISelection | undefined;
@@ -188,6 +191,8 @@ export class Designer implements IDesigner {
 	readonly componentActions = new ComponentActions();
 
 	readonly shellModelFactory: IShellModelFactory;
+
+	readonly activeTracker = new ActiveTracker();
 
 	private props?: DesignerProps;
 
@@ -317,7 +322,7 @@ export class Designer implements IDesigner {
 					}
 					if (nodes) {
 						loc.document?.selection.selectAll(nodes.map((o) => o.id));
-						// TODO setTimeout(() => this.activeTracker.track(nodes![0]), 10);
+						setTimeout(() => this.activeTracker.track(nodes![0]), 10);
 					}
 				}
 			}
@@ -328,6 +333,10 @@ export class Designer implements IDesigner {
 			this.detecting.enable = true;
 		});
 
+		this.activeTracker.onChange(({ node, detail }) => {
+			node.document?.simulator?.scrollToNode(node, detail);
+		});
+
 		// TODO 还有很多属性没有实现
 
 		this.postEvent('init', this);
@@ -335,6 +344,7 @@ export class Designer implements IDesigner {
 			this.postEvent('selection.change', this.currentSelection);
 			this.setupSelection();
 		});
+		this.postEvent('init', this);
 		this.setupSelection();
 	}
 
@@ -388,7 +398,7 @@ export class Designer implements IDesigner {
 		if (loc.document) {
 			toRaw(loc.document).dropLocation = loc;
 		}
-		// TODO this.activeTracker.track({ node: loc.target, detail: loc.detail });
+		this.activeTracker.track({ node: loc.target, detail: loc.detail });
 		return loc;
 	}
 

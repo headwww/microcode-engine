@@ -1,4 +1,5 @@
 import {
+	IPublicModelActiveTracker,
 	IPublicModelDragon,
 	IPublicModelDropLocation,
 	IPublicModelScroller,
@@ -16,6 +17,14 @@ export interface IPublicApiCanvas {
 	 *
 	 */
 	get dragon(): IPublicModelDragon | null;
+
+	/**
+	 * 获取活动追踪器实例
+	 *
+	 * 获取 activeTracker 实例,这是一个在引擎中运行的单例。
+	 * 它跟踪文档当前聚焦的节点/节点数组,并在聚焦节点/节点数组发生变化时通知订阅者。
+	 */
+	get activeTracker(): IPublicModelActiveTracker | null;
 
 	/**
 	 * 创一个滚动控制器 Scroller，赋予一个视图滚动的基本能力，

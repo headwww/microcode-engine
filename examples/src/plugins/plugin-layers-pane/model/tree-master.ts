@@ -1,9 +1,11 @@
 import {
 	IPublicModelNode,
 	IPublicModelPluginContext,
+	IPublicTypeActiveTarget,
 	IPublicTypeDisposable,
 } from '@arvin-shu/microcode-types';
 import EventEmitter2 from 'eventemitter2';
+import { isLocationChildrenDetail } from '@arvin-shu/microcode-utils';
 import { Tree } from './tree';
 import { TreeNode } from './tree-node';
 
@@ -78,29 +80,29 @@ export class TreeMaster {
 	private initEvent() {
 		let startTime: any;
 		const { event, project, canvas } = this.pluginContext;
-		// TODO const setExpandByActiveTracker = (target: any) => {
-		// 	const { node, detail } = target;
-		// 	const tree = this.currentTree;
-		// 	if (!tree /* || node.document !== tree.document */) {
-		// 		return;
-		// 	}
-		// 	const treeNode = tree.getTreeNode(node);
-		// 	if (detail && isLocationChildrenDetail(detail)) {
-		// 		treeNode.expand(true);
-		// 	} else {
-		// 		treeNode.expandParents();
-		// 	}
-		// 	this.boards.forEach((board) => {
-		// 		board.scrollToNode(treeNode, detail);
-		// 	});
-		// };
+		const setExpandByActiveTracker = (target: IPublicTypeActiveTarget) => {
+			const { node, detail } = target;
+			const tree = this.currentTree;
+			if (!tree /* || node.document !== tree.document */) {
+				return;
+			}
+			const treeNode = tree.getTreeNode(node);
+			if (detail && isLocationChildrenDetail(detail)) {
+				treeNode.expand(true);
+			} else {
+				treeNode.expandParents();
+			}
+			this.boards.forEach((board) => {
+				board.scrollToNode(treeNode, detail);
+			});
+		};
 		this.disposeEvents = [
 			canvas.dragon?.onDragstart(() => {
 				startTime = Date.now() / 1000;
 				// needs?
 				this.toVision();
 			}),
-			// TODO canvas.activeTracker?.onChange(setExpandByActiveTracker),
+			canvas.activeTracker?.onChange(setExpandByActiveTracker),
 			canvas.dragon?.onDragend(() => {
 				const endTime: any = Date.now() / 1000;
 				const nodes = project.currentDocument?.selection?.getNodes();
@@ -126,10 +128,9 @@ export class TreeMaster {
 				this.treeMap.delete(id);
 			}),
 		];
-		// TODO
-		// if (canvas.activeTracker?.target) {
-		// 	setExpandByActiveTracker(canvas.activeTracker?.target);
-		// }
+		if (canvas.activeTracker?.target) {
+			setExpandByActiveTracker(canvas.activeTracker?.target);
+		}
 	}
 
 	private toVision() {

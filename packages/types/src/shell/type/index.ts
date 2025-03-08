@@ -77,3 +77,4 @@ export * from './setter-config';
 export * from './dynamic-props';
 export * from './setter-type';
 export * from './dynamic-setter';
+export * from './active-target';

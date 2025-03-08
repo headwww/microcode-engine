@@ -541,11 +541,10 @@ export class BuiltinSimulatorHost
 					// TODO isRGLNode  判断是点击还是拖拽(通过判断鼠标是否有移动)
 					if (!isShaken(downEvent, e)) {
 						let { id } = node;
-						// TODO 激活节点
-						// designer.activeTracker.track({
-						// 	node,
-						// 	instance: nodeInst?.instance,
-						// });
+						designer.activeTracker.track({
+							node,
+							instance: nodeInst?.instance,
+						});
 						// 处理多选逻辑
 						if (
 							isMulti &&
@@ -594,11 +593,10 @@ export class BuiltinSimulatorHost
 					// 处理多选拖拽
 					if (isMulti) {
 						if (!selection.has(node.id)) {
-							// TODO 未处理
-							// designer.activeTracker.track({
-							// 	node,
-							// 	instance: nodeInst?.instance,
-							// });
+							designer.activeTracker.track({
+								node,
+								instance: nodeInst?.instance,
+							});
 							selection.add(node.id);
 							ignoreUpSelected = true;
 						}

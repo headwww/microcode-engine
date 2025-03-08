@@ -91,13 +91,13 @@ export const TreeView = defineComponent({
 				return;
 			}
 
-			const { project, event } = props.tree!.pluginContext;
+			const { project, event, canvas } = props.tree!.pluginContext;
 			const doc = toRaw(project)?.currentDocument;
 			const selection = doc?.selection;
 			const focusNode = doc?.focusNode;
 			const { id } = node;
 			const isMulti = e.metaKey || e.ctrlKey || e.shiftKey;
-			// toRaw(canvas).activeTracker?.track(node);
+			toRaw(canvas).activeTracker?.track(node);
 
 			if (
 				isMulti &&
@@ -174,7 +174,7 @@ export const TreeView = defineComponent({
 				ignoreUpSelected.value = false;
 				if (isMulti) {
 					if (!selection?.has(node.id)) {
-						// TODO toRaw(canvas).activeTracker?.track(node);
+						toRaw(canvas).activeTracker?.track(node);
 						selection?.add(node.id);
 						ignoreUpSelected.value = true;
 					}
