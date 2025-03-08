@@ -1,8 +1,19 @@
-import { IPublicModelPluginContext } from '@arvin-shu/microcode-types';
-import { defineComponent, onMounted, onUnmounted, PropType, ref } from 'vue';
+import {
+	IPublicModelDocumentModel,
+	IPublicModelPluginContext,
+} from '@arvin-shu/microcode-types';
+import {
+	defineComponent,
+	onMounted,
+	onUnmounted,
+	PropType,
+	ref,
+	toRaw,
+} from 'vue';
 import { LayersPane } from './pane';
 import { LayersIcon } from './icons';
 import { PaneController, TreeMaster } from './model';
+import { intlNode } from './locale';
 
 const LayersPaneContext = defineComponent({
 	name: 'LayersPaneContext',
@@ -58,7 +69,7 @@ const LayersPaneContext = defineComponent({
 
 const plugin = (ctx: IPublicModelPluginContext, options: any) => ({
 	init() {
-		const { skeleton } = ctx;
+		const { skeleton, canvas, project } = ctx;
 
 		const treeMaster = new TreeMaster(ctx, options);
 
@@ -67,20 +78,103 @@ const plugin = (ctx: IPublicModelPluginContext, options: any) => ({
 			name: 'layersPane',
 			type: 'PanelDock',
 			index: -1,
-			props: {
-				icon: <LayersIcon />,
-				description: '布局',
-			},
 			panelProps: {
 				width: '320px',
 				title: '布局',
 			},
+			content: {
+				name: 'layers-master-pane',
+				props: {
+					icon: <LayersIcon />,
+					description: intlNode('Layers'),
+				},
+				content: (
+					<LayersPaneContext
+						treeMaster={treeMaster}
+						paneName="layers-master-pane"
+					/>
+				),
+			},
+		});
+
+		skeleton.add({
+			area: 'rightArea',
+			name: 'layers-backup-pane',
+			type: 'Panel',
+			props: {
+				hiddenWhenInit: true,
+			},
 			content: (
 				<LayersPaneContext
 					treeMaster={treeMaster}
-					paneName="layers-master-pane"
+					paneName="layers-backup-pane"
 				/>
 			),
+			contentProps: {
+				paneName: 'layers-backup-pane',
+				treeMaster,
+			},
+			index: 1,
+		});
+
+		const showingPanes = {
+			masterPane: false,
+			backupPane: false,
+		};
+		const switchPanes = () => {
+			const isDragging = canvas.dragon?.dragging;
+			const hasVisibleTreeBoard =
+				showingPanes.backupPane || showingPanes.masterPane;
+			const shouldShowBackupPane = isDragging && !hasVisibleTreeBoard;
+
+			if (shouldShowBackupPane) {
+				skeleton.showPanel('layers-backup-pane');
+			} else {
+				skeleton.hidePanel('layers-backup-pane');
+			}
+		};
+
+		canvas.dragon?.onDragstart(() => {
+			switchPanes();
+		});
+		canvas.dragon?.onDragend(() => {
+			switchPanes();
+		});
+
+		skeleton.onShowPanel((key?: string) => {
+			if (key === 'layers-master-pane') {
+				showingPanes.masterPane = true;
+			}
+			if (key === 'layers-backup-pane') {
+				showingPanes.backupPane = true;
+			}
+		});
+		skeleton.onHidePanel((key?: string) => {
+			if (key === 'layers-master-pane') {
+				showingPanes.masterPane = false;
+				switchPanes();
+			}
+			if (key === 'layers-backup-pane') {
+				showingPanes.backupPane = false;
+			}
+		});
+
+		project.onChangeDocument((document: IPublicModelDocumentModel) => {
+			if (!document) {
+				return;
+			}
+			const { selection } = document;
+			selection?.onSelectionChange(() => {
+				const selectedNodes = selection?.getNodes();
+				if (!selectedNodes || selectedNodes.length === 0) {
+					return;
+				}
+				const tree = toRaw(treeMaster.currentTree);
+				selectedNodes.forEach((node) => {
+					const treeNode = toRaw(tree?.getTreeNodeById(node.id));
+					tree?.expandAllAncestors(treeNode);
+				});
+			});
 		});
 	},
 });

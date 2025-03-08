@@ -34,7 +34,7 @@
 		overflow: visible;
 	}
 
-	.mtc-outline-tree-container {
+	.mtc-layers-container {
 		border-top: 1px solid var(--color-line-normal, rgb(31 56 88 / 10%));
 	}
 }
@@ -215,7 +215,6 @@
 				var(--color-block-background-shallow, rgb(31 50 88 / 8%));
 			z-index: 820;
 			display: none;
-
 			// padding-top: 36px;
 			&.mtc-area-visible {
 				display: block;
@@ -242,6 +241,12 @@
 
 		.mtc-left-area.mtc-area-visible ~ .mtc-workbench-center {
 			margin-left: 2px;
+		}
+
+		.mtc-layers-pane {
+			.mtc-layers-tree .mtc-tree-node .mtc-tree-node-title {
+				border-bottom: none;
+			}
 		}
 
 		.mtc-workbench-center {
@@ -293,6 +298,17 @@
 			flex-shrink: 0;
 			margin-left: 2px;
 			position: relative;
+
+			> .mtc-panel {
+				position: absolute;
+				background-color: var(
+					--color-right-area-background,
+					var(--color-pane-background, #fff)
+				);
+				left: 0;
+				top: 0;
+				z-index: 1;
+			}
 
 			&.mtc-area-visible {
 				display: block;
