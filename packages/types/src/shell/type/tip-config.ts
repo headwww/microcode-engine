@@ -10,7 +10,7 @@ export interface IPublicTypeTipConfig {
 	/**
 	 * tip 的内容
 	 */
-	children?: IPublicTypeI18nData | VNode;
+	children?: IPublicTypeI18nData | VNode | string;
 	theme?: string;
 
 	/**

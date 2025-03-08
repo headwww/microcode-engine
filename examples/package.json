@@ -29,6 +29,7 @@
         "axios": "^1.7.9",
         "element-plus": "^2.9.3",
         "magic-string": "^0.30.17",
+        "ric-shim": "^1.0.1",
         "short-uuid": "^5.2.0",
         "vue-draggable-plus": "^0.6.0",
         "vue-router": "^4.4.5",

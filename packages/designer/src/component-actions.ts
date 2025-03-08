@@ -4,6 +4,7 @@ import {
 	IPublicTypeMetadataTransducer,
 } from '@arvin-shu/microcode-types';
 import { engineConfig } from '@arvin-shu/microcode-editor-core';
+import { toRaw } from 'vue';
 import {
 	IconClone,
 	IconHidden,
@@ -83,10 +84,14 @@ export class ComponentActions {
 					node.lock();
 				},
 			},
-			condition: (node: IPublicModelNode) =>
-				engineConfig.get('enableCanvasLock', false) &&
-				node.isContainerNode &&
-				!node.isLocked,
+			condition: (n: IPublicModelNode) => {
+				const node = toRaw(n);
+				return (
+					engineConfig.get('enableCanvasLock', false) &&
+					node.isContainerNode &&
+					!node.isLocked
+				);
+			},
 			important: true,
 		},
 		{
@@ -98,10 +103,14 @@ export class ComponentActions {
 					node.lock(false);
 				},
 			},
-			condition: (node: IPublicModelNode) =>
-				engineConfig.get('enableCanvasLock', false) &&
-				node.isContainerNode &&
-				node.isLocked,
+			condition: (n: IPublicModelNode) => {
+				const node = toRaw(n);
+				return (
+					engineConfig.get('enableCanvasLock', false) &&
+					node.isContainerNode &&
+					node.isLocked
+				);
+			},
 			important: true,
 		},
 	];

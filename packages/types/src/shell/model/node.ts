@@ -376,6 +376,12 @@ export interface IBaseModelNode<
 	contains(node: Node): boolean;
 
 	/**
+	 * 是否可执行某 action
+	 * @param actionName action 名字
+	 */
+	canPerformAction(actionName: string): boolean;
+
+	/**
 	 * 当前节点是否可见
 	 */
 	get visible(): boolean;

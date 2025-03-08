@@ -121,9 +121,23 @@ export const Toolbar = defineComponent({
 			const { node } = observed;
 
 			toRaw(node.componentMeta).availableActions.forEach((action) => {
-				const { content, name } = action;
+				const { important = true, condition, content, name } = action;
 
-				actions.push(createAction(content, name, node));
+				if (node.isRoot()) {
+					return;
+				}
+				if (node.isSlot() && (name === 'copy' || name === 'remove')) {
+					// FIXME: need this?
+					return;
+				}
+				if (
+					important &&
+					(typeof condition === 'function'
+						? condition(node) !== false
+						: condition !== false)
+				) {
+					actions.push(createAction(content, name, node));
+				}
 			});
 
 			return (

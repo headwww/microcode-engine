@@ -147,7 +147,7 @@ export const Field = defineComponent({
 		return () => {
 			const { title, className, name: propName, tip, meta } = props;
 
-			const children = slots.default ? slots.default() : <></>;
+			const children = slots.default ? slots.default() : null;
 			const isAccordion = display.value === 'accordion';
 			const tipContent = getTipContent(propName!, tip);
 
@@ -203,7 +203,7 @@ export const PopupField = defineComponent({
 
 		return () => {
 			const { className, title } = props;
-			const children = slots.default ? slots.default() : <></>;
+			const children = slots.default ? slots.default() : null;
 
 			pipe?.sent(
 				<div class="mtc-field-body">{children}</div>,
@@ -260,7 +260,7 @@ export const PlainField = defineComponent({
 	props: fieldProps,
 	setup(props, { slots }) {
 		return () => {
-			const children = slots.default ? slots.default() : <></>;
+			const children = slots.default ? slots.default() : null;
 
 			const { className } = props;
 			return (
@@ -288,7 +288,7 @@ export const InlineTip = defineComponent({
 	setup(props, { slots }) {
 		return () => {
 			const { position, theme } = props;
-			const children = slots.default ? slots.default() : <></>;
+			const children = slots.default ? slots.default() : null;
 
 			return (
 				<div

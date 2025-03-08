@@ -87,7 +87,7 @@ function getSourceSensor(
 	if (!isDragNodeObject(dragObject)) {
 		return null;
 	}
-	return (dragObject.nodes?.[0]?.document as any).simulator || null;
+	return (dragObject.nodes?.[0]?.document as any)?.simulator || null;
 }
 
 export class Dragon implements IDragon {

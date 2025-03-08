@@ -97,8 +97,8 @@ export class Props implements IProps, IPropParent {
 		const maps = new Map();
 		if (this.items.length > 0) {
 			this.items.forEach((item) => {
-				if (item.key.value) {
-					maps.set(item.key.value, item);
+				if (item.key) {
+					maps.set(item.key, item);
 				}
 			});
 		}
@@ -205,7 +205,7 @@ export class Props implements IProps, IPropParent {
 			props = [];
 			this.items.forEach((item) => {
 				const value = item.export(stage);
-				let name = item.key.value as string;
+				let name = item.key as string;
 				if (
 					name &&
 					typeof name === 'string' &&
@@ -223,7 +223,7 @@ export class Props implements IProps, IPropParent {
 			});
 		} else {
 			this.items.forEach((item) => {
-				const name = item.key.value as string;
+				const name = item.key as string;
 				// 如果属性为空,或者属性未设置,或者属性为虚拟属性,则跳过
 				if (name == null || item.isUnset() || item.isVirtual()) return;
 				const value = item.export(stage);
@@ -285,7 +285,7 @@ export class Props implements IProps, IPropParent {
 
 	deleteKey(key: string): void {
 		this.items = this.items.filter((item, i) => {
-			if (item.key.value === key) {
+			if (item.key === key) {
 				item.purge();
 				this.items.splice(i, 1);
 				return false;
@@ -333,15 +333,15 @@ export class Props implements IProps, IPropParent {
 	}
 
 	forEach(fn: (item: IProp, key: number | string | undefined) => void): void {
-		this.items.forEach((item) => fn(item, item.key.value));
+		this.items.forEach((item) => fn(item, item.key));
 	}
 
 	map<T>(fn: (item: IProp, key: number | string | undefined) => T): T[] | null {
-		return this.items.map((item) => fn(item, item.key.value));
+		return this.items.map((item) => fn(item, item.key));
 	}
 
 	filter(fn: (item: IProp, key: number | string | undefined) => boolean) {
-		return this.items.filter((item) => fn(item, item.key.value));
+		return this.items.filter((item) => fn(item, item.key));
 	}
 
 	purge() {

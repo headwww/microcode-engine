@@ -270,7 +270,7 @@ export class DocumentModel implements IDocumentModel {
 	 * 投放插入位置标记
 	 */
 	get dropLocation(): IDropLocation | null {
-		return this._dropLocation.value as any;
+		return toRaw(this._dropLocation.value) as any;
 	}
 
 	get schema() {

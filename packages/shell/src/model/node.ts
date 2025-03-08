@@ -444,6 +444,10 @@ export class Node implements IPublicModelNode {
 		return this[nodeSymbol].contains((node as any)[nodeSymbol]);
 	}
 
+	canPerformAction(actionName: string): boolean {
+		return this[nodeSymbol].canPerformAction(actionName);
+	}
+
 	/**
 	 * 获取指定 path 的属性模型实例
 	 * @param path 属性路径，支持 a / a.b / a.0 等格式

@@ -1,4 +1,3 @@
-import { type Ref } from 'vue';
 import { IPublicModelNode } from './node';
 import { IPublicTypeCompositeValue } from '../type';
 import { IPublicEnumTransformStage } from '../enum';
@@ -12,7 +11,7 @@ export interface IPublicModelProp<Node = IPublicModelNode> {
 	/**
 	 * key 值
 	 */
-	get key(): Ref<string | number | undefined>;
+	get key(): string | number | undefined;
 
 	/**
 	 * 返回当前 prop 的路径

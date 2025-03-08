@@ -24,6 +24,7 @@ export const fieldProps = {
 		Symbol,
 	] as PropType<any>,
 	name: String,
+	valueState: Number,
 	onClear: Function as PropType<() => void>,
 	editor: Object as PropType<IPublicModelEditor>,
 	meta: [Object, String] as PropType<

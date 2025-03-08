@@ -23,3 +23,4 @@ export * from './is-form-event';
 export * from './clone-deep';
 export * from './misc';
 export * from './is-px';
+export * from './is-shaken';

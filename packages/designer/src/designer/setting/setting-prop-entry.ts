@@ -137,7 +137,7 @@ export class SettingPropEntry implements ISettingPropEntry {
 		const propName = this.path.join('.');
 		let l = this.nodes.length;
 		while (l-- > 0) {
-			this.nodes[l].getProp(propName, true)!.key.value = key;
+			this.nodes[l].getProp(propName, true)!.key = key;
 		}
 		this._name.value = key;
 	}
@@ -155,6 +155,43 @@ export class SettingPropEntry implements ISettingPropEntry {
 		while (l-- > 0) {
 			this.nodes[l].getProp(propName)?.remove();
 		}
+	}
+
+	private readonly computedValueState = computed(() => {
+		if (this.type !== 'field') {
+			const { getValue } = this.extraProps;
+			return getValue
+				? getValue(this.internalToShellField()!, undefined) === undefined
+					? 0
+					: 1
+				: 0;
+		}
+
+		if (this.nodes.length === 1) {
+			return 2;
+		}
+		const propName = this.path.join('.');
+		const first = this.nodes[0].getProp(propName)!;
+		let l = this.nodes.length;
+		let state = 2;
+		while (--l > 0) {
+			const next = this.nodes[l].getProp(propName, false);
+			const s = first.compare(next);
+			if (s > 1) {
+				return -1;
+			}
+			if (s === 1) {
+				state = 1;
+			}
+		}
+		if (state === 2 && first.isUnset()) {
+			return 0;
+		}
+		return state;
+	});
+
+	get valueState() {
+		return this.computedValueState.value;
 	}
 
 	/**

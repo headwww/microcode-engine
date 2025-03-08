@@ -59,10 +59,10 @@ export interface IProp
 	extends Omit<IPublicModelProp<INode>, 'exportSchema' | 'node'>,
 		IPropParent {
 	// 属性展开标志
-	spread: Ref<boolean>;
+	spread: boolean;
 
 	// 属性key
-	key: Ref<string | number | undefined>;
+	key: string | number | undefined;
 
 	// 所属属性组
 	readonly props: IProps;
@@ -123,11 +123,19 @@ export class Prop implements IProp {
 	// 所属节点
 	readonly owner: INode;
 
+	private _key: Ref<string | number | undefined> = ref();
+
 	// 属性key
-	key: Ref<string | number | undefined> = ref();
+	get key() {
+		return this._key.value;
+	}
 
 	// 属性展开标志,类似于<Button {...props} />
-	spread: Ref<boolean> = ref(false);
+	private _spread = ref(false);
+
+	get spread() {
+		return this._spread.value;
+	}
 
 	// 所属属性组
 	readonly props: IProps;
@@ -284,7 +292,7 @@ export class Prop implements IProp {
 
 	// 获取属性路径
 	get path(): string[] {
-		return (this.parent.path || []).concat(this.key.value as string);
+		return (this.parent.path || []).concat(this.key as string);
 	}
 
 	/**
@@ -314,8 +322,8 @@ export class Prop implements IProp {
 	) {
 		this.owner = parent.owner;
 		this.props = parent.props;
-		this.key.value = key;
-		this.spread.value = spread;
+		this._key.value = key;
+		this._spread.value = spread;
 		this.options = options;
 		if (value !== UNSET) {
 			this.setValue(value);
@@ -363,7 +371,7 @@ export class Prop implements IProp {
 		const value = toRaw(this._value.value);
 		if (
 			stage === IPublicEnumTransformStage.Render &&
-			this.key.value === '___condition___'
+			this.key === '___condition___'
 		) {
 			// 在设计器里，所有组件默认需要展示，除非开启了 enableCondition 配置
 			// 当enableCondition === false的时候设计器中___condition___默认显示
@@ -411,7 +419,7 @@ export class Prop implements IProp {
 					const v = prop.export(stage);
 					if (v != null) {
 						maps = maps || {};
-						maps[prop.key.value || key] = v;
+						maps[prop.key || key] = v;
 					}
 				}
 			});
@@ -486,7 +494,7 @@ export class Prop implements IProp {
 	emitChange({ oldValue }: { oldValue: IPublicTypeCompositeValue | UNSET }) {
 		const editor = this.owner.document?.designer.editor;
 		const propsInfo = {
-			key: this.key.value,
+			key: this.key,
 			prop: this,
 			oldValue,
 			newValue: this.type === 'unset' ? undefined : this._value.value,
@@ -597,9 +605,7 @@ export class Prop implements IProp {
 	 * @returns {boolean} 如果是虚拟属性返回 true,否则返回 false
 	 */
 	isVirtual() {
-		return (
-			typeof this.key.value === 'string' && this.key.value.charAt(0) === '!'
-		);
+		return typeof this.key === 'string' && this.key.charAt(0) === '!';
 	}
 
 	/**
@@ -871,7 +877,7 @@ export class Prop implements IProp {
 		}
 		const isMap = this._type.value === 'map';
 		items.forEach((item, index) =>
-			isMap ? fn(item, item.key.value) : fn(item, index)
+			isMap ? fn(item, item.key) : fn(item, index)
 		);
 	}
 
@@ -887,7 +893,7 @@ export class Prop implements IProp {
 		}
 		const isMap = this._type.value === 'map';
 		return items.map((item, index) =>
-			isMap ? fn(item, item.key.value) : fn(item, index)
+			isMap ? fn(item, item.key) : fn(item, index)
 		);
 	}
 

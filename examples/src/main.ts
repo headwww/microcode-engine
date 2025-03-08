@@ -65,6 +65,7 @@ await init(preference, {
 	},
 	appHelper,
 	supportVariableGlobally: true,
+	enableCanvasLock: true,
 } as any);
 
 app.mount('#app');

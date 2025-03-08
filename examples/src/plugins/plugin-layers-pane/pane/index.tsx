@@ -1,60 +1,62 @@
-import { computed, defineComponent } from 'vue';
+import {
+	defineComponent,
+	onBeforeUnmount,
+	onMounted,
+	PropType,
+	ref,
+} from 'vue';
 import './index.scss';
+import { PaneController, Tree, TreeMaster } from '../model';
+import { TreeView } from './tree';
 
 export const LayersPane = defineComponent({
 	name: 'LayersPane',
 	inheritAttrs: false,
-	setup() {
+	props: {
+		controller: {
+			type: Object as PropType<PaneController>,
+			required: true,
+		},
+		treeMaster: {
+			type: Object as PropType<TreeMaster>,
+			required: true,
+		},
+	},
+	setup(props) {
+		const { treeMaster } = props;
+		const tree = ref<Tree | null>(treeMaster.currentTree);
+
+		const containerRef = ref<HTMLDivElement>();
+
+		const dispose = [
+			props.treeMaster.pluginContext.project.onSimulatorRendererReady(() => {
+				tree.value = treeMaster.currentTree;
+			}),
+			props.treeMaster.pluginContext.project.onChangeDocument(() => {
+				tree.value = treeMaster.currentTree;
+			}),
+			props.treeMaster.pluginContext.project.onRemoveDocument(() => {
+				tree.value = treeMaster.currentTree;
+			}),
+		];
+
+		onBeforeUnmount(() => {
+			props.controller.purge();
+			dispose.forEach((d) => d());
+		});
+
+		onMounted(() => {
+			if (containerRef.value) {
+				props.controller.mount(containerRef.value);
+			}
+		});
+
 		return () => (
 			<div class="mtc-layers-pane">
-				<div class={'mtc-layers-container'}>
-					<TreeView />
+				<div ref={containerRef} class={'mtc-layers-container'}>
+					<TreeView key={tree.value?.id} tree={tree.value} />
 				</div>
 			</div>
 		);
-	},
-});
-
-export const TreeView = defineComponent({
-	name: 'TreeView',
-	inheritAttrs: false,
-	setup() {
-		return () => (
-			<div class="mtc-layers-tree">
-				<TreeNodeView />
-			</div>
-		);
-	},
-});
-
-export const TreeNodeView = defineComponent({
-	name: 'TreeNodeView',
-	inheritAttrs: false,
-	setup() {
-		const className = computed(() => ({
-			'mtc-tree-node': true,
-		}));
-		return () => (
-			<div class={className.value}>
-				<TreeTitle />
-				<TreeBranches />
-			</div>
-		);
-	},
-});
-
-export const TreeBranches = defineComponent({
-	name: 'TreeBranches',
-	inheritAttrs: false,
-	setup() {
-		return () => <div class="mtc-tree-node-branches"></div>;
-	},
-});
-
-export const TreeTitle = defineComponent({
-	name: 'TreeTitle',
-	inheritAttrs: false,
-	setup() {
-		return () => <div class="mtc-tree-node-title"></div>;
 	},
 });

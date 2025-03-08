@@ -4,7 +4,6 @@ import {
 	IPublicModelProp,
 	IPublicTypeCompositeValue,
 } from '@arvin-shu/microcode-types';
-import { Ref } from 'vue';
 import { IProp as InnerProp } from '@arvin-shu/microcode-designer';
 import { propSymbol } from '../symbols';
 import { Node as ShellNode } from './node';
@@ -48,7 +47,7 @@ export class Prop implements IPublicModelProp {
 	/**
 	 * 获取属性key
 	 */
-	get key(): Ref<string | number | undefined, string | number | undefined> {
+	get key(): string | number | undefined {
 		return this[propSymbol].key;
 	}
 

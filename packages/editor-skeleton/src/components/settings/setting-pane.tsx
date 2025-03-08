@@ -12,11 +12,20 @@ import {
 	isSetterConfig,
 	shouldUseVariableSetter,
 } from '@arvin-shu/microcode-utils';
-import { computed, defineComponent, onMounted, PropType, ref } from 'vue';
+import {
+	computed,
+	defineComponent,
+	onMounted,
+	PropType,
+	ref,
+	toRaw,
+	Fragment,
+} from 'vue';
 import { engineConfig, shallowIntl } from '@arvin-shu/microcode-editor-core';
 import { createField } from '../field';
 import { PopupPipe, PopupService } from '../popup';
 import { Skeleton } from '../../skeleton';
+import { intl } from '../../locale';
 
 /**
  * 判断是否为标准组件
@@ -121,11 +130,11 @@ export const SettingFieldView = defineComponent({
 				type: 'Widget',
 				name,
 				content: (
-					<>
+					<Fragment>
 						{field!.items.map((item, index) =>
 							createSettingFieldView(item, field!, index)
 						)}
-					</>
+					</Fragment>
 				),
 				props: {
 					title: field!.title,
@@ -167,6 +176,13 @@ export const SettingFieldView = defineComponent({
 				setterProps.defaultValue = defaultValue;
 				if (initialValue == null) {
 					initialValue = defaultValue;
+				}
+			}
+
+			if (props.field?.valueState === -1) {
+				setterProps.multiValue = true;
+				if (!('placeholder' in setterProps)) {
+					setterProps.placeholder = intl('Multiple Value');
 				}
 			}
 
@@ -248,10 +264,13 @@ export const SettingFieldView = defineComponent({
 			}
 		};
 
-		const value = ref(props.field?.getValue());
+		const value = ref(
+			props.field?.valueState === -1 ? null : props.field?.getValue()
+		);
 
 		function initDefaultValue() {
-			const { initialValue } = setterInfo.value;
+			const initialValue = toRaw(setterInfo.value.initialValue);
+
 			if (
 				fromOnChange.value ||
 				!isInitialValueNotEmpty(initialValue) ||
@@ -276,7 +295,7 @@ export const SettingFieldView = defineComponent({
 				props.field!;
 
 			if (!visible()) {
-				return <></>;
+				return null;
 			}
 
 			const { setterProps = {}, initialValue, setterType } = setterInfo.value;
@@ -287,6 +306,7 @@ export const SettingFieldView = defineComponent({
 					meta: componentMeta?.npm || componentMeta?.componentName || '',
 					title,
 					collapsed: !expanded,
+					valueState: field?.isRequired ? 10 : field?.valueState,
 					onExpandChange: (expandState: any) => {
 						props.field?.setExpanded(expandState);
 					},
@@ -358,11 +378,11 @@ export const SettingGroupView = defineComponent({
 				type: 'Widget',
 				name,
 				content: (
-					<>
+					<Fragment>
 						{field!.items.map((item, index) =>
 							createSettingFieldView(item, field!, index)
 						)}
-					</>
+					</Fragment>
 				),
 				props: {
 					title: field!.title,
@@ -382,7 +402,7 @@ export const SettingGroupView = defineComponent({
 					: true;
 
 			if (!visible) {
-				return <></>;
+				return null;
 			}
 
 			return createField(

@@ -23,6 +23,7 @@ import {
 	INode as InnerNode,
 } from '@arvin-shu/microcode-designer';
 import { isDragNodeObject } from '@arvin-shu/microcode-utils';
+import { toRaw } from 'vue';
 import { Node as ShellNode } from './node';
 import { documentSymbol, editorSymbol, nodeSymbol } from '../symbols';
 import { Selection as ShellSelection } from './selection';
@@ -368,7 +369,7 @@ export class DocumentModel implements IPublicModelDocumentModel {
 	}
 
 	isDetectingNode(node: IPublicModelNode): boolean {
-		return this.detecting.current === node;
+		return toRaw(this.detecting.current) === node;
 	}
 
 	onFocusNodeChanged(

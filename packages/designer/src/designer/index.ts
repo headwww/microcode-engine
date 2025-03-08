@@ -4,3 +4,4 @@ export * from './dragon';
 export * from './location';
 export * from './detecting';
 export * from './setting';
+export * from './scroller';

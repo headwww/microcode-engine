@@ -51,6 +51,8 @@ export interface ISettingField
 
 	get expanded(): boolean;
 
+	get valueState(): number;
+
 	setExpanded(value: boolean): void;
 
 	purge(): void;

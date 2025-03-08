@@ -8,6 +8,7 @@ import {
 	INode as InnerNode,
 	IDocumentModel as InnerDocumentModel,
 } from '@arvin-shu/microcode-designer';
+import { toRaw } from 'vue';
 import { Node as ShellNode } from './node';
 import { selectionSymbol } from '../symbols';
 
@@ -15,7 +16,7 @@ export class Selection implements IPublicModelSelection {
 	private readonly [selectionSymbol]: ISelection;
 
 	constructor(document: InnerDocumentModel) {
-		this[selectionSymbol] = document.selection;
+		this[selectionSymbol] = toRaw(document.selection);
 	}
 
 	/**
