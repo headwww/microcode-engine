@@ -10,14 +10,6 @@ export const RightArea = defineComponent({
 	setup(props) {
 		return () => {
 			const { area } = props;
-			console.log(
-				area?.container.items.slice().sort((a, b) => {
-					const index1 = a.config?.index || 0;
-					const index2 = b.config?.index || 0;
-					return index1 === index2 ? 0 : index1 > index2 ? 1 : -1;
-				})
-			);
-
 			return (
 				<div
 					class={{

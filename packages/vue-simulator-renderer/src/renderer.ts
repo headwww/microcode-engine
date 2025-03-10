@@ -331,7 +331,6 @@ export class SimulatorRendererContainer {
 					(doc: any) => {
 						let inst = this.documentInstanceMap.get(doc.id);
 						if (inst) {
-							// TODO 更新一下doc
 							inst.document = doc;
 						}
 						if (!inst) {

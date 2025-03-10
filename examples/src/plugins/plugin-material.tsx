@@ -212,6 +212,18 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 									},
 								},
 							},
+							{
+								name: 'children',
+								title: {
+									label: '内容',
+									tip: 'children | 内容',
+								},
+								propType: {
+									type: 'oneOfType',
+									value: ['node', 'string'],
+								},
+								setter: 'StringSetter',
+							},
 							// {
 							// 	name: 'children',
 							// 	title: {
@@ -635,6 +647,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							isLocked: false,
 							condition: false,
 							conditionGroup: '',
+							loopArgs: null,
 						},
 					],
 				} as any,

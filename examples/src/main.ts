@@ -16,6 +16,7 @@ import ComponentPanelPlugin from './plugins/plugin-components-pane';
 import InitVueCodeEditor from './plugins/plugin-vue-code-editor/index';
 import DataSourcePane from './plugins/plugin-datasource-pane/index';
 import LayersPane from './plugins/plugin-layers-pane/index';
+import PluginUndoRedo from './plugins/plugin-undo-redo/index';
 
 window.Vue = Vue;
 const app = Vue.createApp(App);
@@ -32,7 +33,7 @@ await plugins.register(InitMaterial);
 await plugins.register(InitSetter);
 await plugins.register(InitVueCodeEditor);
 await plugins.register(DataSourcePane);
-
+await plugins.register(PluginUndoRedo);
 function createAxiosFetchHandler(config?: Record<string, unknown>) {
 	// eslint-disable-next-line func-names
 	return async function (options: any) {

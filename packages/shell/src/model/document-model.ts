@@ -7,6 +7,7 @@ import {
 	IPublicModelDocumentModel,
 	IPublicModelDropLocation,
 	IPublicModelEditor,
+	IPublicModelHistory,
 	IPublicModelModalNodesManager,
 	IPublicModelNode,
 	IPublicModelSelection,
@@ -32,6 +33,7 @@ import { Project as ShellProject, Canvas as ShellCanvas } from '../api';
 import { DropLocation as ShellDropLocation } from './drop-location';
 import { Prop as ShellProp } from './prop';
 import { ModalNodesManager } from './modal-nodes-manager';
+import { History as ShellHistory } from './history';
 
 const shellDocSymbol = Symbol('shellDocSymbol');
 
@@ -48,12 +50,14 @@ export class DocumentModel implements IPublicModelDocumentModel {
 
 	canvas: IPublicApiCanvas;
 
+	history: IPublicModelHistory;
+
 	constructor(document: InnerDocumentModel) {
 		this[documentSymbol] = document;
 		this[editorSymbol] = document.designer?.editor as IPublicModelEditor;
 		this.selection = new ShellSelection(document);
 		this.detecting = new ShellDetecting(document);
-		// TODO this.history = new ShellHistory(document);
+		this.history = new ShellHistory(document);
 		this.canvas = new ShellCanvas(this[editorSymbol]);
 		this._focusNode = ShellNode.create(this[documentSymbol].focusNode);
 	}

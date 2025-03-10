@@ -12,12 +12,14 @@ import {
 } from '../type';
 import { IPublicModelDetecting } from './detecting';
 import { IPublicModelDropLocation } from './drop-location';
+import { IPublicModelHistory } from './history';
 import { IPublicModelModalNodesManager } from './modal-nodes-manager';
 import { IPublicModelNode } from './node';
 import { IPublicModelSelection } from './selection';
 
 export interface IPublicModelDocumentModel<
 	Selection = IPublicModelSelection,
+	History = IPublicModelHistory,
 	Node = IPublicModelNode,
 	DropLocation = IPublicModelDropLocation,
 	ModalNodesManager = IPublicModelModalNodesManager,
@@ -32,6 +34,12 @@ export interface IPublicModelDocumentModel<
 	 * 节点选中区模型实例
 	 */
 	selection: Selection;
+
+	/**
+	 * 操作历史模型实例
+	 * instance of history
+	 */
+	history: History;
 
 	/**
 	 * id

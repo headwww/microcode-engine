@@ -44,6 +44,7 @@ import { IDesigner, IDropLocation } from '../designer';
 import { EDITOR_EVENT } from '../types';
 import { IComponentMeta } from '../component-meta';
 import { ISelection, Selection } from './selection';
+import { History, IHistory } from './history';
 
 /**
  * 获取数据类型的工具类型
@@ -66,6 +67,7 @@ export interface IDocumentModel
 	extends Omit<
 		IPublicModelDocumentModel<
 			ISelection,
+			IHistory,
 			INode,
 			IDropLocation,
 			IModalNodesManager,
@@ -126,6 +128,8 @@ export interface IDocumentModel
 			| IPublicTypeDragNodeDataObject
 	): boolean;
 
+	getHistory(): IHistory;
+
 	getNodeCount(): number;
 
 	nextId(possibleId: string | undefined): string;
@@ -184,9 +188,10 @@ export class DocumentModel implements IDocumentModel {
 	 */
 	readonly selection: ISelection = shallowReactive(new Selection(this));
 
-	// TODO 操作记录控制
-
-	// TODO 模态节点管理
+	/**
+	 * 操作记录控制
+	 */
+	readonly history: IHistory;
 
 	private _nodesMap = new Map<string, INode>();
 
@@ -325,6 +330,14 @@ export class DocumentModel implements IDocumentModel {
 
 		// TODO 历史记录的功能
 
+		this.history = new History(
+			() => this.export(IPublicEnumTransformStage.Serilize),
+			(schema) => {
+				this.import(schema as IPublicTypeRootSchema, true);
+				this.simulator?.rerender();
+			},
+			this as any
+		);
 		this.modalNodesManager = new ModalNodesManager(this);
 		// 初始化完成
 		this.inited = true;
@@ -336,6 +349,10 @@ export class DocumentModel implements IDocumentModel {
 	 */
 	drillDown(node: INode | null) {
 		this._drillDownNode.value = node;
+	}
+
+	getHistory(): IHistory {
+		return this.history;
 	}
 
 	/**
@@ -660,15 +677,11 @@ export class DocumentModel implements IDocumentModel {
 		return null;
 	}
 
-	// isModified 是否已修改
-
 	/**
-	 *  TODO 是否有状态变更但未保存
+	 *   是否有状态变更但未保存
 	 */
 	isModified(): boolean {
-		// TODO   return this.history.isSavePoint();
-
-		return true;
+		return this.history.isSavePoint();
 	}
 
 	getComponent(componentName: string): any {
@@ -815,7 +828,6 @@ export class DocumentModel implements IDocumentModel {
 		return data;
 	}
 
-	// TODO getHistory
 	// TODO acceptRootNodeVisitor
 	// TODO getRootNodeVisitor
 

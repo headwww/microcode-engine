@@ -229,6 +229,10 @@ export class Designer implements IDesigner {
 		return this.project.currentDocument;
 	}
 
+	get currentHistory() {
+		return this.currentDocument?.history;
+	}
+
 	get currentSelection() {
 		return this.currentDocument?.selection;
 	}
@@ -337,13 +341,30 @@ export class Designer implements IDesigner {
 			node.document?.simulator?.scrollToNode(node, detail);
 		});
 
-		// TODO 还有很多属性没有实现
-
-		this.postEvent('init', this);
+		let historyDispose: undefined | (() => void);
+		const setupHistory = () => {
+			if (historyDispose) {
+				historyDispose();
+				historyDispose = undefined;
+			}
+			this.postEvent('history.change', this.currentHistory);
+			if (this.currentHistory) {
+				const { currentHistory } = this;
+				historyDispose = currentHistory.onStateChange(() => {
+					this.postEvent('history.change', currentHistory);
+				});
+			}
+		};
 		this.project.onCurrentDocumentChange(() => {
+			this.postEvent('current-document.change', this.currentDocument);
 			this.postEvent('selection.change', this.currentSelection);
+			this.postEvent('history.change', this.currentHistory);
 			this.setupSelection();
+			setupHistory();
 		});
+		this.postEvent('init', this);
+		this.setupSelection();
+		setupHistory();
 		this.postEvent('init', this);
 		this.setupSelection();
 	}

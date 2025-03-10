@@ -31,7 +31,9 @@ export class Tree {
 			treeNode?.notifyExpandableChanged();
 		});
 
-		// TODO history.onChangeCursor
+		doc?.history.onChangeCursor(() => {
+			this.root?.notifyExpandableChanged();
+		});
 
 		doc?.onChangeNodeProp((info: IPublicTypePropChangeOptions) => {
 			const { node, key } = info;
