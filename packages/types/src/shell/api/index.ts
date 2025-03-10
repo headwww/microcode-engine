@@ -7,3 +7,4 @@ export * from './canvas';
 export * from './project';
 export * from './simulator-host';
 export * from './setters';
+export * from './hotkey';

@@ -1,6 +1,7 @@
 import {
 	IPublicApiCanvas,
 	IPublicApiEvent,
+	IPublicApiHotkey,
 	IPublicApiLogger,
 	IPublicApiMaterial,
 	IPublicApiPlugins,
@@ -71,16 +72,17 @@ export type PluginPreference = Map<
 >;
 
 export interface IMicrocodeContextPrivate {
-	set setters(setters: IPublicApiSetters);
+	set hotkey(hotkey: IPublicApiHotkey);
+	set project(project: IPublicApiProject);
 	set skeleton(skeleton: IPublicApiSkeleton);
-	set plugins(plugins: IPublicApiPlugins);
 	set material(material: IPublicApiMaterial);
+	set setters(setters: IPublicApiSetters);
+	set plugins(plugins: IPublicApiPlugins);
 	set canvas(material: IPublicApiCanvas);
 	set config(config: IPublicModelEngineConfig);
 	set event(event: IPublicApiEvent);
 	set logger(logger: IPublicApiLogger);
 	set pluginEvent(pluginEvent: IPublicApiEvent);
-	set project(project: IPublicApiProject);
 }
 
 export interface IPluginContextOptions {

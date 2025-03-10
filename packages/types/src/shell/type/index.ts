@@ -78,3 +78,6 @@ export * from './dynamic-props';
 export * from './setter-type';
 export * from './dynamic-setter';
 export * from './active-target';
+export * from './hotkey-callback';
+export * from './hotkey-callback-config';
+export * from './hotkey-callbacks';

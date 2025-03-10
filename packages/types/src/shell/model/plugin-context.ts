@@ -2,6 +2,7 @@ import {
 	IPluginPreferenceMananger,
 	IPublicApiCanvas,
 	IPublicApiEvent,
+	IPublicApiHotkey,
 	IPublicApiLogger,
 	IPublicApiMaterial,
 	IPublicApiPlugins,
@@ -21,6 +22,11 @@ export interface IPublicModelPluginContext {
 	 * skeleton API
 	 */
 	get skeleton(): IPublicApiSkeleton;
+
+	/**
+	 * hotkey API
+	 */
+	get hotkey(): IPublicApiHotkey;
 
 	/**
 	 * plugins api

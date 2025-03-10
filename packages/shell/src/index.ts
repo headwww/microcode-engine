@@ -21,6 +21,7 @@ import {
 	Event,
 	Canvas,
 	SimulatorHost,
+	Hotkey,
 	Config,
 	Setters,
 } from './api';
@@ -33,6 +34,7 @@ export {
 	Event,
 	Material,
 	Node,
+	Hotkey,
 	History,
 	NodeChildren,
 	Project,

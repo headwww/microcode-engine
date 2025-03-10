@@ -2,6 +2,7 @@ import {
 	IPluginPreferenceMananger,
 	IPublicApiCanvas,
 	IPublicApiEvent,
+	IPublicApiHotkey,
 	IPublicApiLogger,
 	IPublicApiMaterial,
 	IPublicApiPlugins,
@@ -30,6 +31,8 @@ import {
 export default class PluginContext
 	implements IPublicModelPluginContext, IMicrocodeContextPrivate
 {
+	hotkey: IPublicApiHotkey;
+
 	project: IPublicApiProject;
 
 	skeleton: IPublicApiSkeleton;

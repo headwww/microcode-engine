@@ -1,6 +1,7 @@
 import { Title } from '@arvin-shu/microcode-editor-core';
 import { IPublicTypeTitleContent } from '@arvin-shu/microcode-types';
 import { computed, defineComponent, PropType, toRaw } from 'vue';
+import { getClosestNode } from '@arvin-shu/microcode-utils';
 import { intl } from '../../locale';
 import { BuiltinSimulatorHost } from '../host';
 import { INode } from '../../document';
@@ -128,7 +129,32 @@ export const BorderDetecting = defineComponent({
 				);
 			}
 
-			// TODO 假如当前节点就是 locked 状态
+			const lockedNode = getClosestNode(
+				toRaw(current.value) as any,
+				(n) =>
+					// 假如当前节点就是 locked 状态，要从当前节点的父节点开始查找
+					!!(toRaw(current.value)?.isLocked ? n.parent?.isLocked : n.isLocked)
+			);
+
+			if (lockedNode && lockedNode.getId() !== current.value.getId()) {
+				// 选中父节锁定的节点
+				return (
+					<BorderDetectingInstance
+						key="line-h"
+						title={current.value.title}
+						scale={scale.value}
+						scrollX={scrollX.value}
+						scrollY={scrollY.value}
+						rect={host?.computeComponentInstanceRect(
+							// @ts-ignore
+							host.getComponentInstances(lockedNode)[0],
+							lockedNode.componentMeta.rootSelector
+						)}
+						isLocked={lockedNode?.getId() !== toRaw(current.value).getId()}
+					/>
+				);
+			}
+
 			const instances = props.host?.getComponentInstances(current.value as any);
 			if (!instances || instances.length < 1) {
 				return <></>;

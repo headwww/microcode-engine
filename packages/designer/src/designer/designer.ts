@@ -65,7 +65,9 @@ export const designerProps = {
 	style: {
 		type: Object as PropType<CSSProperties>,
 	},
-	// TODO 快捷键 hotkeys
+	hotkeys: {
+		type: Object,
+	},
 	viewName: {
 		type: String,
 	},

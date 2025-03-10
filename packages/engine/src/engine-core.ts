@@ -11,6 +11,7 @@ import {
 	engineConfig,
 	globalContext,
 	Setters as InnerSetters,
+	Hotkey as InnerHotkey,
 } from '@arvin-shu/microcode-editor-core';
 import {
 	Skeleton as InnerSkeleton,
@@ -25,6 +26,7 @@ import {
 	Material,
 	Canvas,
 	Project,
+	Hotkey,
 	Setters,
 } from '@arvin-shu/microcode-shell';
 import {
@@ -36,6 +38,7 @@ import { h } from 'vue';
 import { defaultPanelRegistry } from './inner-plugins/default-panel-registry';
 import { componentMetaParser } from './inner-plugins/component-meta-parser';
 import { shellModelFactory } from './modules/shell-model-factory';
+import { builtinHotkey } from './inner-plugins/builtin-hotkey';
 
 const editor = new Editor();
 
@@ -52,6 +55,8 @@ editor.set('designer', designer);
 
 const { project: innerProject } = designer;
 
+const innerHotkey = new InnerHotkey();
+const hotkey = new Hotkey(innerHotkey);
 const project = new Project(innerProject);
 
 const skeleton = new Skeleton(innerSkeleton, 'any', false);
@@ -63,6 +68,7 @@ const material = new Material(editor);
 editor.set('project', project);
 editor.set('setters', setters);
 editor.set('material', material);
+editor.set('innerHotkey', innerHotkey);
 
 const config = new Config(engineConfig);
 const event = new Event(commonEvent, { prefix: 'common' });
@@ -76,6 +82,7 @@ const pluginContextApiAssembler: IMicroodePluginContextApiAssembler = {
 		pluginName: string,
 		meta: IPublicTypePluginMeta
 	) {
+		context.hotkey = hotkey;
 		context.skeleton = new Skeleton(innerSkeleton, pluginName, false);
 		context.plugins = plugins;
 		context.setters = setters;
@@ -106,6 +113,14 @@ async function registryInnerPlugin() {
 	await plugins.register(defaultPanelRegistryPlugin);
 	await plugins.register(componentMetaParserPlugin);
 	await plugins.register(registerBuiltinTransducer, {}, { autoInit: true });
+	await plugins.register(builtinHotkey);
+
+	return () => {
+		plugins.delete(componentMetaParserPlugin.pluginName);
+		plugins.delete(defaultPanelRegistryPlugin.pluginName);
+		plugins.delete(builtinHotkey.pluginName);
+		plugins.delete(defaultPanelRegistryPlugin.pluginName);
+	};
 }
 
 // TODO 设置一个渲染模拟器插件
@@ -137,6 +152,7 @@ export {
 	plugins,
 	config,
 	event,
+	hotkey,
 	setters,
 	project,
 	material,

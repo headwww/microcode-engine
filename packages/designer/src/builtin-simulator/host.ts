@@ -390,14 +390,24 @@ export class BuiltinSimulatorHost
 
 		await this.injectionConsumer.waitFirstConsume();
 
-		// TODO 加载异步 Library
+		if (Object.keys(this.asyncLibraryMap).length > 0) {
+			// 加载异步 Library
+			await renderer.loadAsyncLibrary(this.asyncLibraryMap);
+			Object.keys(this.asyncLibraryMap).forEach((key) => {
+				delete this.asyncLibraryMap[key];
+			});
+		}
 
 		renderer.run();
 
 		this.viewport.setScrollTarget(this._contentWindow.value!);
 		this.setupEvents();
 
-		// TODO 绑定热键
+		const hotkey = this.designer.editor.get('innerHotkey');
+		hotkey?.mount(this._contentWindow.value);
+		const innerSkeleton = this.designer.editor.get('skeleton');
+		innerSkeleton?.focusTracker.mount(this._contentWindow.value);
+		// TODO     clipboard.injectCopyPaster(this._contentDocument);
 	}
 
 	private _mutationObserver?: MutationObserver;
