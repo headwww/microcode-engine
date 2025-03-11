@@ -328,8 +328,6 @@ export class DocumentModel implements IDocumentModel {
 			}
 		);
 
-		// TODO 历史记录的功能
-
 		this.history = new History(
 			() => this.export(IPublicEnumTransformStage.Serilize),
 			(schema) => {

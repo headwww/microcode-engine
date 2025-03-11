@@ -998,7 +998,7 @@ export function handleStyle(css: string | undefined, id: string | undefined) {
  * - ref 逻辑 (合并 ref function)
  * - 事件绑定逻辑 (重复注册的事件转化为数组)
  * - 双向绑定逻辑 (v-model)
- * - 指令绑定逻辑 TODO
+ * - 指令绑定逻辑
  * @param target - 组件属性目标对象
  * @param key - 属性名
  * @param val - 属性值
@@ -1035,10 +1035,9 @@ const processProp = (
 		}
 		target[valueProp] = val;
 	} else if (key.startsWith('v-')) {
-		// TODO：指令绑定逻辑
+		// 指令绑定逻辑
 	} else if (key.match(/^on[A-Z]/)) {
 		// 事件绑定逻辑
-
 		// normalize: onUpdateXxx => onUpdate:xxx
 		const matched = key.match(/onUpdate(?::?(\w+))$/);
 		if (matched) {

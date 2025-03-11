@@ -35,6 +35,7 @@ import {
 	isElement,
 	isFormEvent,
 	isLocationData,
+	UtilsMetadata,
 } from '@arvin-shu/microcode-utils';
 import { isNaN } from 'lodash';
 import {
@@ -96,7 +97,7 @@ export const builtinSimulatorProps = {
 	requestHandlersMap: Object as PropType<any>,
 	extraEnvironment: [Object, String] as PropType<Asset>,
 	library: Array as PropType<LibraryItem[]>,
-	// TODO utilsMetadata
+	utilsMetadata: Object as PropType<UtilsMetadata>,
 	simulatorUrl: [Object, String] as PropType<Asset>,
 	theme: [Object, String] as PropType<Asset>,
 	componentsAsset: [Object, String] as PropType<Asset>,
@@ -247,8 +248,6 @@ export class BuiltinSimulatorHost
 		});
 
 		this.i18nConsumer = new ResourceConsumer(() => this.project.i18n);
-
-		// TODO 还有很多属性没有设置
 	}
 
 	stopAutoRepaintNode() {
@@ -387,7 +386,7 @@ export class BuiltinSimulatorHost
 			assetBundle(libraryAsset, AssetLevel.Library),
 			// 主题
 			assetBundle(this.theme, AssetLevel.Theme),
-			// 渲染器模拟器环境 TODO 没有设置内置的模拟器环境
+			// TODO 渲染器模拟器环境  没有设置内置的模拟器环境
 			assetBundle(this.get('simulatorUrl'), AssetLevel.Runtime),
 		];
 
@@ -496,13 +495,10 @@ export class BuiltinSimulatorHost
 				if (this.liveEditing.editing || !documentModel) {
 					return;
 				}
-
 				if (!documentModel) {
 					return;
 				}
-
 				const { selection } = documentModel;
-
 				let isMulti = false;
 
 				// 根据设计模式判断是否为多选操作

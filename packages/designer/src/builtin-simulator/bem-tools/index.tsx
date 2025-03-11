@@ -14,12 +14,14 @@ export const BemTools = defineComponent({
 	},
 	name: 'BemTools',
 	setup(props) {
-		// TODO designMode === 'live' 取消掉这个 处理滚动的情况
-
-		// TODO 设置配置状态engineConfig
+		// TODO 还有几个组件没有完成
 
 		return () => {
 			const { host } = props;
+
+			if (host?.designMode === 'live') {
+				return null;
+			}
 			const { scrollX, scrollY, scale } = host!.viewport;
 
 			return (

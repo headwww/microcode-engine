@@ -5,7 +5,7 @@ import { Point } from '../designer';
 import { ScrollTarget } from '../designer/scroller';
 
 /**
- * TODO 滚动视图没有考虑
+ * 滚动视图没有考虑
  *
  */
 export default class Viewport implements IViewport {

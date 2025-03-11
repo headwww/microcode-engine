@@ -5,6 +5,7 @@ import {
 	proxyRefs,
 	reactive,
 } from 'vue';
+import { DataSourceMap } from '@arvin-shu/microcode-datasource-types';
 import { SchemaParser } from './parse';
 import { isBoolean, isObject, isUndefined } from './check';
 
@@ -34,7 +35,8 @@ export const enum AccessTypes {
 export interface RuntimeScope extends BlockScope, ComponentPublicInstance {
 	i18n(key: string, values: any): string;
 	currentLocale: string;
-	// TODO 数据源 dataSourceMap没定义
+	dataSourceMap: Record<string, DataSourceMap>;
+	reloadDataSource(): Promise<any[]>;
 	__parser: SchemaParser;
 	__thisRequired: boolean;
 	__loopScope?: boolean;

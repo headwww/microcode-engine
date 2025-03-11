@@ -24,3 +24,4 @@ export * from './clone-deep';
 export * from './misc';
 export * from './is-px';
 export * from './is-shaken';
+export * from './build-components';
