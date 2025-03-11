@@ -8,6 +8,7 @@ import {
 	IPublicModelScrollTarget,
 	IPublicTypeLocationData,
 	IPublicTypeScrollable,
+	IPublicModelClipboard,
 } from '@arvin-shu/microcode-types';
 import {
 	DropLocation,
@@ -18,12 +19,15 @@ import { designerSymbol, editorSymbol, nodeSymbol } from '../symbols';
 import {
 	Dragon as ShellDragon,
 	ActiveTracker as ShellActiveTracker,
+	Clipboard as ShellClipboard,
 } from '../model';
 
-// TODO 还有很多功能没有添加进去
+const clipboardInstanceSymbol = Symbol('clipboardInstace');
 
 export class Canvas implements IPublicApiCanvas {
 	private readonly [editorSymbol]: IPublicModelEditor;
+
+	private readonly [clipboardInstanceSymbol]: IPublicModelClipboard;
 
 	private get [designerSymbol](): IDesigner {
 		return this[editorSymbol].get('designer') as IDesigner;
@@ -34,6 +38,7 @@ export class Canvas implements IPublicApiCanvas {
 		readonly workspaceMode: boolean = false
 	) {
 		this[editorSymbol] = editor;
+		this[clipboardInstanceSymbol] = new ShellClipboard();
 	}
 
 	get activeTracker(): IPublicModelActiveTracker | null {
@@ -48,6 +53,10 @@ export class Canvas implements IPublicApiCanvas {
 			this[editorSymbol].get('designer')?.project?.simulator?.liveEditing
 				?.editing
 		);
+	}
+
+	get clipboard(): IPublicModelClipboard {
+		return this[clipboardInstanceSymbol];
 	}
 
 	createScrollTarget(shell: HTMLDivElement): IPublicModelScrollTarget {

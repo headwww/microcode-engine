@@ -6,3 +6,4 @@ export * from './detecting';
 export * from './setting';
 export * from './scroller';
 export * from './active-tracker';
+export * from './clipboard';

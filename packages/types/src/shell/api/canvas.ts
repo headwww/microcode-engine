@@ -1,5 +1,6 @@
 import {
 	IPublicModelActiveTracker,
+	IPublicModelClipboard,
 	IPublicModelDragon,
 	IPublicModelDropLocation,
 	IPublicModelScroller,
@@ -8,7 +9,7 @@ import {
 import { IPublicTypeLocationData, IPublicTypeScrollable } from '../type';
 
 /**
- * Tcanvas - 画布 API
+ * canvas - 画布 API
  */
 export interface IPublicApiCanvas {
 	/**
@@ -55,5 +56,11 @@ export interface IPublicApiCanvas {
 		locationData: IPublicTypeLocationData
 	): IPublicModelDropLocation;
 
-	// TODO clipboard
+	/**
+	 * 获取全局剪贴板实例
+	 *
+	 * 获取剪贴板实例
+	 *
+	 */
+	get clipboard(): IPublicModelClipboard;
 }

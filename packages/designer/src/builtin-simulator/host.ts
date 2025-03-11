@@ -73,6 +73,7 @@ import { isShaken } from '../designer/utils';
 import ResourceConsumer from './resource-consumer';
 import { BuiltinSimulatorRenderer } from './renderer';
 import { LiveEditing } from './live-editing';
+import { clipboard } from '../designer/clipboard';
 
 export type LibraryItem = IPublicTypePackage & {
 	package: string;
@@ -416,7 +417,7 @@ export class BuiltinSimulatorHost
 		hotkey?.mount(this._contentWindow.value);
 		const innerSkeleton = this.designer.editor.get('skeleton');
 		innerSkeleton?.focusTracker.mount(this._contentWindow.value);
-		// TODO     clipboard.injectCopyPaster(this._contentDocument);
+		clipboard.injectCopyPaster(this._contentDocument.value!);
 	}
 
 	private _mutationObserver?: MutationObserver;

@@ -7,6 +7,7 @@ import {
 	Selection,
 	Dragon,
 	History,
+	Clipboard,
 	SettingTopEntry,
 	SettingField,
 	SkeletonItem,
@@ -53,4 +54,5 @@ export {
 	Config,
 	Setters,
 	SkeletonItem,
+	Clipboard,
 };
