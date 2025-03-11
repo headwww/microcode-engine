@@ -333,7 +333,7 @@ export const builtinHotkey = (ctx: IPublicModelPluginContext) => ({
 			if (canvas.isInLiveEditing) {
 				return;
 			}
-			// TODO
+			//
 			const doc = project?.currentDocument;
 			if (isFormEvent(e) || !doc) {
 				return;
@@ -456,8 +456,8 @@ export const builtinHotkey = (ctx: IPublicModelPluginContext) => ({
 			if (!selected || selected.length < 1) {
 				return;
 			}
-			// TODO: 此处需要增加判断当前节点是否可被操作移动，原ve里是用 node.canOperating()来判断
-			// TODO: 移动逻辑也需要重新梳理，对于移动目标位置的选择，是否可以移入，需要增加判断
+			//  此处需要增加判断当前节点是否可被操作移动，原ve里是用 node.canOperating()来判断
+			// 移动逻辑也需要重新梳理，对于移动目标位置的选择，是否可以移入，需要增加判断
 
 			const firstNode = selected[0];
 			const parent = firstNode?.parent;
@@ -489,8 +489,8 @@ export const builtinHotkey = (ctx: IPublicModelPluginContext) => ({
 			if (!selected || selected.length < 1) {
 				return;
 			}
-			// TODO: 此处需要增加判断当前节点是否可被操作移动，原ve里是用 node.canOperating()来判断
-			// TODO: 移动逻辑也需要重新梳理，对于移动目标位置的选择，是否可以移入，需要增加判断
+			// : 此处需要增加判断当前节点是否可被操作移动，原ve里是用 node.canOperating()来判断
+			// : 移动逻辑也需要重新梳理，对于移动目标位置的选择，是否可以移入，需要增加判断
 
 			const firstNode = selected[0];
 			const parent = firstNode?.parent;
@@ -530,8 +530,8 @@ export const builtinHotkey = (ctx: IPublicModelPluginContext) => ({
 			if (!selected || selected.length < 1) {
 				return;
 			}
-			// TODO: 此处需要增加判断当前节点是否可被操作移动，原 ve 里是用 node.canOperating() 来判断
-			// TODO: 移动逻辑也需要重新梳理，对于移动目标位置的选择，是否可以移入，需要增加判断
+			// : 此处需要增加判断当前节点是否可被操作移动，原 ve 里是用 node.canOperating() 来判断
+			// : 移动逻辑也需要重新梳理，对于移动目标位置的选择，是否可以移入，需要增加判断
 
 			const firstNode = selected[0];
 			const parent = firstNode?.parent;

@@ -44,7 +44,6 @@ export interface IPublicTypeContainerSchema extends IPublicTypeNodeSchema {
 	 * 生命周期对象
 	 */
 	lifeCycles?: {
-		// @todo 生命周期对象建议改为闭合集合
 		[key: string]: IPublicTypeJSExpression | IPublicTypeJSFunction;
 	};
 

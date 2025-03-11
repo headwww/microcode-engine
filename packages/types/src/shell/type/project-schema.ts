@@ -3,6 +3,29 @@ import { IPublicTypeAppConfig } from './app-config';
 import { IPublicTypeI18nMap } from './i18n-map';
 import { IPublicTypeComponentsMap } from './npm';
 import { IPublicTypeRootSchema } from './root-schema';
+import {
+	IPublicTypeJSExpression,
+	IPublicTypeJSFunction,
+	IPublicTypeJSONObject,
+} from './value-type';
+import { IPublicTypeNpmInfo } from './npm-info';
+
+export interface IPublicTypeInternalUtils {
+	name: string;
+	type: 'function';
+	content: IPublicTypeJSFunction | IPublicTypeJSExpression;
+}
+
+export interface IPublicTypeExternalUtils {
+	name: string;
+	type: 'npm' | 'pnpm';
+	content: IPublicTypeNpmInfo;
+}
+
+export type IPublicTypeUtilItem =
+	| IPublicTypeInternalUtils
+	| IPublicTypeExternalUtils;
+export type IPublicTypeUtilsMap = IPublicTypeUtilItem[];
 
 /**
  * 应用描述
@@ -33,6 +56,16 @@ export interface IPublicTypeProjectSchema<T = IPublicTypeRootSchema> {
 	i18n?: IPublicTypeI18nMap;
 
 	/**
+	 * 应用范围内的全局自定义函数或第三方工具类扩展
+	 */
+	utils?: IPublicTypeUtilsMap;
+
+	/**
+	 * 应用范围内的全局常量
+	 */
+	constants?: IPublicTypeJSONObject;
+
+	/**
 	 * 当前应用配置信息
 	 *
 	 */
@@ -52,5 +85,4 @@ export interface IPublicTypeProjectSchema<T = IPublicTypeRootSchema> {
 	 * 当前应用元数据信息
 	 */
 	meta?: Record<string, any>;
-	// TODO 还有很多属性没有实现
 }
