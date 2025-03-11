@@ -9,7 +9,6 @@ import { IPublicTypeLocationData, IPublicTypeScrollable } from '../type';
 
 /**
  * Tcanvas - 画布 API
- * TODO
  */
 export interface IPublicApiCanvas {
 	/**
@@ -25,6 +24,13 @@ export interface IPublicApiCanvas {
 	 * 它跟踪文档当前聚焦的节点/节点数组,并在聚焦节点/节点数组发生变化时通知订阅者。
 	 */
 	get activeTracker(): IPublicModelActiveTracker | null;
+
+	/**
+	 * 是否处于 LiveEditing 状态
+	 *
+	 * 检查画布是否处于 liveEditing 状态
+	 */
+	get isInLiveEditing(): boolean;
 
 	/**
 	 * 创一个滚动控制器 Scroller，赋予一个视图滚动的基本能力，
@@ -48,4 +54,6 @@ export interface IPublicApiCanvas {
 	createLocation(
 		locationData: IPublicTypeLocationData
 	): IPublicModelDropLocation;
+
+	// TODO clipboard
 }

@@ -40,7 +40,6 @@ export interface ISettingEntry {
 
 	readonly nodes: INode[];
 
-	// @todo 补充 node 定义
 	/**
 	 * 获取 node 中的第一项
 	 */

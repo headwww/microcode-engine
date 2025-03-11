@@ -39,6 +39,7 @@ import { defaultPanelRegistry } from './inner-plugins/default-panel-registry';
 import { componentMetaParser } from './inner-plugins/component-meta-parser';
 import { shellModelFactory } from './modules/shell-model-factory';
 import { builtinHotkey } from './inner-plugins/builtin-hotkey';
+import './modules/live-editing';
 
 const editor = new Editor();
 

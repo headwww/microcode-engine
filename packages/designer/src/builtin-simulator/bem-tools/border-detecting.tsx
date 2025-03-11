@@ -1,6 +1,6 @@
 import { Title } from '@arvin-shu/microcode-editor-core';
 import { IPublicTypeTitleContent } from '@arvin-shu/microcode-types';
-import { computed, defineComponent, PropType, toRaw } from 'vue';
+import { computed, defineComponent, PropType, toRaw, Fragment } from 'vue';
 import { getClosestNode } from '@arvin-shu/microcode-utils';
 import { intl } from '../../locale';
 import { BuiltinSimulatorHost } from '../host';
@@ -36,7 +36,7 @@ export const BorderDetectingInstance = defineComponent({
 		return () => {
 			const { title, rect, scale, scrollX, scrollY, isLocked } = props;
 			if (!rect) {
-				return <></>;
+				return null;
 			}
 
 			const style = {
@@ -99,14 +99,18 @@ export const BorderDetecting = defineComponent({
 					? canHoverHook(current.value.internalToShellNode() as any)
 					: true;
 
-			// TODO props.host.liveEditing
 			// 以下情况不显示边框:
 			// 1. 当前节点不允许hover (canHover为false)
 			// 2. 没有当前节点 (current为null)
 			// 3. 视口正在滚动 (scrolling为true)
 			// 4. 正在进行实时编辑 (editing为true)
-			if (!canHover || !current.value || host?.viewport.scrolling) {
-				return <></>;
+			if (
+				!canHover ||
+				!current.value ||
+				host?.viewport.scrolling ||
+				host?.liveEditing.editing
+			) {
+				return null;
 			}
 
 			const focusNode = toRaw(current.value.document?.focusNode!);
@@ -157,7 +161,7 @@ export const BorderDetecting = defineComponent({
 
 			const instances = props.host?.getComponentInstances(current.value as any);
 			if (!instances || instances.length < 1) {
-				return <></>;
+				return null;
 			}
 			if (instances.length === 1) {
 				return (
@@ -175,7 +179,7 @@ export const BorderDetecting = defineComponent({
 				);
 			}
 			return (
-				<>
+				<Fragment>
 					{instances.map((inst, i) => (
 						<BorderDetectingInstance
 							key={`line-h-${i}`}
@@ -189,7 +193,7 @@ export const BorderDetecting = defineComponent({
 							)}
 						/>
 					))}
-				</>
+				</Fragment>
 			);
 		};
 	},

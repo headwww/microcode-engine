@@ -8,6 +8,7 @@ import {
 	cloneVNode,
 	h,
 	VNode,
+	Fragment,
 } from 'vue';
 import { engineConfig, Tip } from '@arvin-shu/microcode-editor-core';
 import {
@@ -52,13 +53,13 @@ export const BorderSelectingInstance = defineComponent({
 		return () => {
 			const { observed } = props;
 			if (!observed?.hasOffset.value) {
-				return <></>;
+				return null;
 			}
 			const { hideSelectTools } = observed.node.componentMeta.advanced;
 
 			const hideComponentAction = engineConfig.get('hideComponentAction');
 			if (hideSelectTools) {
-				return <></>;
+				return null;
 			}
 
 			return (
@@ -219,11 +220,11 @@ export const BorderSelectingForNode = defineComponent({
 
 		return () => {
 			if (!instances.value || instances.value.length < 1) {
-				return <></>;
+				return null;
 			}
 
 			return (
-				<>
+				<Fragment>
 					{instances.value.map((instance) => {
 						const instanceKey = toRaw(instance);
 
@@ -250,7 +251,7 @@ export const BorderSelectingForNode = defineComponent({
 						});
 
 						if (!observed) {
-							return <></>;
+							return null;
 						}
 						// 缓存observed用于滚动时使用
 						observedMap.set(instanceKey, observed);
@@ -262,7 +263,7 @@ export const BorderSelectingForNode = defineComponent({
 							/>
 						);
 					})}
-				</>
+				</Fragment>
 			);
 		};
 	},
@@ -281,8 +282,7 @@ export const BorderSelecting = defineComponent({
 
 		const selecting = computed(() => {
 			const doc = host?.currentDocument;
-			//  TODO host.liveEditing.editing
-			if (!doc || doc.suspensed) {
+			if (!doc || doc.suspensed || host.liveEditing.editing) {
 				return null;
 			}
 			const s = doc.selection;
@@ -291,14 +291,14 @@ export const BorderSelecting = defineComponent({
 
 		return () => {
 			if (!selecting.value || selecting.value.length < 1) {
-				return <></>;
+				return null;
 			}
 			return (
-				<>
+				<Fragment>
 					{selecting.value.map((node) => (
 						<BorderSelectingForNode key={node.id} node={node} host={host} />
 					))}
-				</>
+				</Fragment>
 			);
 		};
 	},

@@ -44,6 +44,9 @@ import { ISettingTopEntry } from '../../designer';
 export function isRootNode(node: INode): node is IRootNode {
 	return node && node.isRootNode;
 }
+export function isMicrocodeComponent(node: INode): node is IComponentNode {
+	return node.componentMeta?.getMetadata().devMode === 'microCode';
+}
 
 export interface IBaseNode<
 	Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema,

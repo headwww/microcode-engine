@@ -391,13 +391,13 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 
 					snippets: [
 						{
-							title: '按钮',
+							title: '按钮123',
 							screenshot:
 								'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
 							schema: {
 								componentName: 'LtButton',
 								props: {
-									children: '按钮',
+									children: '按钮123',
 								},
 							},
 						},
@@ -614,7 +614,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							componentName: 'LtButton',
 							id: 'node_sxsm4wdio232',
 							props: {
-								children: '按钮',
+								children: '按钮123',
 								// children: {
 								// 	type: 'JSExpression',
 								// 	value: 'this.$data.text',

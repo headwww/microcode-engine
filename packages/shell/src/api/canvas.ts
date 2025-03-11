@@ -43,6 +43,13 @@ export class Canvas implements IPublicApiCanvas {
 		return activeTracker;
 	}
 
+	get isInLiveEditing(): boolean {
+		return Boolean(
+			this[editorSymbol].get('designer')?.project?.simulator?.liveEditing
+				?.editing
+		);
+	}
+
 	createScrollTarget(shell: HTMLDivElement): IPublicModelScrollTarget {
 		return new InnerScrollTarget(shell);
 	}

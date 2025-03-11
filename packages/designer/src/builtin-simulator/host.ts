@@ -55,7 +55,13 @@ import { IProject, Project } from '../project';
 import { DropContainer, ISimulatorHost } from '../simulator';
 import { createSimulator } from './create-simulator';
 import Viewport from './viewport';
-import { contains, INode, isRootNode, Node } from '../document';
+import {
+	contains,
+	INode,
+	isMicrocodeComponent,
+	isRootNode,
+	Node,
+} from '../document';
 import { IScroller } from '../designer/scroller';
 import {
 	getClosestClickableNode,
@@ -66,6 +72,7 @@ import {
 import { isShaken } from '../designer/utils';
 import ResourceConsumer from './resource-consumer';
 import { BuiltinSimulatorRenderer } from './renderer';
+import { LiveEditing } from './live-editing';
 
 export type LibraryItem = IPublicTypePackage & {
 	package: string;
@@ -216,6 +223,8 @@ export class BuiltinSimulatorHost
 	get theme() {
 		return this.computedTheme.value;
 	}
+
+	readonly liveEditing = new LiveEditing();
 
 	constructor(project: Project, designer: Designer) {
 		this.project = project;
@@ -465,6 +474,8 @@ export class BuiltinSimulatorHost
 	setupEvents() {
 		this.setupDragAndClick();
 		this.setupDetecting();
+		this.setupLiveEditing();
+		// TODO setupContextMenu
 	}
 
 	postEvent(eventName: string, ...data: any[]) {
@@ -481,7 +492,9 @@ export class BuiltinSimulatorHost
 				document.dispatchEvent(new Event('mousedown'));
 				const documentModel = this.project.currentDocument;
 
-				// TODO 如果正在进行行内编辑或没有文档模型,直接退出 liveEditing
+				if (this.liveEditing.editing || !documentModel) {
+					return;
+				}
 
 				if (!documentModel) {
 					return;
@@ -736,7 +749,41 @@ export class BuiltinSimulatorHost
 		);
 	}
 
-	// TODO setupLiveEditing
+	setupLiveEditing() {
+		const doc = this.contentDocument!;
+		doc.addEventListener(
+			'dblclick',
+			(e: MouseEvent) => {
+				e.stopPropagation();
+				e.preventDefault();
+				const targetElement = e.target as HTMLElement;
+
+				const nodeInst = this.getNodeInstanceFromElement(targetElement);
+				if (!nodeInst) {
+					return;
+				}
+				const focusNode = this.project.currentDocument?.focusNode;
+				const node = nodeInst.node || focusNode;
+				if (!node || isMicrocodeComponent(node)) {
+					return;
+				}
+
+				const rootElement = this.findDOMNodes(
+					nodeInst.instance,
+					node.componentMeta.rootSelector
+				)?.find((item) => item && item.contains(targetElement)) as HTMLElement;
+				if (!rootElement) {
+					return;
+				}
+				this.liveEditing.apply({
+					node,
+					rootElement,
+					event: e,
+				});
+			},
+			true
+		);
+	}
 
 	setSuspense() {
 		return false;
