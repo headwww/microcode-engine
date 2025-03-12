@@ -4,6 +4,7 @@ import {
 	ref,
 	onMounted,
 	onBeforeUnmount,
+	computed,
 } from 'vue';
 import { Project } from '../project';
 import {
@@ -49,10 +50,22 @@ export const Canvas = defineComponent({
 			}
 		});
 
-		// TODO deviceStyle 用来设置设备样式设置为浏览器还是手机还是平板
+		const className = computed(() => {
+			const sim = props.host;
+			const className: any = {
+				'mtc-simulator-canvas': true,
+			};
+			if (sim?.deviceClassName) {
+				className[sim.deviceClassName] = true;
+			}
+			if (sim?.device) {
+				className[`mtc-simulator-device-${sim.device}`] = true;
+			}
+			return className;
+		});
 
 		return () => (
-			<div className="mtc-simulator-canvas mtc-simulator-device-default">
+			<div class={className.value}>
 				<div class="mtc-simulator-canvas-viewport" ref={viewportRef}>
 					<BemTools host={sim} />
 					<Content host={sim} />

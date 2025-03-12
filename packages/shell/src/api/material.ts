@@ -3,6 +3,7 @@ import {
 	IPublicModelComponentMeta,
 	IPublicModelEditor,
 	IPublicTypeAssetsJson,
+	IPublicTypeComponentAction,
 	IPublicTypeComponentMetadata,
 	IPublicTypeDisposable,
 	IPublicTypeMetadataTransducer,
@@ -163,5 +164,43 @@ export class Material implements IPublicApiMaterial {
 		};
 	}
 
-	// TODO: 其他方法
+	/**
+	 * 刷新 componentMetasMap，可触发模拟器里的 components 重新构建
+	 */
+	refreshComponentMetasMap = () => {
+		this[designerSymbol].refreshComponentMetasMap();
+	};
+
+	/**
+	 * 在设计器辅助层增加一个扩展 action
+	 * @param action
+	 */
+	addBuiltinComponentAction = (action: IPublicTypeComponentAction) => {
+		this[designerSymbol].componentActions.addBuiltinComponentAction(action);
+	};
+
+	/**
+	 * 移除设计器辅助层的指定 action
+	 * @param name
+	 */
+	removeBuiltinComponentAction(name: string) {
+		this[designerSymbol].componentActions.removeBuiltinComponentAction(name);
+	}
+
+	/**
+	 * 修改已有的设计器辅助层的指定 action
+	 * @param actionName
+	 * @param handle
+	 */
+	modifyBuiltinComponentAction(
+		actionName: string,
+		handle: (action: IPublicTypeComponentAction) => void
+	) {
+		this[designerSymbol].componentActions.modifyBuiltinComponentAction(
+			actionName,
+			handle
+		);
+	}
+
+	// TODO: addContextMenuOption removeContextMenuOption adjustContextMenuLayout
 }

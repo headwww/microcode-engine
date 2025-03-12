@@ -130,8 +130,7 @@ export class SettingField extends SettingPropEntry implements ISettingField {
 			settingFieldCollector(getSettingFieldCollectorKey(parent, config), this);
 		}
 
-		// TODO Transducer没有设计
-		// this.transducer = new Transducer(this, { setter });
+		this.transducer = new Transducer(this, { setter });
 	}
 
 	private readonly computedSetter = computed(() => {
@@ -243,14 +242,12 @@ export class SettingField extends SettingPropEntry implements ISettingField {
 		if (v == null) {
 			v = this.extraProps.defaultValue;
 		}
-		// TODO return this.transducer.toHot(v);
-		return v;
+		return this.transducer.toHot(v);
 	}
 
 	setHotValue(data: any, options?: IPublicTypeSetValueOptions) {
 		this.hotValue = data;
-		// TODO      const value = this.transducer.toNative(data);
-		const value = data;
+		const value = this.transducer.toNative(data);
 		if (options) {
 			options.fromSetHotValue = true;
 		} else {

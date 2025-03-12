@@ -148,6 +148,22 @@ export class BuiltinSimulatorHost
 	 */
 	autoRender = true;
 
+	private readonly computedDeviceClassName = computed(() =>
+		this.get('deviceClassName')
+	);
+
+	get deviceClassName() {
+		return this.computedDeviceClassName.value;
+	}
+
+	private readonly computedDevice = computed(
+		() => this.get('device') || 'default'
+	);
+
+	get device() {
+		return this.computedDevice.value;
+	}
+
 	private _iframe?: HTMLIFrameElement;
 
 	readonly asyncLibraryMap: { [key: string]: {} } = {};

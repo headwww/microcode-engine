@@ -285,8 +285,6 @@ export class Designer implements IDesigner {
 			this.postEvent('dragstart', e);
 		});
 
-		// TODO 初始化ContextMenuActions
-
 		this.dragon.onDrag((e) => {
 			if (this.props?.onDrag) {
 				this.props.onDrag(e);
@@ -465,8 +463,6 @@ export class Designer implements IDesigner {
 		this.clearOobxList(true);
 		this.oobxList.forEach((item) => item.compute());
 	}
-
-	// TODO createSettingEntry 设置起管理器
 
 	/**
 	 * 设置属性

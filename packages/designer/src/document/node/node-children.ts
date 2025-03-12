@@ -358,7 +358,35 @@ export class NodeChildren implements INodeChildren {
 		if (useMutator) {
 			this.reportModified(node, this.owner, { type: 'insert' });
 		}
-		// TODO 条件组相关逻辑未设计
+		// 处理条件组(condition group)相关逻辑
+		if (node.conditionGroup) {
+			// 如果节点不在相同条件组的节点之间,清除其条件组
+			if (
+				!(
+					// 检查前后节点是否属于相同条件组
+					(
+						(node.prevSibling &&
+							node.prevSibling.conditionGroup === node.conditionGroup) ||
+						(node.nextSibling &&
+							node.nextSibling.conditionGroup === node.conditionGroup)
+					)
+				)
+			) {
+				node.setConditionGroup(null);
+			}
+		}
+
+		// 如果节点插入在两个节点之间
+		if (node.prevSibling && node.nextSibling) {
+			const { conditionGroup } = node.prevSibling;
+			// 如果前后节点属于相同条件组,将当前节点也加入该条件组
+			if (
+				conditionGroup &&
+				conditionGroup === node.nextSibling.conditionGroup
+			) {
+				node.setConditionGroup(conditionGroup as any);
+			}
+		}
 	}
 
 	/**
