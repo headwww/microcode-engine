@@ -90,7 +90,36 @@ export interface IPublicTypeNodeSchema {
 	 */
 	isLocked?: boolean;
 
+	// ------- future support -----
+	/**
+	 * 条件组,用于将多个条件组合在一起
+	 */
+	conditionGroup?: string;
+
+	/**
+	 * 节点标题,用于在设计器中显示
+	 */
+	title?: string;
+
+	/**
+	 * 是否忽略该节点的渲染
+	 */
+	ignore?: boolean;
+
+	/**
+	 * 是否锁定节点,锁定后无法编辑
+	 */
+	locked?: boolean;
+
+	/**
+	 * 是否在设计模式下隐藏该节点
+	 */
 	hidden?: boolean;
+
+	/**
+	 * 是否固定在顶部
+	 */
+	isTopFixed?: boolean;
 
 	/** @experimental 编辑态内部使用 */
 	__ctx?: any;

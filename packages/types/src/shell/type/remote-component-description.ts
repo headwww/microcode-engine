@@ -1,5 +1,6 @@
 import { Asset } from '../../assets';
 import { IPublicTypeComponentMetadata } from './component-metadata';
+import { IPublicTypeReference } from './reference';
 /**
  * 远程物料描述
  */
@@ -14,4 +15,15 @@ export interface IPublicTypeRemoteComponentDescription
 	 * 组件描述的资源链接；
 	 */
 	url?: Asset;
+	/**
+	 * 组件 (库) 的 npm 信息；
+	 */
+	package?: {
+		npm?: string;
+	};
+
+	/**
+	 * 替代 npm 字段的升级版本
+	 */
+	reference?: IPublicTypeReference;
 }

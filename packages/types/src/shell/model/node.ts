@@ -14,12 +14,14 @@ import { IPublicEnumTransformStage } from '../enum';
 import { IPublicModelComponentMeta } from './component-meta';
 import { IPublicModelProps } from './props';
 import { IPublicModelExclusiveGroup } from './exclusive-group';
+import { IPublicModelSettingTopEntry } from './setting-top-entry';
 
 export interface IBaseModelNode<
 	Document = IPublicModelDocumentModel,
 	Node = IPublicModelNode,
 	NodeChildren = IPublicModelNodeChildren,
 	ComponentMeta = IPublicModelComponentMeta,
+	SettingTopEntry = IPublicModelSettingTopEntry,
 	Props = IPublicModelProps,
 	Prop = IPublicModelProp,
 	ExclusiveGroup = IPublicModelExclusiveGroup,
@@ -231,6 +233,11 @@ export interface IBaseModelNode<
 	 * 获取符合搭建协议 - 节点 schema 结构
 	 */
 	get schema(): IPublicTypeNodeSchema;
+
+	/**
+	 * 获取对应的 setting entry
+	 */
+	get settingEntry(): SettingTopEntry;
 
 	/**
 	 * 返回节点的尺寸、位置信息
