@@ -18,3 +18,8 @@ export * from './is-dynamic-setter';
 export * from './is-setter-config';
 export * from './is-action-content-object';
 export * from './is-isfunction';
+export * from './is-basic-prop-type';
+export * from './is-component-schema';
+export * from './is-node-schema';
+export * from './is-project-schema';
+export * from './is-required-prop-type';

@@ -17,5 +17,11 @@
 	},
 	"keywords": [],
 	"author": "",
-	"license": "ISC"
+	"license": "ISC",
+	"dependencies": {
+		"@arvin-shu/microcode-types": "^1.0.3",
+		"eventemitter2": "^6.4.9",
+		"lodash": "^4.17.21",
+		"vue": "^3.5.8"
+	}
 }
