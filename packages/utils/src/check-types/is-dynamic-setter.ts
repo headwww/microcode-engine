@@ -1,4 +1,4 @@
-import { isFunction } from 'lodash';
+import { isFunction } from 'lodash-es';
 import { IPublicTypeDynamicSetter } from '@arvin-shu/microcode-types';
 import { isVueComponent } from '../is-vue';
 

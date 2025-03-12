@@ -1,4 +1,4 @@
-import { isNaN } from 'lodash';
+import { isNaN } from 'lodash-es';
 
 export function isPx(value: any) {
 	return typeof value === 'string' && /px$/i.test(value);
