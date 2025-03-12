@@ -11,9 +11,14 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "intl-messageformat": "^10.7.3",
+        "@arvin-shu/microcode-types": "^1.0.3",
+        "@arvin-shu/microcode-utils": "^1.0.2",
+        "eventemitter2": "^6.4.9",
+        "intl-messageformat": "^10.7.7",
+        "lodash-es": "^4.17.21",
         "power-di": "^2.4.41",
-        "store": "^2.0.12"
+        "store": "^2.0.12",
+        "vue": "^3.5.8"
     },
     "devDependencies": {
         "@types/store": "^2.0.5"

@@ -1,9 +1,9 @@
-import { InfoCircleOutlined } from '@ant-design/icons-vue';
 import {
 	IPublicTypeHelpTipConfig,
 	IPublicTypeTipConfig,
 } from '@arvin-shu/microcode-types';
 import { Tip } from './tip';
+import { InfoIcon } from './info-icon';
 
 export function HelpTip({
 	help,
@@ -18,10 +18,7 @@ export function HelpTip({
 		return (
 			<div>
 				<div>
-					<InfoCircleOutlined
-						style={{ fontSize: `${size}px` }}
-						class="mtc-help-tip"
-					/>
+					<InfoIcon style={{ fontSize: `${size}px` }} class="mtc-help-tip" />
 				</div>
 
 				<Tip direction={direction} children={help as any}></Tip>
@@ -33,10 +30,7 @@ export function HelpTip({
 		return (
 			<div>
 				<a href={help.url} target="_blank" rel="noopener noreferrer">
-					<InfoCircleOutlined
-						style={{ fontSize: `${size}px` }}
-						class="mtc-help-tip"
-					/>
+					<InfoIcon style={{ fontSize: `${size}px` }} class="mtc-help-tip" />
 				</a>
 				<Tip direction={direction} children={help as any}></Tip>
 			</div>
@@ -44,10 +38,7 @@ export function HelpTip({
 	}
 	return (
 		<div>
-			<InfoCircleOutlined
-				style={{ fontSize: `${size}px` }}
-				class="mtc-help-tip"
-			/>
+			<InfoIcon style={{ fontSize: `${size}px` }} class="mtc-help-tip" />
 			<Tip direction={direction} children={help as any}></Tip>
 		</div>
 	);
