@@ -18,7 +18,14 @@ export function HelpTip({
 		return (
 			<div>
 				<div>
-					<InfoIcon style={{ fontSize: `${size}px` }} class="mtc-help-tip" />
+					<InfoIcon
+						style={{
+							width: `${size}px`,
+							height: `${size}px`,
+							verticalAlign: 'middle',
+						}}
+						class="mtc-help-tip"
+					/>
 				</div>
 
 				<Tip direction={direction} children={help as any}></Tip>
@@ -30,7 +37,13 @@ export function HelpTip({
 		return (
 			<div>
 				<a href={help.url} target="_blank" rel="noopener noreferrer">
-					<InfoIcon style={{ fontSize: `${size}px` }} class="mtc-help-tip" />
+					<InfoIcon
+						style={{
+							width: `${size}px`,
+							height: `${size}px`,
+							verticalAlign: 'middle',
+						}}
+					/>
 				</a>
 				<Tip direction={direction} children={help as any}></Tip>
 			</div>
@@ -38,7 +51,14 @@ export function HelpTip({
 	}
 	return (
 		<div>
-			<InfoIcon style={{ fontSize: `${size}px` }} class="mtc-help-tip" />
+			<InfoIcon
+				style={{
+					width: `${size}px`,
+					height: `${size}px`,
+					verticalAlign: 'middle',
+				}}
+				class="mtc-help-tip"
+			/>
 			<Tip direction={direction} children={help as any}></Tip>
 		</div>
 	);
