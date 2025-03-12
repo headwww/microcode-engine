@@ -19,6 +19,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@arvin-shu/microcode-datasource-types": "^1.0.1"
+        "@arvin-shu/microcode-datasource-types": "^1.0.1",
+        "strict-event-emitter-types": "^2.0.0",
+        "vue": "^3.5.8"
     }
 }

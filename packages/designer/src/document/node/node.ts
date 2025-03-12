@@ -56,6 +56,7 @@ export interface IBaseNode<
 			IBaseNode,
 			INodeChildren,
 			IComponentMeta,
+			ISettingTopEntry,
 			IProps,
 			IProp,
 			IExclusiveGroup
