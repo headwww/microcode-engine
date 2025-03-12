@@ -1,132 +1,132 @@
 $x-gap: 12px;
 $y-gap: 8px;
 
-.mtc-settings-content>.mtc-field:first-child>.mtc-field-head {
-    border-top: none !important;
+.mtc-settings-content > .mtc-field:first-child > .mtc-field-head {
+	border-top: none !important;
 }
 
 .mtc-field {
-    .mtc-field-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+	.mtc-field-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 
-        .mtc-field-title {
-            display: flex;
-            align-items: center;
-        }
+		.mtc-field-title {
+			display: flex;
+			align-items: center;
+		}
 
-        .mtc-field-icon {
-            transform-origin: center;
-            transition: transform 0.1s;
-        }
-    }
+		.mtc-field-icon {
+			transform-origin: center;
+			transition: transform 0.1s;
+		}
+	}
 
-    &.mtc-inline-field {
-        display: flex;
-        align-items: center;
-        margin: 12px;
+	&.mtc-inline-field {
+		display: flex;
+		align-items: center;
+		margin: 12px;
 
-        >.mtc-field-head {
-            width: 70px;
-            margin-right: 1px;
+		> .mtc-field-head {
+			width: 70px;
+			margin-right: 1px;
 
-            .mtc-title-label {
-                width: 70px;
-                word-break: break-all;
-            }
-        }
+			.mtc-title-label {
+				width: 70px;
+				word-break: break-all;
+			}
+		}
 
-        >.mtc-field-body {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            align-items: center;
-        }
-    }
+		> .mtc-field-body {
+			flex: 1;
+			min-width: 0;
+			display: flex;
+			align-items: center;
+		}
+	}
 
-    &.mtc-block-field,
-    &.mtc-accordion-field,
-    &.mtc-entry-field {
-        display: block;
+	&.mtc-block-field,
+	&.mtc-accordion-field,
+	&.mtc-entry-field {
+		display: block;
 
-        >.mtc-field-head {
-            height: 32px;
-            display: flex;
-            align-items: center;
-            font-weight: 500;
-            background: var(--color-block-background-shallow, rgb(31 56 88 / 6%));
-            border-top: 1px solid var(--color-line-normal, rgb(31 56 88 / 10%));
-            border-bottom: 1px solid var(--color-line-normal, rgb(31 56 88 / 10%));
-            color: var(--color-title);
-            padding: 0 12px;
-            user-select: none;
+		> .mtc-field-head {
+			height: 32px;
+			display: flex;
+			align-items: center;
+			font-weight: 500;
+			background: var(--color-block-background-shallow, rgb(31 56 88 / 6%));
+			border-top: 1px solid var(--color-line-normal, rgb(31 56 88 / 10%));
+			border-bottom: 1px solid var(--color-line-normal, rgb(31 56 88 / 10%));
+			color: var(--color-title);
+			padding: 0 12px;
+			user-select: none;
 
-            >.mtc-field-icon {
-                color: var(--color-icon-normal, #8f9bb3);
-            }
-        }
+			> .mtc-field-icon {
+				color: var(--color-icon-normal, #8f9bb3);
+			}
+		}
 
-        >.mtc-field-body {
-            padding: 12px;
+		> .mtc-field-body {
+			padding: 12px;
 
-            .mtc-inline-field {
-                margin: 12px 0;
+			.mtc-inline-field {
+				margin: 12px 0;
 
-                &:first-child {
-                    margin-top: 0;
-                }
+				&:first-child {
+					margin-top: 0;
+				}
 
-                &:last-child {
-                    margin-bottom: 0;
-                }
-            }
-        }
-    }
+				&:last-child {
+					margin-bottom: 0;
+				}
+			}
+		}
+	}
 
-    &.mtc-entry-field {
-        margin-bottom: 6px;
+	&.mtc-entry-field {
+		margin-bottom: 6px;
 
-        >.mtc-field-head {
-            cursor: pointer;
-        }
-    }
+		> .mtc-field-head {
+			cursor: pointer;
+		}
+	}
 
-    .mtc-setter-actions {
-        display: flex;
-        align-items: center;
-    }
+	.mtc-setter-actions {
+		display: flex;
+		align-items: center;
+	}
 
-    &.mtc-block-field {
-        position: relative;
+	&.mtc-block-field {
+		position: relative;
 
-        >.mtc-field-body>.mtc-block-setter>.mtc-setter-actions {
-            position: absolute;
-            right: 10px;
-            top: 0;
-            height: 32px;
-        }
-    }
+		> .mtc-field-body > .mtc-block-setter > .mtc-setter-actions {
+			position: absolute;
+			right: 10px;
+			top: 0;
+			height: 32px;
+		}
+	}
 
-    &.mtc-accordion-field {
-        position: relative;
+	&.mtc-accordion-field {
+		position: relative;
 
-        >.mtc-field-head {
-            cursor: pointer;
-        }
+		> .mtc-field-head {
+			cursor: pointer;
+		}
 
-        &.mtc-field-is-collapsed {
-            margin-bottom: 6px;
-        }
+		&.mtc-field-is-collapsed {
+			margin-bottom: 6px;
+		}
 
-        &.mtc-field-is-collapsed {
-            >.mtc-field-head .mtc-field-icon {
-                transform: rotate(180deg);
-            }
+		&.mtc-field-is-collapsed {
+			> .mtc-field-head .mtc-field-icon {
+				transform: rotate(180deg);
+			}
 
-            >.mtc-field-body {
-                display: none;
-            }
-        }
-    }
+			> .mtc-field-body {
+				display: none;
+			}
+		}
+	}
 }

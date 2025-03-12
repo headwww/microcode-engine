@@ -205,7 +205,7 @@ export class DocumentModel implements IDocumentModel {
 
 	private emitter: IEventBus;
 
-	// TODO rootNodeVisitorMap
+	private rootNodeVisitorMap: { [visitorName: string]: any } = {};
 
 	// 模拟器
 	get simulator(): ISimulatorHost | null {
@@ -826,8 +826,32 @@ export class DocumentModel implements IDocumentModel {
 		return data;
 	}
 
-	// TODO acceptRootNodeVisitor
-	// TODO getRootNodeVisitor
+	acceptRootNodeVisitor(
+		visitorName = 'default',
+		visitorFn: (node: IRootNode) => any
+	) {
+		let visitorResult = {};
+		if (!visitorName) {
+			// eslint-disable-next-line no-console
+			console.warn('Invalid or empty RootNodeVisitor name.');
+		}
+		try {
+			if (this.rootNode) {
+				visitorResult = visitorFn.call(this, this.rootNode);
+				this.rootNodeVisitorMap[visitorName] = visitorResult;
+			}
+		} catch (e) {
+			// eslint-disable-next-line no-console
+			console.error('RootNodeVisitor is not valid.');
+			// eslint-disable-next-line no-console
+			console.error(e);
+		}
+		return visitorResult;
+	}
+
+	getRootNodeVisitor(name: string) {
+		return this.rootNodeVisitorMap[name];
+	}
 
 	getComponentsMap(extraComps?: string[]) {
 		const componentsMap: IPublicTypeComponentsMap = [];

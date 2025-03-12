@@ -24,8 +24,170 @@
 }
 
 #engine-loading-wrapper {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
+	.lowcode-engine-loading {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+	}
+
+	/* 浏览器容器样式 */
+	.browser-container {
+		width: 320px;
+
+		/* 增加宽度以适应内容 */
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: 0 4px 24px rgb(0 0 0 / 10%);
+		overflow: hidden;
+	}
+
+	/* 浏览器标题栏样式 */
+	.browser-header {
+		height: 38px;
+		background: #f0f0f0;
+		display: flex;
+		align-items: center;
+		padding: 0 12px;
+		position: relative;
+	}
+
+	.window-controls {
+		display: flex;
+		gap: 8px;
+		margin-right: 16px;
+	}
+
+	.control {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+	}
+
+	.close {
+		background: #ff5f56;
+	}
+
+	.minimize {
+		background: #ffbd2e;
+	}
+
+	.maximize {
+		background: #27c93f;
+	}
+
+	.address-bar {
+		flex: 1;
+		height: 24px;
+		background: #fff;
+		border-radius: 4px;
+		display: flex;
+		align-items: center;
+		padding: 0 8px;
+	}
+
+	.url-text {
+		color: #666;
+		font-size: 12px;
+		width: 100%;
+		text-align: center;
+	}
+
+	/* 浏览器内容区域 */
+	.browser-content {
+		background: #fff;
+		padding: 20px;
+	}
+
+	/* 原有的加载动画样式（保持不变） */
+	.loading-container {
+		position: relative;
+		width: 240px;
+		height: 160px;
+	}
+
+	.component-panel {
+		position: absolute;
+		left: 0;
+		width: 48px;
+		height: 128px;
+		background: #f5f5f5;
+		border-radius: 3px;
+		padding: 6px;
+	}
+
+	.component-item {
+		width: 35px;
+		height: 26px;
+		background: #e6f7ff;
+		border: 1px solid #91d5ff;
+		border-radius: 2px;
+		margin-bottom: 6px;
+	}
+
+	.canvas-area {
+		position: absolute;
+		left: 64px;
+		width: 160px;
+		height: 128px;
+	}
+
+	.canvas-outline {
+		width: 100%;
+		height: 100%;
+		border: 2px dashed #d9d9d9;
+		border-radius: 3px;
+	}
+
+	.dragging-component {
+		position: absolute;
+		width: 35px;
+		height: 26px;
+		background: #e6f7ff;
+		border: 1px solid #91d5ff;
+		border-radius: 2px;
+		animation: dragging 2s ease-in-out infinite;
+	}
+
+	@keyframes dragging {
+		0% {
+			left: -16px;
+			top: 8px;
+			opacity: 0;
+		}
+
+		20% {
+			left: 0;
+			top: 8px;
+			opacity: 1;
+		}
+
+		60% {
+			left: 64px;
+			top: 48px;
+		}
+
+		80% {
+			left: 64px;
+			top: 48px;
+			transform: scale(1);
+			opacity: 1;
+		}
+
+		100% {
+			left: 64px;
+			top: 48px;
+			transform: scale(1.1);
+			opacity: 0;
+		}
+	}
+
+	.loading-text {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		text-align: center;
+		color: #666;
+		font-size: 12px;
+	}
 }
