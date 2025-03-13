@@ -4,6 +4,7 @@ import { BuiltinSimulatorHost } from '../host';
 import { BorderDetecting } from './border-detecting';
 import { InsertionView } from './insertion';
 import { BorderSelecting } from './border-selecting';
+import { BorderContainer } from './border-container';
 
 export const BemTools = defineComponent({
 	props: {
@@ -14,8 +15,6 @@ export const BemTools = defineComponent({
 	},
 	name: 'BemTools',
 	setup(props) {
-		// TODO 还有几个组件没有完成
-
 		return () => {
 			const { host } = props;
 
@@ -35,7 +34,15 @@ export const BemTools = defineComponent({
 						<BorderDetecting key="hovering" host={host} />
 					)}
 					<BorderSelecting key="selecting" host={host} />
+					{/* 将放到此容器提示 */}
+					{engineConfig.get('enableReactiveContainer') && (
+						<BorderContainer key="reactive-container-border" host={host} />
+					)}
 					<InsertionView key="insertion" host={host} />
+					{host?.designer?.bemToolsManager?.getAllBemTools().map((tools) => {
+						const ToolsCls = tools.item as any;
+						return <ToolsCls key={tools.name} host={host} />;
+					})}
 				</div>
 			);
 		};

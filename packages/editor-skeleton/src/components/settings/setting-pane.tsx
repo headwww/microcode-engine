@@ -57,7 +57,7 @@ export const SettingPane = defineComponent({
 			return (
 				<div class="mtc-settings-pane">
 					<PopupService popupPipe={popupPipe}>
-						<div className="mtc-settings-content">
+						<div class="mtc-settings-content">
 							{items.map((item, index) =>
 								createSettingFieldView(item, target!, index)
 							)}

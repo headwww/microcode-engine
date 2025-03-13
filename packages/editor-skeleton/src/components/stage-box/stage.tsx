@@ -73,12 +73,12 @@ export const Stage = defineComponent({
 			}
 
 			const stageBacker = stage?.hasBack() ? (
-				<div className="skeleton-stagebox-stagebacker">
+				<div class="skeleton-stagebox-stagebacker">
 					<LeftOutlined
 						class="skeleton-stagebox-stage-arrow"
 						data-stage-target="stageback"
 					/>
-					<span className="skeleton-stagebox-stage-title">{newTitle}</span>
+					<span class="skeleton-stagebox-stage-title">{newTitle}</span>
 					<HomeOutlined
 						class="skeleton-stagebox-stage-exit"
 						data-stage-target="stageexit"

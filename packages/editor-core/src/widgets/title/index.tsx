@@ -70,7 +70,7 @@ export const Title = defineComponent({
 			const intlLabel = intl(label as any);
 
 			if (typeof intlLabel !== 'string') {
-				return <span className="mtc-title-txt">{intlLabel}</span>;
+				return <span class="mtc-title-txt">{intlLabel}</span>;
 			}
 
 			let labelToRender = intlLabel;

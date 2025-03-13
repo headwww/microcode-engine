@@ -6,6 +6,7 @@ import {
 	PropType,
 	ref,
 	toRaw,
+	Fragment,
 } from 'vue';
 import {
 	Editor,
@@ -33,8 +34,8 @@ export const SettingsPrimaryPane = defineComponent({
 		const main = new SettingsMain(props.engineEditor!);
 
 		const renderNotice = (message: string) => (
-			<div className="mtc-settings-main">
-				<div className="mtc-settings-notice">
+			<div class="mtc-settings-main">
+				<div class="mtc-settings-notice">
 					<p>{intl(message)}</p>
 				</div>
 			</div>
@@ -74,7 +75,7 @@ export const SettingsPrimaryPane = defineComponent({
 			}
 			if (settings.isMultiple) {
 				return (
-					<div className="mtc-settings-navigator">
+					<div class="mtc-settings-navigator">
 						{createIcon(settings.componentMeta?.icon, {
 							className: 'mtc-settings-navigator-icon',
 						})}
@@ -147,13 +148,13 @@ export const SettingsPrimaryPane = defineComponent({
 			}
 
 			return (
-				<div className="mtc-settings-navigator">
+				<div class="mtc-settings-navigator">
 					{createIcon(toRaw(main.componentMeta)?.icon, {
 						class: 'mtc-settings-navigator-icon',
 					})}
 					<Breadcrumb
 						separator={<RightOutlined style={{ fontSize: '12px' }} />}
-						className="mtc-settings-node-breadcrumb"
+						class="mtc-settings-node-breadcrumb"
 					>
 						{items}
 					</Breadcrumb>
@@ -209,7 +210,7 @@ export const SettingsPrimaryPane = defineComponent({
 										></StageBox>
 									);
 								}
-								return <></>;
+								return <Fragment></Fragment>;
 							},
 							tab: () => <Title title={field.title}></Title>,
 						}}

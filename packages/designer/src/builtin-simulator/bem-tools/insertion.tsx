@@ -21,16 +21,16 @@ export const InsertionView = defineComponent({
 		return () => {
 			const { host } = props;
 			if (!host) {
-				return <></>;
+				return null;
 			}
 			const loc = host.currentDocument?.dropLocation;
 
 			if (!loc) {
-				return <></>;
+				return null;
 			}
 			// 如果是个绝对定位容器，不需要渲染插入标记
 			if (loc.target?.componentMeta?.advanced.isAbsoluteLayoutContainer) {
-				return <></>;
+				return null;
 			}
 
 			const { scale, scrollX, scrollY } = host.viewport;
@@ -38,7 +38,7 @@ export const InsertionView = defineComponent({
 				processDetail(loc as any);
 
 			if (!edge) {
-				return <></>;
+				return null;
 			}
 
 			let className = 'mtc-insertion';

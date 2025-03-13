@@ -14,6 +14,7 @@ import {
 	provide,
 	ref,
 	VNode,
+	Fragment,
 } from 'vue';
 
 export const PopupPipeKey: InjectionKey<PopupPipe | undefined> =
@@ -96,14 +97,14 @@ export const PopupService = defineComponent({
 
 			const { actionKey, safeId, popupContainer } = props;
 			return (
-				<>
+				<Fragment>
 					{children}
 					<PopupContent
 						key={`pop${actionKey}`}
 						safeId={safeId}
 						popupContainer={popupContainer}
 					></PopupContent>
-				</>
+				</Fragment>
 			);
 		};
 	},
@@ -123,9 +124,9 @@ export const PopupContent = defineComponent({
 
 		const context = inject(PopupPipeKey);
 
-		const content = ref(<></>);
+		const content = ref(<Fragment></Fragment>);
 
-		const title = ref(<></>);
+		const title = ref(<Fragment></Fragment>);
 
 		const popupContainerId = uniqueId('popupContainer');
 
@@ -178,9 +179,9 @@ export const PopupContent = defineComponent({
 							></div>
 						),
 						content: () => (
-							<>
+							<Fragment>
 								<div class="mtc-ballon-header">
-									<div className="mtc-ballon-title">{title.value}</div>
+									<div class="mtc-ballon-title">{title.value}</div>
 									<Button
 										type="text"
 										size="small"
@@ -206,7 +207,7 @@ export const PopupContent = defineComponent({
 									</ConfigProvider>
 								</PopupService>
 								<div id={popupContainerId}></div>
-							</>
+							</Fragment>
 						),
 					}}
 				</Popover>

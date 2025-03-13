@@ -250,7 +250,7 @@ export const VariableBindModal = defineComponent({
 								</div>
 							</div>
 							<div class="variable-right-container">
-								<div className="variable-modal-title">绑定</div>
+								<div class="variable-modal-title">绑定</div>
 								<MonacoEditor
 									language="javascript"
 									value={jsCode.value}

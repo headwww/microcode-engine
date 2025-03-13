@@ -265,7 +265,7 @@ export const PlainField = defineComponent({
 			const { className } = props;
 			return (
 				<div class={['mtc-field', 'mtc-plain-field', className]}>
-					<div className="mtc-field-body">{children}</div>
+					<div class="mtc-field-body">{children}</div>
 				</div>
 			);
 		};

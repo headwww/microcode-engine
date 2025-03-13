@@ -123,6 +123,8 @@ export interface IDesigner {
 
 	readonly project: IProject;
 
+	readonly bemToolsManager: BemToolsManager;
+
 	get dragon(): IDragon;
 
 	get componentActions(): ComponentActions;

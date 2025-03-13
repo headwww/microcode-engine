@@ -29,7 +29,7 @@ export const BuiltinSimulatorHostView = defineComponent({
 		host.setProps(props);
 		onMount?.(host);
 		return () => (
-			<div className="mtc-simulator">
+			<div class="mtc-simulator">
 				<Canvas host={host} />
 			</div>
 		);

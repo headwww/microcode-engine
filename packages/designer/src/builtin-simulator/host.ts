@@ -35,9 +35,10 @@ import {
 	isElement,
 	isFormEvent,
 	isLocationData,
+	transactionManager,
 	UtilsMetadata,
 } from '@arvin-shu/microcode-utils';
-import { isNaN } from 'lodash';
+import { debounce, isNaN } from 'lodash-es';
 import {
 	createModuleEventBus,
 	engineConfig,
@@ -161,6 +162,10 @@ export class BuiltinSimulatorHost
 		() => this.get('locale') || globalLocale.getLocale()
 	);
 
+	get locale() {
+		return this.computedLocale.value;
+	}
+
 	private readonly computedDeviceClassName = computed(() =>
 		this.get('deviceClassName')
 	);
@@ -188,12 +193,20 @@ export class BuiltinSimulatorHost
 	/**
 	 * iframe内部的window对象
 	 */
-	private _contentWindow = ref<Window | null>(null);
+	private _contentWindow = ref<Window>();
+
+	get contentWindow() {
+		return this._contentWindow.value;
+	}
 
 	/**
 	 * iframe内部的document对象
 	 */
 	private _contentDocument = ref<Document>();
+
+	get contentDocument() {
+		return this._contentDocument.value;
+	}
 
 	private _renderer?: BuiltinSimulatorRenderer;
 
@@ -203,9 +216,9 @@ export class BuiltinSimulatorHost
 
 	private sensing = false;
 
-	get contentDocument() {
-		return this._contentDocument.value;
-	}
+	private disableHovering?: () => void;
+
+	private disableDetecting?: () => void;
 
 	private _sensorAvailable = true;
 
@@ -237,17 +250,51 @@ export class BuiltinSimulatorHost
 		return this.computedDesignMode.value;
 	}
 
+	get thisRequiredInJSE(): boolean {
+		return engineConfig.get('thisRequiredInJSE') ?? true;
+	}
+
+	get enableStrictNotFoundMode(): any {
+		return engineConfig.get('enableStrictNotFoundMode') ?? false;
+	}
+
+	get notFoundComponent(): any {
+		return engineConfig.get('notFoundComponent') ?? null;
+	}
+
+	get faultComponent(): any {
+		return engineConfig.get('faultComponent') ?? null;
+	}
+
+	get faultComponentMap(): any {
+		return engineConfig.get('faultComponentMap') ?? null;
+	}
+
 	private _appHelper: Ref<any> = ref();
 
 	private readonly computedComponentsAsset = computed(() =>
 		this.get('componentsAsset')
 	);
 
+	private readonly computedComponentsMap = computed(
+		() => this.designer.componentsMap
+	);
+
+	get componentsMap() {
+		return this.computedComponentsMap.value;
+	}
+
+	private readonly computedDeviceStyle = computed(() =>
+		this.get('deviceStyle')
+	);
+
+	get deviceStyle() {
+		return this.computedDeviceStyle.value;
+	}
+
 	get componentsAsset() {
 		return this.computedComponentsAsset.value;
 	}
-
-	contentWindow?: Window | undefined;
 
 	private readonly computedTheme = computed(() => this.get('theme'));
 
@@ -268,7 +315,7 @@ export class BuiltinSimulatorHost
 			() => this.componentsAsset
 		);
 		this.injectionConsumer = new ResourceConsumer(() => ({
-			appHelper: this._appHelper.value,
+			appHelper: toRaw(this._appHelper.value),
 		}));
 
 		engineConfig.onGot('appHelper', (data) => {
@@ -277,6 +324,16 @@ export class BuiltinSimulatorHost
 		});
 
 		this.i18nConsumer = new ResourceConsumer(() => this.project.i18n);
+
+		transactionManager.onStartTransaction(() => {
+			this.stopAutoRepaintNode();
+		}, 'REPAINT');
+		// 防止批量调用 transaction 时，执行多次 rerender
+		const rerender = debounce(this.rerender.bind(this), 28);
+		transactionManager.onEndTransaction(() => {
+			rerender();
+			this.enableAutoRepaintNode();
+		}, 'REPAINT');
 	}
 
 	stopAutoRepaintNode() {
@@ -296,8 +353,8 @@ export class BuiltinSimulatorHost
 	}
 
 	set(key: string, value: any) {
-		this._props = {
-			...this._props,
+		this._props.value = {
+			...this._props.value,
 			[key]: value,
 		};
 	}
@@ -400,7 +457,7 @@ export class BuiltinSimulatorHost
 		}
 		this._iframe = iframe;
 
-		this._contentWindow.value = iframe.contentWindow;
+		this._contentWindow.value = iframe.contentWindow!;
 		this._contentDocument.value = this._contentWindow.value?.document;
 
 		// 构建资源库
@@ -524,9 +581,6 @@ export class BuiltinSimulatorHost
 				if (this.liveEditing.editing || !documentModel) {
 					return;
 				}
-				if (!documentModel) {
-					return;
-				}
 				const { selection } = documentModel;
 				let isMulti = false;
 
@@ -568,27 +622,39 @@ export class BuiltinSimulatorHost
 					onMouseDownHook(downEvent, node.internalToShellNode());
 				}
 
-				// TODO 磁贴组件 isRGLNode
-
-				// 禁止原生拖拽
-				downEvent.stopPropagation();
-				downEvent.preventDefault();
-
+				const rglNode = node?.getParent();
+				const isRGLNode = rglNode?.isRGLContainer;
+				if (isRGLNode) {
+					// 如果拖拽的是磁铁块的右下角 handle，则直接跳过
+					// @ts-ignore
+					if (downEvent.target?.classList.contains('react-resizable-handle'))
+						return;
+					// 禁止多选
+					isMulti = false;
+					designer.dragon.emitter.emit('rgl.switch', {
+						action: 'start',
+						rglNode,
+					});
+				} else {
+					// stop response document focus event
+					// 禁止原生拖拽
+					downEvent.stopPropagation();
+					downEvent.preventDefault();
+				}
 				// 判断是否为左键点击
 				const isLeftButton = downEvent.which === 1 || downEvent.button === 0;
 
 				// 处理选中检查的函数
 				const checkSelect = (e: MouseEvent) => {
 					doc.removeEventListener('mouseup', checkSelect, true);
+					doc.removeEventListener('mouseup', checkSelect, true);
+					// 取消移动;
+					designer.dragon.emitter.emit('rgl.switch', {
+						action: 'end',
+						rglNode,
+					});
 
-					// TODO 结束 RGL 拖拽
-					// designer.dragon.emitter.emit('rgl.switch', {
-					// 	action: 'end',
-					// 	 rglNode,
-					// });
-
-					// TODO isRGLNode  判断是点击还是拖拽(通过判断鼠标是否有移动)
-					if (!isShaken(downEvent, e)) {
+					if (!isShaken(downEvent, e) || isRGLNode) {
 						let { id } = node;
 						designer.activeTracker.track({
 							node,
@@ -662,8 +728,8 @@ export class BuiltinSimulatorHost
 							type: IPublicEnumDragObjectType.Node,
 							nodes,
 						},
-						downEvent
-						// TODO isRGLNode ? rglNode : undefined
+						downEvent,
+						isRGLNode ? rglNode : undefined
 					);
 
 					if (ignoreUpSelected) {
@@ -883,6 +949,13 @@ export class BuiltinSimulatorHost
 		throw new Error('Method not implemented.');
 	}
 
+	/**
+	 * 获取最近的节点实例
+	 *
+	 * @param from 组件实例
+	 * @param specId 可选的ID,用于指定特定的节点实例
+	 * @returns 返回一个包含节点实例信息的IPublicTypeNodeInstance对象,如果找不到则返回null
+	 */
 	getClosestNodeInstance(
 		from: IPublicTypeComponentInstance,
 		specId?: string
@@ -890,6 +963,12 @@ export class BuiltinSimulatorHost
 		return this.renderer?.getClosestNodeInstance(from, specId) || null;
 	}
 
+	/**
+	 * 计算组件实例的DOM矩形区域
+	 *
+	 * @param node 组件实例
+	 * @returns 返回一个包含位置和尺寸信息的矩形对象,如果找不到DOM节点则返回null
+	 */
 	computeRect(node: INode): IPublicTypeRect | null {
 		const instances = this.getComponentInstances(node);
 		if (!instances) {
@@ -1205,7 +1284,7 @@ export class BuiltinSimulatorHost
 			return null;
 		}
 
-		const { children } = container;
+		const { children } = toRaw(container);
 
 		const detail: IPublicTypeLocationChildrenDetail = {
 			type: IPublicTypeLocationDetailType.Children,
@@ -1506,6 +1585,44 @@ export class BuiltinSimulatorHost
 
 		// check nesting
 		return document.checkNesting(container, dragObject as any);
+	}
+
+	/**
+	 * 查找邻近容器
+	 */
+	getNearByContainer(
+		{ container, instance }: DropContainer,
+		drillDownExcludes: Set<INode>
+	) {
+		const { children } = toRaw(container);
+		if (!children || children.isEmpty()) {
+			return null;
+		}
+
+		const nearBy: any = null;
+		for (let i = 0, l = children.size; i < l; i++) {
+			let child = children.get(i);
+
+			if (!child) {
+				continue;
+			}
+			if (child.conditionGroup) {
+				const bn = child.conditionGroup;
+				i = (bn.index || 0) + bn.length - 1;
+				child = bn.visibleNode;
+			}
+			if (!child.isParental() || drillDownExcludes.has(child)) {
+				continue;
+			}
+			this.findDOMNodes(instance);
+			this.getComponentInstances(child);
+			const rect = this.computeRect(child);
+			if (!rect) {
+				continue;
+			}
+		}
+
+		return nearBy;
 	}
 }
 

@@ -149,8 +149,8 @@ export const TipItem = defineComponent({
 		const text = ref();
 		return () => (
 			<div class={getClass()} ref={shell}>
-				<i className="mtc-arrow" />
-				<div className="mtc-tip-content">{intl(text.value)}</div>
+				<i class="mtc-arrow" />
+				<div class="mtc-tip-content">{intl(text.value)}</div>
 			</div>
 		);
 	},

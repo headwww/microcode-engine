@@ -1,4 +1,4 @@
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, Fragment } from 'vue';
 import { Area } from '../area';
 
 export const LeftArea = defineComponent({
@@ -11,7 +11,7 @@ export const LeftArea = defineComponent({
 		return () => {
 			const { className = 'mtc-left-area', area } = props;
 			if (area?.isEmpty()) {
-				return <></>;
+				return <Fragment></Fragment>;
 			}
 
 			return (
@@ -55,10 +55,10 @@ const Contents = defineComponent({
 					}
 				});
 			return (
-				<>
-					<div className="mtc-left-area-top">{top}</div>
-					<div className="mtc-left-area-bottom">{bottom}</div>
-				</>
+				<Fragment>
+					<div class="mtc-left-area-top">{top}</div>
+					<div class="mtc-left-area-bottom">{bottom}</div>
+				</Fragment>
 			);
 		};
 	},
