@@ -117,3 +117,5 @@ export function createIntl(instance: string | object): {
 		},
 	};
 }
+
+export { globalLocale };

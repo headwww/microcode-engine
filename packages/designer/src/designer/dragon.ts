@@ -42,10 +42,6 @@ export interface ILocateEvent extends IPublicModelLocateEvent {
 	sensor?: IPublicModelSensor;
 }
 
-export interface IDragon extends IPublicModelDragon<INode, ILocateEvent> {
-	emitter: IEventBus;
-}
-
 /**
  * 判断事件是否为拖拽事件
  * 拖拽事件是由浏览器原生的drag & drop API触发的事件
@@ -90,10 +86,22 @@ function getSourceSensor(
 	return (dragObject.nodes?.[0]?.document as any)?.simulator || null;
 }
 
+export interface IDragon extends IPublicModelDragon<INode, ILocateEvent> {
+	emitter: IEventBus;
+}
+
 export class Dragon implements IDragon {
 	private sensors: IPublicModelSensor[] = [];
 
-	emitter: IEventBus = createModuleEventBus('Dragon');
+	private nodeInstPointerEvents: boolean;
+
+	key = Math.random();
+
+	private _activeSensor = ref<IPublicModelSensor | undefined>();
+
+	get activeSensor() {
+		return this._activeSensor.value;
+	}
 
 	private _dragging = ref(false);
 
@@ -101,9 +109,15 @@ export class Dragon implements IDragon {
 		return this._dragging.value;
 	}
 
-	private _activeSensor = ref<IPublicModelSensor | undefined>();
+	private _canDrop = ref(false);
+
+	get canDrop(): boolean {
+		return this._canDrop.value;
+	}
 
 	viewName: string | undefined;
+
+	emitter: IEventBus = createModuleEventBus('Dragon');
 
 	constructor(readonly designer: IDesigner) {
 		this.viewName = designer.viewName;
@@ -145,7 +159,8 @@ export class Dragon implements IDragon {
 	 */
 	boost(
 		dragObject: IPublicModelDragObject,
-		boostEvent: MouseEvent | DragEvent
+		boostEvent: MouseEvent | DragEvent,
+		fromRglNode?: INode | IPublicModelNode
 	) {
 		const { designer } = this;
 		const masterSensors = this.getMasterSensors();
@@ -168,7 +183,13 @@ export class Dragon implements IDragon {
 
 		this._dragging.value = false;
 
-		// TODO getRGL
+		const getRGL = (e: MouseEvent | DragEvent) => {
+			const locateEvent = createLocateEvent(e);
+			const sensor = chooseSensor(locateEvent);
+			if (!sensor || !sensor.getNodeInstanceFromElement) return {};
+			const nodeInst = sensor.getNodeInstanceFromElement(e.target as Element);
+			return nodeInst?.node?.getRGL() || {};
+		};
 
 		const checkesc = (e: KeyboardEvent) => {
 			// 如果按下ESC键，则清除拖拽位置，并调用over函数
@@ -219,11 +240,43 @@ export class Dragon implements IDragon {
 				return;
 			}
 			lastArrive = e;
-
+			const { isRGL, rglNode } = getRGL(e) as any;
 			const locateEvent = createLocateEvent(e);
 			const sensor = chooseSensor(locateEvent);
 
-			// TODO 磁贴设计，未设计
+			if (isRGL) {
+				// 禁止被拖拽元素的阻断
+				const nodeInst = dragObject.nodes?.[0]?.getDOMNode();
+				if (nodeInst && nodeInst.style) {
+					this.nodeInstPointerEvents = true;
+					nodeInst.style.pointerEvents = 'none';
+				}
+				// 原生拖拽
+				this.emitter.emit('rgl.sleeping', false);
+				if (fromRglNode && fromRglNode.id === rglNode.id) {
+					designer.clearLocation();
+					this.clearState();
+					this.emitter.emit('drag', locateEvent);
+					return;
+				}
+				this._canDrop.value = !!sensor?.locate(locateEvent);
+				if (this._canDrop) {
+					this.emitter.emit('rgl.add.placeholder', {
+						rglNode,
+						fromRglNode,
+						node: locateEvent.dragObject?.nodes?.[0],
+						event: e,
+					});
+					designer.clearLocation();
+					this.clearState();
+					this.emitter.emit('drag', locateEvent);
+					return;
+				}
+			} else {
+				this._canDrop.value = false;
+				this.emitter.emit('rgl.remove.placeholder');
+				this.emitter.emit('rgl.sleeping', true);
+			}
 
 			if (sensor) {
 				sensor.fixEvent(locateEvent);
@@ -284,7 +337,33 @@ export class Dragon implements IDragon {
 		};
 
 		const over = (e?: any) => {
-			// TODO 处理磁铁情况
+			if (this.nodeInstPointerEvents) {
+				const nodeInst = dragObject.nodes?.[0]?.getDOMNode();
+				if (nodeInst && nodeInst.style) {
+					nodeInst.style.pointerEvents = '';
+				}
+				this.nodeInstPointerEvents = false;
+			}
+
+			// 发送drop事件
+			if (e) {
+				const { isRGL, rglNode } = getRGL(e) as any;
+				if (isRGL && this._canDrop && this._dragging) {
+					const tarNode = dragObject.nodes?.[0];
+					if (rglNode.id !== tarNode?.id) {
+						// 避免死循环
+						this.emitter.emit('rgl.drop', {
+							rglNode,
+							node: tarNode,
+						});
+						const selection = designer.project.currentDocument?.selection;
+						selection?.select(tarNode?.id!);
+					}
+				}
+			}
+
+			// 移除磁帖占位消息
+			this.emitter.emit('rgl.remove.placeholder');
 
 			if (e && isDragEvent(e)) {
 				e.preventDefault();

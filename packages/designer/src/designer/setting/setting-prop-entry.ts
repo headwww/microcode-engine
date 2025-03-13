@@ -1,5 +1,9 @@
 import { computed, ref, toRaw } from 'vue';
-import { isJSExpression, uniqueId } from '@arvin-shu/microcode-utils';
+import {
+	isJSExpression,
+	isSettingField,
+	uniqueId,
+} from '@arvin-shu/microcode-utils';
 import {
 	GlobalEvent,
 	IPublicApiSetters,
@@ -25,6 +29,8 @@ export interface ISettingPropEntry extends ISettingEntry {
 	get props(): ISettingTopEntry;
 
 	get name(): string | number | undefined;
+
+	valueChange(options: IPublicTypeSetValueOptions): void;
 
 	getKey(): string | number | undefined;
 
@@ -238,6 +244,10 @@ export class SettingPropEntry implements ISettingPropEntry {
 			}
 		}
 		self.notifyValueChange(oldValue, val);
+		// 如果 fromSetHotValue，那么在 setHotValue 中已经调用过 valueChange 了
+		if (!extraOptions?.fromSetHotValue) {
+			self.valueChange(extraOptions);
+		}
 	}
 
 	/**
@@ -330,6 +340,15 @@ export class SettingPropEntry implements ISettingPropEntry {
 		return () => {
 			this.emitter.removeListener('valuechange', func);
 		};
+	}
+
+	valueChange(options: IPublicTypeSetValueOptions = {}) {
+		this.emitter.emit('valuechange', options);
+		const self = toRaw(this);
+		if (toRaw(self.parent) && isSettingField(self.parent)) {
+			// @ts-ignore
+			toRaw(self.parent).valueChange(options);
+		}
 	}
 
 	notifyValueChange(oldValue: any, newValue: any) {

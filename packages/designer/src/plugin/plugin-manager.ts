@@ -13,6 +13,7 @@ import {
 	IMicrocodePluginRuntime,
 	IMicroodePluginContextApiAssembler,
 	IPluginContextOptions,
+	isMicrocodeRegisterOptions,
 	MicrocodePluginRuntime,
 	PluginPreference,
 	RESERVED_EVENT_PREFIX,
@@ -94,6 +95,10 @@ export class MicrocodePluginManager implements IMicrocodePluginManager {
 		options?: any,
 		registerOptions?: IPublicTypePluginRegisterOptions
 	): Promise<void> {
+		if (isMicrocodeRegisterOptions(options)) {
+			registerOptions = options;
+			options = {};
+		}
 		let { pluginName } = pluginModel;
 		const { meta = {} as IPublicTypePluginMeta } = pluginModel;
 		const { eventPrefix, preferenceDeclaration, engines } = meta;

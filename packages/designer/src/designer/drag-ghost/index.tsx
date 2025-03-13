@@ -8,8 +8,6 @@ import {
 import { isDragNodeObject } from '@arvin-shu/microcode-utils';
 import { Designer } from '../designer';
 
-// 定义一个函数类型,用于解绑事件监听器
-// 返回任意类型,通常用于清理资源或取消订阅
 type offBinding = () => any;
 
 export const DragGhost = defineComponent({
@@ -83,7 +81,7 @@ export const DragGhost = defineComponent({
 
 		return () => {
 			if (!titles.value || !titles.value.length) {
-				return <></>;
+				return null;
 			}
 
 			return (

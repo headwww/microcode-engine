@@ -66,6 +66,8 @@ export interface ISettingField
 
 	clearValue(): void;
 
+	valueChange(options: IPublicTypeSetValueOptions): void;
+
 	createField(config: IPublicTypeFieldConfig): ISettingField;
 
 	internalToShellField(): IPublicModelSettingField;
@@ -121,7 +123,6 @@ export class SettingField extends SettingPropEntry implements ISettingField {
 			...extraProps,
 		};
 		this.isRequired = config.isRequired || (setter as any)?.isRequired;
-
 		this._expanded.value = !extraProps?.defaultCollapsed;
 		if (items && items.length > 0) {
 			this.initItems(items, settingFieldCollector);
@@ -245,6 +246,18 @@ export class SettingField extends SettingPropEntry implements ISettingField {
 		return this.transducer.toHot(v);
 	}
 
+	setMiniAppDataSourceValue(data: any, options?: any) {
+		this.hotValue = data;
+		const v = this.transducer.toNative(data);
+		this.setValue(v, false, false, options);
+		// dirty fix list setter
+		if (Array.isArray(data) && data[0] && data[0].__sid__) {
+			return;
+		}
+
+		this.valueChange();
+	}
+
 	setHotValue(data: any, options?: IPublicTypeSetValueOptions) {
 		this.hotValue = data;
 		const value = this.transducer.toNative(data);
@@ -283,7 +296,11 @@ export class SettingField extends SettingPropEntry implements ISettingField {
 			this.setValue(value, false, false, options);
 		}
 
-		// TODO valueChange
+		if (Array.isArray(data) && data[0] && data[0].__sid__) {
+			return;
+		}
+
+		this.valueChange(options);
 	}
 
 	internalToShellField() {

@@ -1,4 +1,7 @@
-import { IPublicTypePluginDeclaration } from '@arvin-shu/microcode-types';
+import {
+	IPublicTypePluginDeclaration,
+	IPublicTypePluginRegisterOptions,
+} from '@arvin-shu/microcode-types';
 import { isPlainObject } from '@arvin-shu/microcode-utils';
 
 /**
@@ -25,6 +28,12 @@ export function filterValidOptions(
 		}
 	});
 	return filteredOpts;
+}
+
+export function isMicrocodeRegisterOptions(
+	opts: any
+): opts is IPublicTypePluginRegisterOptions {
+	return opts && ('autoInit' in opts || 'override' in opts);
 }
 
 export function isValidPreferenceKey(

@@ -231,7 +231,7 @@ export class Props implements IProps, IPropParent {
 					allProps[name] = value;
 				}
 			});
-			// TODO 此处后期可以做个转换器,将虚拟属性转换为静态属性
+			// FIX 此处后期可以做个转换器,将虚拟属性转换为静态属性
 			const transformedProps = allProps;
 			Object.keys(transformedProps).forEach((name) => {
 				const value = transformedProps[name];

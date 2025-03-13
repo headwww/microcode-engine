@@ -41,6 +41,7 @@ import { isNaN } from 'lodash';
 import {
 	createModuleEventBus,
 	engineConfig,
+	globalLocale,
 	IEventBus,
 } from '@arvin-shu/microcode-editor-core';
 import {
@@ -147,6 +148,18 @@ export class BuiltinSimulatorHost
 	 * 是否为画布自动渲染
 	 */
 	autoRender = true;
+
+	private readonly computedRenderEnv = computed(
+		() => this.get('renderEnv') || 'default'
+	);
+
+	get renderEnv() {
+		return this.computedRenderEnv.value;
+	}
+
+	private readonly computedLocale = computed(
+		() => this.get('locale') || globalLocale.getLocale()
+	);
 
 	private readonly computedDeviceClassName = computed(() =>
 		this.get('deviceClassName')

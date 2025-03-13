@@ -48,6 +48,7 @@ import { ISelection } from '../document/selection';
 import { ComponentActions } from '../component-actions';
 import { ISettingTopEntry, SettingTopEntry } from './setting';
 import { ActiveTracker, IActiveTracker } from './active-tracker';
+import { BemToolsManager } from '../builtin-simulator/bem-tools/manager';
 
 const logger = new Logger({ level: 'warn', bizName: 'designer' });
 
@@ -199,6 +200,8 @@ export class Designer implements IDesigner {
 	private props?: DesignerProps;
 
 	readonly editor: IPublicModelEditor;
+
+	readonly bemToolsManager = new BemToolsManager(this);
 
 	private _dropLocation?: DropLocation;
 
@@ -365,8 +368,6 @@ export class Designer implements IDesigner {
 		this.postEvent('init', this);
 		this.setupSelection();
 		setupHistory();
-		this.postEvent('init', this);
-		this.setupSelection();
 	}
 
 	setupSelection() {
@@ -375,7 +376,7 @@ export class Designer implements IDesigner {
 			this.selectionDispose = undefined;
 		}
 		const { currentSelection } = this;
-		// TODO: 避免选中 Page 组件，默认选中第一个子节点；新增规则 或 判断 Live 模式
+		// 避免选中 Page 组件，默认选中第一个子节点；新增规则 或 判断 Live 模式
 		if (
 			currentSelection &&
 			currentSelection.selected.length === 0 &&
@@ -532,7 +533,7 @@ export class Designer implements IDesigner {
 			// 对于 assets 存在需要二次网络下载的过程，必须 await 等待结束之后，再进行事件触发
 			await this.editor.set('assets', newAssets);
 		}
-		// TODO: 因为涉及修改 prototype.view，之后在 renderer 里修改了 vc 的 view 获取逻辑后，可删除
+		//  因为涉及修改 prototype.view，之后在 renderer 里修改了 vc 的 view 获取逻辑后，可删除
 		this.refreshComponentMetasMap();
 		// 完成加载增量资源后发送事件，方便插件监听并处理相关逻辑
 		this.editor.eventBus.emit('designer.incrementalAssetsReady');
@@ -739,6 +740,4 @@ export class Designer implements IDesigner {
 			this.propsReducers.set(stage, [reducer]);
 		}
 	}
-
-	// TODO autorun
 }

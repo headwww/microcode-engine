@@ -69,7 +69,34 @@ export class ComponentActions {
 						);
 						deduplicateRef(newNode);
 						newNode?.select();
-						// TODO 处理磁贴组件的情况 isRGL
+						// 获取节点的RGL(React Grid Layout)相关信息
+						// eslint-disable-next-line no-unsafe-optional-chaining
+						const { isRGL, rglNode } = node?.getRGL();
+						if (isRGL) {
+							// 如果是RGL布局,需要复制layout信息
+							const layout: any = rglNode?.getPropValue('layout') || [];
+							// 找到当前节点的layout配置
+							const curLayout = layout.filter(
+								(item: any) => item.i === node.getPropValue('fieldId')
+							);
+							if (curLayout && curLayout[0]) {
+								// 复制layout配置并更新fieldId
+								layout.push({
+									...curLayout[0],
+									i: newNode?.getPropValue('fieldId'),
+								});
+								// 更新RGL节点的layout属性
+								rglNode?.setPropValue('layout', layout);
+								// 滚动到新节点位置,需要延迟执行确保DOM已更新
+								setTimeout(
+									() =>
+										newNode?.document?.project?.simulatorHost?.scrollToNode(
+											newNode
+										),
+									10
+								);
+							}
+						}
 					}
 				},
 			},
