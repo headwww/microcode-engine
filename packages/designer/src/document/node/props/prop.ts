@@ -23,7 +23,7 @@ import {
 	IPublicTypeSlotSchema,
 } from '@arvin-shu/microcode-types';
 import { engineConfig } from '@arvin-shu/microcode-editor-core';
-import { isFinite } from 'lodash';
+import { isFinite } from 'lodash-es';
 import { INode, ISlotNode } from '../node';
 import { IPropParent, IProps } from './props';
 import { valueToSource } from './value-to-source';

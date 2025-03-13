@@ -19,7 +19,7 @@ import {
 	createModuleEventBus,
 	IEventBus,
 } from '@arvin-shu/microcode-editor-core';
-import { isRegExp } from 'lodash';
+import { isRegExp } from 'lodash-es';
 import { INode, Node } from './document';
 import { Designer } from './designer';
 import { IconComponent, IconContainer, IconPage } from './icons';

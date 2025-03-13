@@ -9,8 +9,12 @@
     },
     "dependencies": {
         "@arvin-shu/microcode-editor-core": "workspace:^",
+        "@arvin-shu/microcode-types": "^1.0.3",
+        "@arvin-shu/microcode-utils": "^1.0.2",
+        "lodash-es": "^4.17.21",
         "ric-shim": "^1.0.1",
-        "semver": "^7.6.3"
+        "semver": "^7.6.3",
+        "vue": "^3.5.8"
     },
     "devDependencies": {
         "@types/semver": "^7.5.8"

@@ -1,5 +1,5 @@
 import { computed, ref } from 'vue';
-import { isNaN } from 'lodash';
+import { isNaN } from 'lodash-es';
 import { AutoFit, IViewport } from '../simulator';
 import { Point } from '../designer';
 import { ScrollTarget } from '../designer/scroller';
