@@ -7,7 +7,7 @@ import { mkdir, writeFile } from 'fs/promises';
 import chalk from 'chalk';
 import { getDir, projRoot } from '../utils';
 
-const tsConfigFilePath = path.resolve(projRoot, 'tsconfig.json');
+const tsConfigFilePath = path.resolve(getDir(), 'tsconfig.json');
 
 export const buildDts = async () => {
 	// TypeScript 编译器选项
@@ -19,7 +19,13 @@ export const buildDts = async () => {
 		// 只生成声明文件
 		emitDeclarationOnly: true,
 		// 指定根目录
-		rootDir: projRoot,
+		rootDir: `${getDir()}/src`,
+		// 直接输出到 es 目录
+		outDir: path.resolve(getDir(), 'dist/es'),
+		// 解析 json 模块
+		resolveJsonModule: true,
+		// 启用 es 模块互操作
+		esModuleInterop: true,
 	};
 
 	// 创建一个新的 TypeScript 项目实例
@@ -35,8 +41,7 @@ export const buildDts = async () => {
 	const sourceFiles = await addSourceFiles(project);
 
 	consola.success('++++++++已成功添加所有源文件到项目中');
-	// TODO 取消类型检查，后期想办法
-	// typeCheck(project);
+	typeCheck(project);
 	consola.success('✔✔✔✔✔✔✔✔类型检查通过！！！');
 
 	await project.emit({
@@ -63,35 +68,24 @@ export const buildDts = async () => {
 		const emitFiles = emitOutput.getOutputFiles();
 		// 如果输出文件为空，则抛出错误
 		if (emitFiles.length === 0) {
-			throw new Error(`Emit no file: ${chalk.bold(relativePath)}`);
+			throw new Error(
+				`${tsConfigFilePath} Emit no file: ${chalk.bold(relativePath)}`
+			);
 		}
 
 		// 生成 es 和 lib 文件
 		const subTasks = emitFiles.map(async (outputFile) => {
-			const filepath = outputFile.getFilePath();
-			// 新的 es 文件路径
-			const newEsFilepath = filepath.replace(
-				/dist\/packages\/(.+?)\/src\/(.*?)\.d\.ts$/,
-				'packages/$1/dist/es/$2.d.ts'
-			);
-			// 新的 lib 文件路径
-			const newLibFilepath = filepath.replace(
-				/dist\/packages\/(.+?)\/src\/(.*?)\.d\.ts$/,
-				'packages/$1/dist/lib/$2.d.ts'
-			);
-			// 创建 es 文件夹
-			await mkdir(path.dirname(newEsFilepath), {
-				recursive: true,
-			});
-			// 创建 lib 文件夹
-			await mkdir(path.dirname(newLibFilepath), {
-				recursive: true,
-			});
+			// 只需要复制到 lib 目录即可
+			const fileName = `${path.basename(relativePath, path.extname(relativePath))}.d.ts`;
 
-			// 写入 es 文件
-			await writeFile(newEsFilepath, outputFile.getText(), 'utf8');
-			// 写入 lib 文件
+			const dirPath = path.dirname(relativePath);
+
+			const libDir = path.join(getDir(), 'dist/lib', dirPath);
+			await mkdir(libDir, { recursive: true });
+
+			const newLibFilepath = path.join(libDir, fileName);
 			await writeFile(newLibFilepath, outputFile.getText(), 'utf8');
+
 			consola.success(
 				chalk.green(
 					`Definition for file: ${chalk.bold(relativePath)} generated`
@@ -115,9 +109,16 @@ async function addSourceFiles(project: Project) {
 	const globSourceFile = '**/*.{js?(x),ts?(x),vue}';
 	const filePaths = await glob(globSourceFile, {
 		cwd: `${getDir()}/src`,
-		ignore: ['node_modules', 'dist', '**/*.scss'],
+		ignore: ['node_modules', 'dist', '**/*.scss', '**/*.json'],
 		absolute: true,
 	});
+
+	const jsonFiles = await glob('**/*.json', {
+		cwd: `${getDir()}/src`,
+		ignore: ['node_modules', 'dist'],
+		absolute: true,
+	});
+
 	const sourceFiles: SourceFile[] = [];
 	await Promise.all(
 		filePaths.map(async (file) => {
@@ -125,6 +126,12 @@ async function addSourceFiles(project: Project) {
 			sourceFiles.push(sourceFile);
 		})
 	);
+
+	// 处理 JSON 文件
+	jsonFiles.forEach((file) => {
+		project.addSourceFileAtPath(file);
+	});
+
 	return sourceFiles;
 }
 

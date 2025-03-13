@@ -22,7 +22,6 @@
       "paths": {
         "@arvin-shu/microcode-*": ["packages/*/src"]
       },
-      "outDir": "dist",
     },
     "include": ["typings/env.d.ts","packages/*/src/**/*"],
     "exclude": ["**/tests/*", "**/*.test.ts", "**/dist", "**/es", "node_modules"]

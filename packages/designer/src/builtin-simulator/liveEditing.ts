@@ -83,7 +83,7 @@ class LiveEditing {
 	private _editing = ref<Prop | null>(null);
 
 	get editing() {
-		return toRaw(this._editing.value);
+		return toRaw(this._editing.value) as any;
 	}
 
 	private _dispose?: () => void;

@@ -41,7 +41,7 @@ export class Detecting implements IDetecting {
 	/**
 	 * 当前选中的节点
 	 */
-	_current = ref<INode | null>(null);
+	private _current = ref<INode | null>(null);
 
 	/**
 	 * 事件总线
@@ -49,7 +49,7 @@ export class Detecting implements IDetecting {
 	private emitter: IEventBus = createModuleEventBus('Detecting');
 
 	get current(): any {
-		return this._current.value;
+		return this._current.value as any;
 	}
 
 	/**

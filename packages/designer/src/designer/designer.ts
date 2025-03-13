@@ -249,7 +249,7 @@ export class Designer implements IDesigner {
 	);
 
 	get simulatorComponent() {
-		return this._simulatorComponent.value;
+		return this._simulatorComponent.value as any;
 	}
 
 	private _suspensed = ref<boolean>(false);
