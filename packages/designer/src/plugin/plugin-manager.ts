@@ -8,19 +8,18 @@ import { getLogger } from '@arvin-shu/microcode-utils';
 import { engineConfig } from '@arvin-shu/microcode-editor-core';
 import semverSatisfies from 'semver/functions/satisfies';
 import {
-	filterValidOptions,
 	IMicrocodePluginManager,
 	IMicrocodePluginRuntime,
 	IMicroodePluginContextApiAssembler,
 	IPluginContextOptions,
-	isMicrocodeRegisterOptions,
-	MicrocodePluginRuntime,
 	PluginPreference,
 	RESERVED_EVENT_PREFIX,
-} from '.';
+} from './plugin-types';
 import MicrocodePluginContext from './plugin-context';
 import { invariant } from '../utils';
 import sequencify from './sequencify';
+import { filterValidOptions, isMicrocodeRegisterOptions } from './plugin-utils';
+import { MicrocodePluginRuntime } from './plugin';
 
 const logger = getLogger({ level: 'warn', bizName: 'designer:pluginManager' });
 

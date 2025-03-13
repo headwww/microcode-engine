@@ -75,7 +75,7 @@ import {
 import { isShaken } from '../designer/utils';
 import ResourceConsumer from './resource-consumer';
 import { BuiltinSimulatorRenderer } from './renderer';
-import { LiveEditing } from './live-editing';
+import { LiveEditing } from './liveEditing';
 import { clipboard } from '../designer/clipboard';
 
 export type LibraryItem = IPublicTypePackage & {

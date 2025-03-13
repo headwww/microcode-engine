@@ -1,7 +1,4 @@
-import {
-	IPublicTypeLiveTextEditingConfig,
-	IPublicTypePluginConfig,
-} from '@arvin-shu/microcode-types';
+import { IPublicTypeLiveTextEditingConfig } from '@arvin-shu/microcode-types';
 import { ref, toRaw } from 'vue';
 import { INode, Prop } from '../document';
 
@@ -74,7 +71,7 @@ function selectRange(doc: Document, range: Range) {
 	}
 }
 
-export class LiveEditing {
+class LiveEditing {
 	static addLiveEditingSpecificRule = addLiveEditingSpecificRule;
 
 	static clearLiveEditingSpecificRule = clearLiveEditingSpecificRule;
@@ -112,20 +109,15 @@ export class LiveEditing {
 
 		let setterPropElement = getSetterPropElement(targetElement, rootElement);
 		let propTarget = setterPropElement?.dataset.setterProp;
-		let matched:
-			| (IPublicTypePluginConfig & { propElement?: HTMLElement })
-			| undefined
-			| null;
+		let matched: any;
 		if (liveTextEditing) {
 			if (propTarget) {
 				// 已埋点命中 data-setter-prop="proptarget", 从 liveTextEditing 读取配置（mode|onSaveContent）
-				// @ts-ignore
 				matched = liveTextEditing.find(
 					(config) => config.propTarget === propTarget
 				);
 			} else {
 				// 执行 embedTextEditing selector 规则，获得第一个节点 是否 contains e.target，若匹配，读取配置
-				// @ts-ignore
 				matched = liveTextEditing.find((config) => {
 					if (!config.selector) {
 						return false;
@@ -137,30 +129,25 @@ export class LiveEditing {
 					);
 					return !!setterPropElement;
 				});
-				// @ts-ignore
 				propTarget = matched?.propTarget;
 			}
 		} else {
 			specificRules.some((rule) => {
-				// @ts-ignore
 				matched = rule(target);
 				return !!matched;
 			});
 			if (matched) {
-				// @ts-ignore
 				propTarget = matched.propTarget;
 				setterPropElement =
 					matched.propElement ||
-					// @ts-ignore
 					queryPropElement(rootElement, targetElement, matched.selector);
 			}
 		}
 
 		if (propTarget && setterPropElement) {
-			const prop = node.getProp(propTarget, true)!;
-
-			// @ts-ignore
-			if (toRaw(this._editing.value) === prop) {
+			const prop = node.getProp(propTarget, true)! as Prop;
+			const currentEditing = toRaw(this._editing.value) as any;
+			if (currentEditing === prop) {
 				return;
 			}
 
@@ -172,15 +159,12 @@ export class LiveEditing {
 			//  5. 设置编辑锁定：disable hover | disable select | disable canvas drag
 
 			const onSaveContent =
-				// @ts-ignore
 				matched?.onSaveContent ||
-				// @ts-ignore
 				saveHandlers.find((item) => item.condition(prop))?.onSaveContent ||
 				defaultSaveContent;
 
 			setterPropElement.setAttribute(
 				'contenteditable',
-				// @ts-ignore
 				matched?.mode && matched.mode !== 'plaintext'
 					? 'true'
 					: 'plaintext-only'
@@ -207,7 +191,7 @@ export class LiveEditing {
 				// enter
 				// tab
 			};
-			const focusout = (/* e: FocusEvent */) => {
+			const focusout = () => {
 				this.saveAndDispose();
 			};
 			setterPropElement.addEventListener('focusout', focusout);
@@ -220,7 +204,6 @@ export class LiveEditing {
 				setterPropElement!.removeEventListener('keydown', keydown, true);
 			};
 
-			// @ts-ignore
 			this._editing.value = prop;
 		}
 	}
@@ -266,3 +249,4 @@ function queryPropElement(
 	}
 	return propElement as HTMLElement;
 }
+export { LiveEditing };

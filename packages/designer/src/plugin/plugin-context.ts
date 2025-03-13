@@ -22,8 +22,8 @@ import {
 	IMicrocodeContextPrivate,
 	IMicroodePluginContextApiAssembler,
 	IPluginContextOptions,
-	isValidPreferenceKey,
-} from '.';
+} from './plugin-types';
+import { isValidPreferenceKey } from './plugin-utils';
 
 /**
  * 引擎的上下文
