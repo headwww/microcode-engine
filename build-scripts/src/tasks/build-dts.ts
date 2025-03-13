@@ -139,7 +139,6 @@ async function addSourceFiles(project: Project) {
  * 类型检查
  * @param project
  */
-typeCheck;
 function typeCheck(project: Project) {
 	// 获取项目中的所有诊断信息(类型错误、语法错误等)
 	const diagnostics = project.getPreEmitDiagnostics();
