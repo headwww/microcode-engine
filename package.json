@@ -42,6 +42,7 @@
     },
     "dependencies": {
         "@ant-design/icons-vue": "^7.0.1",
+        "@arvin-shu/microcode-shell": "workspace:^",
         "@arvin-shu/microcode-types": "workspace:^",
         "@arvin-shu/microcode-utils": "workspace:^",
         "ant-design-vue": "^4.2.5",

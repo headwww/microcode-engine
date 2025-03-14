@@ -11,6 +11,7 @@ import {
 	IPublicModelNodeChildren,
 	IPublicModelProp,
 	IPublicModelProps,
+	IPublicModelSettingTopEntry,
 	IPublicTypeCompositeValue,
 	IPublicTypeI18nData,
 	IPublicTypeIconType,
@@ -26,6 +27,7 @@ import { Props as ShellProps } from './props';
 import { ComponentMeta as ShellComponentMeta } from './component-meta';
 import { DocumentModel as ShellDocumentModel } from './document-model';
 import { ConditionGroup } from './condition-group';
+import { SettingTopEntry as ShellSettingTopEntry } from './setting-top-entry';
 
 const shellNodeSymbol = Symbol('shellNodeSymbol');
 
@@ -316,6 +318,10 @@ export class Node implements IPublicModelNode {
 	 */
 	get schema(): IPublicTypeNodeSchema {
 		return this[nodeSymbol].schema;
+	}
+
+	get settingEntry(): IPublicModelSettingTopEntry {
+		return ShellSettingTopEntry.create(this[nodeSymbol].settingEntry as any);
 	}
 
 	constructor(node: InnerNode) {

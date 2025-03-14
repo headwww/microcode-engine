@@ -60,10 +60,12 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 				// 	urls: ['http://192.168.1.59:8080/dist/renderer.css'],
 				// },
 				{
-					package: 'css1',
+					package: 'microcode-theme',
 					version: '1.0.0',
-					library: 'css1',
-					urls: ['http://127.0.0.1:8080/dist/renderer.css'],
+					library: 'microcode-theme',
+					urls: [
+						'https://cdn.jsdelivr.net/npm/@arvin-shu/microcode-theme@1.0.0/renderer.css',
+					],
 				},
 				{
 					package: 'dayjs',

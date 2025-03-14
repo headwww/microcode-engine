@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "types": ["node"],
+    "resolveJsonModule": true, 
+    "esModuleInterop": true,  
+  },
+  "include": [
+    "../../typings/env.d.ts",
+    "src/**/*"
+  ],
+  "exclude": ["dist","**/lib", "**/es", "node_modules"]
+}

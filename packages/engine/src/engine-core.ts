@@ -127,7 +127,7 @@ async function registryInnerPlugin() {
 // TODO 设置一个渲染模拟器插件
 editor.set(
 	'simulatorUrl',
-	`http://127.0.0.1:8081/dist/dist/js/index.js?${Math.random().toString(36).substring(2, 15)}`
+	'https://cdn.jsdelivr.net/npm/@arvin-shu/microcode-vue-simulator-renderer@1.0.2/dist/js/index.min.js'
 );
 
 export async function init(
