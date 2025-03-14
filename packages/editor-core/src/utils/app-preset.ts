@@ -1,18 +1,17 @@
 import store from 'store';
 
-// declare global {
-// 	interface Window {
-// 		__isDebug?: boolean;
-// 		__newFunc?: (funcStr: string) => (...args: any[]) => any;
-// 	}
-// }
+declare global {
+	interface Window {
+		__isDebug?: boolean;
+		__newFunc?: (funcStr: string) => (...args: any[]) => any;
+	}
+}
 
 // 根据 url 参数设置 debug 选项
 // eslint-disable-next-line no-restricted-globals
 const debugRegRes = /_?debug=(.*?)(&|$)/.exec(location.search);
 if (debugRegRes && debugRegRes[1]) {
 	// eslint-disable-next-line no-underscore-dangle
-	// @ts-ignore
 	window.__isDebug = true;
 	// @ts-ignore
 	store.storage.write(
@@ -21,13 +20,11 @@ if (debugRegRes && debugRegRes[1]) {
 	);
 } else {
 	// eslint-disable-next-line no-underscore-dangle
-	// @ts-ignore
 	window.__isDebug = false;
 	store.remove('debug');
 }
 
 // 重要，用于矫正画布执行 new Function 的 window 对象上下文
-// @ts-ignore
 // eslint-disable-next-line arrow-body-style
 window.__newFunc = (funContext: string): ((...args: any[]) => any) => {
 	// eslint-disable-next-line no-new-func

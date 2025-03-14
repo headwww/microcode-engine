@@ -15,8 +15,8 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"@arvin-shu/microcode-types": "^1.0.3",
-		"@arvin-shu/microcode-utils": "^1.0.2",
+		"@arvin-shu/microcode-types": "^1.0.4",
+		"@arvin-shu/microcode-utils": "^1.0.3",
 		"eventemitter2": "^6.4.9",
 		"intl-messageformat": "^10.7.7",
 		"lodash-es": "^4.17.21",

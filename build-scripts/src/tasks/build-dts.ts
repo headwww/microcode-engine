@@ -40,9 +40,11 @@ export const buildDts = async () => {
 
 	const sourceFiles = await addSourceFiles(project);
 
-	consola.success('++++++++已成功添加所有源文件到项目中');
+	consola.success(
+		'✅✅✅✅✅✅✅✅✅✅=已成功添加所有源文件到项目中=✅✅✅✅✅✅✅✅✅✅'
+	);
 	typeCheck(project);
-	consola.success('✔✔✔✔✔✔✔✔类型检查通过！！！');
+	consola.success('🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉=类型检查通过=🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉');
 
 	await project.emit({
 		emitOnlyDtsFiles: true,
