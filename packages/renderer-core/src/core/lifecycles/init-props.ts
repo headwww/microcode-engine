@@ -74,6 +74,7 @@ export function initProps(
 		}
 
 		if (rawPropsOptions[normalizedKey]) {
+			// eslint-disable-next-line no-console
 			console.warn(`prop ${normalizedKey}声明重复`);
 
 			continue;
