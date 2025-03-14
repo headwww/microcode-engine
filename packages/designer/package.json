@@ -16,9 +16,9 @@
 		"clear": "rm -rf dist"
 	},
 	"dependencies": {
-		"@arvin-shu/microcode-editor-core": "workspace:^",
-		"@arvin-shu/microcode-types": "^1.0.3",
-		"@arvin-shu/microcode-utils": "^1.0.2",
+		"@arvin-shu/microcode-editor-core": "^1.0.3",
+		"@arvin-shu/microcode-types": "^1.0.4",
+		"@arvin-shu/microcode-utils": "^1.0.4",
 		"lodash-es": "^4.17.21",
 		"ric-shim": "^1.0.1",
 		"semver": "^7.6.3",
