@@ -20,7 +20,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"@arvin-shu/microcode-renderer-core": "^1.0.9",
+		"@arvin-shu/microcode-renderer-core": "^1.0.10",
 		"@arvin-shu/microcode-types": "^1.0.4",
 		"@arvin-shu/microcode-utils": "^1.0.4",
 		"lodash-es": "^4.17.21",
