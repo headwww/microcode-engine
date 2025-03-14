@@ -715,7 +715,7 @@ const lowcodeSchema = {
 	componentsTree: [
 		{
 			componentName: 'Component',
-			id: 'node_dockcviv8fo1',
+			id: 'node_dockcviv8f11',
 			props: {
 				ref: 'outerView',
 				style: {
@@ -727,81 +727,72 @@ const lowcodeSchema = {
 			hidden: false,
 			title: '',
 			isLocked: false,
-			condition: true,
-			conditionGroup: '',
 			children: [
 				{
-					componentName: 'LtButton',
-					id: 'node_sxsm4wdio232',
-					props: {
-						children: '按钮123',
-						// children: {
-						// 	type: 'JSExpression',
-						// 	value: 'this.$data.text',
-						// 	mock: '按钮',
-						// },
-						icon: {
-							type: 'JSSlot',
-							value: [
-								{
-									componentName: 'Icon',
-									id: 'node_ocm7lvp0qp3',
-									props: {
-										type: 'SmileOutlined',
-										size: 20,
-										rotate: 0,
-										spin: false,
-									},
-									hidden: false,
-									title: '',
-									isLocked: false,
-									condition: true,
-									conditionGroup: '',
+					componentName: 'FCell',
+					id: 'node_sxsm4wdis232',
+					children: [
+						{
+							componentName: 'LtButton',
+							id: 'node_sxsm4wdio232',
+							props: {
+								children: '测试按钮1',
+								icon: {
+									type: 'JSSlot',
+									value: [
+										{
+											componentName: 'Icon',
+											id: 'node_ocm7lvp0qp3',
+											props: {
+												type: 'SmileOutlined',
+												size: 20,
+												rotate: 0,
+												spin: false,
+											},
+											hidden: false,
+											title: '',
+											isLocked: false,
+										},
+									],
+									id: 'node_ocm7lvp0qp2',
 								},
-							],
-							id: 'node_ocm7lvp0qp2',
+							},
+							hidden: false,
+							title: '',
+							isLocked: false,
+							loopArgs: null,
 						},
-					},
-					hidden: false,
-					title: '',
-					isLocked: false,
-					condition: false,
-					conditionGroup: '',
-					loopArgs: null,
-				},
-				{
-					componentName: 'LtButton',
-					id: 'node_sxsm4wdio222',
-					props: {
-						children: '按钮1123',
-						icon: {
-							type: 'JSSlot',
-							value: [
-								{
-									componentName: 'Icon',
-									id: 'node_ocm7lvp0qp3',
-									props: {
-										type: 'SmileOutlined',
-										size: 20,
-										rotate: 0,
-										spin: false,
-									},
-									hidden: false,
-									title: '',
-									isLocked: false,
-									condition: true,
-									conditionGroup: '',
+						{
+							componentName: 'LtButton',
+							id: 'node_sxsm4wo222',
+							props: {
+								children: '按钮2',
+								icon: {
+									type: 'JSSlot',
+									value: [
+										{
+											componentName: 'Icon',
+											id: 'node_ocm7lvp0qp3',
+											props: {
+												type: 'SmileOutlined',
+												size: 20,
+												rotate: 0,
+												spin: false,
+											},
+											hidden: false,
+											title: '',
+											isLocked: false,
+										},
+									],
+									id: 'node_ocm7lvp0qp2',
 								},
-							],
-							id: 'node_ocm7lvp0qp2',
+							},
+							hidden: false,
+							title: '',
+							isLocked: false,
+							loopArgs: null,
 						},
-					},
-					hidden: false,
-					title: '',
-					isLocked: false,
-					condition: false,
-					conditionGroup: '',
-					loopArgs: null,
+					],
 				},
 			],
 		},

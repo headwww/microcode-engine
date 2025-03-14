@@ -96,8 +96,8 @@ export const Renderer = defineComponent({
 					components={components}
 					requestHandlersMap={requestHandlersMap.value}
 					thisRequiredInJSE={thisRequiredInJSE.value}
-					getNode={(id) => documentInstance.getNode(id)}
-					onCompGetCtx={(schema, inst) => {
+					getNode={(id: any) => documentInstance.getNode(id)}
+					onCompGetCtx={(schema: any, inst: any) => {
 						documentInstance.mountInstance(schema.id!, inst);
 					}}
 				></MicrocodeRenderer>

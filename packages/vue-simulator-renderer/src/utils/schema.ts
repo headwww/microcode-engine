@@ -160,7 +160,7 @@ function getNodeSchemaFromPropsById(
 }
 
 /**
- * TODO: not sure if this is used anywhere
+ * FIX: not sure if this is used anywhere
  * @deprecated
  */
 export function applyActivities(

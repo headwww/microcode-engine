@@ -11,8 +11,8 @@ import {
 	shallowRef,
 } from 'vue';
 import { createMemoryHistory, createRouter, type Router } from 'vue-router';
-import { AssetLoader } from '@arvin-shu/microcode-utils';
-import { merge } from 'lodash';
+import { AssetLoader, cursor } from '@arvin-shu/microcode-utils';
+import { merge } from 'lodash-es';
 import MicrocodeRenderer, {
 	SchemaParser,
 } from '@arvin-shu/microcode-renderer-core';
@@ -240,7 +240,6 @@ export class DocumentInstance {
 	}
 }
 
-// TODO 包导入问题，考虑打包成UMD的情况AssetLoader是从@arvin-shu/microcode-utils导入的
 const loader = new AssetLoader();
 
 export class SimulatorRendererContainer {
@@ -351,9 +350,7 @@ export class SimulatorRendererContainer {
 						this.router.addRoute({
 							name: inst.id,
 							path: inst.path,
-							meta: {
-								// TODO [MICROCODE_ROUTE_META]: doc.schema,
-							},
+							meta: {},
 							component: Renderer,
 							props: ((doc) => () => ({
 								documentInstance: doc,
@@ -479,6 +476,13 @@ export class SimulatorRendererContainer {
 						components: renderer.components,
 						requestHandlersMap: renderer.requestHandlersMap.value,
 						thisRequiredInJSE: host.thisRequiredInJSE,
+						getNode: (id: any) =>
+							renderer.documentInstanceMap.get(id)?.getNode(id),
+						onCompGetCtx: (schema: any, inst: any) => {
+							renderer.documentInstanceMap
+								.get(schema.id!)
+								?.mountInstance(schema.id!, inst);
+						},
 					});
 				};
 			},
@@ -529,13 +533,20 @@ export class SimulatorRendererContainer {
 		setNativeSelection(enableFlag);
 	}
 
-	// TODO setDraggingState 设置拖拽状态
-	// TODO setCopyState 设置复制状态
-	// TODO clearState 清除状态
+	setDraggingState(state: boolean) {
+		cursor.setDragging(state);
+	}
+
+	setCopyState(state: boolean) {
+		cursor.setCopy(state);
+	}
+
+	clearState() {
+		cursor.release();
+	}
 
 	rerender() {
 		this.documentInstances.forEach((doc) => {
-			// TODO rerender还不知道怎么实现
 			doc.rerender();
 		});
 	}
