@@ -6,7 +6,6 @@ import { INode } from '../../document';
 
 type UnionNode = INode | null;
 
-// TODO 未实现
 export const InstanceNodeSelector = defineComponent({
 	props: {
 		node: {
