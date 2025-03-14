@@ -2,7 +2,9 @@ import { isComponentSchema } from '@arvin-shu/microcode-renderer-core';
 import {
 	IPublicTypeComponentSchema,
 	IPublicTypeNpmInfo,
+	IPublicTypeProjectSchema,
 } from '@arvin-shu/microcode-types';
+import { isObject } from '@arvin-shu/microcode-utils';
 import { Component, ComponentOptions, defineComponent, h } from 'vue';
 
 export function getSubComponent(library: any, paths: string[]) {
@@ -108,6 +110,20 @@ export function findComponent(
 	return getSubComponent(library, paths);
 }
 
+function isMicrocodeProjectSchema(
+	data: any
+): data is IPublicTypeProjectSchema<IPublicTypeComponentSchema> {
+	if (!isObject(data)) {
+		return false;
+	}
+
+	if (!('componentsTree' in data) || data.componentsTree.length === 0) {
+		return false;
+	}
+
+	return isComponentSchema(data.componentsTree[0]);
+}
+
 /**
  * 构建组件
  * @param libraryMap 库映射
@@ -120,16 +136,23 @@ export function buildComponents(
 		string,
 		IPublicTypeNpmInfo | IPublicTypeComponentSchema | unknown
 	>,
-	createComponent?: (schema: IPublicTypeComponentSchema) => any
+	createComponent?: (schema: any) => any
 ) {
 	const components: any = {};
 	Object.keys(componentsMap).forEach((componentName) => {
 		let component = componentsMap[componentName];
-		if (isComponentSchema(component)) {
-			if (createComponent) {
-				components[componentName] = createComponent(
-					component as IPublicTypeComponentSchema
-				);
+		if (
+			component &&
+			(isMicrocodeProjectSchema(component) || isComponentSchema(component))
+		) {
+			if (isComponentSchema(component)) {
+				components[componentName] = createComponent?.({
+					version: '',
+					componentsMap: [],
+					componentsTree: [component],
+				});
+			} else {
+				components[componentName] = createComponent?.(component);
 			}
 		} else if (isVueComponent(component)) {
 			components[componentName] = component;

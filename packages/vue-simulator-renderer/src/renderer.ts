@@ -2,6 +2,8 @@ import {
 	App,
 	ComponentPublicInstance,
 	createApp,
+	defineComponent,
+	h,
 	markRaw,
 	onUnmounted,
 	ref,
@@ -11,7 +13,13 @@ import {
 import { createMemoryHistory, createRouter, type Router } from 'vue-router';
 import { AssetLoader } from '@arvin-shu/microcode-utils';
 import { merge } from 'lodash';
-import { SchemaParser } from '@arvin-shu/microcode-renderer-core';
+import MicrocodeRenderer, {
+	SchemaParser,
+} from '@arvin-shu/microcode-renderer-core';
+import {
+	IPublicTypeComponentSchema,
+	IPublicTypeProjectSchema,
+} from '@arvin-shu/microcode-types';
 import { Renderer, SimulatorRendererView } from './renderer-view';
 import { host } from './host';
 import {
@@ -28,6 +36,7 @@ import {
 	buildComponents,
 	getSubComponent,
 	setNativeSelection,
+	compatibleLegaoSchema,
 } from './utils';
 import {
 	ComponentRecord,
@@ -419,15 +428,63 @@ export class SimulatorRendererContainer {
 	}
 
 	private buildComponents() {
-		// TODO 第三个参数创建低代码函数的方式没有创建
 		this._components.value = buildComponents(
 			this.libraryMap.value,
-			this.componentsMap.value
+			this.componentsMap.value,
+			this.createComponent.bind(this)
 		);
+
 		this._components.value = {
 			...builtinComponents,
 			...this._components.value,
 		} as any;
+	}
+
+	createComponent(
+		schema: IPublicTypeProjectSchema<IPublicTypeComponentSchema>
+	) {
+		const _schema: IPublicTypeProjectSchema<IPublicTypeComponentSchema> = {
+			...schema,
+			componentsTree: schema.componentsTree.map(compatibleLegaoSchema),
+		};
+
+		const componentsTreeSchema = _schema.componentsTree[0];
+		if (
+			componentsTreeSchema.componentName === 'Component' &&
+			componentsTreeSchema.css
+		) {
+			const doc = window.document;
+			const s = doc.createElement('style');
+			s.setAttribute('type', 'text/css');
+			s.setAttribute('id', `Component-${componentsTreeSchema.id || ''}`);
+			s.appendChild(doc.createTextNode(componentsTreeSchema.css || ''));
+			doc.getElementsByTagName('head')[0].appendChild(s);
+		}
+		const renderer = this;
+
+		const MicroCodeComponent = defineComponent({
+			setup() {
+				const messages = _schema.i18n?.messages || {};
+
+				return () => {
+					const extraProps = {};
+					return h(MicrocodeRenderer, {
+						...extraProps,
+						locale: renderer.locale.value,
+						messages,
+						schema: componentsTreeSchema,
+						appHelper: renderer.context,
+						designMode: renderer.designMode.value,
+						device: renderer.device.value,
+						components: renderer.components,
+						requestHandlersMap: renderer.requestHandlersMap.value,
+						thisRequiredInJSE: host.thisRequiredInJSE,
+					});
+				};
+			},
+		});
+
+		return MicroCodeComponent;
 	}
 
 	getCurrentDocument() {
