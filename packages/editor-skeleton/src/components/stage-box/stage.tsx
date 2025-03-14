@@ -7,8 +7,8 @@ import {
 	ref,
 } from 'vue';
 import { isTitleConfig } from '@arvin-shu/microcode-utils';
-import { LeftOutlined, HomeOutlined } from '@ant-design/icons-vue';
 import { Stage as StageWidget } from '../../widget/stage';
+import { HomeIcon, LeftIcon } from '../../icons';
 
 export const Stage = defineComponent({
 	name: 'Stage',
@@ -74,12 +74,12 @@ export const Stage = defineComponent({
 
 			const stageBacker = stage?.hasBack() ? (
 				<div class="skeleton-stagebox-stagebacker">
-					<LeftOutlined
+					<LeftIcon
 						class="skeleton-stagebox-stage-arrow"
 						data-stage-target="stageback"
 					/>
 					<span class="skeleton-stagebox-stage-title">{newTitle}</span>
-					<HomeOutlined
+					<HomeIcon
 						class="skeleton-stagebox-stage-exit"
 						data-stage-target="stageexit"
 					/>
