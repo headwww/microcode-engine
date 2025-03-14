@@ -1,4 +1,4 @@
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, Fragment } from 'vue';
 import { Area } from '../area';
 import { Panel } from '..';
 
@@ -11,7 +11,7 @@ export const BottomArea = defineComponent({
 		return () => {
 			const { area } = props;
 			if (area?.isEmpty()) {
-				return <></>;
+				return <Fragment></Fragment>;
 			}
 
 			return (

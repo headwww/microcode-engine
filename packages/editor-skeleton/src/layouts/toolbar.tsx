@@ -1,4 +1,4 @@
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, Fragment } from 'vue';
 import { Area } from '../area';
 
 export const Toolbar = defineComponent({
@@ -10,7 +10,7 @@ export const Toolbar = defineComponent({
 		return () => {
 			const { area } = props;
 			if (area?.isEmpty()) {
-				return <></>;
+				return <Fragment></Fragment>;
 			}
 
 			const left: any[] = [];

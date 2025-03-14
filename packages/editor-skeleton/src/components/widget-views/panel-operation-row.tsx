@@ -1,11 +1,7 @@
-import {
-	CloseOutlined,
-	PushpinOutlined,
-	PushpinTwoTone,
-} from '@ant-design/icons-vue';
 import { Button } from 'ant-design-vue';
-import { defineComponent, h, PropType } from 'vue';
+import { defineComponent, h, PropType, Fragment } from 'vue';
 import { Panel } from '../..';
+import { CloseIcon, PushpinFloatIcon, PushpinFixedIcon } from '../../icons';
 
 export const PanelOperationRow = defineComponent({
 	name: 'PanelOperationRow',
@@ -26,7 +22,7 @@ export const PanelOperationRow = defineComponent({
 			const { panel } = props;
 			const isRightArea = panel?.config?.area === 'rightArea';
 			if (isRightArea) {
-				return <></>;
+				return <Fragment></Fragment>;
 			}
 
 			let canSetFixed = true;
@@ -38,18 +34,17 @@ export const PanelOperationRow = defineComponent({
 			const areaName = panel?.parent.value?.name;
 			const area = (panel?.skeleton as any)[areaName!];
 
-			PushpinTwoTone;
 			return (
-				<>
+				<Fragment>
 					{!hideTitleBar && (
-						<>
+						<Fragment>
 							{canSetFixed && (
 								<Button
 									type="text"
 									icon={h(
 										areaName === 'leftFloatArea'
-											? PushpinOutlined
-											: PushpinTwoTone
+											? PushpinFloatIcon
+											: PushpinFixedIcon
 									)}
 									class="mtc-pane-icon-fix"
 									onClick={() => {
@@ -59,15 +54,17 @@ export const PanelOperationRow = defineComponent({
 							)}
 							<Button
 								type="text"
-								icon={h(CloseOutlined)}
+								icon={
+									<CloseIcon style={{ verticalAlign: 'middle' }}></CloseIcon>
+								}
 								class="mtc-pane-icon-close"
 								onClick={() => {
 									area && area.setVisible(false);
 								}}
 							></Button>
-						</>
+						</Fragment>
 					)}
-				</>
+				</Fragment>
 			);
 		};
 	},

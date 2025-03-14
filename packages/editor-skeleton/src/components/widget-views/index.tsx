@@ -1,11 +1,16 @@
-import { defineComponent, onMounted, onUpdated, PropType, ref } from 'vue';
+import {
+	defineComponent,
+	onMounted,
+	onUpdated,
+	PropType,
+	ref,
+	Fragment,
+} from 'vue';
 import { HelpTip, Title } from '@arvin-shu/microcode-editor-core';
 import { SkeletonEvents } from '../../skeleton';
 import { composeTitle, IWidget, Panel, PanelDock } from '../../widget';
 import { DockProps } from '../../types';
 import { PanelOperationRow } from './panel-operation-row';
-
-// DraggableLineView 没有设计
 
 export function DockView(props: DockProps) {
 	const { title, onClick, className, size, description, icon } = props;
@@ -122,7 +127,7 @@ export const TitledPanelView = defineComponent({
 			const { panel, area } = props;
 
 			if (!panel?.inited.value) {
-				return <></>;
+				return null;
 			}
 			const panelName = area ? `${area}-${panel?.name}` : panel?.name;
 			const editor = panel?.skeleton.editor;
@@ -194,7 +199,7 @@ export const PanelView = defineComponent({
 		return () => {
 			const { panel, area, hideOperationRow } = props;
 			if (!panel?.inited.value) {
-				return <></>;
+				return null;
 			}
 			const editor = panel?.skeleton.editor;
 			const panelName = area ? `${area}-${panel?.name}` : panel?.name;
@@ -238,7 +243,7 @@ export const PanelTitle = defineComponent({
 					data-name={panel?.name}
 				>
 					<Title title={panel?.title || panel?.name}></Title>
-					{panel?.help ? <HelpTip help={panel.help} /> : <></>}
+					{panel?.help ? <HelpTip help={panel.help} /> : <Fragment></Fragment>}
 				</div>
 			);
 		};
@@ -313,12 +318,12 @@ export const WidgetView = defineComponent({
 		return () => {
 			const { widget } = props;
 			if (!widget?.visible.value) {
-				return <></>;
+				return null;
 			}
 			if (widget.disabled) {
 				return <div class="mtc-widget-disabled">{widget.body}</div>;
 			}
-			return <>{widget.body}</>;
+			return <Fragment>{widget.body}</Fragment>;
 		};
 	},
 });

@@ -7,15 +7,11 @@ import {
 	ref,
 } from 'vue';
 import { Title } from '@arvin-shu/microcode-editor-core';
-import {
-	DownOutlined,
-	SelectOutlined,
-	VerticalLeftOutlined,
-} from '@ant-design/icons-vue';
 import { isObject } from '@arvin-shu/microcode-utils';
 import { fieldProps } from './types';
 import { intl } from '../../locale';
 import { PopupPipeKey } from '../popup';
+import { ArrowDownIcon, ClickIcon, InMenuIcon } from '../../icons';
 
 export const Field = defineComponent({
 	name: 'Field',
@@ -180,7 +176,14 @@ export const Field = defineComponent({
 								<Title title={title || ''} onClick={clickHandler}></Title>
 								<InlineTip position="top">{tipContent}</InlineTip>
 							</div>
-							{isAccordion && <DownOutlined class="mtc-field-icon" />}
+							{isAccordion && (
+								<ArrowDownIcon
+									style={{
+										verticalAlign: 'middle',
+									}}
+									class="mtc-field-icon"
+								/>
+							)}
 						</div>
 					)}
 					<div key="body" ref={body} class="mtc-field-body">
@@ -223,7 +226,14 @@ export const PopupField = defineComponent({
 						<div class="mtc-field-title">
 							<Title title={title} />
 						</div>
-						<SelectOutlined />
+						<ClickIcon
+							style={{
+								opacity: 0.5,
+								height: '20px',
+								width: '20px',
+								verticalAlign: 'middle',
+							}}
+						/>
 					</div>
 				</div>
 			);
@@ -247,7 +257,14 @@ export const EntryField = defineComponent({
 						<div class="mtc-field-title">
 							<Title title={title || ''}></Title>
 						</div>
-						<VerticalLeftOutlined class="mtc-field-icon" />
+						<InMenuIcon
+							class="mtc-field-icon"
+							style={{
+								width: '20px',
+								height: '20px',
+								verticalAlign: 'middle',
+							}}
+						/>
 					</div>
 				</div>
 			);

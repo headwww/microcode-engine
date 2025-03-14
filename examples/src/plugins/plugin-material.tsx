@@ -235,156 +235,156 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							// 	defaultValue: '按钮',
 							// 	setter: ['StringSetter', 'VariableSetter'],
 							// },
-							// {
-							// 	name: 'test',
-							// 	title: {
-							// 		label: {
-							// 			type: 'i18n',
-							// 			'zh-CN': '按钮类型',
-							// 			'en-US': 'Type',
-							// 		},
-							// 	},
-							// 	setter: ['StringSetter', 'VariableSetter'],
-							// },
-							// {
-							// 	name: 'type',
-							// 	title: {
-							// 		type: 'i18n',
-							// 		'zh-CN': '按钮类型',
-							// 		'en-US': 'Type',
-							// 	},
-							// 	setter: ['StringSetter', 'VariableSetter', 'BoolSetter'],
-							// 	extraProps: {
-							// 		display: 'inline',
-							// 	},
-							// },
-							// {
-							// 	name: 'title',
-							// 	title: {
-							// 		label: {
-							// 			type: 'i18n',
-							// 			'zh-CN': '和上面联动',
-							// 			'en-US': 'Link to above',
-							// 		},
-							// 		tip: '测试condition',
-							// 	},
-							// 	setter: {
-							// 		componentName: 'StringSetter',
-							// 		props: {
-							// 			defaultValue: '默认值',
-							// 		},
-							// 	},
-							// 	extraProps: {
-							// 		condition: (field) =>
-							// 			field.parent.getPropValue('type') === 'primary',
-							// 	},
-							// },
-							// {
-							// 	name: 'block-01',
-							// 	title: 'block模式',
-							// 	setter: 'BoolSetter',
-							// 	extraProps: {
-							// 		display: 'block',
-							// 	},
-							// },
-							// {
-							// 	name: 'accordion-01',
-							// 	title: {
-							// 		type: 'i18n',
-							// 		'zh-CN': '默认折叠',
-							// 		'en-US': 'Style',
-							// 		description: '点击 ? tipo',
-							// 	},
-							// 	setter: 'BoolSetter',
-							// 	extraProps: {
-							// 		defaultCollapsed: true,
-							// 		display: 'accordion',
-							// 	},
-							// },
-							// {
-							// 	name: 'plain',
-							// 	title: '纯文本',
-							// 	setter: 'StringSetter',
-							// 	extraProps: {
-							// 		display: 'plain',
-							// 	},
-							// },
-							// {
-							// 	name: 'group-01',
-							// 	type: 'group',
-							// 	extraProps: {
-							// 		display: 'accordion',
-							// 	},
-							// 	items: [
-							// 		{
-							// 			name: 'type',
-							// 			setter: 'StringSetter',
-							// 		},
-							// 		{
-							// 			name: 'field-12',
-							// 			setter: 'StringSetter',
-							// 		},
-							// 	],
-							// },
-							// {
-							// 	name: 'entry-01',
-							// 	title: '入口模式=group',
-							// 	type: 'group',
-							// 	extraProps: {
-							// 		display: 'entry',
-							// 	},
-							// 	items: [
-							// 		{
-							// 			name: 'theme',
-							// 			title: '主题',
-							// 			setter: 'StringSetter',
-							// 		},
-							// 		{
-							// 			name: 'entry-02',
-							// 			title: '入口模式=group',
-							// 			type: 'group',
-							// 			extraProps: {
-							// 				display: 'entry',
-							// 			},
-							// 			items: [
-							// 				{
-							// 					name: 'theme2',
-							// 					title: '主题',
-							// 					setter: 'StringSetter',
-							// 				},
-							// 			],
-							// 		},
-							// 	],
-							// },
-							// {
-							// 	type: 'group',
-							// 	display: 'accordion',
-							// 	title: '校验2',
-							// 	items: [
-							// 		{
-							// 			type: 'group',
-							// 			display: 'popup',
-							// 			title: '非空校验',
-							// 			items: [
-							// 				{
-							// 					name: 'field-01',
-							// 					setter: 'StringSetter',
-							// 				},
-							// 				{
-							// 					type: 'group',
-							// 					display: 'popup',
-							// 					title: '非空校验01010',
-							// 					items: [
-							// 						{
-							// 							name: 'field-022',
-							// 							setter: 'StringSetter',
-							// 						},
-							// 					],
-							// 				},
-							// 			],
-							// 		},
-							// 	],
-							// },
+							{
+								name: 'test',
+								title: {
+									label: {
+										type: 'i18n',
+										'zh-CN': '按钮类型',
+										'en-US': 'Type',
+									},
+								},
+								setter: ['StringSetter', 'VariableSetter'],
+							},
+							{
+								name: 'type',
+								title: {
+									type: 'i18n',
+									'zh-CN': '按钮类型',
+									'en-US': 'Type',
+								},
+								setter: ['StringSetter', 'VariableSetter', 'BoolSetter'],
+								extraProps: {
+									display: 'inline',
+								},
+							},
+							{
+								name: 'title',
+								title: {
+									label: {
+										type: 'i18n',
+										'zh-CN': '和上面联动',
+										'en-US': 'Link to above',
+									},
+									tip: '测试condition',
+								},
+								setter: {
+									componentName: 'StringSetter',
+									props: {
+										defaultValue: '默认值',
+									},
+								},
+								extraProps: {
+									condition: (field) =>
+										field.parent.getPropValue('type') === 'primary',
+								},
+							},
+							{
+								name: 'block-01',
+								title: 'block模式',
+								setter: 'BoolSetter',
+								extraProps: {
+									display: 'block',
+								},
+							},
+							{
+								name: 'accordion-01',
+								title: {
+									type: 'i18n',
+									'zh-CN': '默认折叠',
+									'en-US': 'Style',
+									description: '点击 ? tipo',
+								},
+								setter: 'BoolSetter',
+								extraProps: {
+									defaultCollapsed: true,
+									display: 'accordion',
+								},
+							},
+							{
+								name: 'plain',
+								title: '纯文本',
+								setter: 'StringSetter',
+								extraProps: {
+									display: 'plain',
+								},
+							},
+							{
+								name: 'group-01',
+								type: 'group',
+								extraProps: {
+									display: 'accordion',
+								},
+								items: [
+									{
+										name: 'type',
+										setter: 'StringSetter',
+									},
+									{
+										name: 'field-12',
+										setter: 'StringSetter',
+									},
+								],
+							},
+							{
+								name: 'entry-01',
+								title: '入口模式=group',
+								type: 'group',
+								extraProps: {
+									display: 'entry',
+								},
+								items: [
+									{
+										name: 'theme',
+										title: '主题',
+										setter: 'StringSetter',
+									},
+									{
+										name: 'entry-02',
+										title: '入口模式=group',
+										type: 'group',
+										extraProps: {
+											display: 'entry',
+										},
+										items: [
+											{
+												name: 'theme2',
+												title: '主题',
+												setter: 'StringSetter',
+											},
+										],
+									},
+								],
+							},
+							{
+								type: 'group',
+								display: 'accordion',
+								title: '校验2',
+								items: [
+									{
+										type: 'group',
+										display: 'popup',
+										title: '非空校验',
+										items: [
+											{
+												name: 'field-01',
+												setter: 'StringSetter',
+											},
+											{
+												type: 'group',
+												display: 'popup',
+												title: '非空校验01010',
+												items: [
+													{
+														name: 'field-022',
+														setter: 'StringSetter',
+													},
+												],
+											},
+										],
+									},
+								],
+							},
 						],
 						advanced: {
 							view: LtButton,

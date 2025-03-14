@@ -11,8 +11,10 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"@arvin-shu/microcode-designer": "^1.0.2",
+		"@arvin-shu/microcode-designer": "^1.0.3",
 		"@arvin-shu/microcode-editor-core": "^1.0.3",
-		"@arvin-shu/microcode-types": "^1.0.4"
+		"@arvin-shu/microcode-types": "^1.0.4",
+		"@arvin-shu/microcode-utils": "^1.0.4",
+		"ant-design-vue": "^4.2.5"
 	}
 }
