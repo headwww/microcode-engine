@@ -1,6 +1,3 @@
-/**
- * 以下 symbol 均用于在 shell 层对外暴露的模型中存储相应内部模型的 key
- */
 export const projectSymbol = Symbol('project');
 export const designerSymbol = Symbol('designer');
 export const skeletonSymbol = Symbol('skeleton');
@@ -29,15 +26,8 @@ export const editorCabinSymbol = Symbol('editorCabin');
 export const skeletonCabinSymbol = Symbol('skeletonCabin');
 export const hotkeySymbol = Symbol('hotkey');
 export const pluginsSymbol = Symbol('plugins');
-export const workspaceSymbol = Symbol('workspace');
-export const windowSymbol = Symbol('window');
 export const pluginInstanceSymbol = Symbol('plugin-instance');
-export const resourceTypeSymbol = Symbol('resourceType');
-export const resourceSymbol = Symbol('resource');
 export const clipboardSymbol = Symbol('clipboard');
 export const configSymbol = Symbol('configSymbol');
 export const conditionGroupSymbol = Symbol('conditionGroup');
-export const editorViewSymbol = Symbol('editorView');
-export const pluginContextSymbol = Symbol('pluginContext');
 export const skeletonItemSymbol = Symbol('skeletonItem');
-export const commandSymbol = Symbol('command');
