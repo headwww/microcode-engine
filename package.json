@@ -42,14 +42,9 @@
     },
     "dependencies": {
         "@ant-design/icons-vue": "^7.0.1",
-        "@arvin-shu/microcode-shell": "workspace:^",
-        "@arvin-shu/microcode-types": "workspace:^",
-        "@arvin-shu/microcode-utils": "workspace:^",
         "ant-design-vue": "^4.2.5",
-        "eventemitter2": "^6.4.9",
         "lodash": "^4.17.21",
-        "lodash-es": "^4.17.21",
-        "strict-event-emitter-types": "^2.0.0"
+        "lodash-es": "^4.17.21"
     },
     "lint-staged": {
         "*.{js,jsx,vue,ts,tsx}": [

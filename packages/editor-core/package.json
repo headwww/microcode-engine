@@ -2,7 +2,8 @@
 	"name": "@arvin-shu/microcode-editor-core",
 	"version": "1.0.0",
 	"description": "",
-	"main": "src/index.ts",
+	"main": "lib/index.js",
+	"module": "es/index.js",
 	"files": [
 		"lib",
 		"es"

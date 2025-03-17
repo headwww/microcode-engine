@@ -2,7 +2,8 @@
 	"name": "@arvin-shu/microcode-designer",
 	"version": "1.0.0",
 	"description": "microcode designer",
-	"main": "src/index.ts",
+	"main": "lib/index.js",
+	"module": "es/index.js",
 	"files": [
 		"lib",
 		"es"

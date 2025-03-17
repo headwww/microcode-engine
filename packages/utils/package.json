@@ -2,7 +2,8 @@
 	"name": "@arvin-shu/microcode-utils",
 	"version": "1.0.1",
 	"description": "microcode工具库",
-	"main": "src/index.ts",
+	"main": "lib/index.js",
+	"module": "es/index.js",
 	"files": [
 		"lib",
 		"es"

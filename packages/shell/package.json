@@ -2,7 +2,8 @@
 	"name": "@arvin-shu/microcode-shell",
 	"version": "1.0.0",
 	"description": "microcode shell",
-	"main": "src/index.ts",
+	"main": "lib/index.js",
+	"module": "es/index.js",
 	"files": [
 		"lib",
 		"es"

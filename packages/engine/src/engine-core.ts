@@ -49,7 +49,7 @@ globalContext.register(editor, Editor);
 globalContext.register(editor, 'editor');
 globalContext.register({}, 'workspace');
 
-const innerSkeleton = new InnerSkeleton(editor);
+const innerSkeleton = new InnerSkeleton(editor as any);
 editor.set('skeleton' as any, innerSkeleton);
 
 // @ts-ignore
@@ -66,7 +66,7 @@ const skeleton = new Skeleton(innerSkeleton, 'any', false);
 const innerSetters = new InnerSetters();
 const setters = new Setters(innerSetters);
 
-const material = new Material(editor);
+const material = new Material(editor as any);
 
 editor.set('project', project);
 editor.set('setters', setters);
@@ -76,7 +76,7 @@ editor.set('innerHotkey', innerHotkey);
 const config = new Config(engineConfig);
 const event = new Event(commonEvent, { prefix: 'common' });
 
-const canvas = new Canvas(editor);
+const canvas = new Canvas(editor as any);
 
 engineConfig.set('ENGINE_VERSION', '1.0.0');
 const pluginContextApiAssembler: IMicroodePluginContextApiAssembler = {

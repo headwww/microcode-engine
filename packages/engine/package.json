@@ -2,7 +2,8 @@
 	"name": "@arvin-shu/microcode-engine",
 	"version": "1.0.0",
 	"description": "",
-	"main": "src/index.ts",
+	"main": "lib/engine-core.js",
+	"module": "es/engine-core.js",
 	"files": [
 		"dist",
 		"es",
