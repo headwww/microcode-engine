@@ -39,6 +39,8 @@ import { defaultPanelRegistry } from './inner-plugins/default-panel-registry';
 import { componentMetaParser } from './inner-plugins/component-meta-parser';
 import { shellModelFactory } from './modules/shell-model-factory';
 import { builtinHotkey } from './inner-plugins/builtin-hotkey';
+import * as shell from './modules/shell';
+import symbols from './modules/symbols';
 import './modules/live-editing';
 
 const editor = new Editor();
@@ -107,6 +109,19 @@ const plugins: Plugins = new Plugins(innerPlugins).toProxy();
 editor.set('innerPlugins', innerPlugins);
 editor.set('plugins', plugins);
 
+const engineContext: Partial<IMicrocodeContextPrivate> = {};
+const logger = new Logger({ level: 'warn', bizName: 'common' });
+
+engineContext.skeleton = skeleton;
+engineContext.plugins = plugins;
+engineContext.project = project;
+engineContext.setters = setters;
+engineContext.material = material;
+engineContext.event = event;
+engineContext.logger = logger;
+engineContext.hotkey = hotkey;
+engineContext.canvas = canvas;
+
 // TODO 先模拟环境
 const defaultPanelRegistryPlugin = defaultPanelRegistry(editor);
 const componentMetaParserPlugin = componentMetaParser(designer);
@@ -124,40 +139,50 @@ async function registryInnerPlugin() {
 	};
 }
 
-// TODO 设置一个渲染模拟器插件
-editor.set(
-	'simulatorUrl',
-	'https://cdn.jsdelivr.net/npm/@arvin-shu/microcode-vue-simulator-renderer@1.0.3/dist/js/index.min.js'
-);
-
 export async function init(
 	pluginPreference?: PluginPreference,
 	options?: IPublicTypeEngineOptions
 ) {
 	await plugins.init(pluginPreference);
-
 	engineConfig.setEngineOptions(options as any);
-
-	// TODO 先模拟环境 后期如果engine-core打包成umd，则需要将此代码注释掉
-	window.ArvinMicrocodeEngine = innerPlugins._getMicrocodePluginContext(
-		{} as any
-	);
 }
 
 const MicrocodeWorkbench = h(Workbench, {
 	skeleton: innerSkeleton,
 });
 
+window.ArvinMicrocodeEngine = {
+	skeleton,
+	plugins,
+	project,
+	setters,
+	material,
+	config,
+	event,
+	logger,
+	hotkey,
+	canvas,
+	// 内部使用，不要使用
+	__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED: {
+		shell,
+		symbols,
+	},
+	version: engineConfig.get('ENGINE_VERSION'),
+};
+
 export {
 	skeleton,
 	plugins,
 	config,
 	event,
+	canvas,
+	logger,
 	hotkey,
 	setters,
 	project,
 	material,
 	MicrocodeWorkbench,
+	shell,
 	// TODO 先模拟环境 这块需要考虑内置插件和外部插件的加载顺序
 	registryInnerPlugin,
 };

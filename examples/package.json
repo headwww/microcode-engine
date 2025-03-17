@@ -23,6 +23,7 @@
         "@arvin-shu/microcode-editor-core": "workspace:^",
         "@arvin-shu/microcode-engine": "workspace:^",
         "@arvin-shu/microcode-plugin-base-monaco-editor": "^1.0.0",
+        "@arvin-shu/microcode-plugin-vue-code-editor": "^1.0.3",
         "@arvin-shu/microcode-theme": "workspace:^",
         "@arvin-shu/microcode-vue-simulator-renderer": "workspace:^",
         "acorn": "^8.14.0",

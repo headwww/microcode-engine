@@ -42,3 +42,4 @@ dist-ssr
 
 components.d.ts
 typings
+public/

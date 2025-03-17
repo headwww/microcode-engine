@@ -11,3 +11,4 @@ src/.DS_Store
 
 /public/*
 components.d.ts
+public/

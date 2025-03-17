@@ -21,5 +21,6 @@ export default defineConfig({
 	},
 	build: {
 		target: 'esnext', // 或 'es2022'
+		assetsDir: 'assets',
 	},
 });
