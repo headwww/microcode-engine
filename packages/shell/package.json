@@ -11,6 +11,10 @@
 		"build": "cross-env ORIGINAL_CWD=$PWD pnpm --filter ../../build-scripts run start",
 		"clear": "rm -rf dist"
 	},
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org/"
+	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",

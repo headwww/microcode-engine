@@ -3,6 +3,11 @@
 	"version": "1.0.0",
 	"description": "",
 	"main": "src/index.ts",
+	"files": [
+		"dist",
+		"es",
+		"lib"
+	],
 	"scripts": {
 		"build": "cross-env ORIGINAL_CWD=$PWD BUILD_UMD=true COPY_THEME=true UMD_NAME='ArvinMicrocodeEngine' pnpm --filter ../../build-scripts run start",
 		"clear": "rm -rf dist"
@@ -11,6 +16,12 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"vue": "^3.5.8"
+		"@arvin-shu/microcode-designer": "^1.0.3",
+		"@arvin-shu/microcode-editor-core": "^1.0.3",
+		"@arvin-shu/microcode-editor-skeleton": "^1.0.0",
+		"@arvin-shu/microcode-shell": "^1.0.0",
+		"@arvin-shu/microcode-types": "^1.0.4",
+		"@arvin-shu/microcode-utils": "^1.0.4",
+		"vue": "^3.5.13"
 	}
 }
