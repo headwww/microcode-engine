@@ -150,12 +150,14 @@ export class ComponentMeta implements IComponentMeta {
 		return this._title || this.componentName;
 	}
 
-	private readonly computedIcon = computed(() =>
-		this._transformedMetadata?.icon || this.componentName === 'Page'
-			? IconPage
-			: this.isContainer
-				? IconContainer
-				: IconComponent
+	private readonly computedIcon = computed(
+		() =>
+			this._transformedMetadata?.icon ||
+			(this.componentName === 'Page'
+				? IconPage
+				: this.isContainer
+					? IconContainer
+					: IconComponent)
 	);
 
 	get icon() {
