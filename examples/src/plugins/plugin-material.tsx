@@ -1,4 +1,5 @@
 import { IPublicModelPluginContext } from '@arvin-shu/microcode-types';
+import { SmileOutlined } from '@ant-design/icons-vue';
 import { LtButton } from './materials/Button';
 import { FCell } from './materials/FCell';
 import { TestTable } from './materials/table';
@@ -151,7 +152,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 				{
 					componentName: 'TestTable',
 					title: '表格',
-
+					icon: <SmileOutlined></SmileOutlined>,
 					configure: {
 						component: {
 							// isContainer: true,

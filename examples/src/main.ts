@@ -6,6 +6,9 @@ import {
 } from '@arvin-shu/microcode-engine';
 import axios from 'axios';
 import InitVueCodeEditor from '@arvin-shu/microcode-plugin-vue-code-editor';
+import PluginUndoRedo from '@arvin-shu/microcode-plugin-undo-redo';
+import DataSourcePane from '@arvin-shu/microcode-plugin-datasource-pane';
+import LayersPane from '@arvin-shu/microcode-plugin-layers-pane';
 import App from './App.vue';
 import '@arvin-shu/microcode-theme/src/index.scss';
 import './rest.scss';
@@ -14,9 +17,6 @@ import InitSkeleton from './plugins/plugin-init-skeleton';
 import InitMaterial from './plugins/plugin-material';
 import InitSetter from './plugins/plugin-init-setter';
 import ComponentPanelPlugin from './plugins/plugin-components-pane';
-import DataSourcePane from './plugins/plugin-datasource-pane/index';
-import LayersPane from './plugins/plugin-layers-pane/index';
-import PluginUndoRedo from './plugins/plugin-undo-redo/index';
 
 window.Vue = Vue;
 const app = Vue.createApp(App);
@@ -38,7 +38,13 @@ await plugins.register(InitVueCodeEditor, {
 		},
 	},
 });
-await plugins.register(DataSourcePane);
+await plugins.register(DataSourcePane, {
+	requireConfig: {
+		paths: {
+			vs: 'https://g.alicdn.com/code/lib/monaco-editor/0.33.0/min/vs',
+		},
+	},
+});
 await plugins.register(PluginUndoRedo);
 function createAxiosFetchHandler(config?: Record<string, unknown>) {
 	// eslint-disable-next-line func-names

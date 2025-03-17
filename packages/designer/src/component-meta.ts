@@ -151,7 +151,7 @@ export class ComponentMeta implements IComponentMeta {
 	}
 
 	private readonly computedIcon = computed(() =>
-		this.componentName === 'Page'
+		this._transformedMetadata?.icon || this.componentName === 'Page'
 			? IconPage
 			: this.isContainer
 				? IconContainer
