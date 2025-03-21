@@ -884,7 +884,7 @@ export function useRootScope(rendererProps: RendererProps, setupConext: any) {
 	);
 
 	const shouldInit = () =>
-		Object.keys(dataSourceMap).some((id) => dataSourceMap[id].isInit);
+		Object.keys(dataSourceMap).some((id) => toRaw(dataSourceMap[id]).isInit);
 
 	const dataSourceData = Object.keys(dataSourceMap)
 		.filter((key) => !(key in scope))

@@ -54,18 +54,12 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					urls: ['https://g.alicdn.com/platform/c/lodash/4.6.1/lodash.min.js'],
 				},
 
-				// {
-				// 	package: 'css',
-				// 	version: '1.0.0',
-				// 	library: 'css',
-				// 	urls: ['http://192.168.1.59:8080/dist/renderer.css'],
-				// },
 				{
 					package: 'microcode-theme',
 					version: '1.0.0',
 					library: 'microcode-theme',
 					urls: [
-						'https://cdn.jsdelivr.net/npm/@arvin-shu/microcode-theme@1.0.0/renderer.css',
+						`http://${window.location.host}/scripts/simulator/css/renderer.css`,
 					],
 				},
 				{
@@ -148,6 +142,8 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							},
 						},
 					],
+					category: '布局',
+					group: '基础组件',
 				},
 				{
 					componentName: 'TestTable',
@@ -179,7 +175,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					},
 					snippets: [
 						{
-							title: '表格',
+							title: '表格组件',
 							screenshot:
 								'https://gw.alipayobjects.com/zos/alicdn/f-SbcX2Lx/Table.svg',
 							schema: {
@@ -187,12 +183,52 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							},
 						},
 					],
+					category: '表格',
+					group: '基础组件',
 				},
 				{
 					componentName: 'LtButton',
 					title: '按钮',
 					configure: {
 						props: [
+							{
+								name: 'json',
+								title: { label: 'json', tip: 'json | 设置按钮的json' },
+								setter: {
+									componentName: 'JsonSetter',
+								},
+							},
+							{
+								name: 'color',
+								title: { label: '颜色', tip: 'type | 设置按钮的类型' },
+								setter: {
+									componentName: 'ColorSetter',
+								},
+							},
+							{
+								name: 'number',
+								title: { label: '数字', tip: 'number | 设置按钮的数字' },
+								setter: {
+									componentName: 'NumberSetter',
+									props: {
+										step: 3,
+									},
+								},
+							},
+							{
+								name: 'class',
+								title: { label: 'class', tip: 'class | 设置按钮的class' },
+								setter: {
+									componentName: 'ClassSetter',
+								},
+							},
+							{
+								name: 'color',
+								title: { label: '颜色', tip: 'color | 设置按钮的颜色' },
+								setter: {
+									componentName: 'ColorSetter',
+								},
+							},
 							{
 								name: 'icon',
 								title: { label: '图标', tip: 'icon | 设置按钮的图标组件' },
@@ -405,6 +441,8 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							},
 						},
 					],
+					category: '基础',
+					group: '基础组件',
 				},
 				{
 					componentName: 'AntdButton',
@@ -414,9 +452,10 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							view: AntdButton,
 						},
 					},
+
 					snippets: [
 						{
-							title: '按钮123',
+							title: 'view自定义按钮',
 							screenshot:
 								'https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*BrFMQ5s7AAQAAAAAAAAAAAAADrJ8AQ/original',
 							schema: {
@@ -427,9 +466,13 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							},
 						},
 					],
+					category: '基础',
+					group: '基础组件',
 				},
 				{
 					componentName: 'Modal',
+					category: '弹窗',
+					group: '基础组件',
 					npm: {
 						package: 'antd',
 						destructuring: true,
@@ -464,6 +507,9 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 				},
 				{
 					componentName: 'Switch',
+					category: '基础',
+					group: '基础组件',
+					title: '开关',
 					npm: {
 						package: 'antd',
 						destructuring: true,
@@ -494,6 +540,11 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 								setter: 'BoolSetter',
 								defaultValue: false,
 							},
+							{
+								name: '选择状态',
+								setter: 'StringSetter',
+								defaultValue: '选中',
+							},
 						],
 					},
 					snippets: [
@@ -509,6 +560,9 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 				},
 				{
 					componentName: 'Calendar',
+					title: '日历',
+					category: '基础',
+					group: '基础组件',
 					npm: {
 						package: 'antd',
 						destructuring: true,
@@ -618,11 +672,11 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							id: 'node_sxsm4wdio232',
 							props: {
 								children: '按钮123',
-								// children: {
-								// 	type: 'JSExpression',
-								// 	value: 'this.$data.text',
-								// 	mock: '按钮',
-								// },
+								onClick: {
+									type: 'JSFunction',
+									value:
+										'function(){return this.testFunc.apply(this,Array.prototype.slice.call(arguments).concat([])) }',
+								},
 								icon: {
 									type: 'JSSlot',
 									value: [
@@ -648,7 +702,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							hidden: false,
 							title: '',
 							isLocked: false,
-							condition: false,
+							condition: true,
 							conditionGroup: '',
 							loopArgs: null,
 						},
@@ -665,9 +719,11 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					componentName: 'LowcodeDemo',
 					title: '低代码组件示例',
 					group: '低代码组件',
+					category: '组合',
 					schema: lowcodeSchema as any,
 					snippets: [
 						{
+							title: '低代码组件示例',
 							schema: {
 								componentName: 'LowcodeDemo',
 							},

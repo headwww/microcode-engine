@@ -4,6 +4,7 @@ import {
 	IPublicModelPluginContext,
 } from '@arvin-shu/microcode-types';
 import { Button } from 'ant-design-vue';
+import { Preview } from './preview';
 
 const InitSkeleton = (ctx: IPublicModelPluginContext) => ({
 	async init() {
@@ -29,6 +30,13 @@ const InitSkeleton = (ctx: IPublicModelPluginContext) => ({
 					保存
 				</Button>
 			),
+		});
+
+		skeleton.add({
+			name: 'preview',
+			area: 'topArea',
+			type: 'Widget',
+			content: <Preview />,
 		});
 
 		skeleton.add({

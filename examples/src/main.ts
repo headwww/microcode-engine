@@ -4,11 +4,11 @@ import {
 	plugins,
 	registryInnerPlugin,
 } from '@arvin-shu/microcode-engine';
-import axios from 'axios';
 import InitVueCodeEditor from '@arvin-shu/microcode-plugin-vue-code-editor';
 import PluginUndoRedo from '@arvin-shu/microcode-plugin-undo-redo';
 import DataSourcePane from '@arvin-shu/microcode-plugin-datasource-pane';
 import LayersPane from '@arvin-shu/microcode-plugin-layers-pane';
+import ComponentPanelPlugin from '@arvin-shu/microcode-plugin-components-pane';
 import App from './App.vue';
 import '@arvin-shu/microcode-theme/src/index.scss';
 import './rest.scss';
@@ -16,7 +16,7 @@ import 'ant-design-vue/dist/reset.css';
 import InitSkeleton from './plugins/plugin-init-skeleton';
 import InitMaterial from './plugins/plugin-material';
 import InitSetter from './plugins/plugin-init-setter';
-import ComponentPanelPlugin from './plugins/plugin-components-pane';
+import { appHelper, createAxiosFetchHandler } from './fetch';
 
 window.Vue = Vue;
 const app = Vue.createApp(App);
@@ -46,30 +46,6 @@ await plugins.register(DataSourcePane, {
 	},
 });
 await plugins.register(PluginUndoRedo);
-function createAxiosFetchHandler(config?: Record<string, unknown>) {
-	// eslint-disable-next-line func-names
-	return async function (options: any) {
-		const requestConfig = {
-			url: options.uri,
-			method: options.method,
-			data: options.params,
-			headers: {
-				'Content-Type': 'application/json;charset=UTF-8',
-				Accept: 'application/json',
-			},
-		};
-
-		config;
-		const response = await axios(requestConfig as any);
-		return response;
-	};
-}
-
-const appHelper = {
-	requestHandlersMap: {
-		fetch: createAxiosFetchHandler(),
-	},
-};
 
 await init(preference, {
 	locale: 'zh-CN',

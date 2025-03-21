@@ -4,6 +4,10 @@ import {
 	MixedSetter,
 	StringSetter,
 	VariableSetter,
+	NumberSetter,
+	ClassSetter,
+	ColorSetter,
+	JsonSetter,
 } from './setters';
 import { VariableBindModal } from './widget';
 
@@ -23,12 +27,20 @@ export const engineExt = {
 		BoolSetter,
 		MixedSetter,
 		StringSetter,
+		NumberSetter,
+		ClassSetter,
+		ColorSetter,
+		JsonSetter,
 		VariableSetter: DataVariableSetter,
 	},
 	setterMap: {
 		BoolSetter,
 		MixedSetter,
 		StringSetter,
+		NumberSetter,
+		ClassSetter,
+		ColorSetter,
+		JsonSetter,
 		VariableSetter: DataVariableSetter,
 	},
 	widgets: {
