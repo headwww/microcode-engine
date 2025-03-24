@@ -5,6 +5,7 @@ import MonacoEditor from '@arvin-shu/microcode-plugin-base-monaco-editor';
 import { js_beautify } from 'js-beautify';
 import { intl } from './locale';
 
+// TODO MonacoEditor地址设置
 const defaultEditorOption = {
 	width: '100%',
 	height: '400px',

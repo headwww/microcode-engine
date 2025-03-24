@@ -7,11 +7,20 @@ const InitSetter = (ctx: IPublicModelPluginContext) => ({
 		setters.registerSetter(engineExt.setters);
 
 		const VariableBindDialog = engineExt.widgets.VariableBindModal;
+		const EventBindModal = engineExt.widgets.EventBindModal;
 		skeleton.add({
 			area: 'centerArea',
 			type: 'Widget',
 			content: <VariableBindDialog></VariableBindDialog>,
 			name: 'variableBindDialog',
+			props: {},
+		});
+
+		skeleton.add({
+			area: 'centerArea',
+			type: 'Widget',
+			content: <EventBindModal></EventBindModal>,
+			name: 'eventBindModal',
 			props: {},
 		});
 

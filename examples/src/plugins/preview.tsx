@@ -1,11 +1,11 @@
-import { defineComponent, h, ref, watch, Suspense } from 'vue';
+import { defineComponent, ref, watch, Suspense } from 'vue';
 import { Button, Drawer } from 'ant-design-vue';
 import MicrocodeRenderer from '@arvin-shu/microcode-renderer-core';
 import { IPublicEnumTransformStage } from '@arvin-shu/microcode-types';
 import { material, project } from '@arvin-shu/microcode-engine';
 import { AssetLoader, buildComponents } from '@arvin-shu/microcode-utils';
 import { TestTable } from './materials/table';
-import { appHelper } from '../fetch';
+import { createAxiosFetchHandler } from '../fetch';
 
 export const Preview = defineComponent({
 	name: 'Preview',
@@ -82,7 +82,14 @@ export const Preview = defineComponent({
 								TestTable,
 								...components.value,
 							}}
-							appHelper={appHelper}
+							appHelper={{
+								requestHandlersMap: {
+									fetch: createAxiosFetchHandler(),
+								},
+							}}
+							requestHandlersMap={{
+								fetch: createAxiosFetchHandler(),
+							}}
 						></MicrocodeRenderer>
 					</Suspense>
 				</Drawer>
@@ -90,11 +97,3 @@ export const Preview = defineComponent({
 		);
 	},
 });
-
-const Page = defineComponent(
-	(props, { slots }) =>
-		() =>
-			h('div', { class: 'mtc-page', ...props }, slots)
-);
-
-Page;

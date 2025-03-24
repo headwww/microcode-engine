@@ -190,7 +190,27 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					componentName: 'LtButton',
 					title: '按钮',
 					configure: {
+						supports: {
+							events: [
+								{
+									name: 'onClick',
+								},
+								{
+									name: 'onClick',
+								},
+							],
+						},
 						props: [
+							{
+								name: 'event',
+								title: { label: 'event', tip: 'json | 设置按钮的json' },
+								setter: {
+									componentName: 'EventsSetter',
+									props: {
+										definition: [],
+									},
+								},
+							},
 							{
 								name: 'json',
 								title: { label: 'json', tip: 'json | 设置按钮的json' },
@@ -672,11 +692,6 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							id: 'node_sxsm4wdio232',
 							props: {
 								children: '按钮123',
-								onClick: {
-									type: 'JSFunction',
-									value:
-										'function(){return this.testFunc.apply(this,Array.prototype.slice.call(arguments).concat([])) }',
-								},
 								icon: {
 									type: 'JSSlot',
 									value: [

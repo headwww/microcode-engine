@@ -8,8 +8,9 @@ import {
 	ClassSetter,
 	ColorSetter,
 	JsonSetter,
+	EventsSetter,
 } from './setters';
-import { VariableBindModal } from './widget';
+import { VariableBindModal, EventBindModal } from './widget';
 
 const DataVariableSetter = {
 	component: VariableSetter,
@@ -31,6 +32,7 @@ export const engineExt = {
 		ClassSetter,
 		ColorSetter,
 		JsonSetter,
+		EventsSetter,
 		VariableSetter: DataVariableSetter,
 	},
 	setterMap: {
@@ -41,10 +43,12 @@ export const engineExt = {
 		ClassSetter,
 		ColorSetter,
 		JsonSetter,
+		EventsSetter,
 		VariableSetter: DataVariableSetter,
 	},
 	widgets: {
 		VariableBindModal,
+		EventBindModal,
 	},
 };
 
