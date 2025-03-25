@@ -7,3 +7,4 @@ export * from './class-setter';
 export * from './color-setter';
 export * from './json-setter';
 export * from './events-setter';
+export * from './function-setter';

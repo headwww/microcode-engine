@@ -1,5 +1,6 @@
 import { IPublicModelPluginContext } from '@arvin-shu/microcode-types';
 import { SmileOutlined } from '@ant-design/icons-vue';
+import { uniqueId } from '@arvin-shu/microcode-utils';
 import { LtButton } from './materials/Button';
 import { FCell } from './materials/FCell';
 import { TestTable } from './materials/table';
@@ -196,11 +197,35 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 									name: 'onClick',
 								},
 								{
-									name: 'onClick',
+									name: 'onSelect',
 								},
 							],
 						},
 						props: [
+							{
+								name: 'onClick',
+								title: {
+									label: 'function2',
+									tip: 'function | 设置按钮的function',
+								},
+								setter: {
+									componentName: 'FunctionSetter',
+								},
+							},
+							{
+								name: 'onSelect',
+								title: {
+									label: 'function1',
+									tip: 'function | 设置按钮的function',
+								},
+								setter: {
+									componentName: 'FunctionSetter',
+									initialValue: () => ({
+										type: 'JSFunction',
+										value: 'function() { console.log(this); }',
+									}),
+								},
+							},
 							{
 								name: 'event',
 								title: { label: 'event', tip: 'json | 设置按钮的json' },
@@ -505,6 +530,23 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							isContainer: true,
 							rootSelector: '.ant-modal-content',
 						},
+						props: [
+							{
+								title: {
+									label: 'refId',
+									tip: '用于获取组件实例，调用物料内部方法',
+									icon: '',
+								},
+								name: 'ref',
+								setter: {
+									componentName: 'StringSetter',
+									initialValue: () => {
+										const uuid = uniqueId('modal');
+										return uuid;
+									},
+								},
+							},
+						],
 					},
 					snippets: [
 						{

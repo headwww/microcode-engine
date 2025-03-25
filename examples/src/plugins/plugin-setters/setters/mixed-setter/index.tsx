@@ -8,6 +8,7 @@ import {
 } from 'vue';
 import { SettingField } from '@arvin-shu/microcode-designer';
 import {
+	IPublicModelSettingField,
 	IPublicTypeCustomView,
 	IPublicTypeDynamicSetter,
 	IPublicTypeSetterConfig,
@@ -52,7 +53,14 @@ export const MixedSetter = defineComponent({
 			>
 		>,
 		value: null,
+		initialValue: null,
+		forceInline: Number,
+		prop: Object as PropType<IPublicModelSettingField>,
 		onChange: Function as PropType<(val: any) => void>,
+		onInitial: Function as PropType<(val: any) => void>,
+		removeProp: {
+			type: Function as PropType<() => void>,
+		},
 	},
 	setup(props) {
 		const fromMixedSetterSelect = ref(false);
