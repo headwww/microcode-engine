@@ -190,12 +190,11 @@ export class SettingField extends SettingPropEntry implements ISettingField {
 
 	// 创建子配置项，通常用于 object/array 类型数据
 	createField(config: IPublicTypeFieldConfig): ISettingField {
-		const field = new SettingField(this, config, this.settingFieldCollector);
 		this.settingFieldCollector?.(
 			getSettingFieldCollectorKey(this.parent, config),
-			field
+			this
 		);
-		return field;
+		return new SettingField(this, config, this.settingFieldCollector);
 	}
 
 	purge() {

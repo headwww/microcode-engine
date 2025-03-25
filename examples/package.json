@@ -20,7 +20,7 @@
     },
     "dependencies": {
         "@arvin-shu/microcode-datasource-types": "^1.0.1",
-        "@arvin-shu/microcode-designer": "^1.0.5",
+        "@arvin-shu/microcode-designer": "^1.0.6",
         "@arvin-shu/microcode-editor-core": "^1.0.3",
         "@arvin-shu/microcode-editor-skeleton": "^1.0.1",
         "@arvin-shu/microcode-engine": "^1.0.1",
@@ -31,6 +31,7 @@
         "@arvin-shu/microcode-plugin-undo-redo": "^1.0.0",
         "@arvin-shu/microcode-plugin-vue-code-editor": "^1.0.7",
         "@arvin-shu/microcode-renderer-core": "^1.0.11",
+        "@arvin-shu/microcode-shell": "^1.0.0",
         "@arvin-shu/microcode-theme": "workspace:^",
         "@arvin-shu/microcode-types": "^1.0.4",
         "@arvin-shu/microcode-utils": "^1.0.4",

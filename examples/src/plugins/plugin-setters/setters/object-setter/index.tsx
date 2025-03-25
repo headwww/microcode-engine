@@ -1,4 +1,5 @@
 import { createSettingFieldView } from '@arvin-shu/microcode-editor-skeleton';
+import { settingFieldSymbol } from '@arvin-shu/microcode-shell';
 import {
 	IPublicModelSettingField,
 	IPublicTypeCustomView,
@@ -6,7 +7,7 @@ import {
 	IPublicTypeSetterType,
 } from '@arvin-shu/microcode-types';
 import { isSettingField } from '@arvin-shu/microcode-utils';
-import { defineComponent, PropType, ref, toRaw } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
 
 interface ObjectSetterConfig {
 	items?: IPublicTypeFieldConfig[];
@@ -57,22 +58,23 @@ export const FormSetter = defineComponent({
 			);
 			items.value = field?.items as any;
 		} else {
-			items.value = (config?.items || []).map((conf: any) => {
-				console.log(conf);
-
-				return field?.createField({
-					...toRaw(conf),
-					setValue: extraProps?.setValue,
-				});
-			});
+			items.value = (config?.items || []).map(
+				(conf) =>
+					field?.createField({
+						...conf,
+						setValue: extraProps?.setValue,
+					}) as any
+			);
 		}
-
-		console.log(items.value);
 
 		return () => (
 			<div>
 				{items.value.map((item, index) =>
-					createSettingFieldView(item as any, props.field as any, index)
+					createSettingFieldView(
+						(item as any)[settingFieldSymbol] || item,
+						props.field as any,
+						index
+					)
 				)}
 			</div>
 		);
