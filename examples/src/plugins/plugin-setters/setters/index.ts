@@ -8,3 +8,4 @@ export * from './color-setter';
 export * from './json-setter';
 export * from './events-setter';
 export * from './function-setter';
+export * from './object-setter';

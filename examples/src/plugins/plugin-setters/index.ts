@@ -1,4 +1,4 @@
-import { isJSExpression } from '@arvin-shu/microcode-utils';
+import { isJSExpression, isPlainObject } from '@arvin-shu/microcode-utils';
 import {
 	BoolSetter,
 	MixedSetter,
@@ -10,6 +10,7 @@ import {
 	JsonSetter,
 	EventsSetter,
 	FunctionSetter,
+	ObjectSetter,
 } from './setters';
 import { VariableBindModal, EventBindModal } from './widget';
 
@@ -21,6 +22,18 @@ const DataVariableSetter = {
 	},
 	valueType: ['JSExpression'],
 	title: '变量输入',
+	recommend: true,
+};
+
+const DataObjectSetter = {
+	component: ObjectSetter,
+	defaultProps: {},
+	title: 'ObjectSetter',
+	condition: (field: any) => {
+		const v = field.getValue();
+		return v == null || isPlainObject(v);
+	},
+	initialValue: {},
 	recommend: true,
 };
 
@@ -36,6 +49,7 @@ export const engineExt = {
 		EventsSetter,
 		FunctionSetter,
 		VariableSetter: DataVariableSetter,
+		ObjectSetter: DataObjectSetter,
 	},
 	setterMap: {
 		BoolSetter,
@@ -48,6 +62,7 @@ export const engineExt = {
 		EventsSetter,
 		FunctionSetter,
 		VariableSetter: DataVariableSetter,
+		ObjectSetter: DataObjectSetter,
 	},
 	widgets: {
 		VariableBindModal,
