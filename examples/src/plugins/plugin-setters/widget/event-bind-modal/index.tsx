@@ -13,6 +13,7 @@ const tempPlaceHolderReg = /\$\{extParams\}/g;
 // eslint-disable-next-line no-template-curly-in-string
 const tempPlaceHolder = '${extParams}';
 
+// TODO 内置函数没有设计
 export const EventBindModal = defineComponent({
 	name: 'EventBindModal',
 	props: {

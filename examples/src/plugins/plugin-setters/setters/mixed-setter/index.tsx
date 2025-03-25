@@ -222,7 +222,6 @@ export const MixedSetter = defineComponent({
 					setterProps = setterProps(field);
 				}
 			}
-
 			return createSetterContent(setterType, {
 				fromMixedSetterSelect: fromMixedSetterSelect.value,
 				...shallowIntl(setterProps),

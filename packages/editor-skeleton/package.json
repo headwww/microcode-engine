@@ -26,5 +26,8 @@
 		"@arvin-shu/microcode-utils": "^1.0.4",
 		"ant-design-vue": "^4.2.5",
 		"vue": "^3.5.8"
+	},
+	"devDependencies": {
+		"@arvin-shu/microcode-shell": "^1.0.0"
 	}
 }
