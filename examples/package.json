@@ -20,7 +20,7 @@
     },
     "dependencies": {
         "@arvin-shu/microcode-datasource-types": "^1.0.1",
-        "@arvin-shu/microcode-designer": "^1.0.6",
+        "@arvin-shu/microcode-designer": "^1.0.7",
         "@arvin-shu/microcode-editor-core": "^1.0.3",
         "@arvin-shu/microcode-editor-skeleton": "^1.0.1",
         "@arvin-shu/microcode-engine": "^1.0.1",

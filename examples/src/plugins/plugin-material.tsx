@@ -206,6 +206,9 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 								name: 'object',
 								display: 'accordion',
 								title: '对象设置器',
+								extraProps: {
+									supportVariable: false,
+								},
 								setter: {
 									componentName: 'ObjectSetter',
 									props: {
@@ -214,13 +217,21 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 												{
 													name: 'fixed',
 													title: '吸底',
-													setter: 'StringSetter',
+													setter: {
+														componentName: 'StringSetter',
+													},
+													extraProps: {
+														supportVariable: false,
+													},
 												},
 												{
 													name: 'showSaveTime',
 													title: '显示时间',
 													setter: {
 														componentName: 'BoolSetter',
+													},
+													extraProps: {
+														supportVariable: false,
 													},
 												},
 											],

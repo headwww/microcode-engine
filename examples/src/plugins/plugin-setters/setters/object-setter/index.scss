@@ -1,0 +1,34 @@
+.mtc-setter-object-row {
+	display: flex;
+	align-items: center;
+	width: 100%;
+
+	.mtc-setter-object-row-body {
+		display: flex;
+		margin-left: 4px;
+		gap: 4px;
+		color: #999;
+		flex: 1;
+		min-width: 0;
+		align-items: center;
+		font-size: 12px;
+
+		.mtc-field {
+			padding: 0 !important;
+
+			.mtc-field-body {
+				width: 100%;
+				padding: 0 !important;
+				margin: 0 !important;
+			}
+		}
+
+		> * {
+			flex: 1;
+			flex-shrink: 1;
+			margin-left: 2px;
+			min-width: 0;
+			overflow: hidden;
+		}
+	}
+}

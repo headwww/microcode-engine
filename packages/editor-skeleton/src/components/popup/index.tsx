@@ -52,6 +52,7 @@ export class PopupPipe {
 				}
 			},
 			show: (target?: Element, actionKey?: string) => {
+				this.currentId = id;
 				this.popup(
 					{
 						...props,

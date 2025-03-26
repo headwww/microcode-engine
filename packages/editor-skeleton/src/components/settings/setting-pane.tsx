@@ -123,7 +123,6 @@ export const SettingFieldView = defineComponent({
 		const stageName = ref();
 
 		if (display === 'entry') {
-			// watchEffect(() => {
 			const name = `${field!.getNode().id}_${field!.name?.toString()}`;
 			stages.container.remove(name);
 			stages.add({
@@ -141,8 +140,6 @@ export const SettingFieldView = defineComponent({
 				},
 			});
 			stageName.value = name;
-
-			// });
 		}
 
 		const setterInfo = computed(() => {
