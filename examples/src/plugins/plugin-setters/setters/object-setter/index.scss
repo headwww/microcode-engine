@@ -3,6 +3,15 @@
 	align-items: center;
 	width: 100%;
 
+	.mtc-setter-object-row-edit {
+		width: 28px !important;
+		height: 28px !important;
+		display: flex !important;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+	}
+
 	.mtc-setter-object-row-body {
 		display: flex;
 		margin-left: 4px;
@@ -11,7 +20,6 @@
 		flex: 1;
 		min-width: 0;
 		align-items: center;
-		font-size: 12px;
 
 		.mtc-field {
 			padding: 0 !important;

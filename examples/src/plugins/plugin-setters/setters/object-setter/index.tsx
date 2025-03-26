@@ -137,6 +137,7 @@ export const RowSetter = defineComponent({
 			return (
 				<div className="mtc-setter-object-row">
 					<Button
+						size="small"
 						type="text"
 						icon={<EditIcon />}
 						onClick={(e) =>
@@ -145,13 +146,15 @@ export const RowSetter = defineComponent({
 					></Button>
 
 					{items.value && items.value.length ? (
-						items.value.map((item: any, index: number) =>
-							createSettingFieldView(
-								toRaw((item as any)[settingFieldSymbol]) || item,
-								toRaw(props.field) as any,
-								index
-							)
-						)
+						<div class="mtc-setter-object-row-body">
+							{items.value.map((item: any, index: number) =>
+								createSettingFieldView(
+									toRaw((item as any)[settingFieldSymbol]) || item,
+									toRaw(props.field) as any,
+									index
+								)
+							)}
+						</div>
 					) : (
 						<div class="mtc-setter-object-row-body">
 							{`${descriptorText.value}: 未配置快捷编辑项`}

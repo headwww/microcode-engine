@@ -275,6 +275,7 @@ export const EntryField = defineComponent({
 export const PlainField = defineComponent({
 	name: 'PlainField',
 	props: fieldProps,
+	inheritAttrs: false,
 	setup(props, { slots }) {
 		return () => {
 			const children = slots.default ? slots.default() : null;

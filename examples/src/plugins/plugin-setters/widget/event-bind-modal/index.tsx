@@ -190,6 +190,7 @@ export const EventBindModal = defineComponent({
 				cancelText="取消"
 				okText="确定"
 				onOk={onOk}
+				zIndex={1100}
 				v-model:open={open.value}
 			>
 				<div class="mtc-event-bind-modal">

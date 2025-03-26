@@ -1,4 +1,8 @@
-import { isJSExpression, isPlainObject } from '@arvin-shu/microcode-utils';
+import {
+	isJSExpression,
+	isJSFunction,
+	isPlainObject,
+} from '@arvin-shu/microcode-utils';
 import {
 	BoolSetter,
 	MixedSetter,
@@ -11,6 +15,7 @@ import {
 	EventsSetter,
 	FunctionSetter,
 	ObjectSetter,
+	ArraySetter,
 } from './setters';
 import { VariableBindModal, EventBindModal } from './widget';
 
@@ -23,6 +28,35 @@ const DataVariableSetter = {
 	valueType: ['JSExpression'],
 	title: '变量输入',
 	recommend: true,
+};
+
+const FunctionBindSetter = {
+	component: FunctionSetter,
+	title: '函数绑定',
+	condition: (field: any) => {
+		const v = field.getValue();
+		return isJSFunction(v);
+	},
+
+	valueType: ['JSFunction'],
+};
+
+const DataJsonSetter = {
+	component: JsonSetter,
+	valueType: ['object', 'array'],
+};
+
+const DataArraySetter = {
+	component: ArraySetter,
+	defaultProps: {},
+	title: 'ArraySetter',
+	condition: (field: any) => {
+		const v = field.getValue();
+		return v == null || Array.isArray(v);
+	},
+	initialValue: [],
+	recommend: true,
+	valueType: ['array'],
 };
 
 const DataObjectSetter = {
@@ -45,9 +79,10 @@ export const engineExt = {
 		NumberSetter,
 		ClassSetter,
 		ColorSetter,
-		JsonSetter,
+		JsonSetter: DataJsonSetter,
 		EventsSetter,
-		FunctionSetter,
+		ArraySetter: DataArraySetter,
+		FunctionSetter: FunctionBindSetter,
 		VariableSetter: DataVariableSetter,
 		ObjectSetter: DataObjectSetter,
 	},
@@ -58,9 +93,10 @@ export const engineExt = {
 		NumberSetter,
 		ClassSetter,
 		ColorSetter,
-		JsonSetter,
+		JsonSetter: DataJsonSetter,
 		EventsSetter,
-		FunctionSetter,
+		ArraySetter: DataArraySetter,
+		FunctionSetter: FunctionBindSetter,
 		VariableSetter: DataVariableSetter,
 		ObjectSetter: DataObjectSetter,
 	},

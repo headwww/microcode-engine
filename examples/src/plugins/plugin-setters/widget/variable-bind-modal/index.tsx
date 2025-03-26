@@ -233,6 +233,7 @@ export const VariableBindModal = defineComponent({
 		return () => (
 			<div>
 				<Modal
+					zIndex={1100}
 					maskClosable={false}
 					width="80vm"
 					centered

@@ -203,6 +203,47 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 						},
 						props: [
 							{
+								name: 'array',
+								title: '数组',
+								setter: {
+									componentName: 'ArraySetter',
+									props: {
+										itemSetter: {
+											componentName: 'ObjectSetter',
+											extraProps: {
+												supportVariable: false,
+											},
+											props: {
+												config: {
+													items: [
+														{
+															name: 'title',
+															description: '标111题',
+															setter: 'StringSetter',
+															isRequired: true,
+															extraProps: {
+																// supportVariable: false,
+															},
+														},
+														{
+															name: 'callback',
+															description: 'callback',
+															setter: {
+																componentName: 'FunctionSetter',
+															},
+														},
+													],
+												},
+											},
+											initialValue: {
+												title: 'I am title',
+												callback: null,
+											},
+										},
+									},
+								},
+							},
+							{
 								name: 'object',
 								display: 'accordion',
 								title: '对象设置器',

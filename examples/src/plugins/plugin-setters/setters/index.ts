@@ -9,3 +9,4 @@ export * from './json-setter';
 export * from './events-setter';
 export * from './function-setter';
 export * from './object-setter';
+export * from './array-setter';

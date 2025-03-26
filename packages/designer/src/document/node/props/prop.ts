@@ -130,11 +130,19 @@ export class Prop implements IProp {
 		return this._key.value;
 	}
 
+	set key(key: string | number | undefined) {
+		this._key.value = key;
+	}
+
 	// 属性展开标志,类似于<Button {...props} />
 	private _spread = ref(false);
 
 	get spread() {
 		return this._spread.value;
+	}
+
+	set spread(spread: boolean) {
+		this._spread.value = spread;
 	}
 
 	// 所属属性组
