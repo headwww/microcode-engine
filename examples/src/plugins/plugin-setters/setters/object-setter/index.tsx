@@ -55,36 +55,6 @@ export const ObjectSetter = defineComponent({
 	},
 });
 
-export function getItemsFromProps(props: any) {
-	const { config, field, columns } = props;
-	const { extraProps } = field;
-	const items: IPublicModelSettingField[] = [];
-
-	if (columns && config?.items) {
-		const l = Math.min(config.items.length, columns);
-		for (let i = 0; i < config.items.length; i++) {
-			const conf = config.items[i];
-			if (conf.isRequired || conf.important || conf.setter?.isRequired) {
-				const item = field.createField({
-					...conf,
-					forceInline: 3,
-				});
-
-				const originalSetValue = item.extraProps.setValue;
-				item.extraProps.setValue = (...args: any) => {
-					// eslint-disable-next-line prefer-spread
-					originalSetValue?.apply(null, args);
-					extraProps.setValue?.apply(null, args);
-				};
-
-				items.push(item);
-			}
-			if (items.length >= l) break;
-		}
-	}
-	return items;
-}
-
 export const RowSetter = defineComponent({
 	name: 'RowSetter',
 	inheritAttrs: false,
@@ -111,7 +81,7 @@ export const RowSetter = defineComponent({
 		const descriptorText = ref('');
 
 		watchEffect(() => {
-			items.value = getItemsFromProps(props);
+			items.value = getItemsFromProps();
 			const descriptor: any = props.descriptor;
 			if (descriptor) {
 				if (typeof descriptor === 'function') {
@@ -123,6 +93,43 @@ export const RowSetter = defineComponent({
 				descriptorText.value = props.field?.title || '';
 			}
 		});
+
+		function getItemsFromProps() {
+			const { config, field, columns } = props;
+			const { extraProps } = field || {};
+			const fields: IPublicModelSettingField[] = [];
+			if (columns && config?.items) {
+				const l = Math.min(config.items.length, columns);
+				for (let i = 0; i < config.items.length; i++) {
+					const conf = config.items[i];
+					if (
+						conf.isRequired ||
+						conf.important ||
+						(conf.setter as any)?.isRequired
+					) {
+						const item =
+							items.value?.filter(
+								(d: any) => toRaw(d).name === conf.name
+							)?.[0] ||
+							field?.createField({
+								...conf,
+								// in column-cell
+								forceInline: 3,
+							});
+						const originalSetValue = item.extraProps.setValue;
+						item.extraProps.setValue = (...args: any) => {
+							originalSetValue?.apply(null, args);
+							extraProps?.setValue?.apply(null, args);
+						};
+						fields.push(item);
+					}
+					if (fields.length >= l) {
+						break;
+					}
+				}
+			}
+			return fields;
+		}
 
 		return () => {
 			pipe?.sent(

@@ -149,7 +149,7 @@ export const ListSetter = defineComponent({
 		onChange: Function as PropType<(val: any) => void>,
 	},
 	setup(props) {
-		const items = ref<IPublicModelSettingField[]>([]);
+		const items = ref<any[]>([]);
 		const scrollToLast = ref(false);
 
 		watch(
@@ -159,10 +159,12 @@ export const ListSetter = defineComponent({
 					items.value.length = 0;
 					return;
 				}
-				console.log('watch', newValue.length, newValue);
+				// console.log('watch', newValue.length, newValue);
 				const newItems: IPublicModelSettingField[] = [];
 				for (let i = 0; i < newValue.length; i++) {
 					let item: any = items.value[i];
+					// console.log(item, 'item');
+
 					if (!item) {
 						item = props.field?.createField({
 							name: i.toString(),
@@ -172,9 +174,12 @@ export const ListSetter = defineComponent({
 							extraProps: {
 								defaultValue: newValue[i],
 								setValue: (target: IPublicModelSettingField) => {
-									console.log('=====');
-
-									onItemChange(target, i, item, props as ArraySetterProps);
+									onItemChange(
+										target,
+										item.key,
+										item,
+										props as ArraySetterProps
+									);
 								},
 							},
 						});
@@ -188,8 +193,7 @@ export const ListSetter = defineComponent({
 		);
 
 		const onAdd = (newValue?: { [key: string]: any }) => {
-			const oldValues = props.field?.getValue();
-			const values = oldValues || [];
+			const values = props.value || [];
 			const initialValue = (props.itemSetter as any)?.initialValue;
 			const defaultValue =
 				newValue ||
@@ -202,10 +206,12 @@ export const ListSetter = defineComponent({
 		};
 
 		const onRemove = (removed: any) => {
-			const oldValues = props.field?.getValue();
-			const values = oldValues || [];
+			const values = props.value || [];
 			let i = items.value.indexOf(removed);
-			items.value.splice(i, 1);
+			// 使用展开运算符创建新数组，确保触发响应式更新
+			const newItems = [...items.value];
+			newItems.splice(i, 1);
+			items.value = newItems;
 			values.splice(i, 1);
 			const l = items.value.length;
 			while (i < l) {
@@ -222,35 +228,12 @@ export const ListSetter = defineComponent({
 
 		onBeforeUnmount(() => {
 			items.value.forEach((item) => {
-				toRaw(item).purge();
+				item.purge();
 			});
 		});
 
-		// const onSort = (sortedIds: any[]) => {
-		// 	const oldValues = toRaw(props.field)?.getValue()
-		// 		? [...toRaw(props.field!).getValue()].filter(Boolean)
-		// 		: [];
-
-		// const values: any[] = [];
-		// const newItems: any[] = [];
-		// sortedIds.map((id, index) => {
-		// 	const itemIndex = items.value.findIndex(
-		// 		(item) => toRaw(item).id === id
-		// 	);
-		// 	values[index] = oldValues[itemIndex];
-		// 	newItems[index] = items.value[itemIndex];
-		// 	return id;
-		// });
-		// console.log(values);
-
-		// items.value = [...newItems];
-		// props.onChange?.(values);
-		// };
-
 		const onSort = (event: SortableEvent) => {
-			const oldValues = toRaw(props.field)?.getValue()
-				? [...toRaw(props.field!).getValue()].filter(Boolean)
-				: [];
+			const oldValues = props.value || [];
 			const { oldIndex, newIndex } = event;
 			// 交换数组中的元素位置
 			const element = oldValues[oldIndex!];

@@ -20,9 +20,9 @@
     },
     "dependencies": {
         "@arvin-shu/microcode-datasource-types": "^1.0.1",
-        "@arvin-shu/microcode-designer": "^1.0.8",
+        "@arvin-shu/microcode-designer": "^1.0.3",
         "@arvin-shu/microcode-editor-core": "^1.0.3",
-        "@arvin-shu/microcode-editor-skeleton": "^1.0.3",
+        "@arvin-shu/microcode-editor-skeleton": "^1.0.0",
         "@arvin-shu/microcode-engine": "^1.0.1",
         "@arvin-shu/microcode-plugin-base-monaco-editor": "^1.0.0",
         "@arvin-shu/microcode-plugin-components-pane": "^1.0.0",

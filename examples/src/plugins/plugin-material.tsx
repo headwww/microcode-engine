@@ -217,6 +217,15 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 												config: {
 													items: [
 														{
+															name: 'nums',
+															description: '标111题',
+															setter: 'NumberSetter',
+															isRequired: true,
+															extraProps: {
+																// supportVariable: false,
+															},
+														},
+														{
 															name: 'title',
 															description: '标111题',
 															setter: 'StringSetter',
@@ -228,8 +237,9 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 														{
 															name: 'callback',
 															description: 'callback',
+															// isRequired: true,
 															setter: {
-																componentName: 'FunctionSetter',
+																componentName: 'BoolSetter',
 															},
 														},
 													],
@@ -237,49 +247,48 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 											},
 											initialValue: {
 												title: 'I am title',
-												callback: null,
 											},
 										},
 									},
 								},
 							},
-							{
-								name: 'object',
-								display: 'accordion',
-								title: '对象设置器',
-								extraProps: {
-									supportVariable: false,
-								},
-								setter: {
-									componentName: 'ObjectSetter',
-									props: {
-										config: {
-											items: [
-												{
-													name: 'fixed',
-													title: '吸底',
-													setter: {
-														componentName: 'StringSetter',
-													},
-													extraProps: {
-														supportVariable: false,
-													},
-												},
-												{
-													name: 'showSaveTime',
-													title: '显示时间',
-													setter: {
-														componentName: 'BoolSetter',
-													},
-													extraProps: {
-														supportVariable: false,
-													},
-												},
-											],
-										},
-									},
-								},
-							},
+							// {
+							// 	name: 'object',
+							// 	display: 'accordion',
+							// 	title: '对象设置器',
+							// 	extraProps: {
+							// 		supportVariable: false,
+							// 	},
+							// 	setter: {
+							// 		componentName: 'ObjectSetter',
+							// 		props: {
+							// 			config: {
+							// 				items: [
+							// 					{
+							// 						name: 'fixed',
+							// 						title: '吸底',
+							// 						setter: {
+							// 							componentName: 'StringSetter',
+							// 						},
+							// 						extraProps: {
+							// 							supportVariable: false,
+							// 						},
+							// 					},
+							// 					{
+							// 						name: 'showSaveTime',
+							// 						title: '显示时间',
+							// 						setter: {
+							// 							componentName: 'BoolSetter',
+							// 						},
+							// 						extraProps: {
+							// 							supportVariable: false,
+							// 						},
+							// 					},
+							// 				],
+							// 			},
+							// 		},
+							// 	},
+							// },
 							// {
 							// 	name: 'onClick',
 							// 	title: {

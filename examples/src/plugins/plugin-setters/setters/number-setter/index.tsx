@@ -5,8 +5,8 @@ export const NumberSetter = defineComponent({
 	name: 'NumberSetter',
 	emits: ['change'],
 	props: {
-		value: String,
-		defaultValue: String,
+		value: Number,
+		defaultValue: Number,
 		placeholder: String,
 		min: {
 			type: Number,

@@ -316,40 +316,39 @@ export const SettingFieldView = defineComponent({
 					stageName: stageName.value,
 					...extraProps,
 				} as any,
-				!stageName.value &&
-					setters.createSetterContent(setterType, {
-						...shallowIntl(setterProps),
-						value: value.value,
-						forceInline: extraProps.forceInline,
-						prop: field?.internalToShellField(), // for compatible vision
-						selected: field?.top?.getNode()?.internalToShellNode(),
-						field: field?.internalToShellField(),
-						key: field?.id,
-						initialValue,
-						onInitial: () => {
-							if (initialValue) {
-								return;
-							}
-							const value =
-								typeof initialValue === 'function'
-									? initialValue(field?.internalToShellField())
-									: initialValue;
+				setters.createSetterContent(setterType, {
+					...shallowIntl(setterProps),
+					value: value.value,
+					forceInline: extraProps.forceInline,
+					prop: field?.internalToShellField(), // for compatible vision
+					selected: field?.top?.getNode()?.internalToShellNode(),
+					field: field?.internalToShellField(),
+					key: field?.id,
+					initialValue,
+					onInitial: () => {
+						if (initialValue) {
+							return;
+						}
+						const value =
+							typeof initialValue === 'function'
+								? initialValue(field?.internalToShellField())
+								: initialValue;
 
-							value.value = value;
-							field?.setValue(value, true);
-						},
-						removeProp: () => {
-							if (field?.name) {
-								field.parent.clearPropValue(field.name);
-							}
-						},
-						onChange: (v: any) => {
-							fromOnChange.value = true;
-							field?.setValue(v, true);
-							if (onChangeAPI && field)
-								onChangeAPI(value, field.internalToShellField());
-						},
-					}),
+						value.value = value;
+						field?.setValue(value, true);
+					},
+					removeProp: () => {
+						if (field?.name) {
+							field.parent.clearPropValue(field.name);
+						}
+					},
+					onChange: (v: any) => {
+						fromOnChange.value = true;
+						field?.setValue(v, true);
+						if (onChangeAPI && field)
+							onChangeAPI(value, field.internalToShellField());
+					},
+				}),
 				extraProps.forceInline ? 'plain' : extraProps.display
 			);
 		};

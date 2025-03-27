@@ -88,5 +88,6 @@ module.exports = {
         "no-dupe-class-members": 0,
         "prefer-destructuring": 0,
         "guard-for-in": 0,
+        "prefer-spread": 0,
     },
 }

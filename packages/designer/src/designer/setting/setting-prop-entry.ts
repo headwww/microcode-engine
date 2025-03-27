@@ -88,6 +88,10 @@ export class SettingPropEntry implements ISettingPropEntry {
 		return this._name.value;
 	}
 
+	set name(value: any) {
+		this._name.value = value;
+	}
+
 	readonly designer: IDesigner | undefined;
 
 	private readonly computedPath = computed(() => {
@@ -119,7 +123,7 @@ export class SettingPropEntry implements ISettingPropEntry {
 		} else {
 			this.type = type;
 		}
-		this._name.value = name;
+		this.name = name;
 		this.isGroup = this.type === 'group';
 		this.editor = parent.editor;
 		this.nodes = parent.nodes;
@@ -145,11 +149,11 @@ export class SettingPropEntry implements ISettingPropEntry {
 		while (l-- > 0) {
 			this.nodes[l].getProp(propName, true)!.key = key;
 		}
-		this._name.value = key;
+		this.name = key;
 	}
 
 	getKey() {
-		return this._name.value;
+		return this.name;
 	}
 
 	remove() {
