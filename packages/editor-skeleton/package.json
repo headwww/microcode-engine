@@ -1,6 +1,6 @@
 {
 	"name": "@arvin-shu/microcode-editor-skeleton",
-	"version": "1.0.0",
+	"version": "1.0.4",
 	"description": "",
 	"main": "lib/index.js",
 	"module": "es/index.js",
