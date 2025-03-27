@@ -13,6 +13,7 @@ import {
 	toRaw,
 	watch,
 	Fragment,
+	onBeforeUnmount,
 } from 'vue';
 
 import './index.scss';
@@ -20,9 +21,9 @@ import { Button, Alert } from 'ant-design-vue';
 import { createSettingFieldView } from '@arvin-shu/microcode-editor-skeleton';
 import { settingFieldSymbol } from '@arvin-shu/microcode-shell';
 import { Title } from '@arvin-shu/microcode-editor-core';
+import { SortableEvent, VueDraggable } from 'vue-draggable-plus';
 import { DeleteIcon } from './icons/delete';
 import { MoveIcon } from './icons/move';
-
 /**
  * onItemChange 用于 ArraySetter 的单个 index 下的数据发生变化，
  * 因此 target.path 的数据格式必定为 [propName1, propName2, arrayIndex, key?]。
@@ -130,9 +131,7 @@ export const ListSetter = defineComponent({
 	name: 'ListSetter',
 	inheritAttrs: false,
 	props: {
-		value: {
-			type: Array as PropType<any[]>,
-		},
+		value: null,
 		field: {
 			type: Object as PropType<IPublicModelSettingField>,
 		},
@@ -150,16 +149,20 @@ export const ListSetter = defineComponent({
 		onChange: Function as PropType<(val: any) => void>,
 	},
 	setup(props) {
-		const items = ref<any[]>([]);
+		const items = ref<IPublicModelSettingField[]>([]);
 		const scrollToLast = ref(false);
 
 		watch(
 			() => props.value,
 			(newValue) => {
-				if (!Array.isArray(newValue)) return;
+				if (!Array.isArray(newValue)) {
+					items.value.length = 0;
+					return;
+				}
+				console.log('watch', newValue.length, newValue);
 				const newItems: IPublicModelSettingField[] = [];
 				for (let i = 0; i < newValue.length; i++) {
-					let item = items.value[i];
+					let item: any = items.value[i];
 					if (!item) {
 						item = props.field?.createField({
 							name: i.toString(),
@@ -169,21 +172,24 @@ export const ListSetter = defineComponent({
 							extraProps: {
 								defaultValue: newValue[i],
 								setValue: (target: IPublicModelSettingField) => {
-									onItemChange(target, i, item as any, props as any);
+									console.log('=====');
+
+									onItemChange(target, i, item, props as ArraySetterProps);
 								},
 							},
-						}) as any;
+						});
 						item.setValue(newValue[i]);
 					}
-					newItems.push(toRaw(item) as any);
+					newItems.push(item);
 				}
-				items.value = newItems;
+				items.value = [...newItems];
 			},
-			{ immediate: true }
+			{ immediate: true, deep: true }
 		);
 
 		const onAdd = (newValue?: { [key: string]: any }) => {
-			const values = [...(props.value || [])];
+			const oldValues = props.field?.getValue();
+			const values = oldValues || [];
 			const initialValue = (props.itemSetter as any)?.initialValue;
 			const defaultValue =
 				newValue ||
@@ -195,41 +201,94 @@ export const ListSetter = defineComponent({
 			props.onChange?.(values);
 		};
 
-		const onRemove = (removed: IPublicModelSettingField) => {
-			const values = [...(props.value || [])];
-			const currentItems = [...items.value];
-
-			// 找到要删除项的索引
-			const index = currentItems.indexOf(removed);
-			if (index === -1) return;
-
-			// 从数组中移除该项
-			currentItems.splice(index, 1);
-			values.splice(index, 1);
-
-			// 更新剩余项的键值
-			for (let i = index; i < currentItems.length; i++) {
-				toRaw(currentItems[i]).setKey(i);
+		const onRemove = (removed: any) => {
+			const oldValues = props.field?.getValue();
+			const values = oldValues || [];
+			let i = items.value.indexOf(removed);
+			items.value.splice(i, 1);
+			values.splice(i, 1);
+			const l = items.value.length;
+			while (i < l) {
+				toRaw(items.value[i]).setKey(i);
+				i++;
 			}
-
-			// 清理被删除的字段
 			toRaw(removed).remove();
-
-			// 处理值，确保对象类型的值被正确复制
 			const pureValues = values.map((item: any) =>
 				typeof item === 'object' ? { ...item } : item
 			);
 
-			// 更新状态
-			items.value = currentItems;
 			props.onChange?.(pureValues);
+		};
+
+		onBeforeUnmount(() => {
+			items.value.forEach((item) => {
+				toRaw(item).purge();
+			});
+		});
+
+		// const onSort = (sortedIds: any[]) => {
+		// 	const oldValues = toRaw(props.field)?.getValue()
+		// 		? [...toRaw(props.field!).getValue()].filter(Boolean)
+		// 		: [];
+
+		// const values: any[] = [];
+		// const newItems: any[] = [];
+		// sortedIds.map((id, index) => {
+		// 	const itemIndex = items.value.findIndex(
+		// 		(item) => toRaw(item).id === id
+		// 	);
+		// 	values[index] = oldValues[itemIndex];
+		// 	newItems[index] = items.value[itemIndex];
+		// 	return id;
+		// });
+		// console.log(values);
+
+		// items.value = [...newItems];
+		// props.onChange?.(values);
+		// };
+
+		const onSort = (event: SortableEvent) => {
+			const oldValues = toRaw(props.field)?.getValue()
+				? [...toRaw(props.field!).getValue()].filter(Boolean)
+				: [];
+			const { oldIndex, newIndex } = event;
+			// 交换数组中的元素位置
+			const element = oldValues[oldIndex!];
+			oldValues.splice(oldIndex!, 1);
+			oldValues.splice(newIndex!, 0, element);
+
+			const currentItems = [...items.value];
+			const movedItem = currentItems[oldIndex!];
+			currentItems.splice(oldIndex!, 1);
+			currentItems.splice(newIndex!, 0, movedItem);
+
+			// 重新设置每个项的 key
+			currentItems.forEach((item, index) => {
+				toRaw(item).setKey(index);
+			});
+
+			items.value = currentItems;
+
+			props.onChange?.(oldValues);
 		};
 
 		const renderContent = () => (
 			<Fragment>
 				{items.value.length > 0 ? (
 					<div class="mtc-setter-list-scroll-body">
-						<div class="mtc-setter-list-card">
+						<VueDraggable
+							modelValue={items.value}
+							onUpdate:modelValue={(value: any) => {
+								items.value = value;
+								// const ids = value.map((item: any) => toRaw(item).id);
+								// onSort(ids);
+							}}
+							onSort={onSort}
+							ghostClass="mtc-setter-list-card-drag"
+							animation={150}
+							handle=".handle"
+							class="mtc-setter-list-card"
+						>
 							{items.value.map((field, index) => (
 								<ArrayItem
 									key={field.id}
@@ -240,7 +299,7 @@ export const ListSetter = defineComponent({
 									onRemove={() => onRemove(field as any)}
 								/>
 							))}
-						</div>
+						</VueDraggable>
 					</div>
 				) : (
 					<div class="mtc-setter-list-notice">
@@ -345,10 +404,10 @@ export const ArrayItem = defineComponent({
 					></Button>
 					<Button
 						size="small"
-						type="text"
+						type="link"
 						draggable
 						icon={<MoveIcon></MoveIcon>}
-						class="mtc-listitem-handler"
+						class="mtc-listitem-handler handle cursor-move"
 					></Button>
 				</div>
 			</div>

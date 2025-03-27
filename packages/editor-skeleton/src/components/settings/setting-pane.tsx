@@ -261,7 +261,11 @@ export const SettingFieldView = defineComponent({
 			}
 		};
 
-		const value = ref(
+		// const value = ref(
+		// 	props.field?.valueState === -1 ? null : props.field?.getValue()
+		// );
+
+		const value = computed(() =>
 			props.field?.valueState === -1 ? null : props.field?.getValue()
 		);
 
@@ -297,6 +301,7 @@ export const SettingFieldView = defineComponent({
 
 			const { setterProps = {}, initialValue, setterType } = setterInfo.value;
 			const { field } = props;
+			const onChangeAPI = extraProps?.onChange;
 
 			return createField(
 				{
@@ -311,38 +316,40 @@ export const SettingFieldView = defineComponent({
 					stageName: stageName.value,
 					...extraProps,
 				} as any,
-				setters.createSetterContent(setterType, {
-					...shallowIntl(setterProps),
-					value: value.value,
-					forceInline: extraProps.forceInline,
-					prop: field?.internalToShellField(), // for compatible vision
-					selected: field?.top?.getNode()?.internalToShellNode(),
-					field: field?.internalToShellField(),
-					key: field?.id,
-					initialValue,
-					onInitial: () => {
-						if (initialValue) {
-							return;
-						}
-						const value =
-							typeof initialValue === 'function'
-								? initialValue(field?.internalToShellField())
-								: initialValue;
+				!stageName.value &&
+					setters.createSetterContent(setterType, {
+						...shallowIntl(setterProps),
+						value: value.value,
+						forceInline: extraProps.forceInline,
+						prop: field?.internalToShellField(), // for compatible vision
+						selected: field?.top?.getNode()?.internalToShellNode(),
+						field: field?.internalToShellField(),
+						key: field?.id,
+						initialValue,
+						onInitial: () => {
+							if (initialValue) {
+								return;
+							}
+							const value =
+								typeof initialValue === 'function'
+									? initialValue(field?.internalToShellField())
+									: initialValue;
 
-						value.value = value;
-						field?.setValue(value, true);
-					},
-					removeProp: () => {
-						if (field?.name) {
-							field.parent.clearPropValue(field.name);
-						}
-					},
-					onChange: (v: any) => {
-						fromOnChange.value = true;
-						value.value = v;
-						field?.setValue(v, true);
-					},
-				}),
+							value.value = value;
+							field?.setValue(value, true);
+						},
+						removeProp: () => {
+							if (field?.name) {
+								field.parent.clearPropValue(field.name);
+							}
+						},
+						onChange: (v: any) => {
+							fromOnChange.value = true;
+							field?.setValue(v, true);
+							if (onChangeAPI && field)
+								onChangeAPI(value, field.internalToShellField());
+						},
+					}),
 				extraProps.forceInline ? 'plain' : extraProps.display
 			);
 		};
