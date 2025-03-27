@@ -239,19 +239,7 @@ export const ListSetter = defineComponent({
 			const element = oldValues[oldIndex!];
 			oldValues.splice(oldIndex!, 1);
 			oldValues.splice(newIndex!, 0, element);
-
-			const currentItems = [...items.value];
-			const movedItem = currentItems[oldIndex!];
-			currentItems.splice(oldIndex!, 1);
-			currentItems.splice(newIndex!, 0, movedItem);
-
-			// 重新设置每个项的 key
-			currentItems.forEach((item, index) => {
-				toRaw(item).setKey(index);
-			});
-
-			items.value = currentItems;
-
+			items.value.length = 0;
 			props.onChange?.(oldValues);
 		};
 
@@ -263,8 +251,6 @@ export const ListSetter = defineComponent({
 							modelValue={items.value}
 							onUpdate:modelValue={(value: any) => {
 								items.value = value;
-								// const ids = value.map((item: any) => toRaw(item).id);
-								// onSort(ids);
 							}}
 							onSort={onSort}
 							ghostClass="mtc-setter-list-card-drag"
@@ -317,7 +303,7 @@ export const ListSetter = defineComponent({
 								{props.columns.map((column: any) => (
 									<Title
 										key={column?.name}
-										title={column?.title || column?.name}
+										title={column?.description || column?.name}
 									/>
 								))}
 							</div>

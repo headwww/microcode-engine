@@ -16,6 +16,11 @@ import {
 	FunctionSetter,
 	ObjectSetter,
 	ArraySetter,
+	TextareaSetter,
+	RadioGroupSetter,
+	SelectSetter,
+	MultipleSelectSetter,
+	SegmentedSetter,
 } from './setters';
 import { VariableBindModal, EventBindModal } from './widget';
 
@@ -85,9 +90,15 @@ export const engineExt = {
 		FunctionSetter: FunctionBindSetter,
 		VariableSetter: DataVariableSetter,
 		ObjectSetter: DataObjectSetter,
+		TextareaSetter,
+		RadioGroupSetter,
+		SelectSetter,
+		SegmentedSetter,
+		MultipleSelectSetter,
 	},
 	setterMap: {
 		BoolSetter,
+		TextareaSetter,
 		MixedSetter,
 		StringSetter,
 		NumberSetter,
@@ -99,6 +110,10 @@ export const engineExt = {
 		FunctionSetter: FunctionBindSetter,
 		VariableSetter: DataVariableSetter,
 		ObjectSetter: DataObjectSetter,
+		RadioGroupSetter,
+		SelectSetter,
+		SegmentedSetter,
+		MultipleSelectSetter,
 	},
 	widgets: {
 		VariableBindModal,

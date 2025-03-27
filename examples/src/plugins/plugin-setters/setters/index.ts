@@ -10,3 +10,8 @@ export * from './events-setter';
 export * from './function-setter';
 export * from './object-setter';
 export * from './array-setter';
+export * from './textarea-setter';
+export * from './radiogroup-setter';
+export * from './select-setter';
+export * from './multiple-select-setter';
+export * from './segmented-setter';

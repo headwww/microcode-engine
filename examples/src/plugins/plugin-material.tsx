@@ -192,6 +192,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					title: '按钮',
 					configure: {
 						supports: {
+							style: true,
 							events: [
 								{
 									name: 'onClick',
@@ -202,6 +203,105 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							],
 						},
 						props: [
+							{
+								name: 'segmented',
+								title: '是否分段',
+								setter: {
+									componentName: 'SegmentedSetter',
+									initialValue: '选项1',
+									props: {
+										options: ['选项1', '选项2', '选项3'],
+									},
+								},
+							},
+							{
+								name: 'multiple',
+								title: '是否多选',
+								setter: {
+									componentName: 'MultipleSelectSetter',
+									initialValue: ['选项1', '选项2'],
+									props: {
+										options: [
+											{
+												title: '选项1',
+												value: '选项1',
+											},
+											{
+												title: '选项2',
+												value: '选项2',
+											},
+										],
+									},
+								},
+							},
+							{
+								name: 'type',
+								title: '字体大小',
+								setter: {
+									componentName: 'SelectSetter',
+									initialValue: 'body2',
+									props: {
+										defaultValue: 'body2',
+										options: [
+											{
+												title: 'h6',
+												value: 'h6',
+											},
+											{
+												title: 'body1',
+												value: 'body1',
+											},
+											{
+												title: 'body2',
+												value: 'body2',
+											},
+											{
+												title: 'caption',
+												value: 'caption',
+											},
+											{
+												title: 'overline',
+												value: 'overline',
+											},
+										],
+									},
+								},
+							},
+							{
+								name: 'htmlType',
+								title: {
+									label: '原生类型',
+								},
+								setter: [
+									{
+										componentName: 'RadioGroupSetter',
+										props: {
+											options: [
+												{
+													title: 'Submit',
+													value: 'submit',
+												},
+												{
+													title: 'Reset',
+													value: 'reset',
+												},
+												{
+													title: 'Button',
+													value: 'button',
+												},
+											],
+										},
+									},
+								],
+								defaultValue: 'reset',
+							},
+							{
+								name: 'textarea',
+								title: 'textarea',
+								setter: {
+									componentName: 'TextareaSetter',
+								},
+							},
 							{
 								name: 'array',
 								title: '数组',
@@ -811,6 +911,12 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 							componentName: 'LtButton',
 							id: 'node_sxsm4wdio232',
 							props: {
+								array: [
+									{
+										title: 'i am title',
+										nums: 2,
+									},
+								],
 								children: '按钮123',
 								icon: {
 									type: 'JSSlot',
