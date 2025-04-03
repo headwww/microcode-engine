@@ -16,10 +16,10 @@ export const ColorSetter = defineComponent({
 	emits: ['change'],
 	setup(props, { emit }) {
 		const setterValue = computed({
-			get() {
+			get(): string | undefined {
 				return props.value || props.defaultValue || '';
 			},
-			set(val: string) {
+			set(val: string | undefined) {
 				emit('change', val);
 			},
 		});
@@ -36,11 +36,15 @@ export const ColorSetter = defineComponent({
 
 		const handleColorChange = (color: any) => {
 			const { rgba, hex } = color;
-			const { r, g, b, a } = rgba;
-			if (a === 1) {
-				setterValue.value = hex;
+			if (rgba) {
+				const { r, g, b, a } = rgba;
+				if (a === 1) {
+					setterValue.value = hex;
+				} else {
+					setterValue.value = `rgba(${r},${g},${b},${a})`;
+				}
 			} else {
-				setterValue.value = `rgba(${r},${g},${b},${a})`;
+				setterValue.value = undefined;
 			}
 		};
 

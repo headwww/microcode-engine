@@ -21,6 +21,7 @@ import {
 	SelectSetter,
 	MultipleSelectSetter,
 	SegmentedSetter,
+	StyleSetter,
 } from './setters';
 import { VariableBindModal, EventBindModal } from './widget';
 
@@ -95,6 +96,7 @@ export const engineExt = {
 		SelectSetter,
 		SegmentedSetter,
 		MultipleSelectSetter,
+		StyleSetter,
 	},
 	setterMap: {
 		BoolSetter,
@@ -114,6 +116,7 @@ export const engineExt = {
 		SelectSetter,
 		SegmentedSetter,
 		MultipleSelectSetter,
+		StyleSetter,
 	},
 	widgets: {
 		VariableBindModal,

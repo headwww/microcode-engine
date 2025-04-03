@@ -68,14 +68,14 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					version: '1.11.10',
 					library: 'dayjs',
 					urls: [
-						'https://unpkg.com/dayjs@1.11.10/dayjs.min.js',
-						'https://unpkg.com/dayjs/plugin/customParseFormat.js',
-						'https://unpkg.com/dayjs/plugin/weekday.js',
-						'https://unpkg.com/dayjs/plugin/localeData.js',
-						'https://unpkg.com/dayjs/plugin/weekOfYear.js',
-						'https://unpkg.com/dayjs/plugin/weekYear.js',
-						'https://unpkg.com/dayjs/plugin/advancedFormat.js',
-						'https://unpkg.com/dayjs/plugin/quarterOfYear.js',
+						'https://g.alicdn.com/npm/dayjs@1.11.10/dayjs.min.js',
+						'https://g.alicdn.com/npm/dayjs/plugin/customParseFormat.js',
+						'https://g.alicdn.com/npm/dayjs/plugin/weekday.js',
+						'https://g.alicdn.com/npm/dayjs/plugin/localeData.js',
+						'https://g.alicdn.com/npm/dayjs/plugin/weekOfYear.js',
+						'https://g.alicdn.com/npm/dayjs/plugin/weekYear.js',
+						'https://g.alicdn.com/npm/dayjs/plugin/advancedFormat.js',
+						'https://g.alicdn.com/npm/dayjs/plugin/quarterOfYear.js',
 					],
 				},
 				{
@@ -83,7 +83,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 					version: '4.2.6',
 					urls: [
 						'https://cdn.jsdelivr.net/npm/ant-design-vue@4.2.6/dist/antd.js',
-						'https://unpkg.com/ant-design-vue@4.2.6/dist/reset.css',
+						'https://g.alicdn.com/npm/ant-design-vue@4.2.6/dist/reset.css',
 					],
 					library: 'antd',
 				},
@@ -239,9 +239,7 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 								title: '字体大小',
 								setter: {
 									componentName: 'SelectSetter',
-									initialValue: 'body2',
 									props: {
-										defaultValue: 'body2',
 										options: [
 											{
 												title: 'h6',

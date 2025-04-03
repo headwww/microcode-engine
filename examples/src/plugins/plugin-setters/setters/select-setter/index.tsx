@@ -1,5 +1,6 @@
 import { defineComponent, PropType } from 'vue';
 import { Select } from 'ant-design-vue';
+import { IPublicModelSettingField } from '@arvin-shu/microcode-types';
 
 // 定义接口
 interface SelectOption {
@@ -59,11 +60,14 @@ export const SelectSetter = defineComponent({
 		},
 		hasClear: {
 			type: Boolean,
-			default: false,
+			default: true,
 		},
 		onChange: {
 			type: Function as PropType<(value: any) => void>,
 			default: () => undefined,
+		},
+		field: {
+			type: Object as PropType<IPublicModelSettingField>,
 		},
 	},
 
@@ -73,7 +77,7 @@ export const SelectSetter = defineComponent({
 				value={props.value}
 				mode={props.mode}
 				options={formatOptions(props.options)}
-				onChange={(val: any) => props.onChange?.(val)}
+				onChange={(val: any) => props.onChange?.(val || null)}
 				showSearch={props.showSearch}
 				allowClear={props.hasClear}
 				style={{ width: '100%' }}

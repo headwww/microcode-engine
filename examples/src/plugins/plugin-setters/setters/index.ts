@@ -15,3 +15,4 @@ export * from './radiogroup-setter';
 export * from './select-setter';
 export * from './multiple-select-setter';
 export * from './segmented-setter';
+export * from './style-setter';
