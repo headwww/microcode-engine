@@ -31,6 +31,10 @@ export const UnitInput = defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		size: {
+			type: String as PropType<any>,
+			default: 'default',
+		},
 	},
 	setup(props) {
 		// 解析初始值和单位
@@ -69,6 +73,7 @@ export const UnitInput = defineComponent({
 				min={props.min}
 				max={props.max}
 				style="width: 100%"
+				size={props.size}
 				onUpdate:value={(value: any) => {
 					numberValue.value = value;
 					updateStyle();
@@ -76,6 +81,7 @@ export const UnitInput = defineComponent({
 				addonAfter={
 					props.enableUnit ? (
 						<Select
+							size={props.size}
 							value={unitValue.value}
 							onUpdate:value={(value: any) => {
 								unitValue.value = value;

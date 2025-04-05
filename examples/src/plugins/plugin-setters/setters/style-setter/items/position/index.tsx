@@ -4,6 +4,7 @@ import { StyleData } from '../../types';
 import { intlLocal } from './locale';
 import { Row, UnitInput } from '../../components';
 import './index.scss';
+import PositionBox from './positionBox';
 
 const positionConfig = intlLocal();
 
@@ -39,6 +40,15 @@ export default defineComponent({
 						}}
 					></Select>
 				</Row>
+
+				{props.styleData.position && props.styleData.position !== 'static' && (
+					<PositionBox
+						{...props}
+						styleData={props.styleData}
+						onStyleChange={props.onStyleChange}
+					/>
+				)}
+
 				<Row title="zIndex" styleKey="">
 					<UnitInput
 						min={0}
@@ -48,6 +58,7 @@ export default defineComponent({
 						onStyleChange={props.onStyleChange}
 					></UnitInput>
 				</Row>
+
 				<Row styleKey="" title={positionConfig.float.title}>
 					<Select
 						allowClear

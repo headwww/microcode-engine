@@ -26,7 +26,6 @@
 			top: 50%;
 			left: 50%;
 			transform: translate(-50%, -50%);
-			display: flex;
 			gap: 16px;
 
 			.width-input,
@@ -37,6 +36,7 @@
 
 				.dimension-label {
 					font-size: 12px;
+					width: 13px;
 					color: rgb(0 0 0 / 45%);
 				}
 

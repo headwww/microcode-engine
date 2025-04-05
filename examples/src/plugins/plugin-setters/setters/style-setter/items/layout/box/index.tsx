@@ -5,6 +5,7 @@ import { isNaN, parseInt } from 'lodash-es';
 import { StyleData } from '../../../types';
 import { addUnit, removeUnit } from '../../../utils';
 import { layoutConfig } from '../locale';
+import { UnitInput } from '../../../components';
 
 export default defineComponent({
 	name: 'Box',
@@ -174,29 +175,24 @@ export default defineComponent({
 					<div class="dimension-inputs">
 						<div class="width-input">
 							<span class="dimension-label">W</span>
-							<InputNumber
-								controls={false}
-								bordered={false}
+							<UnitInput
+								styleKey="width"
+								min={0}
+								size="small"
 								placeholder={layoutConfig.width}
-								value={removeUnit(props.styleData.width)}
-								onUpdate:value={(value: any) => {
-									onInputChange('width', value);
-								}}
-								onKeyDown={(e: any) => onInputKeyDown(e.key, 'width')}
-							/>
+								styleData={props.styleData}
+								onStyleChange={props.onStyleChange}
+							></UnitInput>
 						</div>
 						<div class="height-input">
 							<span class="dimension-label">H</span>
-							<InputNumber
-								controls={false}
-								bordered={false}
+							<UnitInput
+								styleKey="height"
+								min={0}
 								placeholder={layoutConfig.height}
-								value={removeUnit(props.styleData.height)}
-								onUpdate:value={(value: any) => {
-									onInputChange('height', value);
-								}}
-								onKeyDown={(e: any) => onInputKeyDown(e.key, 'height')}
-							/>
+								styleData={props.styleData}
+								onStyleChange={props.onStyleChange}
+							></UnitInput>
 						</div>
 					</div>
 				</div>
