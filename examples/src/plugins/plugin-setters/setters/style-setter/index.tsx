@@ -1,7 +1,7 @@
 import { computed, defineComponent, PropType, ref } from 'vue';
 import { Collapse } from 'ant-design-vue';
 import { omit } from 'lodash-es';
-import { Background, Font, Layout, Position } from './items';
+import { Background, Border, Font, Layout, Position } from './items';
 import { StyleData } from './types';
 import './index.scss';
 
@@ -35,7 +35,13 @@ export const StyleSetter = defineComponent({
 			},
 		});
 
-		const activeKey = ref(['layout', 'font', 'background', 'position']);
+		const activeKey = ref([
+			'layout',
+			'font',
+			'background',
+			'position',
+			'border',
+		]);
 
 		const onStyleChange = (styleDataList: StyleData[]) => {
 			const newStyleData = { ...styleData.value };
@@ -110,6 +116,19 @@ export const StyleSetter = defineComponent({
 								key="position"
 							>
 								<Position
+									{...omit(props, 'onChange')}
+									styleData={styleData.value}
+									onStyleChange={onStyleChange}
+								/>
+							</Collapse.Panel>
+						)}
+						{showModuleList.filter((item) => item === 'border').length > 0 && (
+							<Collapse.Panel
+								headerClass="collapse-panel-header"
+								header="边框"
+								key="border"
+							>
+								<Border
 									{...omit(props, 'onChange')}
 									styleData={styleData.value}
 									onStyleChange={onStyleChange}

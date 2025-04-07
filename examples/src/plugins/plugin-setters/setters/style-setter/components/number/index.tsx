@@ -1,4 +1,4 @@
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType, ref, watch } from 'vue';
 import { InputNumber, Select } from 'ant-design-vue';
 import { StyleData } from '../../types';
 
@@ -49,6 +49,18 @@ export const UnitInput = defineComponent({
 		};
 
 		const initialValue = props.styleData[props.styleKey];
+
+		watch(
+			() => props.styleKey,
+			(newVal) => {
+				const { num: initialNum, unit: initialUnit } = parseValueAndUnit(
+					props.styleData[newVal]
+				);
+				numberValue.value = initialNum;
+				unitValue.value = initialUnit;
+			}
+		);
+
 		const { num: initialNum, unit: initialUnit } =
 			parseValueAndUnit(initialValue);
 
