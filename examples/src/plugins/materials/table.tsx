@@ -1,11 +1,3 @@
-/*
- * @Author: shuwen 1243889238@qq.com
- * @Date: 2025-01-18 13:42:18
- * @LastEditors: shuwen 1243889238@qq.com
- * @LastEditTime: 2025-01-18 13:50:30
- * @FilePath: /microcode-engine/examples/src/plugins/materials/table.tsx
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 import { defineComponent, ref } from 'vue';
 import { VxeTable, VxeColumn } from 'vxe-table';
 

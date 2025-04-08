@@ -69,7 +69,7 @@ export const StyleSetter = defineComponent({
 						overlayInnerStyle={{ padding: '10px' }}
 					>
 						{{
-							default: () => <Button type="primary">源码编辑</Button>,
+							default: () => <Button type="primary">样式编辑</Button>,
 							content: () => (
 								<div>
 									<CSSCode

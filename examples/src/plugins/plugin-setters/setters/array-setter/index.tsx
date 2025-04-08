@@ -15,8 +15,6 @@ import {
 	Fragment,
 	onBeforeUnmount,
 } from 'vue';
-
-import './index.scss';
 import { Button, Alert } from 'ant-design-vue';
 import { createSettingFieldView } from '@arvin-shu/microcode-editor-skeleton';
 import { settingFieldSymbol } from '@arvin-shu/microcode-shell';
@@ -24,6 +22,9 @@ import { Title } from '@arvin-shu/microcode-editor-core';
 import { SortableEvent, VueDraggable } from 'vue-draggable-plus';
 import { DeleteIcon } from './icons/delete';
 import { MoveIcon } from './icons/move';
+
+import './index.scss';
+
 /**
  * onItemChange 用于 ArraySetter 的单个 index 下的数据发生变化，
  * 因此 target.path 的数据格式必定为 [propName1, propName2, arrayIndex, key?]。

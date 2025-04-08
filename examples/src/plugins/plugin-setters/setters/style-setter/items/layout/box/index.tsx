@@ -1,4 +1,4 @@
-import { defineComponent, PropType, watch } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { InputNumber } from 'ant-design-vue';
 import './index.scss';
 import { isNaN, parseInt } from 'lodash-es';
@@ -23,12 +23,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		watch(
-			() => props.styleData,
-			(newVal) => {
-				console.log(newVal);
-			}
-		);
 		const onInputChange = (styleKey: string, value: string) => {
 			const { onStyleChange, unit = 'px' } = props;
 			if (value !== '') {

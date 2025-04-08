@@ -9,6 +9,7 @@ import PluginUndoRedo from '@arvin-shu/microcode-plugin-undo-redo';
 import DataSourcePane from '@arvin-shu/microcode-plugin-datasource-pane';
 import LayersPane from '@arvin-shu/microcode-plugin-layers-pane';
 import ComponentPanelPlugin from '@arvin-shu/microcode-plugin-components-pane';
+import { VxeUI } from 'vxe-table';
 import App from './App.vue';
 import '@arvin-shu/microcode-theme/src/index.scss';
 import './rest.scss';
@@ -17,6 +18,13 @@ import InitSkeleton from './plugins/plugin-init-skeleton';
 import InitMaterial from './plugins/plugin-material';
 import InitSetter from './plugins/plugin-init-setter';
 import { appHelper, createAxiosFetchHandler } from './fetch';
+
+VxeUI.setConfig({
+	authId: 'c7iim97vkzsnolbp',
+	onAuth(e) {
+		console.log('=====', e);
+	},
+});
 
 window.Vue = Vue;
 const app = Vue.createApp(App);
