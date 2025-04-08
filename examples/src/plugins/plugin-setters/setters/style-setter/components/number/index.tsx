@@ -51,6 +51,17 @@ export const UnitInput = defineComponent({
 		const initialValue = props.styleData[props.styleKey];
 
 		watch(
+			() => props.styleData,
+			(newVal) => {
+				const { num: initialNum, unit: initialUnit } = parseValueAndUnit(
+					newVal[props.styleKey]
+				);
+				numberValue.value = initialNum;
+				unitValue.value = initialUnit;
+			}
+		);
+
+		watch(
 			() => props.styleKey,
 			(newVal) => {
 				const { num: initialNum, unit: initialUnit } = parseValueAndUnit(

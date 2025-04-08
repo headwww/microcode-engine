@@ -1,4 +1,4 @@
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType, ref, watch } from 'vue';
 import { RadioGroup, RadioButton, Popover } from 'ant-design-vue';
 import './index.scss';
 import { StyleData } from '../../types';
@@ -56,6 +56,13 @@ export const Row = defineComponent({
 			typeof props.value !== 'string'
 				? props.styleData && props.styleData[props.styleKey]
 				: props.value
+		);
+
+		watch(
+			() => props.styleData,
+			(newVal) => {
+				value.value = newVal[props.styleKey];
+			}
 		);
 
 		return () => {

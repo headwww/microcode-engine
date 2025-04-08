@@ -1,8 +1,9 @@
 import { computed, defineComponent, PropType, ref } from 'vue';
-import { Collapse } from 'ant-design-vue';
+import { Collapse, Button, Popover } from 'ant-design-vue';
 import { omit } from 'lodash-es';
-import { Background, Border, Font, Layout, Position } from './items';
+import { Background, Border, CSSCode, Font, Layout, Position } from './items';
 import { StyleData } from './types';
+
 import './index.scss';
 
 // TODO 先不实现
@@ -45,7 +46,6 @@ export const StyleSetter = defineComponent({
 
 		const onStyleChange = (styleDataList: StyleData[]) => {
 			const newStyleData = { ...styleData.value };
-
 			styleDataList?.forEach((item) => {
 				if (item.value === undefined || item.value == null) {
 					delete newStyleData[item.styleKey];
@@ -53,7 +53,6 @@ export const StyleSetter = defineComponent({
 					newStyleData[item.styleKey] = item.value;
 				}
 			});
-
 			styleData.value = newStyleData;
 		};
 
@@ -62,6 +61,27 @@ export const StyleSetter = defineComponent({
 
 			return (
 				<div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+					<Popover
+						destroyTooltipOnHide
+						trigger="click"
+						placement="leftTop"
+						arrow={false}
+						overlayInnerStyle={{ padding: '10px' }}
+					>
+						{{
+							default: () => <Button type="primary">源码编辑</Button>,
+							content: () => (
+								<div>
+									<CSSCode
+										styleData={styleData.value}
+										onStyleChange={(v) => {
+											styleData.value = v;
+										}}
+									/>
+								</div>
+							),
+						}}
+					</Popover>
 					<Collapse
 						v-model:activeKey={activeKey.value}
 						class="mtc-setter-collapse"
