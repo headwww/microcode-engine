@@ -17,6 +17,7 @@ import {
 	watch,
 	watchEffect,
 	triggerRef,
+	toRaw,
 } from 'vue';
 import { INode } from '@arvin-shu/microcode-designer';
 import config from './config';
@@ -139,7 +140,7 @@ export const Renderer = defineComponent({
 				props.onCompGetCtx?.(schema, inst);
 			},
 			rerender: debounce(() => {
-				const { id } = props.schema;
+				const { id } = toRaw(props).schema;
 				const node = id && getNode(id);
 				if (node) {
 					const newSchema = exportSchema<IPublicTypeContainerSchema>(node);

@@ -89,5 +89,6 @@ module.exports = {
         "prefer-destructuring": 0,
         "guard-for-in": 0,
         "prefer-spread": 0,
+        "no-template-curly-in-string": 0,
     },
 }

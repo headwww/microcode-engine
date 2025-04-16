@@ -29,7 +29,9 @@ export const SegmentedSetter = defineComponent({
 				value={props.value}
 				options={props.options}
 				block={props.block}
-				onChange={(val: any) => props.onChange?.(val)}
+				onChange={(val: any) => {
+					props.onChange?.(val);
+				}}
 			/>
 		);
 	},

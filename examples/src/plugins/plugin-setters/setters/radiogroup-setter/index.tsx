@@ -26,6 +26,10 @@ export const RadioGroupSetter = defineComponent({
 			type: Function as PropType<(val: any) => void>,
 			required: true,
 		},
+		size: {
+			type: String as PropType<'default' | 'small' | 'large'>,
+			default: 'default',
+		},
 	},
 	setup(props) {
 		const dataSource = props.options.map((item: Option | string) => {
@@ -43,6 +47,7 @@ export const RadioGroupSetter = defineComponent({
 
 		return () => (
 			<Radio.Group
+				size={props.size}
 				value={props.value}
 				disabled={props.disabled}
 				onChange={(e: any) => props.onChange(e.target.value)}

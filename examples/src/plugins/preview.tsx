@@ -4,7 +4,6 @@ import MicrocodeRenderer from '@arvin-shu/microcode-renderer-core';
 import { IPublicEnumTransformStage } from '@arvin-shu/microcode-types';
 import { material, project } from '@arvin-shu/microcode-engine';
 import { AssetLoader, buildComponents } from '@arvin-shu/microcode-utils';
-import { TestTable } from './materials/table';
 import { createAxiosFetchHandler } from '../fetch';
 
 export const Preview = defineComponent({
@@ -74,24 +73,24 @@ export const Preview = defineComponent({
 						open.value = false;
 					}}
 				>
-					<Suspense>
-						<MicrocodeRenderer
-							schema={schema.value}
-							components={{
-								LtButton: Button,
-								TestTable,
-								...components.value,
-							}}
-							appHelper={{
-								requestHandlersMap: {
+					{components.value && (
+						<Suspense>
+							<MicrocodeRenderer
+								schema={schema.value}
+								components={{
+									...components.value,
+								}}
+								appHelper={{
+									requestHandlersMap: {
+										fetch: createAxiosFetchHandler(),
+									},
+								}}
+								requestHandlersMap={{
 									fetch: createAxiosFetchHandler(),
-								},
-							}}
-							requestHandlersMap={{
-								fetch: createAxiosFetchHandler(),
-							}}
-						></MicrocodeRenderer>
-					</Suspense>
+								}}
+							></MicrocodeRenderer>
+						</Suspense>
+					)}
 				</Drawer>
 			</div>
 		);
