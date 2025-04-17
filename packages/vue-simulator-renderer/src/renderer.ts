@@ -1,6 +1,7 @@
 import {
 	App,
 	ComponentPublicInstance,
+	computed,
 	createApp,
 	defineComponent,
 	h,
@@ -37,6 +38,8 @@ import {
 	getSubComponent,
 	setNativeSelection,
 	compatibleLegaoSchema,
+	exportSchema,
+	parseFileNameToPath,
 } from './utils';
 import {
 	ComponentRecord,
@@ -65,16 +68,33 @@ export class DocumentInstance {
 
 	timestamp = ref(Date.now());
 
+	private readonly computedId = computed(() => this.document.id);
+
 	get id() {
-		return this.document.id;
+		return this.computedId.value;
 	}
+
+	private readonly computedSchema = computed(() => {
+		// eslint-disable-next-line no-void
+		void this.timestamp.value;
+		return (
+			exportSchema(this.document) ?? {
+				fileName: '/',
+				componentName: 'Page',
+			}
+		);
+	});
 
 	get schema(): any {
-		return this.document.export('render');
+		return this.computedSchema.value;
 	}
 
+	private readonly computedPath = computed(() =>
+		parseFileNameToPath(this.document.fileName ?? '')
+	);
+
 	get path(): string {
-		return `/${this.document.fileName}`;
+		return this.computedPath.value;
 	}
 
 	getNode(id: string) {
@@ -337,14 +357,30 @@ export class SimulatorRendererContainer {
 			host.watchEffect(async () => {
 				this._documentInstances.value = host.project.documents.map(
 					(doc: any) => {
+						// let inst = this.documentInstanceMap.get(doc.id);
+						// if (inst) {
+						// 	inst.document = doc;
+						// }
+						// if (!inst) {
+						// 	inst = new DocumentInstance(this, doc);
+						// 	this.documentInstanceMap.set(doc.id, inst);
+						// } else if (this.router.hasRoute(inst.id)) {
+						// 	this.router.removeRoute(inst.id);
+						// }
 						let inst = this.documentInstanceMap.get(doc.id);
-						if (inst) {
-							inst.document = doc;
-						}
 						if (!inst) {
+							if (this.documentInstanceMap.size > 0) {
+								this.documentInstanceMap.forEach((inst) => {
+									if (this.router.hasRoute(inst.id)) {
+										this.router.removeRoute(inst.id);
+									}
+								});
+							}
 							inst = new DocumentInstance(this, doc);
 							this.documentInstanceMap.set(doc.id, inst);
-						} else if (this.router.hasRoute(inst.id)) {
+						}
+
+						if (this.router.hasRoute(inst.id)) {
 							this.router.removeRoute(inst.id);
 						}
 						this.router.addRoute({

@@ -39,6 +39,11 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		loading: {
+			type: Boolean,
+			default: false,
+		},
+		data: Array,
 	},
 	setup(props) {
 		const columns = computed(() =>
@@ -60,6 +65,7 @@ export default defineComponent({
 				stripe,
 				showOverflow,
 				virtualScroll,
+				loading,
 			} = props;
 			return {
 				// 显示溢出 建议开启优化渲染性能
@@ -69,6 +75,7 @@ export default defineComponent({
 				size,
 				align,
 				stripe,
+				loading,
 				// 虚拟滚动 只通过一个virtualScroll参数来控制 默认开启
 				virtualYConfig: {
 					enabled: virtualScroll,
@@ -99,13 +106,9 @@ export default defineComponent({
 					{...baseConfig.value}
 					columnConfig={columnConfig.value}
 					columns={columns.value}
-					data={mock}
+					data={props.data}
 				></VxeGrid>
 			</div>
 		);
 	},
 });
-
-const mock = Array.from({ length: 1000 }, (_, index) => ({
-	id: `${index + 1}测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试`,
-}));

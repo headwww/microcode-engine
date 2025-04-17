@@ -6,3 +6,6 @@ export * from './closest-node';
 export * from './build-components';
 export * from './navtive-selection';
 export * from './schema';
+export * from './path';
+export * from './build-utils';
+export * from './deep-merge';

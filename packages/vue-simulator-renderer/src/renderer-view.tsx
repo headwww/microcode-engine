@@ -1,4 +1,11 @@
-import { defineComponent, h, PropType, renderSlot, Suspense } from 'vue';
+import {
+	defineComponent,
+	h,
+	markRaw,
+	PropType,
+	renderSlot,
+	Suspense,
+} from 'vue';
 import { RouterView } from 'vue-router';
 import MicrocodeRenderer from '@arvin-shu/microcode-renderer-core';
 import { DocumentInstance, SimulatorRendererContainer } from './renderer';
@@ -70,7 +77,7 @@ export const Renderer = defineComponent({
 
 	setup(props) {
 		return () => {
-			const { documentInstance, simulator } = props;
+			const { documentInstance, simulator } = markRaw(props);
 			const { schema, key, container } = documentInstance;
 			const {
 				designMode,

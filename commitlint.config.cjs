@@ -3,8 +3,7 @@ module.exports = {
     rules: {
         'type-enum': [
             2,
-            'always',
-            [
+            'always', [
                 // 编译相关的修改，例如发布版本，对项目构建或者依赖的改动
                 'build',
                 // 新功能(feature)

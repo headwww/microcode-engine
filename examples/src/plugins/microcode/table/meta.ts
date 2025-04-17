@@ -12,6 +12,94 @@ export default {
 	configure: {
 		props: [
 			{
+				name: 'data',
+				title: '数据源',
+				display: 'block',
+				setter: 'JsonSetter',
+			},
+			{
+				name: 'loading',
+				title: '加载动画',
+				setter: 'BoolSetter',
+			},
+			{
+				name: 'columns',
+				title: '表格列',
+				setter: {
+					componentName: 'ArraySetter',
+					props: {
+						itemSetter: {
+							componentName: 'ObjectSetter',
+							extraProps: {
+								supportVariable: false,
+							},
+							initialValue: () => ({
+								title: '标题',
+								width: 200,
+							}),
+							props: {
+								config: {
+									items: [
+										{
+											name: 'title',
+											title: '列标题',
+											propType: 'string',
+											isRequired: true,
+											setter: 'StringSetter',
+										},
+										{
+											name: 'field',
+											title: '列字段',
+											isRequired: true,
+											propType: 'string',
+											setter: 'StringSetter',
+										},
+										{
+											name: 'width',
+											title: '列宽',
+											setter: {
+												componentName: 'NumberSetter',
+												props: {
+													min: 0,
+												},
+											},
+										},
+										{
+											name: 'sortable',
+											title: '排序',
+											setter: 'BoolSetter',
+										},
+										{
+											name: 'fixed',
+											title: '固定列',
+											setter: {
+												componentName: 'SelectSetter',
+												props: {
+													options: [
+														{
+															title: '不固定',
+															value: '',
+														},
+														{
+															title: '左固定',
+															value: 'left',
+														},
+														{
+															title: '右固定',
+															value: 'right',
+														},
+													],
+												},
+											},
+										},
+									],
+								},
+							},
+						},
+					},
+				},
+			},
+			{
 				title: '外观',
 				display: 'accordion',
 				type: 'group',
@@ -157,83 +245,6 @@ export default {
 						},
 					},
 				],
-			},
-			{
-				name: 'columns',
-				title: '表格列',
-				setter: {
-					componentName: 'ArraySetter',
-					props: {
-						itemSetter: {
-							componentName: 'ObjectSetter',
-							extraProps: {
-								supportVariable: false,
-							},
-							initialValue: () => ({
-								title: '标题',
-								width: 200,
-							}),
-							props: {
-								config: {
-									items: [
-										{
-											name: 'title',
-											title: '列标题',
-											propType: 'string',
-											isRequired: true,
-											setter: 'StringSetter',
-										},
-										{
-											name: 'field',
-											title: '列字段',
-											isRequired: true,
-											propType: 'string',
-											setter: 'StringSetter',
-										},
-										{
-											name: 'width',
-											title: '列宽',
-											setter: {
-												componentName: 'NumberSetter',
-												props: {
-													min: 0,
-												},
-											},
-										},
-										{
-											name: 'sortable',
-											title: '排序',
-											setter: 'BoolSetter',
-										},
-										{
-											name: 'fixed',
-											title: '固定列',
-											setter: {
-												componentName: 'SelectSetter',
-												props: {
-													options: [
-														{
-															title: '不固定',
-															value: '',
-														},
-														{
-															title: '左固定',
-															value: 'left',
-														},
-														{
-															title: '右固定',
-															value: 'right',
-														},
-													],
-												},
-											},
-										},
-									],
-								},
-							},
-						},
-					},
-				},
 			},
 		],
 	},
