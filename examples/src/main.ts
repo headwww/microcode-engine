@@ -64,9 +64,9 @@ await init(preference, {
 	supportVariableGlobally: true,
 	enableCanvasLock: true,
 	simulatorUrl: [
-		// `http://${window.location.host}/scripts/simulator/js/index.min.js`,
+		`http://${window.location.host}/scripts/simulator/js/index.min.js`,
 		// `http://127.0.0.1:8080/dist/dist/js/index.js?t=${Date.now()}`,
-		`http://192.168.1.59:8080/dist/dist/js/index.js?t=${Date.now()}`,
+		// `http://192.168.1.59:8080/dist/dist/js/index.js?t=${Date.now()}`,
 	],
 } as any);
 
