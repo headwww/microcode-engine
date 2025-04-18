@@ -462,7 +462,7 @@ export class Prop implements IProp {
 		this._value.value = val;
 		this._code = null;
 		const t = typeof val;
-		if (val === null) {
+		if (val == null) {
 			this._type.value = 'literal';
 		} else if (t === 'string' || t === 'number' || t === 'boolean') {
 			this._type.value = 'literal';
