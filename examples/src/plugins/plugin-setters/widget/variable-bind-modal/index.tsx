@@ -202,12 +202,13 @@ export const VariableBindModal = defineComponent({
 				Object.prototype.toString.call(fieldValue) === '[object Object]'
 					? fieldValue.mock
 					: fieldValue;
+
 			field.value.setValue(value);
 		};
 
 		function renderFooter() {
 			return (
-				<div style="display: flex; justify-content: space-between;">
+				<div class="variable-modal-footer">
 					<Button danger onClick={removeTheBinding}>
 						移除绑定
 					</Button>

@@ -1,6 +1,6 @@
 {
 	"name": "@arvin-shu/microcode-designer",
-	"version": "1.0.0",
+	"version": "1.0.10",
 	"description": "microcode designer",
 	"main": "lib/index.js",
 	"module": "es/index.js",

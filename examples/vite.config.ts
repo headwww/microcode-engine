@@ -14,7 +14,8 @@ export default defineConfig({
 			'/ltApi': {
 				// target: 'http://ltscn.kmdns.net:9092/',
 				// target: 'http://192.168.1.241:9090/',
-				target: 'http://192.168.1.153:8080/',
+				// target: 'http://192.168.1.153:8080/',
+				target: 'http://192.168.1.244:9094/',
 				changeOrigin: true,
 				rewrite: (path) => path.replace(/^\/ltApi/, ''),
 			},
