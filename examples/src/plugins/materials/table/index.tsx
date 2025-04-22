@@ -1,11 +1,14 @@
 import { computed, defineComponent, PropType } from 'vue';
-import { VxeGrid, VxeGridPropTypes, VxeTablePropTypes } from 'vxe-table';
-
+import { VxeGrid, VxeTablePropTypes } from 'vxe-table';
+import { ColumnProps } from './ColumnProps';
+import { useCellEdit, useCellFormat, useCellRender } from './render';
+// 字符，数字，布尔，日期（日期格式，时间选择器），枚举，实体（数据源，），
+// 图片先支持二维码打印
 export default defineComponent({
 	name: 'LtTable',
 	props: {
 		columns: {
-			type: Array as PropType<VxeGridPropTypes.Columns>,
+			type: Array as PropType<ColumnProps[]>,
 		},
 		border: {
 			type: String as PropType<VxeTablePropTypes.Border>,
@@ -35,27 +38,50 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
-		drag: {
-			type: Boolean,
-			default: true,
-		},
 		loading: {
 			type: Boolean,
 			default: false,
+		},
+		rowStyle: {
+			type: [Function, Object] as PropType<VxeTablePropTypes.RowStyle>,
+		},
+		cellStyle: {
+			type: [Function, Object] as PropType<VxeTablePropTypes.CellStyle>,
+		},
+		editConfig: {
+			type: Object as PropType<VxeTablePropTypes.EditConfig>,
+		},
+		columnConfig: {
+			type: Object as PropType<VxeTablePropTypes.ColumnConfig>,
+		},
+		rowConfig: {
+			type: Object as PropType<VxeTablePropTypes.RowConfig>,
 		},
 		data: Array,
 	},
 	setup(props) {
 		const columns = computed(() =>
-			props.columns?.filter(Boolean).map((item) => ({
-				...item,
-				showOverflow: true,
-			}))
+			props.columns?.filter(Boolean).map((item) => {
+				const { cellRender } = useCellRender(item);
+				const { formatter } = useCellFormat(item);
+				const { editRender } = useCellEdit(item);
+				const { tipContent } = item;
+
+				return {
+					...item,
+					showOverflow: true,
+					cellRender,
+					editRender,
+					formatter: formatter || null,
+					titleSuffix: tipContent
+						? {
+								content: tipContent,
+							}
+						: null,
+				} as any;
+			})
 		);
 
-		/**
-		 * 基础样式
-		 */
 		const baseConfig = computed(() => {
 			const {
 				border,
@@ -66,6 +92,8 @@ export default defineComponent({
 				showOverflow,
 				virtualScroll,
 				loading,
+				rowStyle,
+				cellStyle,
 			} = props;
 			return {
 				// 显示溢出 建议开启优化渲染性能
@@ -89,14 +117,8 @@ export default defineComponent({
 				tooltipConfig: {
 					enterable: true,
 				},
-			};
-		});
-
-		const columnConfig = computed(() => {
-			const { drag } = props;
-			return {
-				resizable: true,
-				drag,
+				rowStyle,
+				cellStyle,
 			};
 		});
 
@@ -104,7 +126,10 @@ export default defineComponent({
 			<div style={{ height: '100%', overflow: 'hidden' }}>
 				<VxeGrid
 					{...baseConfig.value}
-					columnConfig={columnConfig.value}
+					keepSource={true}
+					columnConfig={props.columnConfig}
+					editConfig={props.editConfig}
+					rowConfig={props.rowConfig}
 					columns={columns.value}
 					data={props.data}
 				></VxeGrid>

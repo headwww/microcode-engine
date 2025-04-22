@@ -4,7 +4,7 @@ import MicrocodeRenderer from '@arvin-shu/microcode-renderer-core';
 import { IPublicEnumTransformStage } from '@arvin-shu/microcode-types';
 import { material, project } from '@arvin-shu/microcode-engine';
 import { AssetLoader, buildComponents } from '@arvin-shu/microcode-utils';
-import { createAxiosFetchHandler } from '../fetch';
+import { appHelper, createAxiosFetchHandler } from '../fetch';
 
 export const Preview = defineComponent({
 	name: 'Preview',
@@ -80,11 +80,7 @@ export const Preview = defineComponent({
 								components={{
 									...components.value,
 								}}
-								appHelper={{
-									requestHandlersMap: {
-										fetch: createAxiosFetchHandler(),
-									},
-								}}
+								appHelper={appHelper}
 								requestHandlersMap={{
 									fetch: createAxiosFetchHandler(),
 								}}

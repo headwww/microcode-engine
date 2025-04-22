@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { MicrocodeWorkbench } from '@arvin-shu/microcode-engine';
 import { EditorConfig } from '@arvin-shu/microcode-types';
-import { http } from './utils/http';
 
-http.post({ url: 'api/login', data: ['system', '123456'] });
+// import { http } from './utils/http';
+// http.post({ url: 'api/login', data: ['system', '123456'] });
 
 const config: EditorConfig = {
 	lifeCycles: {

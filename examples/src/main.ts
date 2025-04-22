@@ -22,6 +22,7 @@ import './mock-umd';
 import './rest.scss';
 import '@arvin-shu/microcode-theme/src/index.scss';
 import 'ant-design-vue/dist/reset.css';
+import './plugins/materials/_global';
 
 window.Vue = Vue;
 const app = Vue.createApp(App).use(VxeUIAll).use(VxeUITable);

@@ -2,7 +2,7 @@
  * @Author: shuwen 1243889238@qq.com
  * @Date: 2025-04-08 14:35:21
  * @LastEditors: shuwen 1243889238@qq.com
- * @LastEditTime: 2025-04-17 17:28:29
+ * @LastEditTime: 2025-04-22 20:44:45
  * @FilePath: /microcode-engine/examples/src/plugins/schema.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -51,8 +51,8 @@ export default {
 			dataSource: {
 				list: [
 					{
-						id: 'dp_m9jm9v1a',
-						description: 'api/orderClassesService/findOrderClassessByPage',
+						id: 'findOrderClassessByPage',
+						description: '获取班次',
 						isInit: false,
 						isSync: false,
 						options: {
@@ -69,11 +69,29 @@ export default {
 							value: 'function dataHandler(res) { \n\treturn res\n}\n',
 						},
 					},
+					{
+						id: 'login',
+						description: '登录',
+						isInit: false,
+						isSync: false,
+						options: {
+							uri: 'api/login',
+							method: 'POST',
+							params: {
+								type: 'JSExpression',
+								value: "['system', '123456']",
+							},
+						},
+						dataHandler: {
+							type: 'JSFunction',
+							value: 'function dataHandler(res) { \n\treturn res\n}\n',
+						},
+					},
 				],
 			},
 			css: 'body {\n }\n\n',
 			originCode:
-				"import { defineComponent } from 'vue';\n\nexport default defineComponent({\n  data: () => ({\n    data: []\n  }),\n  watch: {\n  },\n  mounted() {\n    this.data = this.dataSourceMap.dp_m9jm9v1a.data.result\n    console.log('did mount', this);\n  },\n  methods: {\n    onClick_m9jmiqf6(event, extParams) {\n      // 点击按钮时的回调\n      console.log('onClick', this);\n    }\n  },\n})\n",
+				"import { defineComponent } from 'vue';\n\nexport default defineComponent({\n  data: () => ({\n    data: []\n  }),\n  watch: {\n  },\n  mounted() {\n    console.log('did mount', this);\n  },\n  methods: {\n    onClick_m9jmiqf6(event, extParams) {\n      // 点击按钮时的回调\n      this.dataSourceMap.findOrderClassessByPage.load().then((resp)=>{\n        this.data = resp.result\n      })\n      console.log('onClick', this);\n    },\n    rowStyle_m9s2rm1y(params) {\n            const { row, column} = params\n      \n      if (column.field==='name'&&this.__appHelper.lodash.get(row,'name')==='中班') {\n        return {\n          color:\"red\"\n        }\n\n      }\n      return {}\n      \n    },\n    login(event,extParams){\n      this.dataSourceMap.login.load()\n   }\n  },\n})\n",
 			hidden: false,
 			title: '',
 			isLocked: false,
@@ -83,12 +101,22 @@ export default {
 				onClick_m9jmiqf6: {
 					type: 'JSFunction',
 					value:
-						"function (event, extParams) {\n      // 点击按钮时的回调\n      console.log('onClick', this);\n    }",
+						"function (event, extParams) {\n      // 点击按钮时的回调\n      this.dataSourceMap.findOrderClassessByPage.load().then((resp)=>{\n        this.data = resp.result\n      })\n      console.log('onClick', this);\n    }",
+				},
+				rowStyle_m9s2rm1y: {
+					type: 'JSFunction',
+					value:
+						"function (params) {\n            const { row, column} = params\n      \n      if (column.field==='name'&&this.__appHelper.lodash.get(row,'name')==='中班') {\n        return {\n          color:\"red\"\n        }\n\n      }\n      return {}\n      \n    }",
+				},
+				login: {
+					type: 'JSFunction',
+					value:
+						'function (event,extParams){\n      this.dataSourceMap.login.load()\n   }',
 				},
 			},
 			meta: {
 				originCode:
-					"import { defineComponent } from 'vue';\n\nexport default defineComponent({\n  data: () => ({\n    data: []\n  }),\n  watch: {\n  },\n  mounted() {\n    this.data = this.dataSourceMap.dp_m9jm9v1a.data.result\n    console.log('did mount', this);\n  },\n  methods: {\n    onClick_m9jmiqf6(event, extParams) {\n      // 点击按钮时的回调\n      console.log('onClick', this);\n    }\n  },\n})\n",
+					"import { defineComponent } from 'vue';\n\nexport default defineComponent({\n  data: () => ({\n    data: []\n  }),\n  watch: {\n  },\n  mounted() {\n    console.log('did mount', this);\n  },\n  methods: {\n    onClick_m9jmiqf6(event, extParams) {\n      // 点击按钮时的回调\n      this.dataSourceMap.findOrderClassessByPage.load().then((resp)=>{\n        this.data = resp.result\n      })\n      console.log('onClick', this);\n    },\n    rowStyle_m9s2rm1y(params) {\n           const { row, column} = params\n      \n      if (column.field==='name'&&this.__appHelper.lodash.get(row,'name')==='中班') {\n        return {\n          color:\"red\"\n        }\n\n      }\n      return {}\n      \n    },\n    login(event,extParams){\n      this.dataSourceMap.login.load()\n   }\n  },\n})\n",
 			},
 			state: {
 				data: [],
@@ -96,16 +124,58 @@ export default {
 			lifeCycles: {
 				mounted: {
 					type: 'JSFunction',
-					value:
-						"function () {\n    this.data = this.dataSourceMap.dp_m9jm9v1a.data.result\n    console.log('did mount', this);\n  }",
+					value: "function () {\n    console.log('did mount', this);\n  }",
 				},
 			},
 			children: [
 				{
 					componentName: 'Button',
+					id: 'node_ocm9s3tefp1',
+					props: {
+						children: '登录',
+						htmlType: 'button',
+						size: 'middle',
+						shape: 'default',
+						block: false,
+						danger: false,
+						ghost: false,
+						disabled: false,
+						__events: {
+							eventDataList: [
+								{
+									type: 'componentEvent',
+									name: 'onClick',
+									relatedEventName: 'login',
+									paramStr: '{}',
+								},
+							],
+							eventList: [
+								{
+									name: 'onClick',
+									template:
+										"onClick(event,${extParams}){\n// 点击按钮时的回调\nconsole.log('onClick', event);}",
+									disabled: true,
+								},
+							],
+						},
+						onClick: {
+							type: 'JSFunction',
+							value:
+								'function(){return this.login.apply(this,Array.prototype.slice.call(arguments).concat([{}])) }',
+						},
+					},
+					docId: 'docm9s3tefp',
+					hidden: false,
+					title: '',
+					isLocked: false,
+					condition: true,
+					conditionGroup: '',
+				},
+				{
+					componentName: 'Button',
 					id: 'node_ocm9jmiqb61',
 					props: {
-						children: '按钮',
+						children: '刷新',
 						htmlType: 'button',
 						size: 'middle',
 						shape: 'default',
@@ -154,9 +224,35 @@ export default {
 						},
 						columns: [
 							{
-								title: '标题',
+								title: 'id',
 								width: 200,
 								field: 'id',
+								dataType: 'text',
+								editType: 'text',
+							},
+							{
+								title: '班次',
+								width: 200,
+								field: 'name',
+							},
+							{
+								title: '编码',
+								width: 200,
+								dataType: 'enum',
+								editType: 'select',
+								enumOptions: [
+									{
+										text: '10',
+										value: 10,
+										color: 'blue',
+									},
+									{
+										text: '1',
+										value: 1,
+										color: 'red',
+									},
+								],
+								field: 'version',
 							},
 						],
 						stripe: true,
@@ -167,7 +263,25 @@ export default {
 						border: 'full',
 						size: 'mini',
 						align: 'left',
+						cellStyle: {
+							type: 'JSFunction',
+							value:
+								'function(){ return this.rowStyle_m9s2rm1y.apply(this,Array.prototype.slice.call(arguments).concat([{}])) }',
+						},
+						editConfig: {
+							enabled: true,
+							trigger: 'click',
+							mode: 'cell',
+							showAsterisk: true,
+							showIcon: true,
+							showUpdateStatus: true,
+							showInsertStatus: true,
+							autoPos: true,
+							autoFocus: true,
+							autoClear: true,
+						},
 					},
+					docId: 'docm9s2rlw0',
 					hidden: false,
 					title: '',
 					isLocked: false,

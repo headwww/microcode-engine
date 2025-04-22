@@ -1,6 +1,7 @@
 export { default as Button } from './button';
 export { default as Layout } from './layout';
 export { default as Table } from './table';
+export { default as BarCode } from './bar-code';
 export {
 	Typography,
 	TypographyText,

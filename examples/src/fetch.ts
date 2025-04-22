@@ -1,4 +1,5 @@
 // import axios from 'axios';
+import * as lodash from 'lodash-es';
 import { http } from './utils/http';
 
 // api/orderClassesService/findOrderClassessByPage
@@ -29,5 +30,8 @@ export function createAxiosFetchHandler(config?: Record<string, unknown>) {
 export const appHelper = {
 	requestHandlersMap: {
 		fetch: createAxiosFetchHandler(),
+	},
+	lodash: {
+		...lodash,
 	},
 };
