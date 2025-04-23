@@ -16,15 +16,19 @@ import InitSkeleton from './plugins/plugin-init-skeleton';
 import InitMaterial from './plugins/plugin-material';
 import InitSetter from './plugins/plugin-init-setter';
 import { appHelper, createAxiosFetchHandler } from './fetch';
+import VxeUIPluginRenderAntd from './vxe-antd-plugin';
 import 'vxe-pc-ui/lib/style.css';
 import 'vxe-table/lib/style.css';
 import './mock-umd';
+
 import './rest.scss';
 import '@arvin-shu/microcode-theme/src/index.scss';
 import 'ant-design-vue/dist/reset.css';
 import './plugins/materials/_global';
+import './plugin-render-antd.scss';
 
 window.Vue = Vue;
+VxeUIAll.use(VxeUIPluginRenderAntd);
 const app = Vue.createApp(App).use(VxeUIAll).use(VxeUITable);
 
 const preference = new Map();

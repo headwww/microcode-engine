@@ -1,5 +1,6 @@
 import { computed, defineComponent, PropType } from 'vue';
 import { VxeGrid, VxeTablePropTypes } from 'vxe-table';
+import { omit } from 'lodash-es';
 import { ColumnProps } from './ColumnProps';
 import { useCellEdit, useCellFormat, useCellRender } from './render';
 // 字符，数字，布尔，日期（日期格式，时间选择器），枚举，实体（数据源，），
@@ -67,18 +68,31 @@ export default defineComponent({
 				const { editRender } = useCellEdit(item);
 				const { tipContent } = item;
 
-				return {
-					...item,
-					showOverflow: true,
+				const column = {
+					...omit(item, [
+						'dataType',
+						'editType',
+						'dateFormatter',
+						'timeFormatter',
+						'digits',
+						'boolOptions',
+						'enumOptions',
+						'codeType',
+						'tipContent',
+					]),
 					cellRender,
 					editRender,
-					formatter: formatter || null,
 					titleSuffix: tipContent
 						? {
 								content: tipContent,
 							}
 						: null,
-				} as any;
+					params: {
+						// TODO 格式化暂时先当作额外参数来设置，直接在formatter中设置会有问题
+						formatter,
+					},
+				};
+				return column as any;
 			})
 		);
 
@@ -132,6 +146,26 @@ export default defineComponent({
 					rowConfig={props.rowConfig}
 					columns={columns.value}
 					data={props.data}
+					editRules={{
+						id: [
+							{
+								required: true,
+								message: '请输入ID',
+							},
+						],
+						version: [
+							{
+								required: true,
+								message: '请输入ID',
+							},
+						],
+						updated: [
+							{
+								required: true,
+								message: '请输入ID',
+							},
+						],
+					}}
 				></VxeGrid>
 			</div>
 		);

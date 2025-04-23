@@ -4,7 +4,7 @@ import { isArray, isNumber } from 'lodash-es';
 import XEUtils from 'xe-utils';
 // 保留几位小数、默认两位，和加单位
 VxeUI.formats.add('LtFixedUnitFormatter', {
-	cellFormatMethod({ cellValue }, digits, unit = '') {
+	tableCellFormatMethod({ cellValue }, digits, unit = '') {
 		if (digits) {
 			if (cellValue || cellValue === 0) {
 				return XEUtils.commafy(XEUtils.toNumber(cellValue), { digits }) + unit;
@@ -17,7 +17,7 @@ VxeUI.formats.add('LtFixedUnitFormatter', {
 
 // 格式化日期默认是yyyy-MM-dd HH:mm:ss
 VxeUI.formats.add('LtDateFormatter', {
-	cellFormatMethod({ cellValue }, format = 'YYYY-MM-DD HH:mm:ss') {
+	tableCellFormatMethod({ cellValue }, format = 'YYYY-MM-DD HH:mm:ss') {
 		if (cellValue) {
 			return dayjs(cellValue).format(format);
 		}
@@ -27,7 +27,7 @@ VxeUI.formats.add('LtDateFormatter', {
 
 // 格式化time 时分秒
 VxeUI.formats.add('LtTimeFormatter', {
-	cellFormatMethod({ cellValue }) {
+	tableCellFormatMethod({ cellValue }) {
 		if (isNumber(cellValue)) {
 			return dayjs(cellValue).format('HH:mm:ss');
 		}
@@ -35,9 +35,9 @@ VxeUI.formats.add('LtTimeFormatter', {
 	},
 });
 
-// 格式化枚举 bool ['LtFormatterEnumKeyValue',[{text:string,value:string},{key:string,value:string}]]
+// 格式化枚举 bool ['LtFormatterEnumKeyValue',[{label:string,value:string},{label:string,value:string}]]
 VxeUI.formats.add('LtOptionFormatter', {
-	cellFormatMethod({ cellValue }, options) {
+	tableCellFormatMethod({ cellValue }, options) {
 		if (options && isArray(options)) {
 			const obj = options.find((item) => {
 				if (item.value !== undefined) {
@@ -53,9 +53,8 @@ VxeUI.formats.add('LtOptionFormatter', {
 				}
 				return false;
 			});
-
 			if (obj && obj.value !== undefined) {
-				return obj.text;
+				return obj.label;
 			}
 			return cellValue;
 		}

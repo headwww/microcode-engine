@@ -79,6 +79,12 @@ export default {
 			],
 		},
 		{
+			package: 'vxe-table-plugin-render-antd',
+			version: '1.0.0',
+			library: 'vxe-table-plugin-render-antd',
+			urls: [`${root}/vxe-table/4.13.3/plugin-render-antd.css`],
+		},
+		{
 			package: 'dayjs-init',
 			library: 'dayjs-init',
 			version: '1.0.0',

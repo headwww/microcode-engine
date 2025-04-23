@@ -2,7 +2,7 @@
  * @Author: shuwen 1243889238@qq.com
  * @Date: 2025-04-08 14:35:21
  * @LastEditors: shuwen 1243889238@qq.com
- * @LastEditTime: 2025-04-22 20:44:45
+ * @LastEditTime: 2025-04-23 16:54:23
  * @FilePath: /microcode-engine/examples/src/plugins/schema.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -242,17 +242,56 @@ export default {
 								editType: 'select',
 								enumOptions: [
 									{
-										text: '10',
+										label: '10',
 										value: 10,
 										color: 'blue',
 									},
 									{
-										text: '1',
+										label: '1',
 										value: 1,
 										color: 'red',
 									},
 								],
 								field: 'version',
+							},
+							{
+								title: '标题',
+								width: 200,
+								field: 'updated',
+								dataType: 'date',
+								editType: 'date',
+								dateFormatter: 'YYYY-MM-DD HH:mm:ss',
+								timeFormatter: 'HH:mm:ss',
+								boolOptions: [
+									{
+										label: '是',
+										value: true,
+										color: 'blue',
+									},
+									{
+										label: '否',
+										value: false,
+										color: 'red',
+									},
+								],
+								enumOptions: [
+									{
+										label: '测试1',
+										value: 'TEXT1',
+										color: 'blue',
+									},
+									{
+										label: '测试2',
+										value: 'TEXT2',
+										color: 'red',
+									},
+									{
+										label: '测试3',
+										value: 'TEXT3',
+										color: 'green',
+									},
+								],
+								codeType: 'qrCode',
 							},
 						],
 						stripe: true,

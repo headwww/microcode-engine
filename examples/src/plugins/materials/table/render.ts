@@ -29,7 +29,14 @@ export function useCellRender(column: ColumnProps) {
 }
 
 function getProps(column: ColumnProps) {
-	const { dataType = 'text', boolOptions, enumOptions, codeType } = column;
+	const {
+		dataType = 'text',
+		boolOptions,
+		enumOptions,
+		codeType,
+		dateFormatter = 'YYYY-MM-DD HH:mm:ss',
+		timeFormatter = 'HH:mm:ss',
+	} = column;
 	let props: any = {};
 	if (dataType === 'code') {
 		props = {
@@ -44,6 +51,16 @@ function getProps(column: ColumnProps) {
 	if (dataType === 'enum') {
 		props = {
 			options: enumOptions || [],
+		};
+	}
+	if (dataType === 'date') {
+		props = {
+			dateFormatter,
+		};
+	}
+	if (dataType === 'time') {
+		props = {
+			timeFormatter,
 		};
 	}
 
@@ -96,7 +113,7 @@ export function useCellFormat(column: ColumnProps) {
 export function useCellEdit(column: ColumnProps) {
 	const { editType } = column;
 
-	const editRender: any = {
+	let editRender: any = {
 		name: 'LtDefaultRenderTableEdit',
 		props: {
 			...getProps(column),
@@ -105,6 +122,31 @@ export function useCellEdit(column: ColumnProps) {
 	if (editType === 'text') {
 		editRender.name = 'LtTextRenderTableEdit';
 		editRender.props = getProps(column);
+	}
+	if (editType === 'number') {
+		editRender.name = 'LtNumberRenderTableEdit';
+		editRender.props = getProps(column);
+	}
+	if (editType === 'boolean') {
+		editRender.name = 'LtBooleanRenderTableEdit';
+		editRender.props = getProps(column);
+	}
+	if (editType === 'select') {
+		editRender.name = 'LtSelectRenderTableEdit';
+		editRender.props = getProps(column);
+	}
+	if (editType === 'date') {
+		editRender.name = 'LtDateRenderTableEdit';
+		editRender.props = getProps(column);
+	}
+	if (editType === 'time') {
+		editRender.name = 'LtTimeRenderTableEdit';
+		editRender.props = getProps(column);
+	}
+
+	// 禁用编辑 放在在底部判断
+	if (editType === 'disabledEdit') {
+		editRender = null;
 	}
 
 	return { editRender };

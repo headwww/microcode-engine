@@ -26,6 +26,7 @@ export interface ColumnProps extends VxeColumnProps {
 		| 'select'
 		| 'date'
 		| 'time'
+		| 'disabledEdit'
 		| string;
 
 	/**
@@ -70,7 +71,7 @@ export interface ColumnProps extends VxeColumnProps {
  */
 interface Options {
 	// 文本
-	text: string;
+	label: string;
 	// 值
 	value: string;
 	// 颜色

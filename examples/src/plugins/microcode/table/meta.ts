@@ -126,6 +126,10 @@ export default {
 															value: 'number',
 														},
 														{
+															title: '布尔选择器',
+															value: 'boolean',
+														},
+														{
 															title: '下拉选择',
 															value: 'select',
 														},
@@ -138,8 +142,8 @@ export default {
 															value: 'time',
 														},
 														{
-															title: '布尔选择器',
-															value: 'boolean',
+															title: '禁用编辑',
+															value: 'disabledEdit',
 														},
 													],
 												},
@@ -202,10 +206,6 @@ export default {
 														{
 															title: '年',
 															value: 'YYYY年',
-														},
-														{
-															title: '时分秒',
-															value: 'HH:mm:ss',
 														},
 													],
 												},
@@ -270,12 +270,12 @@ export default {
 												componentName: 'JsonSetter',
 												initialValue: () => [
 													{
-														text: '是',
+														label: '是',
 														value: true,
 														color: 'blue',
 													},
 													{
-														text: '否',
+														label: '否',
 														value: false,
 														color: 'red',
 													},
@@ -291,17 +291,17 @@ export default {
 												componentName: 'JsonSetter',
 												initialValue: () => [
 													{
-														text: '测试1',
+														label: '测试1',
 														value: 'TEXT1',
 														color: 'blue',
 													},
 													{
-														text: '测试2',
+														label: '测试2',
 														value: 'TEXT2',
 														color: 'red',
 													},
 													{
-														text: '测试3',
+														label: '测试3',
 														value: 'TEXT3',
 														color: 'green',
 													},
@@ -448,12 +448,12 @@ export default {
 										value: 'click',
 									},
 									{
-										title: '手动触发编辑',
-										value: 'manual',
-									},
-									{
 										title: '双击触发编辑',
 										value: 'dblclick',
+									},
+									{
+										title: '手动触发编辑',
+										value: 'manual',
 									},
 								],
 							},
@@ -553,7 +553,7 @@ export default {
 						name: 'autoClear',
 						title: {
 							label: '自动清除',
-							tip: '当点击表格之外或者非编辑列之后，是否自动清除单元格的激活状态',
+							tip: '建议关闭，开启会影响某些下拉选择器实体选择器的聚焦，当点击表格之外或者非编辑列之后，是否自动清除单元格的激活状态',
 						},
 						setter: {
 							initialValue: true,

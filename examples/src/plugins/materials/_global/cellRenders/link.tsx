@@ -1,9 +1,12 @@
 import { defineComponent } from 'vue';
-import { Button } from 'ant-design-vue';
 
 export default defineComponent({
 	componentName: 'LtLinkRenderTableCell',
 	setup(props, { slots }) {
-		return () => <Button type="link">{slots.default?.()}</Button>;
+		return () => (
+			<span style={{ color: '#1677ff', cursor: 'pointer' }}>
+				{slots.default?.()}
+			</span>
+		);
 	},
 });

@@ -47,8 +47,13 @@ export default defineComponent({
 				const ctx = canvas.getContext('2d');
 				ctx && ctx.clearRect(0, 0, canvas.width, canvas.height);
 			}
-			// 使用 JsBarcode 生成条形码
-			JsBarcode(barcodeRef.value as any, props.value, props.options);
+			try {
+				// 使用 JsBarcode 生成条形码
+				JsBarcode(barcodeRef.value as any, props.value, props.options);
+			} catch (error) {
+				// eslint-disable-next-line no-console
+				console.error(error);
+			}
 		};
 
 		// 组件挂载后首次渲染

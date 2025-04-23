@@ -7,7 +7,6 @@ export default defineComponent({
 	props: {
 		code: {
 			type: String,
-			required: true,
 		},
 		type: {
 			type: String as PropType<'qrCode' | 'barCode'>,
@@ -16,20 +15,26 @@ export default defineComponent({
 	},
 	setup(props) {
 		return () => (
-			<Popover>
-				{{
-					default: () => <span>{props.code}</span>,
-					content: () => (
-						<Fragment>
-							{props.type === 'qrCode' ? (
-								<QRCode value={props.code} />
-							) : (
-								<BarCode value={props.code} />
-							)}
-						</Fragment>
-					),
-				}}
-			</Popover>
+			<Fragment>
+				{props.code === undefined || props.code === null ? (
+					<span>{props.code}</span>
+				) : (
+					<Popover>
+						{{
+							default: () => <span>{props.code}</span>,
+							content: () => (
+								<Fragment>
+									{props.type === 'qrCode' ? (
+										<QRCode value={props.code} />
+									) : (
+										<BarCode value={props.code || ''} />
+									)}
+								</Fragment>
+							),
+						}}
+					</Popover>
+				)}
+			</Fragment>
 		);
 	},
 });

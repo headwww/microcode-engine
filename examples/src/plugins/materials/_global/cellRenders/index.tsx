@@ -1,9 +1,10 @@
-import { VxeUI } from 'vxe-pc-ui';
-import { isObject } from 'lodash-es';
+import { VxeGlobalRendererHandles, VxeUI } from 'vxe-pc-ui';
+import { get, isObject } from 'lodash-es';
 import LtDefaultRenderTableCell from './default';
 import LtLinkRenderTableCell from './link';
 import LtCodeRenderTableCell from './code';
 import LtTagRenderTableCell from './tag';
+import { formatTableCell } from '../utils';
 
 export {
 	LtDefaultRenderTableCell,
@@ -12,120 +13,144 @@ export {
 	LtTagRenderTableCell,
 };
 
-VxeUI.renderer.add('LtDefaultRenderTableCell', {
-	renderTableCell: (renderOpts, params) => {
-		const { row, column, $grid } = params;
-		const cellValue = $grid?.getCellLabel(row, column);
-		if (isObject(cellValue)) {
-			return <span style={{ color: 'red' }}>数据类型不符合</span>;
-		}
-		if (cellValue) {
+VxeUI.renderer.mixin({
+	LtDefaultRenderTableCell: {
+		renderTableCell: (
+			renderOpts: VxeGlobalRendererHandles.RenderTableCellOptions,
+			params: VxeGlobalRendererHandles.RenderTableCellParams
+		) => {
+			const { row, column } = params;
+			let cellValue = get(row, column.field);
+			// 使用通用格式化函数
+			cellValue = formatTableCell({ cellValue, row, column });
+			if (isObject(cellValue)) {
+				return <span style={{ color: 'red' }}>数据类型不符合</span>;
+			}
 			return <LtDefaultRenderTableCell>{cellValue}</LtDefaultRenderTableCell>;
-		}
-		return null;
-	},
-	renderTableDefault: (renderOpts, params) => {
-		const { row, column, $grid } = params;
-		const cellValue = $grid?.getCellLabel(row, column);
-		if (isObject(cellValue)) {
-			return <span style={{ color: 'red' }}>数据类型不符合</span>;
-		}
-		if (cellValue) {
+		},
+
+		renderTableDefault: (
+			renderOpts: VxeGlobalRendererHandles.RenderTableDefaultOptions,
+			params: VxeGlobalRendererHandles.RenderTableDefaultParams
+		) => {
+			const { row, column } = params;
+			let cellValue = get(row, column.field);
+			// 使用通用格式化函数
+			cellValue = formatTableCell({ cellValue, row, column });
+			if (isObject(cellValue)) {
+				return <span style={{ color: 'red' }}>数据类型不符合</span>;
+			}
 			return <LtDefaultRenderTableCell>{cellValue}</LtDefaultRenderTableCell>;
-		}
-		return null;
+		},
 	},
-});
-
-VxeUI.renderer.add('LtLinkRenderTableCell', {
-	renderTableCell: (renderOpts, params) => {
-		const { row, column, $grid } = params;
-		const cellValue = $grid?.getCellLabel(row, column);
-		if (isObject(cellValue)) {
-			return <span style={{ color: 'red' }}>数据类型不符合</span>;
-		}
-		if (cellValue) {
+	LtLinkRenderTableCell: {
+		renderTableCell: (
+			renderOpts: VxeGlobalRendererHandles.RenderTableCellOptions,
+			params: VxeGlobalRendererHandles.RenderTableCellParams
+		) => {
+			const { row, column } = params;
+			let cellValue = get(row, column.field);
+			// 使用通用格式化函数
+			cellValue = formatTableCell({ cellValue, row, column });
+			if (isObject(cellValue)) {
+				return <span style={{ color: 'red' }}>数据类型不符合</span>;
+			}
 			return <LtLinkRenderTableCell>{cellValue}</LtLinkRenderTableCell>;
-		}
-		return null;
-	},
-	renderTableDefault: (renderOpts, params) => {
-		const { row, column, $grid } = params;
-		const cellValue = $grid?.getCellLabel(row, column);
-		if (isObject(cellValue)) {
-			return <span style={{ color: 'red' }}>数据类型不符合</span>;
-		}
-		if (cellValue) {
+		},
+
+		renderTableDefault: (
+			renderOpts: VxeGlobalRendererHandles.RenderTableCellOptions,
+			params: VxeGlobalRendererHandles.RenderTableCellParams
+		) => {
+			const { row, column, $grid } = params;
+			let cellValue = $grid?.getCellLabel(row, column);
+			// 使用通用格式化函数
+			cellValue = formatTableCell({ cellValue, row, column });
+			if (isObject(cellValue)) {
+				return <span style={{ color: 'red' }}>数据类型不符合</span>;
+			}
 			return <LtLinkRenderTableCell>{cellValue}</LtLinkRenderTableCell>;
-		}
-		return null;
+		},
 	},
-});
+	LtTagRenderTableCell: {
+		renderTableCell: (
+			renderOpts: VxeGlobalRendererHandles.RenderTableCellOptions,
+			params: VxeGlobalRendererHandles.RenderTableCellParams
+		) => {
+			const { row, column } = params;
+			let cellValue = get(row, column.field);
+			// 使用通用格式化函数
+			cellValue = formatTableCell({ cellValue, row, column });
+			if (isObject(cellValue)) {
+				return <span style={{ color: 'red' }}>数据类型不符合</span>;
+			}
+			const options = renderOpts.props.options || [];
+			const color = options.find(
+				(item: any) => item.label === cellValue
+			)?.color;
 
-VxeUI.renderer.add('LtTagRenderTableCell', {
-	renderTableCell: (renderOpts, params) => {
-		const { row, column, $grid } = params;
-		const cellValue = $grid?.getCellLabel(row, column);
-		if (isObject(cellValue)) {
-			return <span style={{ color: 'red' }}>数据类型不符合</span>;
-		}
-		const options = renderOpts.props.options || [];
-		const color = options.find((item: any) => item.text === cellValue)?.color;
-
-		if (cellValue) {
 			return (
-				<LtTagRenderTableCell color={color || 'default'}>
-					{cellValue}
-				</LtTagRenderTableCell>
+				<LtTagRenderTableCell
+					color={color || 'default'}
+					value={cellValue}
+				></LtTagRenderTableCell>
 			);
-		}
-		return null;
+		},
+		renderTableDefault: (
+			renderOpts: VxeGlobalRendererHandles.RenderTableCellOptions,
+			params: VxeGlobalRendererHandles.RenderTableCellParams
+		) => {
+			const { row, column, $grid } = params;
+			let cellValue = $grid?.getCellLabel(row, column);
+			// 使用通用格式化函数
+			cellValue = formatTableCell({ cellValue, row, column });
+			if (isObject(cellValue)) {
+				return <span style={{ color: 'red' }}>数据类型不符合</span>;
+			}
+			const options = renderOpts?.props?.options || [];
+			const color = options.find(
+				(item: any) => item.label === cellValue
+			)?.color;
+
+			return (
+				<LtTagRenderTableCell color={color || 'default'} value={cellValue} />
+			);
+		},
 	},
-	renderTableDefault: (renderOpts, params) => {
-		const { row, column, $grid } = params;
-		const cellValue = $grid?.getCellLabel(row, column);
-		if (isObject(cellValue)) {
-			return <span style={{ color: 'red' }}>数据类型不符合</span>;
-		}
-		const options = renderOpts?.props?.options || [];
-		const color = options.find((item: any) => item.text === cellValue)?.color;
 
-		if (cellValue) {
+	LtCodeRenderTableCell: {
+		renderTableCell: (
+			renderOpts: VxeGlobalRendererHandles.RenderTableCellOptions,
+			params: VxeGlobalRendererHandles.RenderTableCellParams
+		) => {
+			const { row, column } = params;
+			let cellValue = get(row, column.field);
+			// 使用通用格式化函数
+			cellValue = formatTableCell({ cellValue, row, column });
+			if (isObject(cellValue)) {
+				return <span style={{ color: 'red' }}>数据类型不符合</span>;
+			}
+			const codeType = renderOpts.props.codeType;
 			return (
-				<LtTagRenderTableCell color={color}>{cellValue}</LtTagRenderTableCell>
+				<LtCodeRenderTableCell code={cellValue?.toString()} type={codeType} />
 			);
-		}
-		return null;
-	},
-});
+		},
 
-VxeUI.renderer.add('LtCodeRenderTableCell', {
-	renderTableCell: (renderOpts, params) => {
-		const { row, column, $grid } = params;
-		const cellValue = $grid?.getCellLabel(row, column);
-		if (isObject(cellValue)) {
-			return <span style={{ color: 'red' }}>数据类型不符合</span>;
-		}
-		const codeType = renderOpts.props.codeType;
-		if (cellValue) {
+		renderTableDefault: (
+			renderOpts: VxeGlobalRendererHandles.RenderTableCellOptions,
+			params: VxeGlobalRendererHandles.RenderTableCellParams
+		) => {
+			const { row, column } = params;
+			let cellValue = get(row, column.field);
+			// 使用通用格式化函数
+			cellValue = formatTableCell({ cellValue, row, column });
+			if (isObject(cellValue)) {
+				return <span style={{ color: 'red' }}>数据类型不符合</span>;
+			}
+			const codeType = renderOpts?.props?.codeType;
 			return (
-				<LtCodeRenderTableCell code={cellValue.toString()} type={codeType} />
+				<LtCodeRenderTableCell code={cellValue?.toString()} type={codeType} />
 			);
-		}
-		return null;
-	},
-	renderTableDefault: (renderOpts, params) => {
-		const { row, column, $grid } = params;
-		const cellValue = $grid?.getCellLabel(row, column);
-		if (isObject(cellValue)) {
-			return <span style={{ color: 'red' }}>数据类型不符合</span>;
-		}
-		const codeType = renderOpts?.props?.codeType;
-		if (cellValue) {
-			return (
-				<LtCodeRenderTableCell code={cellValue.toString()} type={codeType} />
-			);
-		}
-		return null;
+		},
 	},
 });
