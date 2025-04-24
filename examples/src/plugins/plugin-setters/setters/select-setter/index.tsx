@@ -56,7 +56,7 @@ export const SelectSetter = defineComponent({
 		},
 		showSearch: {
 			type: Boolean,
-			default: false,
+			default: true,
 		},
 		hasClear: {
 			type: Boolean,
@@ -72,6 +72,14 @@ export const SelectSetter = defineComponent({
 	},
 
 	setup(props) {
+		const filterOption = (input: string, option: any) => {
+			const label = option.label?.toString().toLowerCase() || '';
+			const value = option.value?.toString().toLowerCase() || '';
+			return (
+				label.includes(input.toLowerCase()) ||
+				value.includes(input.toLowerCase())
+			);
+		};
 		return () => (
 			<Select
 				value={props.value}
@@ -79,6 +87,7 @@ export const SelectSetter = defineComponent({
 				options={formatOptions(props.options)}
 				onChange={(val: any) => props.onChange?.(val || null)}
 				showSearch={props.showSearch}
+				filterOption={filterOption}
 				allowClear={props.hasClear}
 				style={{ width: '100%' }}
 			/>

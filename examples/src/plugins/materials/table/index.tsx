@@ -3,6 +3,9 @@ import { VxeGrid, VxeTablePropTypes } from 'vxe-table';
 import { omit } from 'lodash-es';
 import { ColumnProps } from './ColumnProps';
 import { useCellEdit, useCellFormat, useCellRender } from './render';
+import { ActionConfig } from './ActionProps';
+import { RowSelectorProps } from './RowSelectorProps';
+import { SeqConfig } from './SeqConfig';
 // 字符，数字，布尔，日期（日期格式，时间选择器），枚举，实体（数据源，），
 // 图片先支持二维码打印
 export default defineComponent({
@@ -58,43 +61,102 @@ export default defineComponent({
 		rowConfig: {
 			type: Object as PropType<VxeTablePropTypes.RowConfig>,
 		},
+		actionConfig: {
+			type: Object as PropType<ActionConfig>,
+		},
+		rowSelectorConfig: {
+			type: Object as PropType<RowSelectorProps>,
+		},
+		seqConfig: {
+			type: Object as PropType<SeqConfig>,
+		},
 		data: Array,
 	},
 	setup(props) {
-		const columns = computed(() =>
-			props.columns?.filter(Boolean).map((item) => {
-				const { cellRender } = useCellRender(item);
-				const { formatter } = useCellFormat(item);
-				const { editRender } = useCellEdit(item);
-				const { tipContent } = item;
+		const columns = computed(() => {
+			const { actionConfig, columns, rowSelectorConfig, seqConfig } = props;
+			const cols = [];
+			if (seqConfig && seqConfig.visible) {
+				const { title, width } = seqConfig;
+				cols.push({
+					type: 'seq',
+					title,
+					width,
+					fixed: 'left',
+					align: 'center',
+				});
+			}
 
-				const column = {
-					...omit(item, [
-						'dataType',
-						'editType',
-						'dateFormatter',
-						'timeFormatter',
-						'digits',
-						'boolOptions',
-						'enumOptions',
-						'codeType',
-						'tipContent',
-					]),
-					cellRender,
-					editRender,
-					titleSuffix: tipContent
-						? {
-								content: tipContent,
-							}
-						: null,
-					params: {
-						// TODO 格式化暂时先当作额外参数来设置，直接在formatter中设置会有问题
-						formatter,
+			if (rowSelectorConfig && rowSelectorConfig.visible) {
+				const { type, title, width } = rowSelectorConfig;
+				cols.push({
+					type,
+					title,
+					width,
+					align: 'center',
+					fixed: 'left',
+				});
+			}
+
+			// 字段列
+			const fields =
+				columns?.filter(Boolean).map((item) => {
+					const { cellRender } = useCellRender(item);
+					const { formatter } = useCellFormat(item);
+					const { editRender } = useCellEdit(item);
+					const { tipContent } = item;
+
+					const column = {
+						...omit(item, [
+							'dataType',
+							'editType',
+							'dateFormatter',
+							'timeFormatter',
+							'digits',
+							'boolOptions',
+							'enumOptions',
+							'codeType',
+							'tipContent',
+						]),
+						cellRender,
+						editRender,
+						titleSuffix: tipContent
+							? {
+									content: tipContent,
+								}
+							: null,
+						params: {
+							// TODO 格式化暂时先当作额外参数来设置，直接在formatter中设置会有问题
+							formatter,
+						},
+					};
+					return column as any;
+				}) || [];
+
+			cols.push(...fields);
+
+			if (actionConfig && !actionConfig.hidden) {
+				const { title, width, buttonType, maxShowCount, actions } =
+					actionConfig;
+				const actionColumn = {
+					title,
+					width,
+					showOverflow: 'ellipsis',
+					fixed: actionConfig.fixed,
+					cellRender: {
+						name: 'LtActionsRenderTableCell',
+						props: {
+							actions,
+							buttonType,
+							maxShowCount,
+						},
 					},
 				};
-				return column as any;
-			})
-		);
+				cols?.push(actionColumn);
+			}
+
+			return cols;
+		});
 
 		const baseConfig = computed(() => {
 			const {
@@ -136,6 +198,60 @@ export default defineComponent({
 			};
 		});
 
+		const seqConfig = computed((): any => {
+			const { seqConfig } = props;
+			if (seqConfig && seqConfig.visible) {
+				const { startIndex, seqMethod } = seqConfig;
+				return {
+					startIndex,
+					seqMethod,
+				};
+			}
+			return null;
+		});
+
+		const rowSelectorConfig = computed((): any => {
+			const { rowSelectorConfig } = props;
+			if (rowSelectorConfig && rowSelectorConfig.visible) {
+				const {
+					labelField,
+					checkMethod,
+					showHeader,
+					type,
+					trigger,
+					highlight,
+					strict,
+					visibleMethod,
+					range,
+					checkAll,
+					checkStrictly,
+				} = rowSelectorConfig;
+				if (type === 'checkbox') {
+					return {
+						labelField,
+						checkMethod,
+						trigger,
+						highlight,
+						strict,
+						visibleMethod,
+						showHeader,
+						range,
+						checkAll,
+						checkStrictly,
+					};
+				}
+				return {
+					labelField,
+					checkMethod,
+					trigger,
+					highlight,
+					strict,
+					visibleMethod,
+				};
+			}
+			return null;
+		});
+
 		return () => (
 			<div style={{ height: '100%', overflow: 'hidden' }}>
 				<VxeGrid
@@ -146,6 +262,9 @@ export default defineComponent({
 					rowConfig={props.rowConfig}
 					columns={columns.value}
 					data={props.data}
+					seqConfig={seqConfig.value}
+					checkboxConfig={rowSelectorConfig.value}
+					radioConfig={rowSelectorConfig.value}
 					editRules={{
 						id: [
 							{

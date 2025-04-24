@@ -30,6 +30,11 @@ export interface ColumnProps extends VxeColumnProps {
 		| string;
 
 	/**
+	 * 当dataType为link时，点击链接的回调
+	 */
+	onLinkClick?: (params: any) => void;
+
+	/**
 	 * 当dataType为date时，格式化
 	 */
 	dateFormatter?: string;

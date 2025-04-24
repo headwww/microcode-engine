@@ -71,6 +71,12 @@ export const VxeUIPluginRenderAntd: VxeUIPluginObject = {
 					.flag ||
 				// 气泡卡片
 				getEventTargetNode($event, bodyElem, `${prefixCls}-popover`).flag ||
+				// 下拉菜单
+				getEventTargetNode($event, bodyElem, `${prefixCls}-dropdown`).flag ||
+				getEventTargetNode($event, bodyElem, `${prefixCls}-dropdown-menu`)
+					.flag ||
+				getEventTargetNode($event, bodyElem, `${prefixCls}-dropdown-menu-item`)
+					.flag ||
 				getEventTargetNode(
 					$event,
 					bodyElem,

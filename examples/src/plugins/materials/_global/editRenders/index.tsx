@@ -356,6 +356,14 @@ VxeUI.renderer.mixin({
 			},
 			allowClear: true,
 			showSearch: true,
+			filterOption: (input: string, option: any) => {
+				const label = option.label?.toString().toLowerCase() || '';
+				const value = option.value?.toString().toLowerCase() || '';
+				return (
+					label.includes(input.toLowerCase()) ||
+					value.includes(input.toLowerCase())
+				);
+			},
 		}),
 		renderTableCell: renderCellContent,
 		renderTableDefault: renderCellContent,

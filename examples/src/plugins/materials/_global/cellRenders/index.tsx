@@ -4,6 +4,7 @@ import LtDefaultRenderTableCell from './default';
 import LtLinkRenderTableCell from './link';
 import LtCodeRenderTableCell from './code';
 import LtTagRenderTableCell from './tag';
+import LtActionsRenderTableCell from './actions';
 import { formatTableCell } from '../utils';
 
 export {
@@ -55,7 +56,14 @@ VxeUI.renderer.mixin({
 			if (isObject(cellValue)) {
 				return <span style={{ color: 'red' }}>数据类型不符合</span>;
 			}
-			return <LtLinkRenderTableCell>{cellValue}</LtLinkRenderTableCell>;
+			return (
+				<LtLinkRenderTableCell
+					params={params}
+					onLinkClick={renderOpts?.props?.onLinkClick}
+				>
+					{cellValue}
+				</LtLinkRenderTableCell>
+			);
 		},
 
 		renderTableDefault: (
@@ -69,7 +77,14 @@ VxeUI.renderer.mixin({
 			if (isObject(cellValue)) {
 				return <span style={{ color: 'red' }}>数据类型不符合</span>;
 			}
-			return <LtLinkRenderTableCell>{cellValue}</LtLinkRenderTableCell>;
+			return (
+				<LtLinkRenderTableCell
+					params={params}
+					onLinkClick={renderOpts?.props?.onLinkClick}
+				>
+					{cellValue}
+				</LtLinkRenderTableCell>
+			);
 		},
 	},
 	LtTagRenderTableCell: {
@@ -150,6 +165,37 @@ VxeUI.renderer.mixin({
 			const codeType = renderOpts?.props?.codeType;
 			return (
 				<LtCodeRenderTableCell code={cellValue?.toString()} type={codeType} />
+			);
+		},
+	},
+
+	LtActionsRenderTableCell: {
+		renderTableCell: (
+			renderOpts: VxeGlobalRendererHandles.RenderTableCellOptions,
+			params: VxeGlobalRendererHandles.RenderTableCellParams
+		) => {
+			const { actions, buttonType, maxShowCount } = renderOpts.props;
+			return (
+				<LtActionsRenderTableCell
+					actions={actions}
+					buttonType={buttonType}
+					maxShowCount={maxShowCount}
+					params={params}
+				/>
+			);
+		},
+		renderTableDefault: (
+			renderOpts: VxeGlobalRendererHandles.RenderTableCellOptions,
+			params: VxeGlobalRendererHandles.RenderTableCellParams
+		) => {
+			const { actions, buttonType, maxShowCount } = renderOpts.props;
+			return (
+				<LtActionsRenderTableCell
+					actions={actions}
+					buttonType={buttonType}
+					maxShowCount={maxShowCount}
+					params={params}
+				/>
 			);
 		},
 	},

@@ -9,6 +9,7 @@ export function useCellRender(column: ColumnProps) {
 
 	if (dataType === 'link') {
 		cellRender.name = 'LtLinkRenderTableCell';
+		cellRender.props = getProps(column);
 	}
 	if (dataType === 'code') {
 		cellRender.name = 'LtCodeRenderTableCell';
@@ -36,8 +37,14 @@ function getProps(column: ColumnProps) {
 		codeType,
 		dateFormatter = 'YYYY-MM-DD HH:mm:ss',
 		timeFormatter = 'HH:mm:ss',
+		onLinkClick,
 	} = column;
 	let props: any = {};
+	if (dataType === 'link') {
+		props = {
+			onLinkClick,
+		};
+	}
 	if (dataType === 'code') {
 		props = {
 			codeType,
