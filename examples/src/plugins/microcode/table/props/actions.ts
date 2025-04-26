@@ -97,6 +97,9 @@ export default [
 				title: {
 					label: '操作项',
 				},
+				extraProps: {
+					supportVariable: false,
+				},
 				setter: {
 					componentName: 'ArraySetter',
 					props: {

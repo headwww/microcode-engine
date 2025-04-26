@@ -9,6 +9,7 @@ import inputTextArea from './input.text-area/meta';
 import formItem from './form.item/meta';
 import form from './form/meta';
 import table from './table/meta';
+import entitySelector from './entity-selector/meta';
 
 export default [
 	form,
@@ -22,4 +23,5 @@ export default [
 	gridCol,
 	layout,
 	table,
+	entitySelector,
 ];

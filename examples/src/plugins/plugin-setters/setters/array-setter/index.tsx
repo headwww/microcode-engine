@@ -304,7 +304,7 @@ export const ListSetter = defineComponent({
 								{props.columns.map((column: any) => (
 									<Title
 										key={column?.name}
-										title={column?.description || column?.name}
+										title={column?.title || column?.name}
 									/>
 								))}
 							</div>

@@ -2,33 +2,39 @@ export default [
 	{
 		name: 'columns',
 		title: '表格列',
+		extraProps: {
+			supportVariable: false,
+		},
 		setter: {
 			componentName: 'ArraySetter',
 			props: {
 				itemSetter: {
 					componentName: 'ObjectSetter',
-					extraProps: {
-						supportVariable: false,
+
+					initialValue: (target: any) => {
+						console.log(target);
+
+						return {
+							title: '标题',
+							width: 200,
+						};
 					},
-					initialValue: () => ({
-						title: '标题',
-						width: 200,
-					}),
 					props: {
 						config: {
 							items: [
+								{
+									name: 'property',
+									title: {
+										label: '列字段',
+									},
+									isRequired: true,
+									setter: 'PropertySetter',
+								},
 								{
 									name: 'title',
 									title: '列标题',
 									propType: 'string',
 									isRequired: true,
-									setter: 'StringSetter',
-								},
-								{
-									name: 'field',
-									title: '列字段',
-									isRequired: true,
-									propType: 'string',
 									setter: 'StringSetter',
 								},
 								{
@@ -322,8 +328,8 @@ export default [
 								{
 									name: 'dragSort',
 									title: {
-										label: '拖拽排序',
-										tip: '将该列设置为拖拽排序列的标识列',
+										label: '行拖拽',
+										tip: '将该列设置为行拖拽的的触发列',
 									},
 									setter: {
 										componentName: 'BoolSetter',

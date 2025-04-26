@@ -2,7 +2,7 @@ export default [
 	{
 		title: {
 			label: '动态样式',
-			tip: '当需要设置一些上下线等问题的时候可以使用该配置',
+			tip: '给表格行或者单元格添加动态样式',
 		},
 		display: 'entry',
 		type: 'group',

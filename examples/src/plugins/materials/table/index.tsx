@@ -1,16 +1,22 @@
 import { computed, defineComponent, PropType } from 'vue';
 import { VxeGrid, VxeTablePropTypes } from 'vxe-table';
 import { omit } from 'lodash-es';
-import { ColumnProps } from './ColumnProps';
+import {
+	ColumnProps,
+	ActionConfig,
+	RowSelectorProps,
+	SeqConfig,
+} from './types';
 import { useCellEdit, useCellFormat, useCellRender } from './render';
-import { ActionConfig } from './ActionProps';
-import { RowSelectorProps } from './RowSelectorProps';
-import { SeqConfig } from './SeqConfig';
+
 // 字符，数字，布尔，日期（日期格式，时间选择器），枚举，实体（数据源，），
 // 图片先支持二维码打印
 export default defineComponent({
 	name: 'LtTable',
 	props: {
+		targetClass: {
+			type: String as PropType<string>,
+		},
 		columns: {
 			type: Array as PropType<ColumnProps[]>,
 		},
@@ -107,7 +113,9 @@ export default defineComponent({
 					const { tipContent } = item;
 
 					const column = {
+						field: item.property?.fieldName,
 						...omit(item, [
+							'property',
 							'dataType',
 							'editType',
 							'dateFormatter',

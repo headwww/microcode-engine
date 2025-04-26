@@ -2,7 +2,7 @@
  * @Author: shuwen 1243889238@qq.com
  * @Date: 2025-04-08 14:35:21
  * @LastEditors: shuwen 1243889238@qq.com
- * @LastEditTime: 2025-04-23 16:54:23
+ * @LastEditTime: 2025-04-27 00:36:42
  * @FilePath: /microcode-engine/examples/src/plugins/schema.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -226,14 +226,94 @@ export default {
 							{
 								title: 'id',
 								width: 200,
-								field: 'id',
 								dataType: 'text',
 								editType: 'text',
+								dateFormatter: 'YYYY-MM-DD HH:mm:ss',
+								timeFormatter: 'HH:mm:ss',
+								boolOptions: [
+									{
+										label: '是',
+										value: true,
+										color: 'blue',
+									},
+									{
+										label: '否',
+										value: false,
+										color: 'red',
+									},
+								],
+								enumOptions: [
+									{
+										label: '测试1',
+										value: 'TEXT1',
+										color: 'blue',
+									},
+									{
+										label: '测试2',
+										value: 'TEXT2',
+										color: 'red',
+									},
+									{
+										label: '测试3',
+										value: 'TEXT3',
+										color: 'green',
+									},
+								],
+								codeType: 'qrCode',
+								property: {
+									targetClass: 'lt.app.productbasic.model.OrderClasses',
+									fieldTypeFlag: '0',
+									topFieldType: 'java.lang.String',
+									fieldType: 'java.lang.String',
+									fieldName: 'id',
+									topFieldTypeFlag: '0',
+								},
 							},
 							{
 								title: '班次',
 								width: 200,
-								field: 'name',
+								dataType: 'text',
+								editType: 'text',
+								dateFormatter: 'YYYY-MM-DD HH:mm:ss',
+								timeFormatter: 'HH:mm:ss',
+								boolOptions: [
+									{
+										label: '是',
+										value: true,
+										color: 'blue',
+									},
+									{
+										label: '否',
+										value: false,
+										color: 'red',
+									},
+								],
+								enumOptions: [
+									{
+										label: '测试1',
+										value: 'TEXT1',
+										color: 'blue',
+									},
+									{
+										label: '测试2',
+										value: 'TEXT2',
+										color: 'red',
+									},
+									{
+										label: '测试3',
+										value: 'TEXT3',
+										color: 'green',
+									},
+								],
+								codeType: 'qrCode',
+								property: {
+									targetClass: 'lt.app.productbasic.model.OrderClasses',
+									fieldTypeFlag: '0',
+									topFieldType: 'java.lang.String',
+									fieldType: 'java.lang.String',
+									fieldName: 'name',
+									topFieldTypeFlag: '0',
+								},
 							},
 							{
 								title: '编码',
@@ -252,12 +332,33 @@ export default {
 										color: 'red',
 									},
 								],
-								field: 'version',
+								dateFormatter: 'YYYY-MM-DD HH:mm:ss',
+								timeFormatter: 'HH:mm:ss',
+								boolOptions: [
+									{
+										label: '是',
+										value: true,
+										color: 'blue',
+									},
+									{
+										label: '否',
+										value: false,
+										color: 'red',
+									},
+								],
+								codeType: 'qrCode',
+								property: {
+									targetClass: 'lt.app.productbasic.model.OrderClasses',
+									fieldTypeFlag: '0',
+									topFieldType: 'java.lang.Long',
+									fieldType: 'java.lang.Long',
+									fieldName: 'version',
+									topFieldTypeFlag: '0',
+								},
 							},
 							{
 								title: '标题',
 								width: 200,
-								field: 'updated',
 								dataType: 'date',
 								editType: 'date',
 								dateFormatter: 'YYYY-MM-DD HH:mm:ss',
@@ -292,6 +393,14 @@ export default {
 									},
 								],
 								codeType: 'qrCode',
+								property: {
+									targetClass: 'lt.app.productbasic.model.OrderClasses',
+									fieldTypeFlag: '0',
+									topFieldType: 'java.util.Date',
+									fieldType: 'java.util.Date',
+									fieldName: 'updated',
+									topFieldTypeFlag: '0',
+								},
 							},
 						],
 						stripe: true,
@@ -319,8 +428,19 @@ export default {
 							autoFocus: true,
 							autoClear: true,
 						},
+						targetClass: 'lt.app.productbasic.model.OrderClasses',
 					},
 					docId: 'docm9s2rlw0',
+					hidden: false,
+					title: '',
+					isLocked: false,
+					condition: true,
+					conditionGroup: '',
+				},
+				{
+					componentName: 'EntitySelector',
+					id: 'node_ocm9v2mvhd1',
+					props: {},
 					hidden: false,
 					title: '',
 					isLocked: false,

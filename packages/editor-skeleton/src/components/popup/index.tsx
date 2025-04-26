@@ -154,8 +154,10 @@ export const PopupContent = defineComponent({
 		return () => {
 			const id = uniqueId('ball');
 
+			// TODO 存在问题
 			return (
 				<Popover
+					destroyTooltipOnHide
 					open={visible.value}
 					onUpdate:open={(value) => {
 						visible.value = value;

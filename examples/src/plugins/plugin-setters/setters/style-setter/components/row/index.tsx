@@ -107,7 +107,10 @@ export const Row = defineComponent({
 											}
 										}}
 									>
-										<Popover content={item.tips + item.value}>
+										<Popover
+											destroyTooltipOnHide
+											content={item.tips + item.value}
+										>
 											{item.icon && renderIcon(item.icon)}
 											{item.title}
 										</Popover>

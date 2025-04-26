@@ -2,7 +2,7 @@ import { defineComponent, ref, onMounted, watch, PropType } from 'vue';
 import JsBarcode from 'jsbarcode';
 
 export default defineComponent({
-	name: 'Barcode',
+	name: 'LtBarcode',
 	props: {
 		/**
 		 * 要在条形码中编码的值

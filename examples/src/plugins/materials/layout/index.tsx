@@ -1,7 +1,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	name: 'Layout',
+	name: 'LtLayout',
 	setup(props, { slots }) {
 		return () => <div>{slots.default?.()}</div>;
 	},

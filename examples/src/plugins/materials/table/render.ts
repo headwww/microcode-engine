@@ -1,4 +1,4 @@
-import { ColumnProps } from './ColumnProps';
+import { ColumnProps } from './types';
 
 export function useCellRender(column: ColumnProps) {
 	const { dataType } = column;
