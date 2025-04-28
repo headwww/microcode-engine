@@ -12,7 +12,10 @@ export default [
 	},
 	{
 		name: 'targetClass',
-		title: '目标类',
+		title: {
+			label: '目标类',
+			tip: '需要用户选择一个在后端（服务端）定义好的 ORM 实体',
+		},
 		setter: 'TextareaSetter',
 		extraProps: {
 			setValue: (target: any, value: string) => {

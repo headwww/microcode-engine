@@ -1,6 +1,6 @@
 import { Popover, Tag, Tooltip, TreeSelect } from 'ant-design-vue';
 import { defineComponent, ref, PropType, computed } from 'vue';
-import { Icon } from 'vxe-pc-ui';
+import { InfoCircleOutlined } from '@ant-design/icons-vue';
 import { http } from '../../../utils/http';
 import { FieldListByClass, PropertySelectorValue } from './types';
 import './style.scss';
@@ -32,6 +32,7 @@ export default defineComponent({
 
 		const getFieldListByClass = (className: string) =>
 			http.post<FieldListByClass[]>({
+				// TODO: 需要替换为实际的接口
 				url: 'api/testServiceImpl/getFieldListByClass',
 				data: [
 					[
@@ -175,24 +176,25 @@ export default defineComponent({
 					onDropdownVisibleChange={dropdownVisibleChange}
 					onSelect={handleSelect} // 添加选择事件处理
 				/>
-				<Popover
-					destroyTooltipOnHide
-					arrow={false}
-					placement="bottom"
-					content={renderPropertyInfo()}
-				>
-					<Icon
-						name="warning-circle"
-						style={{
-							color: 'rgba(0, 0, 0, 0.25)',
-							lineHeight: '32px',
-							cursor: 'pointer',
-							position: 'absolute',
-							right: '6px',
-							top: '0',
-						}}
-					/>
-				</Popover>
+				{selectedNode.value?.fieldName && (
+					<Popover
+						destroyTooltipOnHide
+						arrow={false}
+						placement="bottom"
+						content={renderPropertyInfo()}
+					>
+						<InfoCircleOutlined
+							style={{
+								color: 'rgba(0, 0, 0, 0.25)',
+								lineHeight: '32px',
+								cursor: 'pointer',
+								position: 'absolute',
+								right: '6px',
+								top: '0',
+							}}
+						/>
+					</Popover>
+				)}
 			</div>
 		);
 	},

@@ -4,6 +4,8 @@ export { default as Table } from './table';
 export { default as BarCode } from './bar-code';
 export { default as EntitySelector } from './entity-selector';
 export { default as PropertySelector } from './property-selector';
+export { default as ExpressionBuilder } from './expression-builder';
+
 export {
 	Typography,
 	TypographyText,

@@ -11,14 +11,10 @@ export default [
 				itemSetter: {
 					componentName: 'ObjectSetter',
 
-					initialValue: (target: any) => {
-						console.log(target);
-
-						return {
-							title: '标题',
-							width: 200,
-						};
-					},
+					initialValue: () => ({
+						title: '标题',
+						width: 200,
+					}),
 					props: {
 						config: {
 							items: [

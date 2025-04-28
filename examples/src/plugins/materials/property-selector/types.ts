@@ -1,3 +1,11 @@
+/*
+ * @Author: shuwen 1243889238@qq.com
+ * @Date: 2025-04-25 15:08:48
+ * @LastEditors: shuwen 1243889238@qq.com
+ * @LastEditTime: 2025-04-27 21:35:10
+ * @FilePath: /microcode-engine/examples/src/plugins/materials/property-selector/types.ts
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 /**
  * 属性选择器返回值说明
  *
@@ -19,7 +27,7 @@
  */
 export interface PropertySelectorValue {
 	/** 目标类名 */
-	targetClass: string;
+	targetClass?: string;
 	/** 完整的属性路径，如 corp.dept.name */
 	fieldName?: string;
 	/** 当前属性的类型标识：0-基础类型，1-实体类型，2-枚举类型 */
@@ -27,7 +35,12 @@ export interface PropertySelectorValue {
 	/** 当前属性的类型信息，如 java.lang.String */
 	fieldType?: string;
 	/** 枚举类型信息，当 fieldTypeFlag 为 2 时有效 */
-	enumInfo?: any;
+	enumInfo?: {
+		// 枚举值
+		value: string;
+		// 枚举名称
+		key: string;
+	}[];
 	/** 顶级属性的类型标识 */
 	topFieldTypeFlag?: '0' | '1' | '2';
 	/** 顶级属性的类型信息，如 lt.fw.core.model.biz.Corp */
