@@ -15,7 +15,7 @@ import {
 	PlusCircleOutlined,
 } from '@ant-design/icons-vue';
 import { cloneDeep, omit } from 'lodash-es';
-import { Expression } from './types';
+import { HqlSyntaxTree } from './types';
 
 import PropertySelector from '../property-selector';
 import './style.scss';
@@ -23,13 +23,14 @@ import InputGroup from './components/input-group';
 import InputNumberGroup from './components/input-number-group';
 import DatePicker from './components/date-picker';
 import DatePickerGroup from './components/date-picker-group';
-import { convertExpressionToHQL } from './utils';
+import { convertSyntaxTreeToHQL } from './utils';
+
 /**
  * expression 条件构建器 用于构建 condition的expr
  * 例如：this.name = '张三' and this.age > 18
  */
 
-export default defineComponent({
+export const ExpressionBuilder = defineComponent({
 	name: 'LtExpressionBuilder',
 	emits: ['update:value', 'change'],
 	props: {
@@ -37,33 +38,51 @@ export default defineComponent({
 			type: String,
 		},
 		value: {
-			type: Array as PropType<Expression[]>,
+			type: Array as PropType<HqlSyntaxTree[]>,
 		},
 	},
-	setup(props, { emit, expose }) {
-		const expressions = computed<Expression[]>({
+	setup(props, { emit }) {
+		const expressions = computed<HqlSyntaxTree[]>({
 			get() {
 				return props.value || [];
 			},
 			set(value) {
 				emit('update:value', value);
-				emit('change', value);
+				emit('change', {
+					expressions: value,
+					hql: convertSyntaxTreeToHQL(value[0]),
+				});
 			},
 		});
 
-		function isDelete(expr: Expression) {
-			if (expressions.value) {
-				const find = findTree(
-					expressions.value,
-					(item) => expr.parentId === item.id
-				);
-				return find.item.children?.length === 1;
-			}
-			return true;
-		}
+		const onDelete = (item: HqlSyntaxTree) => {
+			let newExpressions = [...expressions.value];
 
-		const onDelete = (item: Expression) => {
-			expressions.value = removeItemById(expressions.value, item.id);
+			// 如果要删除的是单个条件，且其父group只剩这一个条件
+			if (item.type === 'single' && item.parentId) {
+				const parentGroup = findTree(
+					newExpressions,
+					(node) => node.id === item.parentId
+				);
+
+				if (parentGroup?.item?.children?.length === 1) {
+					// 如果父group是根节点，则清空整个表达式
+					if (!parentGroup.item.parentId) {
+						newExpressions = [];
+					} else {
+						// 否则删除父group
+						newExpressions = removeItemById(newExpressions, item.parentId);
+					}
+				} else {
+					// 正常删除该条件
+					newExpressions = removeItemById(newExpressions, item.id);
+				}
+			} else {
+				// 其他情况按原逻辑删除
+				newExpressions = removeItemById(newExpressions, item.id);
+			}
+
+			expressions.value = newExpressions;
 		};
 
 		function removeItemById(array: any, idToRemove: any) {
@@ -78,7 +97,7 @@ export default defineComponent({
 			}, []);
 		}
 
-		const onAdd = (expr: Expression, type: 'single' | 'group') => {
+		const onAdd = (expr: HqlSyntaxTree, type: 'single' | 'group') => {
 			mapTree(expressions.value, (item) => {
 				if (item.id === expr.id) {
 					if (type === 'group') {
@@ -117,9 +136,10 @@ export default defineComponent({
 
 		// 通用参数变更处理
 		const updateParams = (
-			expr: Expression,
+			expr: HqlSyntaxTree,
 			newParams: Partial<typeof expr.params>,
-			omitLogicalSymbol = false
+			omitLogicalSymbol = false,
+			omitValue = true
 		) => {
 			const arr = mapTree(cloneDeep(expressions.value), (item) => {
 				if (expr.id === item.id) {
@@ -128,8 +148,8 @@ export default defineComponent({
 						params: {
 							...omit(
 								item.params,
-								'value',
-								omitLogicalSymbol ? 'logicalSymbol' : ''
+								omitLogicalSymbol ? 'logicalSymbol' : '',
+								omitValue ? 'value' : ''
 							),
 							...newParams,
 						},
@@ -140,7 +160,7 @@ export default defineComponent({
 			expressions.value = arr;
 		};
 
-		const renderComponent = (expr: Expression) => {
+		const renderComponent = (expr: HqlSyntaxTree) => {
 			if (expr.params?.fieldTypeFlag === '2') {
 				return (
 					<Select
@@ -234,7 +254,7 @@ export default defineComponent({
 			return null;
 		};
 
-		const renderItemContent = (expr: Expression) => (
+		const renderItemContent = (expr: HqlSyntaxTree) => (
 			<div style="display: flex; align-items: center; gap: 12px">
 				<PropertySelector
 					style={{ minWidth: '108px' }}
@@ -255,7 +275,9 @@ export default defineComponent({
 						{renderComponent(expr)}
 						<Checkbox
 							checked={expr.params?.not}
-							onUpdate:checked={(v) => updateParams(expr, { not: v })}
+							onUpdate:checked={(v) =>
+								updateParams(expr, { not: v }, false, false)
+							}
 						>
 							取反
 						</Checkbox>
@@ -264,23 +286,19 @@ export default defineComponent({
 			</div>
 		);
 
-		const renderItem = (item: Expression) => {
-			item;
-			return (
-				<div style="display: flex; align-items: center">
-					{renderItemContent(item)}
-					<Button
-						size="small"
-						type="link"
-						onClick={() => onDelete(item)}
-						disabled={isDelete(item)}
-						icon={<DeleteFilled class="lt-expr-delete" />}
-					/>
-				</div>
-			);
-		};
+		const renderItem = (item: HqlSyntaxTree) => (
+			<div style="display: flex; align-items: center">
+				{renderItemContent(item)}
+				<Button
+					size="small"
+					type="link"
+					onClick={() => onDelete(item)}
+					icon={<DeleteFilled class="lt-expr-delete" />}
+				/>
+			</div>
+		);
 
-		const renderGroup = (expr: Expression) => {
+		const renderGroup = (expr: HqlSyntaxTree) => {
 			const logicOperator = expr.logicOperator || 'AND';
 
 			const onChange = (v: any) => {
@@ -354,7 +372,6 @@ export default defineComponent({
 							class="lt-expr-delete-group"
 							size="small"
 							type="link"
-							disabled={isDelete(expr)}
 							icon={<CloseCircleOutlined />}
 							onClick={() => onDelete(expr)}
 						/>
@@ -363,49 +380,40 @@ export default defineComponent({
 			);
 		};
 
-		const getExpressionAndOrdinalParams = () =>
-			expressions.value && expressions.value.length > 0
-				? convertExpressionToHQL(expressions.value[0])
-				: null;
-
-		expose({
-			getExpressionAndOrdinalParams,
-		});
+		const renderCreate = () => (
+			<div
+				onClick={() => {
+					const id = uniqueId('group');
+					expressions.value = [
+						{
+							id,
+							type: 'group',
+							logicOperator: 'AND',
+							children: [
+								{
+									id: uniqueId('single'),
+									parentId: id,
+									type: 'single',
+									params: {
+										targetClass: props.targetClass || '',
+									},
+								},
+							],
+						},
+					];
+				}}
+				class="lt-expr-add"
+			>
+				创 建
+			</div>
+		);
 
 		return () =>
-			expressions.value && expressions.value.length > 0 ? (
-				expressions.value?.map((item) =>
-					item.type === 'group' ? renderGroup(item) : renderItem(item)
-				)
-			) : (
-				<Button
-					onClick={() => {
-						const id = uniqueId('group');
-						expressions.value = [
-							{
-								id,
-								type: 'group',
-								logicOperator: 'AND',
-								children: [
-									{
-										id: uniqueId('single'),
-										parentId: id,
-										type: 'single',
-										params: {
-											targetClass: props.targetClass || '',
-										},
-									},
-								],
-							},
-						];
-					}}
-					icon={<FolderAddOutlined />}
-					size="small"
-					type="text"
-				>
-					创建条件
-				</Button>
-			);
+			expressions.value && expressions.value.length > 0
+				? expressions.value?.map((item) =>
+						item.type === 'group' ? renderGroup(item) : renderItem(item)
+					)
+				: renderCreate();
 	},
 });
 

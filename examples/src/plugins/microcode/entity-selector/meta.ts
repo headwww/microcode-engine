@@ -1,3 +1,5 @@
+import { omit } from 'lodash';
+
 export default {
 	componentName: 'EntitySelector',
 	title: '实体选择器',
@@ -44,7 +46,8 @@ export default {
 									name: 'url',
 									title: '请求地址',
 									setter: {
-										initialValue: 'api/storeService/findStoresByPage',
+										initialValue:
+											'api/mainProductPlanService/findMainsByPermission',
 										componentName: 'TextareaSetter',
 									},
 								},
@@ -52,8 +55,25 @@ export default {
 									name: 'targetClass',
 									title: '目标类',
 									setter: {
-										initialValue: 'lt.app.common.model.Store',
+										initialValue: 'lt.app.product.model.MainProductPlan',
 										componentName: 'TextareaSetter',
+									},
+									extraProps: {
+										setValue: (target: any, value: string) => {
+											const columns = target
+												.getParent()
+												.getParent()
+												.getPropValue('columns');
+
+											if (Array.isArray(columns)) {
+												columns.forEach((column) => {
+													if (column.property) {
+														column.property.targetClass = value;
+													}
+												});
+												target.node.setPropValue('columns', columns);
+											}
+										},
 									},
 								},
 								{
@@ -92,13 +112,13 @@ export default {
 									},
 								},
 								{
-									name: 'queryCondition',
+									name: 'expressionAndOrdinalParams',
 									title: {
-										label: 'hql表达式',
+										label: '查询语句',
 										tip: '个性化处理实体选择器数据',
 									},
 									setter: {
-										componentName: 'TextareaSetter',
+										componentName: 'ExpressionSetter',
 									},
 								},
 							],
@@ -118,11 +138,16 @@ export default {
 						itemSetter: {
 							componentName: 'ObjectSetter',
 
-							initialValue: () => ({
+							initialValue: (target: any) => ({
 								title: '标题',
 								width: 200,
-								filterable: 'true',
+								filterable: true,
 								dataType: 'text',
+								property: {
+									targetClass: target
+										.getParent()
+										.getPropValue('dataConfig.targetClass'),
+								},
 							}),
 							props: {
 								config: {
@@ -130,8 +155,8 @@ export default {
 										{
 											name: 'filterable',
 											title: {
-												label: '筛选条件',
-												tip: '是否作为筛选条件，默认作为查询条件',
+												label: '模糊查询',
+												tip: '是否作为模糊查询的条件，默认当作查询条件',
 											},
 											setter: {
 												componentName: 'BoolSetter',
@@ -146,11 +171,101 @@ export default {
 											setter: 'StringSetter',
 										},
 										{
-											name: 'field',
-											title: '列字段',
+											name: 'property',
+											title: {
+												label: '列字段',
+											},
 											isRequired: true,
-											propType: 'string',
-											setter: 'StringSetter',
+											setter: 'PropertySetter',
+											extraProps: {
+												setValue: (target: any, value: any) => {
+													const fieldType = value?.fieldType;
+													const fieldTypeFlag = value?.fieldTypeFlag;
+													if (fieldTypeFlag === '2') {
+														// 枚举
+														const enumInfo = value?.enumInfo || [];
+														const enumOptions = enumInfo?.map((item: any) => ({
+															label: item.value,
+															value: item.key,
+														}));
+														updateColumns('enum', {
+															enumOptions,
+														});
+													} else {
+														switch (fieldType) {
+															case 'java.lang.Integer':
+																updateColumns('number', {
+																	digits: 0,
+																});
+																break;
+															case 'java.lang.Long':
+																updateColumns('number', {
+																	digits: 0,
+																});
+																break;
+															case 'java.math.BigDecimal':
+																updateColumns('number', {
+																	digits: 0,
+																});
+																break;
+															case 'java.lang.Boolean':
+																updateColumns('boolean', {
+																	boolOptions: [
+																		{
+																			label: '是',
+																			value: true,
+																			color: 'blue',
+																		},
+																		{
+																			label: '否',
+																			value: false,
+																			color: 'red',
+																		},
+																	],
+																});
+																break;
+															case 'java.util.Date':
+																updateColumns('date', {
+																	dateFormatter: 'YYYY-MM-DD HH:mm:ss',
+																});
+																break;
+															default:
+																updateColumns('text');
+																break;
+														}
+													}
+
+													function updateColumns(
+														dataType: string,
+														obj?: Record<string, any>
+													) {
+														const position = target.getParent().key;
+														const columns = target.top.getPropValue('columns');
+														const newColumns = columns.map(
+															(column: any, index: number) => {
+																if (index.toString() === position) {
+																	return {
+																		...omit(
+																			column,
+																			'dataType',
+																			'dateFormatter',
+																			'timeFormatter',
+																			'digits',
+																			'boolOptions',
+																			'enumOptions'
+																		),
+																		...obj,
+																		title: value.fieldTitle,
+																		dataType,
+																	};
+																}
+																return column;
+															}
+														);
+														target.node.setPropValue('columns', newColumns);
+													}
+												},
+											},
 										},
 										{
 											name: 'dataType',
@@ -197,7 +312,6 @@ export default {
 											condition: (target: any) =>
 												target.getParent().getPropValue('dataType') === 'date',
 											setter: {
-												initialValue: 'YYYY-MM-DD HH:mm:ss',
 												componentName: 'SelectSetter',
 												props: {
 													options: [
@@ -259,7 +373,6 @@ export default {
 											condition: (target: any) =>
 												target.getParent().getPropValue('dataType') === 'time',
 											setter: {
-												initialValue: 'HH:mm:ss',
 												componentName: 'SelectSetter',
 												props: {
 													options: [
@@ -310,18 +423,6 @@ export default {
 												'boolean',
 											setter: {
 												componentName: 'JsonSetter',
-												initialValue: () => [
-													{
-														label: '是',
-														value: true,
-														color: 'blue',
-													},
-													{
-														label: '否',
-														value: false,
-														color: 'red',
-													},
-												],
 											},
 										},
 										{
@@ -331,23 +432,6 @@ export default {
 												target.getParent().getPropValue('dataType') === 'enum',
 											setter: {
 												componentName: 'JsonSetter',
-												initialValue: () => [
-													{
-														label: '测试1',
-														value: 'TEXT1',
-														color: 'blue',
-													},
-													{
-														label: '测试2',
-														value: 'TEXT2',
-														color: 'red',
-													},
-													{
-														label: '测试3',
-														value: 'TEXT3',
-														color: 'green',
-													},
-												],
 											},
 										},
 										{

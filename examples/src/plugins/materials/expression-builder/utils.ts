@@ -1,6 +1,6 @@
 import { isArray } from 'lodash-es';
 import dayjs from 'dayjs';
-import { Expression, OrdinalParams } from './types';
+import { HqlSyntaxTree, OrdinalParams } from './types';
 
 /**
  * 将Expression转换为HQL
@@ -8,7 +8,7 @@ import { Expression, OrdinalParams } from './types';
  * @param expr 表达式
  * @returns HQL
  */
-export function convertExpressionToHQL(expr?: Expression): {
+export function convertSyntaxTreeToHQL(expr?: HqlSyntaxTree): {
 	expression: string;
 	ordinalParams?: OrdinalParams[];
 } {
@@ -18,7 +18,7 @@ export function convertExpressionToHQL(expr?: Expression): {
 	if (expr.type === 'group' && Array.isArray(expr.children)) {
 		const logic = expr.logicOperator?.toUpperCase() === 'OR' ? 'OR' : 'AND';
 		const childResults = expr.children
-			.map((child) => convertExpressionToHQL(child))
+			.map((child) => convertSyntaxTreeToHQL(child))
 			.filter((res) => res.expression && res.expression.trim().length > 0);
 
 		// 拼接所有子表达式
@@ -44,7 +44,7 @@ export function convertExpressionToHQL(expr?: Expression): {
 	return { expression: '' };
 }
 
-function buildSingleHQL(expr: Expression) {
+function buildSingleHQL(expr: HqlSyntaxTree) {
 	if (!expr.params) {
 		return {
 			expression: '',
@@ -214,13 +214,13 @@ function buildSingleHQL(expr: Expression) {
 			}
 			break;
 		case '开头匹配':
-			expression = `this.${fieldName} LIKE '${value}%'`;
+			expression = `this.${fieldName} LIKE '${v}%'`;
 			break;
 		case '末尾匹配':
-			expression = `this.${fieldName} LIKE '%${value}'`;
+			expression = `this.${fieldName} LIKE '%${v}'`;
 			break;
 		case '包含':
-			expression = `this.${fieldName} LIKE '%${value}%'`;
+			expression = `this.${fieldName} LIKE '%${v}%'`;
 			break;
 		case '为空':
 			expression = `this.${fieldName} IS NULL`;

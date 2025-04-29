@@ -14,6 +14,7 @@ import { debounce, omit } from 'lodash-es';
 import { ColumnProps, DataConfig } from './types';
 // TODO 需要替换为实际的http请求
 import { http } from '../../../utils/http';
+import { useCellFormat, useCellRender } from '../table/render';
 
 export default defineComponent({
 	name: 'LtEntitySelector',
@@ -92,9 +93,12 @@ export default defineComponent({
 			const fields =
 				columns?.filter(Boolean).map((item) => {
 					const { tipContent } = item;
-
+					const { cellRender } = useCellRender(item);
+					const { formatter } = useCellFormat(item);
 					const column = {
+						field: item.property?.fieldName,
 						...omit(item, [
+							'property',
 							'dataType',
 							'editType',
 							'dateFormatter',
@@ -105,11 +109,16 @@ export default defineComponent({
 							'codeType',
 							'tipContent',
 						]),
+						cellRender,
 						titleSuffix: tipContent
 							? {
 									content: tipContent,
 								}
 							: null,
+						params: {
+							// TODO 格式化暂时先当作额外参数来设置，直接在formatter中设置会有问题
+							formatter,
+						},
 					};
 					return column as any;
 				}) || [];
@@ -126,16 +135,6 @@ export default defineComponent({
 			}, 500)
 		);
 
-		/**
-		 * 可作为模糊查询用的字段
-		 */
-		const filterFields = computed(() =>
-			props.columns
-				?.filter((item) => item?.filterable)
-				.map((item) => item?.field)
-				.filter(Boolean)
-		);
-
 		// TODO 拼接请求体
 		const request = () => {
 			const { dataConfig, columns } = props;
@@ -148,7 +147,7 @@ export default defineComponent({
 				targetClass,
 				pagination,
 				// 前置表达式
-				queryCondition,
+				expressionAndOrdinalParams,
 			} = dataConfig;
 
 			// 请求体 如果不是分页则就一个索引
@@ -167,13 +166,22 @@ export default defineComponent({
 			// query - 前置表达式，由用户配置，用于限定查询范围
 			// expr - 后置表达式，用于模糊查询
 			// 例如：在仓库列表中，query1可以限定只查询A和B仓库，expr则在这些仓库中进行模糊搜索
+			// 最后组装起来就是这样：this.id="s1232131231" AND this.code LIKE '%${inputValue.value}%'
 			const condition: Record<string, any> = {};
 
-			const expr = filterFields.value
+			/**
+			 * 可作为模糊查询用的字段
+			 */
+			const filterFields = props.columns
+				?.filter((item) => item?.filterable)
+				.map((item) => item?.property?.fieldName)
+				.filter(Boolean);
+
+			const expr = filterFields
 				.map((field) => `this.${field} LIKE '%${inputValue.value}%'`)
 				.join(' OR ');
 
-			const expression = [queryCondition?.expression, expr]
+			const expression = [expressionAndOrdinalParams?.hql?.expression, expr]
 				.filter(Boolean)
 				.map((condition) => `(${condition})`)
 				.join(' AND ');
@@ -185,8 +193,9 @@ export default defineComponent({
 
 			targetClass && (condition.targetClass = targetClass);
 
-			queryCondition?.ordinalParams &&
-				(condition.ordinalParams = queryCondition.ordinalParams);
+			expressionAndOrdinalParams?.hql?.ordinalParams &&
+				(condition.ordinalParams =
+					expressionAndOrdinalParams.hql.ordinalParams);
 
 			data.push(condition);
 

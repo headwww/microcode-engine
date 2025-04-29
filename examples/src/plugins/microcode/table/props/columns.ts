@@ -11,9 +11,12 @@ export default [
 				itemSetter: {
 					componentName: 'ObjectSetter',
 
-					initialValue: () => ({
+					initialValue: (target: any) => ({
 						title: '标题',
 						width: 200,
+						property: {
+							targetClass: target.getParent().getPropValue('targetClass'),
+						},
 					}),
 					props: {
 						config: {

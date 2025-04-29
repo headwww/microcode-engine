@@ -16,12 +16,14 @@ export interface DataConfig {
 	// 需要查询的字段
 	queryPath?: string[];
 
-	// HQL查询条件配置
-	queryCondition?: {
-		// HQL查询表达式
-		expression: string;
-		// ，表达式中的参数配置 例如 expression: "this.name = ? and this.code = ?" 对应的 ordinalParams: [{type: "date", value: "18272731882"},{type: "date", value: "18272731882"}],问号和类型需要匹配，目前只是作为日期的匹配
-		ordinalParams?: OrdinalParams[];
+	expressionAndOrdinalParams?: {
+		// 表达式树
+		syntaxTree?: any;
+		// 表达式和参数
+		hql?: {
+			expression?: string;
+			ordinalParams?: OrdinalParams[];
+		};
 	};
 }
 
@@ -31,6 +33,29 @@ export interface OrdinalParams {
 }
 
 export interface ColumnProps extends VxeColumnProps {
+	/**
+	 * 属性配置
+	 */
+	property?: {
+		// 属性名称
+		fieldName?: string;
+		// 属性的名称
+		fieldCommnet?: string;
+		// 属性类型标识 0: 基本类型 1: class实体 2: 枚举实体
+		fieldTypeFlag?: string;
+		// 属性类型 实体.包名.属性名 例如: lt.fw.core.model.biz.Corp，也可以是java.lang.String
+		fieldType?: string;
+		// 是否为空
+		notNull?: 0 | 1;
+		// 枚举信息 { "value": "集团", "key": "HEAD"},
+		enumInfo?: {
+			// 枚举值
+			value: string;
+			// 枚举名称
+			key: string;
+		}[];
+	};
+
 	/**
 	 * 是否作为筛选条件，默认作为查询条件
 	 */

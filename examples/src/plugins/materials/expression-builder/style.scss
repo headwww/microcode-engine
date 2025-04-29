@@ -102,3 +102,16 @@
 	color: #9ca3b0;
 	font-size: 13px;
 }
+
+.lt-expr-add {
+	height: 40px;
+	min-width: 200px;
+	border: 2px dashed #1890ff;
+	display: flex;
+	border-radius: 6px;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	font-weight: 600;
+	color: #1890ff;
+}

@@ -28,6 +28,8 @@
 export interface PropertySelectorValue {
 	/** 目标类名 */
 	targetClass?: string;
+	/** 属性名称 例如:编码 */
+	fieldTitle?: string;
 	/** 完整的属性路径，如 corp.dept.name */
 	fieldName?: string;
 	/** 当前属性的类型标识：0-基础类型，1-实体类型，2-枚举类型 */
@@ -51,9 +53,9 @@ export interface PropertySelectorValue {
  * 请求返回的信息
  */
 export interface FieldListByClass {
-	// 属性名称
+	// 属性名称 例如: corp.dept.name
 	fieldName?: string;
-	// 属性的名称
+	// 属性的名称 例如: 编码
 	fieldCommnet?: string;
 	// 属性类型标识 0: 基本类型 1: class实体 2: 枚举实体
 	fieldTypeFlag?: string;

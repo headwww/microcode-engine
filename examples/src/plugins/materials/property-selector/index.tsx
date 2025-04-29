@@ -32,8 +32,7 @@ export default defineComponent({
 
 		const getFieldListByClass = (className: string) =>
 			http.post<FieldListByClass[]>({
-				// TODO: 需要替换为实际的接口
-				url: 'api/testServiceImpl/getFieldListByClass',
+				url: 'api/bsEntityService/getFieldListByClass',
 				data: [
 					[
 						{
@@ -53,6 +52,7 @@ export default defineComponent({
 							value: id,
 							pId: treeNode.dataRef.id,
 							title: `${item.fieldName}  (${item.fieldCommnet})`,
+							fieldCommnet: item.fieldCommnet,
 							fieldType: item.fieldType,
 							isLeaf: item.fieldTypeFlag !== '1',
 							disabled: item.fieldTypeFlag === '1',
@@ -76,6 +76,7 @@ export default defineComponent({
 					pId: 0,
 					value: item.fieldName,
 					title: `${item.fieldName}  (${item.fieldCommnet})`,
+					fieldCommnet: item.fieldCommnet,
 					isLeaf: item.fieldTypeFlag !== '1',
 					disabled: item.fieldTypeFlag === '1',
 					fieldType: item.fieldType,
@@ -100,6 +101,7 @@ export default defineComponent({
 			const findNode = treeData.value?.find((item: any) => item.id === v);
 			selectedNode.value = {
 				targetClass: selectedNode.value?.targetClass || '',
+				fieldTitle: findNode?.fieldCommnet,
 				fieldTypeFlag: findNode?.fieldTypeFlag,
 				enumInfo: findNode?.enumInfo,
 				topFieldType: findNode?.topFieldType,
@@ -186,11 +188,10 @@ export default defineComponent({
 						<InfoCircleOutlined
 							style={{
 								color: 'rgba(0, 0, 0, 0.25)',
-								lineHeight: '32px',
 								cursor: 'pointer',
 								position: 'absolute',
 								right: '6px',
-								top: '0',
+								top: '8px',
 							}}
 						/>
 					</Popover>
