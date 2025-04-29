@@ -20,6 +20,9 @@ export default {
 					label: '模式',
 					tip: '仅调试阶段使用，选择器模式,在筛选器中使用默认模式，在编辑框中当作弹窗使用',
 				},
+				extraProps: {
+					supportVariable: false,
+				},
 				setter: {
 					componentName: 'SegmentedSetter',
 					initialValue: 'default',
@@ -29,6 +32,16 @@ export default {
 							{ label: '弹窗', value: 'popover' },
 						],
 					},
+				},
+			},
+			{
+				name: 'keywords',
+				title: '关键词',
+				extraProps: {
+					supportVariable: false,
+				},
+				setter: {
+					componentName: 'TextareaSetter',
 				},
 			},
 			{
@@ -45,6 +58,9 @@ export default {
 								{
 									name: 'url',
 									title: '请求地址',
+									extraProps: {
+										supportVariable: false,
+									},
 									setter: {
 										initialValue:
 											'api/mainProductPlanService/findMainsByPermission',
@@ -56,9 +72,10 @@ export default {
 									title: '目标类',
 									setter: {
 										initialValue: 'lt.app.product.model.MainProductPlan',
-										componentName: 'TextareaSetter',
+										componentName: 'TargetClassSetter',
 									},
 									extraProps: {
+										supportVariable: false,
 										setValue: (target: any, value: string) => {
 											const columns = target
 												.getParent()
@@ -79,6 +96,9 @@ export default {
 								{
 									name: 'pagination',
 									title: '是否分页',
+									extraProps: {
+										supportVariable: false,
+									},
 									setter: {
 										componentName: 'BoolSetter',
 									},
@@ -86,6 +106,9 @@ export default {
 								{
 									name: 'method',
 									title: '请求方法',
+									extraProps: {
+										supportVariable: false,
+									},
 									setter: {
 										initialValue: 'POST',
 										componentName: 'SelectSetter',
@@ -116,6 +139,9 @@ export default {
 									title: {
 										label: '查询语句',
 										tip: '个性化处理实体选择器数据',
+									},
+									extraProps: {
+										supportVariable: false,
 									},
 									setter: {
 										componentName: 'ExpressionSetter',
@@ -158,6 +184,9 @@ export default {
 												label: '模糊查询',
 												tip: '是否作为模糊查询的条件，默认当作查询条件',
 											},
+											extraProps: {
+												supportVariable: false,
+											},
 											setter: {
 												componentName: 'BoolSetter',
 												initialValue: true,
@@ -168,6 +197,9 @@ export default {
 											title: '列标题',
 											propType: 'string',
 											isRequired: true,
+											extraProps: {
+												supportVariable: false,
+											},
 											setter: 'StringSetter',
 										},
 										{
@@ -176,8 +208,10 @@ export default {
 												label: '列字段',
 											},
 											isRequired: true,
+
 											setter: 'PropertySetter',
 											extraProps: {
+												supportVariable: false,
 												setValue: (target: any, value: any) => {
 													const fieldType = value?.fieldType;
 													const fieldTypeFlag = value?.fieldTypeFlag;
@@ -273,6 +307,9 @@ export default {
 												label: '数据类型',
 												tip: '渲染非编辑状态时显示的样式',
 											},
+											extraProps: {
+												supportVariable: false,
+											},
 											setter: {
 												componentName: 'SelectSetter',
 												initialValue: 'text',
@@ -309,6 +346,9 @@ export default {
 										{
 											name: 'dateFormatter',
 											title: '日期格式',
+											extraProps: {
+												supportVariable: false,
+											},
 											condition: (target: any) =>
 												target.getParent().getPropValue('dataType') === 'date',
 											setter: {
@@ -370,6 +410,9 @@ export default {
 										{
 											name: 'timeFormatter',
 											title: '时间格式',
+											extraProps: {
+												supportVariable: false,
+											},
 											condition: (target: any) =>
 												target.getParent().getPropValue('dataType') === 'time',
 											setter: {
@@ -410,6 +453,9 @@ export default {
 												label: '小数位',
 												tip: '保留几位小数',
 											},
+											extraProps: {
+												supportVariable: false,
+											},
 											setter: 'NumberSetter',
 											condition: (target: any) =>
 												target.getParent().getPropValue('dataType') ===
@@ -418,6 +464,9 @@ export default {
 										{
 											name: 'boolOptions',
 											title: '布尔数据',
+											extraProps: {
+												supportVariable: false,
+											},
 											condition: (target: any) =>
 												target.getParent().getPropValue('dataType') ===
 												'boolean',
@@ -428,6 +477,9 @@ export default {
 										{
 											name: 'enumOptions',
 											title: '枚举数据',
+											extraProps: {
+												supportVariable: false,
+											},
 											condition: (target: any) =>
 												target.getParent().getPropValue('dataType') === 'enum',
 											setter: {
@@ -440,11 +492,17 @@ export default {
 												label: '提示内容',
 												tip: '当鼠标悬浮在列标题上时，显示的提示内容',
 											},
+											extraProps: {
+												supportVariable: false,
+											},
 											setter: 'StringSetter',
 										},
 										{
 											name: 'width',
 											title: '列宽',
+											extraProps: {
+												supportVariable: false,
+											},
 											setter: {
 												componentName: 'NumberSetter',
 												props: {
@@ -455,6 +513,9 @@ export default {
 										{
 											name: 'fixed',
 											title: '固定列',
+											extraProps: {
+												supportVariable: false,
+											},
 											setter: {
 												componentName: 'SelectSetter',
 												props: {
