@@ -53,6 +53,8 @@ export interface ColumnProps extends VxeColumnProps {
 			value: string;
 			// 枚举名称
 			key: string;
+			/** 枚举序号 */
+			ordinal?: number;
 		}[];
 	};
 

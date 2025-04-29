@@ -2,7 +2,7 @@
  * @Author: shuwen 1243889238@qq.com
  * @Date: 2025-04-25 15:08:48
  * @LastEditors: shuwen 1243889238@qq.com
- * @LastEditTime: 2025-04-27 21:35:10
+ * @LastEditTime: 2025-04-29 15:38:51
  * @FilePath: /microcode-engine/examples/src/plugins/materials/property-selector/types.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -42,6 +42,8 @@ export interface PropertySelectorValue {
 		value: string;
 		// 枚举名称
 		key: string;
+		/** 枚举序号 */
+		ordinal?: number;
 	}[];
 	/** 顶级属性的类型标识 */
 	topFieldTypeFlag?: '0' | '1' | '2';
@@ -69,5 +71,7 @@ export interface FieldListByClass {
 		value: string;
 		// 枚举名称
 		key: string;
+		/** 枚举序号 */
+		ordinal?: number;
 	}[];
 }

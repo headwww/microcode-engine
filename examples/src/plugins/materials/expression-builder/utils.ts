@@ -51,36 +51,48 @@ function buildSingleHQL(expr: HqlSyntaxTree) {
 		};
 	}
 
-	const { fieldName, fieldType, value: v, logicalSymbol, not } = expr.params;
+	const {
+		enumInfo,
+		fieldTypeFlag,
+		fieldName,
+		fieldType,
+		value: v,
+		logicalSymbol,
+		not,
+	} = expr.params;
 
 	let value: any = '';
 
-	if (isArray(v)) {
-		if (
-			fieldType === 'java.lang.Boolean' ||
-			fieldType === 'java.lang.Integer' ||
-			fieldType === 'java.lang.Long' ||
-			fieldType === 'java.math.BigDecimal' ||
-			fieldType === 'java.util.Date'
-		) {
-			value = v.map((item) => item);
-		} else {
-			value = v.map((item) => `'${item}'`);
-		}
+	if (fieldTypeFlag === '2') {
+		// 枚举的时候，查询 条件的值需要是枚举的序号
+		value = enumInfo?.find((item) => item.key === v)?.ordinal;
 	} else {
-		if (
-			fieldType === 'java.lang.Boolean' ||
-			fieldType === 'java.lang.Integer' ||
-			fieldType === 'java.lang.Long' ||
-			fieldType === 'java.math.BigDecimal' ||
-			fieldType === 'java.util.Date'
-		) {
-			value = v;
+		if (isArray(v)) {
+			if (
+				fieldType === 'java.lang.Boolean' ||
+				fieldType === 'java.lang.Integer' ||
+				fieldType === 'java.lang.Long' ||
+				fieldType === 'java.math.BigDecimal' ||
+				fieldType === 'java.util.Date'
+			) {
+				value = v.map((item) => item);
+			} else {
+				value = v.map((item) => `'${item}'`);
+			}
 		} else {
-			value = `'${v}'`;
+			if (
+				fieldType === 'java.lang.Boolean' ||
+				fieldType === 'java.lang.Integer' ||
+				fieldType === 'java.lang.Long' ||
+				fieldType === 'java.math.BigDecimal' ||
+				fieldType === 'java.util.Date'
+			) {
+				value = v;
+			} else {
+				value = `'${v}'`;
+			}
 		}
 	}
-
 	let expression = '';
 	let ordinalParams: OrdinalParams[] = [];
 

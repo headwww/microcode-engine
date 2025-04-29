@@ -48,6 +48,8 @@ export const ExpressionBuilder = defineComponent({
 			},
 			set(value) {
 				emit('update:value', value);
+				console.log(value, convertSyntaxTreeToHQL(value[0]));
+
 				emit('change', {
 					expressions: value,
 					hql: convertSyntaxTreeToHQL(value[0]),
