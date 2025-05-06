@@ -1,7 +1,6 @@
-import { Input, Popover } from 'ant-design-vue';
+import { Input, Popover, Tooltip } from 'ant-design-vue';
 import {
 	defineComponent,
-	PropType,
 	Fragment,
 	computed,
 	ref,
@@ -10,44 +9,19 @@ import {
 	watch,
 } from 'vue';
 import { VxeGrid, VxeGridProps } from 'vxe-table';
-import { debounce, omit } from 'lodash-es';
-import { ColumnProps, DataConfig } from './types';
+import { debounce, get, omit } from 'lodash-es';
+import { CloseCircleFilled } from '@ant-design/icons-vue';
+import { entitySelectorProps } from './types';
 // TODO 需要替换为实际的http请求
 import { http } from '../../../utils/http';
 import { useCellFormat, useCellRender } from '../table/render';
+import './style.scss';
 
 export default defineComponent({
 	name: 'LtEntitySelector',
-	props: {
-		// 模式是在Input下面有一个table还是点击input后有一个table弹出
-		mode: {
-			type: String as PropType<'default' | 'popover'>,
-			default: 'default',
-		},
-		height: {
-			type: [Number, String],
-			default: 280,
-		},
-		placeholder: {
-			type: String,
-			default: '模糊查询',
-		},
-		columns: {
-			type: Array as PropType<ColumnProps[]>,
-			default: () => [],
-		},
-		dataConfig: {
-			type: Object as PropType<DataConfig>,
-		},
-		onClear: {
-			type: Function as PropType<(v: any) => void>,
-			default: () => {},
-		},
-		// 选中的实体
-		value: null,
-	},
+	props: entitySelectorProps,
 	setup(props) {
-		const inputValue = ref('');
+		const open = ref(false);
 
 		const data = ref([]);
 
@@ -81,6 +55,12 @@ export default defineComponent({
 		const columns = computed(() => {
 			const { columns } = props;
 			const cols = [];
+			cols.push({
+				type: props.mode === 'popover' ? 'radio' : 'checkbox',
+				width: 40,
+				fixed: 'left',
+				align: 'center',
+			});
 			cols.push({
 				type: 'seq',
 				title: '序号',
@@ -128,15 +108,29 @@ export default defineComponent({
 			return cols;
 		});
 
+		const inputValue = ref(props.inputValue);
+
+		watch(
+			() => props.inputValue,
+			(v) => {
+				inputValue.value = v;
+			}
+		);
+
 		watch(
 			inputValue,
-			debounce(() => {
-				sendRequest();
+			debounce((v) => {
+				if (props.mode === 'default') {
+					sendRequest(v);
+				} else {
+					if (open.value) {
+						sendRequest(v);
+					}
+				}
 			}, 500)
 		);
 
-		// TODO 拼接请求体
-		const request = () => {
+		const request = (v: any) => {
 			const { dataConfig, columns } = props;
 			if (!dataConfig) {
 				return Promise.reject(new Error('dataConfig is required'));
@@ -145,6 +139,7 @@ export default defineComponent({
 				url,
 				method,
 				targetClass,
+				// 是否分页
 				pagination,
 				// 前置表达式
 				expressionAndOrdinalParams,
@@ -178,10 +173,19 @@ export default defineComponent({
 				.filter(Boolean);
 
 			const expr = filterFields
-				.map((field) => `this.${field} LIKE '%${inputValue.value}%'`)
+				.map((field) => `this.${field} LIKE '%${v || ''}%'`)
 				.join(' OR ');
 
-			const expression = [expressionAndOrdinalParams?.hql?.expression, expr]
+			// 关联查询
+			const relation = props.dataConfig
+				?.relationFunc?.(props.params)
+				.replace('__self', 'this');
+
+			const expression = [
+				relation,
+				expressionAndOrdinalParams?.hql?.expression,
+				expr,
+			]
 				.filter(Boolean)
 				.map((condition) => `(${condition})`)
 				.join(' AND ');
@@ -206,14 +210,13 @@ export default defineComponent({
 			});
 		};
 
-		// TODO 发送请求 请求的参数还没设置fastjson
-		const sendRequest = () => {
+		const sendRequest = (v: any) => {
 			if (
 				props.dataConfig?.url?.trim() &&
 				props.dataConfig?.targetClass?.trim()
 			) {
 				loading.value = true;
-				request()
+				request(v)
 					.then((res) => {
 						if (!props.dataConfig?.pagination) {
 							data.value = res;
@@ -234,18 +237,18 @@ export default defineComponent({
 
 		onMounted(() => {
 			if (props.mode === 'default') {
-				sendRequest();
+				sendRequest('');
 			}
 		});
 
 		const menuClick = () => {
-			sendRequest();
+			sendRequest(inputValue.value);
 		};
 
 		const onPageChange = (params: any) => {
 			pagerConfig.currentPage = params.currentPage;
 			pagerConfig.pageSize = params.pageSize;
-			sendRequest();
+			sendRequest('');
 		};
 
 		const renderTable = () => {
@@ -271,6 +274,23 @@ export default defineComponent({
 					enabled: true,
 					gt: 0,
 				},
+				rowConfig: {
+					isHover: true,
+				},
+				radioConfig:
+					props.mode === 'popover'
+						? {
+								highlight: true,
+								trigger: 'row',
+							}
+						: undefined,
+				checkboxConfig:
+					props.mode === 'popover'
+						? undefined
+						: {
+								highlight: true,
+								trigger: 'row',
+							},
 			};
 			const pager = dataConfig?.pagination
 				? pagerConfig
@@ -294,9 +314,31 @@ export default defineComponent({
 					pagerConfig={pager as any}
 					onPageChange={onPageChange}
 					data={data.value}
+					onRadioChange={(v) => {
+						setTimeout(() => {
+							open.value = false;
+						}, 100);
+						inputValue.value = props.path && get(v.row, props.path);
+						props.onRadioChange?.(v);
+					}}
 				></VxeGrid>
 			);
 		};
+
+		const renderSuffix = () => (
+			<Tooltip title="删除该实体">
+				<CloseCircleFilled
+					onClick={(e) => {
+						e.stopPropagation();
+						props.onClear?.();
+					}}
+					onMousedown={(e) => {
+						e.preventDefault(); // 阻止 Input 失焦
+					}}
+					class={['lt-entity-selector-suffix-icon']}
+				/>
+			</Tooltip>
+		);
 
 		return () => {
 			const { mode, placeholder } = props;
@@ -309,38 +351,31 @@ export default defineComponent({
 								v-model:value={inputValue.value}
 								placeholder={placeholder}
 								allowClear
-								onChange={(v) => {
-									// 点击清除按钮
-									if (v instanceof PointerEvent && v?.type === 'click') {
-										props.onClear?.(v);
-									}
-								}}
 							/>
 							{renderTable()}
 						</Fragment>
 					) : (
 						<Popover
-							destroyTooltipOnHide
-							trigger="click"
-							placement="bottom"
+							open={open.value}
+							onClick={(e: any) => e.stopPropagation()}
+							placement="bottomLeft"
 							arrow={false}
-							overlayStyle={{ width: '100%' }}
-							overlayInnerStyle={{ padding: '0px', width: '100%' }}
+							overlayStyle={{ width: '450px', height: '325px', zIndex: 1010 }}
+							overlayInnerStyle={{ padding: '0px' }}
 							content={renderTable()}
-							onOpenChange={() => {
-								sendRequest();
+							onOpenChange={(v) => {
+								v && sendRequest('');
 							}}
 						>
 							<Input
 								v-model:value={inputValue.value}
-								placeholder={placeholder}
-								allowClear
-								onChange={(v) => {
-									// 点击清除按钮
-									if (v instanceof PointerEvent && v?.type === 'click') {
-										props.onClear?.(v);
-									}
+								onFocus={() => {
+									open.value = true;
+									sendRequest('');
 								}}
+								placeholder={placeholder}
+								allowClear={false}
+								suffix={renderSuffix()}
 							/>
 						</Popover>
 					)}

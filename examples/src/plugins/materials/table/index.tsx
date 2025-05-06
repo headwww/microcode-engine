@@ -109,7 +109,7 @@ export default defineComponent({
 				columns?.filter(Boolean).map((item) => {
 					const { cellRender } = useCellRender(item);
 					const { formatter } = useCellFormat(item);
-					const { editRender } = useCellEdit(item);
+					const editRender = useCellEdit(item);
 					const { tipContent } = item;
 
 					const column = {

@@ -16,7 +16,7 @@ export default [
 			label: '目标类',
 			tip: '需要用户选择一个在后端（服务端）定义好的 ORM 实体',
 		},
-		setter: 'TextareaSetter',
+		setter: 'TargetClassSetter',
 		extraProps: {
 			setValue: (target: any, value: string) => {
 				const columns = target.getParent().getPropValue('columns');

@@ -3,6 +3,57 @@
  * 配置实体选择器的请求地址和condition条件
  */
 import { VxeColumnProps } from 'vxe-table';
+import { ExtractPropTypes, PropType } from 'vue';
+import { PropertySelectorValue } from '../property-selector/types';
+
+export const entitySelectorProps = {
+	params: {
+		type: Object as PropType<any>,
+	},
+	// mode: 'default' 在Input下面有一个table 多选模式
+	// mode: 'popover' 点击input后有一个table弹出 单选模式
+	// 选择 方式popover是单选还是 default是多选
+	mode: {
+		type: String as PropType<'default' | 'popover'>,
+		default: 'default',
+	},
+
+	height: {
+		type: [Number, String],
+		default: 280,
+	},
+	placeholder: {
+		type: String,
+	},
+	columns: {
+		type: Array as PropType<ColumnProps[]>,
+		default: () => [],
+	},
+	dataConfig: {
+		type: Object as PropType<DataConfig>,
+	},
+	onClear: {
+		type: Function as PropType<() => void>,
+		default: () => {},
+	},
+	onRadioChange: {
+		type: Function as PropType<(entity: any) => void>,
+	},
+	// 实体选择器绑定的字段
+	path: String,
+
+	// 选中的实体
+	value: null,
+
+	inputValue: null,
+
+	// 关联查询
+	relationFunc: {
+		type: Object as PropType<(params: any) => string>,
+	},
+};
+
+export type EntitySelectorProps = ExtractPropTypes<typeof entitySelectorProps>;
 
 export interface DataConfig {
 	// 请求地址
@@ -25,6 +76,8 @@ export interface DataConfig {
 			ordinalParams?: OrdinalParams[];
 		};
 	};
+	// 关联查询
+	relationFunc?: (params: any) => string;
 }
 
 export interface OrdinalParams {
@@ -36,27 +89,7 @@ export interface ColumnProps extends VxeColumnProps {
 	/**
 	 * 属性配置
 	 */
-	property?: {
-		// 属性名称
-		fieldName?: string;
-		// 属性的名称
-		fieldCommnet?: string;
-		// 属性类型标识 0: 基本类型 1: class实体 2: 枚举实体
-		fieldTypeFlag?: string;
-		// 属性类型 实体.包名.属性名 例如: lt.fw.core.model.biz.Corp，也可以是java.lang.String
-		fieldType?: string;
-		// 是否为空
-		notNull?: 0 | 1;
-		// 枚举信息 { "value": "集团", "key": "HEAD"},
-		enumInfo?: {
-			// 枚举值
-			value: string;
-			// 枚举名称
-			key: string;
-			/** 枚举序号 */
-			ordinal?: number;
-		}[];
-	};
+	property?: PropertySelectorValue;
 
 	/**
 	 * 是否作为筛选条件，默认作为查询条件

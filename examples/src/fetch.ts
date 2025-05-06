@@ -20,8 +20,9 @@ export function createAxiosFetchHandler(config?: Record<string, unknown>) {
 
 		// const response = await axios(requestConfig as any);
 
-		return http.post({
+		return http.request({
 			url: options.uri,
+			method: options.method,
 			data: options.params,
 		});
 	};

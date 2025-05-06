@@ -118,43 +118,65 @@ export function useCellFormat(column: ColumnProps) {
 }
 
 export function useCellEdit(column: ColumnProps) {
-	const { editType } = column;
+	const { editType, property } = column;
 
-	let editRender: any = {
-		name: 'LtDefaultRenderTableEdit',
-		props: {
-			...getProps(column),
-		},
-	};
+	const topFieldTypeFlag = property?.topFieldTypeFlag;
+
+	// 如果当前字段是这样的corp.name，则需要使用实体编辑
+	if (topFieldTypeFlag === '1') {
+		return {
+			name: 'LtEntityRenderTableEdit',
+			props: {
+				...getProps(column),
+				editDataConfig: column?.editDataConfig,
+				editColumns: column?.editColumns,
+			},
+		};
+	}
 	if (editType === 'text') {
-		editRender.name = 'LtTextRenderTableEdit';
-		editRender.props = getProps(column);
+		return {
+			name: 'LtTextRenderTableEdit',
+			props: getProps(column),
+		};
 	}
 	if (editType === 'number') {
-		editRender.name = 'LtNumberRenderTableEdit';
-		editRender.props = getProps(column);
+		return {
+			name: 'LtNumberRenderTableEdit',
+			props: getProps(column),
+		};
 	}
 	if (editType === 'boolean') {
-		editRender.name = 'LtBooleanRenderTableEdit';
-		editRender.props = getProps(column);
+		return {
+			name: 'LtBooleanRenderTableEdit',
+			props: getProps(column),
+		};
 	}
 	if (editType === 'select') {
-		editRender.name = 'LtSelectRenderTableEdit';
-		editRender.props = getProps(column);
+		return {
+			name: 'LtSelectRenderTableEdit',
+			props: getProps(column),
+		};
 	}
 	if (editType === 'date') {
-		editRender.name = 'LtDateRenderTableEdit';
-		editRender.props = getProps(column);
+		return {
+			name: 'LtDateRenderTableEdit',
+			props: getProps(column),
+		};
 	}
 	if (editType === 'time') {
-		editRender.name = 'LtTimeRenderTableEdit';
-		editRender.props = getProps(column);
+		return {
+			name: 'LtTimeRenderTableEdit',
+			props: getProps(column),
+		};
 	}
 
 	// 禁用编辑 放在在底部判断
 	if (editType === 'disabledEdit') {
-		editRender = null;
+		return null;
 	}
 
-	return { editRender };
+	return {
+		name: 'LtDefaultRenderTableEdit',
+		props: getProps(column),
+	};
 }

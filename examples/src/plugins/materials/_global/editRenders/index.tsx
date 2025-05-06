@@ -18,6 +18,7 @@ import {
 	LtTagRenderTableCell,
 } from '../cellRenders';
 import { formatTableCell } from '../utils';
+import EntitySelector from '../../entity-selector';
 
 function getOnName(type: string) {
 	return `on${type.substring(0, 1).toLocaleUpperCase()}${type.substring(1)}`;
@@ -383,6 +384,50 @@ VxeUI.renderer.mixin({
 		renderTableEdit: (renderOpts, params) => (
 			<TimePicker renderOpts={renderOpts} params={params}></TimePicker>
 		),
+		renderTableCell: renderCellContent,
+		renderTableDefault: renderCellContent,
+	},
+
+	LtEntityRenderTableEdit: {
+		tableAutoFocus: 'input',
+		renderTableEdit: (renderOpts, params) => {
+			const props = renderOpts.props;
+			const { row, column, $table } = params;
+			let cellValue = get(row, column.field);
+
+			cellValue = formatTableCell({ cellValue, row, column });
+
+			// 举例： column.field = 'entity.name' 那么path = 'name'
+			const fieldList = column.field.split('.');
+			const path =
+				fieldList.length > 1 ? fieldList.slice(1).join('.') : undefined;
+
+			return (
+				<EntitySelector
+					params={params}
+					dataConfig={props.editDataConfig}
+					columns={props.editColumns}
+					inputValue={cellValue}
+					path={path}
+					onClear={() => {
+						const splitList = column.field.split('.');
+						if (splitList.length > 1) {
+							set(row, splitList[0], null);
+							$table?.updateStatus(params);
+						}
+					}}
+					onRadioChange={(v) => {
+						const splitList = column.field.split('.');
+						if (splitList.length > 1) {
+							set(row, splitList[0], v?.row);
+							$table?.updateStatus(params);
+						}
+					}}
+					{...props}
+					mode="popover"
+				></EntitySelector>
+			);
+		},
 		renderTableCell: renderCellContent,
 		renderTableDefault: renderCellContent,
 	},

@@ -2,7 +2,7 @@
  * @Author: shuwen 1243889238@qq.com
  * @Date: 2025-04-08 14:35:21
  * @LastEditors: shuwen 1243889238@qq.com
- * @LastEditTime: 2025-04-27 00:36:42
+ * @LastEditTime: 2025-05-06 16:41:41
  * @FilePath: /microcode-engine/examples/src/plugins/schema.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -87,11 +87,30 @@ export default {
 							value: 'function dataHandler(res) { \n\treturn res\n}\n',
 						},
 					},
+					{
+						id: 'saveSelectorList',
+						description: '存储实体选择器',
+						isInit: false,
+						isSync: false,
+						options: {
+							uri: 'api/bsSetterService/saveSelectorList',
+							method: 'POST',
+							params: {
+								type: 'JSExpression',
+								value:
+									'[\n [\n    {\n      targetClass: \'lt.fw.core.model.biz.Corp\',\n      tInfo: \'{"mode":"default","keywords":"公司选择器","dataConfig":{"url":"api/corpService/findCorps","targetClass":"lt.fw.core.model.biz.Corp","method":"POST"},"columns":[{"title":"名称","width":200,"filterable":true,"property":{"targetClass":"lt.fw.core.model.biz.Corp","fieldTitle":"名称","fieldTypeFlag":"0","topFieldType":"java.lang.String","fieldType":"java.lang.String","fieldName":"name","topFieldTypeFlag":"0"},"dataType":"text"},{"title":"编码","width":200,"filterable":true,"property":{"targetClass":"lt.fw.core.model.biz.Corp","fieldTitle":"编码","fieldTypeFlag":"0","topFieldType":"java.lang.String","fieldType":"java.lang.String","fieldName":"code","topFieldTypeFlag":"0"},"dataType":"text"}]}\',\n      keywords: \'公司选择器\'\n    }\n ]\n]',
+							},
+						},
+						dataHandler: {
+							type: 'JSFunction',
+							value: 'function dataHandler(res) { \n\treturn res\n}\n',
+						},
+					},
 				],
 			},
 			css: 'body {\n }\n\n',
 			originCode:
-				"import { defineComponent } from 'vue';\n\nexport default defineComponent({\n  data: () => ({\n    data: []\n  }),\n  watch: {\n  },\n  mounted() {\n    console.log('did mount', this);\n  },\n  methods: {\n    onClick_m9jmiqf6(event, extParams) {\n      // 点击按钮时的回调\n      this.dataSourceMap.findOrderClassessByPage.load().then((resp)=>{\n        this.data = resp.result\n      })\n      console.log('onClick', this);\n    },\n    rowStyle_m9s2rm1y(params) {\n            const { row, column} = params\n      \n      if (column.field==='name'&&this.__appHelper.lodash.get(row,'name')==='中班') {\n        return {\n          color:\"red\"\n        }\n\n      }\n      return {}\n      \n    },\n    login(event,extParams){\n      this.dataSourceMap.login.load()\n   }\n  },\n})\n",
+				"import { defineComponent } from 'vue';\n\nexport default defineComponent({\n  data: () => ({\n    data: []\n  }),\n  watch: {\n  },\n  mounted() {\n    console.log('did mount', this);\n  },\n  methods: {\n    onClick_m9jmiqf6(event, extParams) {\n      // 点击按钮时的回调\n      this.dataSourceMap.findOrderClassessByPage.load().then((resp)=>{\n        this.data = resp.result\n      })\n      console.log('onClick', this);\n    },\n    rowStyle_m9s2rm1y(params) {\n            const { row, column} = params\n      \n      if (column.field==='name'&&this.__appHelper.lodash.get(row,'name')==='中班') {\n        return {\n          color:\"red\"\n        }\n\n      }\n      return {}\n      \n    },\n    login(event,extParams){\n      this.dataSourceMap.login.load()\n   },\n    save123(event,extParams){\n    // 点击按钮时的回调\n      this.dataSourceMap.saveSelectorList.load()\n    console.log('onClick', event);},\n    relationFunc_mac97olr(params) {\n      console.log(params)\n      return `this.name ='${params.row.corp.name}'`\n\n    }\n  },\n})\n",
 			hidden: false,
 			title: '',
 			isLocked: false,
@@ -113,10 +132,20 @@ export default {
 					value:
 						'function (event,extParams){\n      this.dataSourceMap.login.load()\n   }',
 				},
+				save123: {
+					type: 'JSFunction',
+					value:
+						"function (event,extParams){\n    // 点击按钮时的回调\n      this.dataSourceMap.saveSelectorList.load()\n    console.log('onClick', event);}",
+				},
+				relationFunc_mac97olr: {
+					type: 'JSFunction',
+					value:
+						"function (params) {\n      console.log(params)\n      return `this.name ='${params.row.corp.name}'`\n\n    }",
+				},
 			},
 			meta: {
 				originCode:
-					"import { defineComponent } from 'vue';\n\nexport default defineComponent({\n  data: () => ({\n    data: []\n  }),\n  watch: {\n  },\n  mounted() {\n    console.log('did mount', this);\n  },\n  methods: {\n    onClick_m9jmiqf6(event, extParams) {\n      // 点击按钮时的回调\n      this.dataSourceMap.findOrderClassessByPage.load().then((resp)=>{\n        this.data = resp.result\n      })\n      console.log('onClick', this);\n    },\n    rowStyle_m9s2rm1y(params) {\n           const { row, column} = params\n      \n      if (column.field==='name'&&this.__appHelper.lodash.get(row,'name')==='中班') {\n        return {\n          color:\"red\"\n        }\n\n      }\n      return {}\n      \n    },\n    login(event,extParams){\n      this.dataSourceMap.login.load()\n   }\n  },\n})\n",
+					"import { defineComponent } from 'vue';\n\nexport default defineComponent({\n  data: () => ({\n    data: []\n  }),\n  watch: {\n  },\n  mounted() {\n    console.log('did mount', this);\n  },\n  methods: {\n    onClick_m9jmiqf6(event, extParams) {\n      // 点击按钮时的回调\n      this.dataSourceMap.findOrderClassessByPage.load().then((resp)=>{\n        this.data = resp.result\n      })\n      console.log('onClick', this);\n    },\n    rowStyle_m9s2rm1y(params) {\n            const { row, column} = params\n      \n      if (column.field==='name'&&this.__appHelper.lodash.get(row,'name')==='中班') {\n        return {\n          color:\"red\"\n        }\n\n      }\n      return {}\n      \n    },\n    login(event,extParams){\n      this.dataSourceMap.login.load()\n   },\n    save123(event,extParams){\n    // 点击按钮时的回调\n      this.dataSourceMap.saveSelectorList.load()\n    console.log('onClick', event);},\n    relationFunc_mac97olr(params) {\n      console.log(params)\n      return `this.name ='${params.row.corp.name}'`\n\n    }\n  },\n})\n",
 			},
 			state: {
 				data: [],
@@ -205,6 +234,48 @@ export default {
 							type: 'JSFunction',
 							value:
 								'function(){return this.onClick_m9jmiqf6.apply(this,Array.prototype.slice.call(arguments).concat([{}])) }',
+						},
+					},
+					docId: 'docm9l2mtr5',
+					hidden: false,
+					title: '',
+					isLocked: false,
+					condition: true,
+					conditionGroup: '',
+				},
+				{
+					componentName: 'Button',
+					id: 'node_ocma2loqn01',
+					props: {
+						children: '保存',
+						htmlType: 'button',
+						size: 'middle',
+						shape: 'default',
+						block: false,
+						danger: false,
+						ghost: false,
+						disabled: false,
+						__events: {
+							eventDataList: [
+								{
+									type: 'componentEvent',
+									name: 'onClick',
+									relatedEventName: 'save123',
+									paramStr: '{}',
+								},
+							],
+							eventList: [
+								{
+									name: 'onClick',
+									template:
+										"onClick(event,${extParams}){\n// 点击按钮时的回调\nconsole.log('onClick', event);}",
+								},
+							],
+						},
+						onClick: {
+							type: 'JSFunction',
+							value:
+								'function(){return this.save123.apply(this,Array.prototype.slice.call(arguments).concat([{}])) }',
 						},
 					},
 					docId: 'docm9l2mtr5',
@@ -402,6 +473,245 @@ export default {
 									topFieldTypeFlag: '0',
 								},
 							},
+							{
+								title: '名称',
+								width: 200,
+								property: {
+									targetClass: 'lt.app.productbasic.model.OrderClasses',
+									fieldTitle: '名称',
+									fieldTypeFlag: '0',
+									topFieldType: 'lt.fw.core.model.biz.Corp',
+									fieldType: 'java.lang.String',
+									fieldName: 'corp.name',
+									topFieldTypeFlag: '1',
+								},
+								editType: '1102238451895377920',
+								dataConfig: {
+									method: 'POST',
+									url: 'api/corpService/findCorps',
+									targetClass: 'lt.fw.core.model.biz.Corp',
+								},
+								columns: [
+									{
+										title: '名称',
+										width: 200,
+										filterable: true,
+										property: {
+											targetClass: 'lt.fw.core.model.biz.Corp',
+											fieldTitle: '名称',
+											fieldTypeFlag: '0',
+											topFieldType: 'java.lang.String',
+											fieldType: 'java.lang.String',
+											fieldName: 'name',
+											topFieldTypeFlag: '0',
+										},
+										dataType: 'text',
+									},
+								],
+								editDataConfig: {
+									url: 'api/corpService/findCorps',
+									targetClass: 'lt.fw.core.model.biz.Corp',
+									method: 'POST',
+								},
+								editColumns: [
+									{
+										title: '名称',
+										width: 200,
+										filterable: true,
+										property: {
+											targetClass: 'lt.fw.core.model.biz.Corp',
+											fieldTitle: '名称',
+											fieldTypeFlag: '0',
+											topFieldType: 'java.lang.String',
+											fieldType: 'java.lang.String',
+											fieldName: 'name',
+											topFieldTypeFlag: '0',
+										},
+										dataType: 'text',
+									},
+									{
+										title: '编码',
+										width: 200,
+										filterable: true,
+										property: {
+											targetClass: 'lt.fw.core.model.biz.Corp',
+											fieldTitle: '编码',
+											fieldTypeFlag: '0',
+											topFieldType: 'java.lang.String',
+											fieldType: 'java.lang.String',
+											fieldName: 'code',
+											topFieldTypeFlag: '0',
+										},
+										dataType: 'text',
+									},
+								],
+								filterDataConfig: {
+									url: 'api/corpService/findCorps',
+									targetClass: 'lt.fw.core.model.biz.Corp',
+									method: 'POST',
+								},
+								filterColumns: [
+									{
+										title: '名称',
+										width: 200,
+										filterable: true,
+										property: {
+											targetClass: 'lt.fw.core.model.biz.Corp',
+											fieldTitle: '名称',
+											fieldTypeFlag: '0',
+											topFieldType: 'java.lang.String',
+											fieldType: 'java.lang.String',
+											fieldName: 'name',
+											topFieldTypeFlag: '0',
+										},
+										dataType: 'text',
+									},
+									{
+										title: '编码',
+										width: 200,
+										filterable: true,
+										property: {
+											targetClass: 'lt.fw.core.model.biz.Corp',
+											fieldTitle: '编码',
+											fieldTypeFlag: '0',
+											topFieldType: 'java.lang.String',
+											fieldType: 'java.lang.String',
+											fieldName: 'code',
+											topFieldTypeFlag: '0',
+										},
+										dataType: 'text',
+									},
+								],
+								dataType: 'text',
+							},
+							{
+								title: '类型',
+								width: 200,
+								property: {
+									targetClass: 'lt.app.productbasic.model.OrderClasses',
+									fieldTitle: '类型',
+									fieldTypeFlag: '2',
+									enumInfo: [
+										{
+											value: '集团',
+											key: 'HEAD',
+											ordinal: 0,
+										},
+										{
+											value: '公司',
+											key: 'SUBSIDIARY',
+											ordinal: 1,
+										},
+										{
+											value: '工厂',
+											key: 'FACTORY',
+											ordinal: 2,
+										},
+									],
+									topFieldType: 'lt.fw.core.model.biz.Corp',
+									fieldType: 'lt.fw.core.model.biz.Corp$CorpType',
+									fieldName: 'corp.type',
+									topFieldTypeFlag: '1',
+								},
+								editDataConfig: {
+									url: 'api/corpService/findCorps',
+									targetClass: 'lt.fw.core.model.biz.Corp',
+									method: 'POST',
+									relationFunc: {
+										type: 'JSFunction',
+										value:
+											'function(){ return this.relationFunc_mac97olr.apply(this,Array.prototype.slice.call(arguments).concat([{}])) }',
+									},
+								},
+								editColumns: [
+									{
+										title: '名称',
+										width: 200,
+										filterable: true,
+										property: {
+											targetClass: 'lt.fw.core.model.biz.Corp',
+											fieldTitle: '名称',
+											fieldTypeFlag: '0',
+											topFieldType: 'java.lang.String',
+											fieldType: 'java.lang.String',
+											fieldName: 'name',
+											topFieldTypeFlag: '0',
+										},
+										dataType: 'text',
+									},
+									{
+										title: '编码',
+										width: 200,
+										filterable: true,
+										property: {
+											targetClass: 'lt.fw.core.model.biz.Corp',
+											fieldTitle: '编码',
+											fieldTypeFlag: '0',
+											topFieldType: 'java.lang.String',
+											fieldType: 'java.lang.String',
+											fieldName: 'code',
+											topFieldTypeFlag: '0',
+										},
+										dataType: 'text',
+									},
+								],
+								filterDataConfig: {
+									url: 'api/corpService/findCorps',
+									targetClass: 'lt.fw.core.model.biz.Corp',
+									method: 'POST',
+								},
+								filterColumns: [
+									{
+										title: '名称',
+										width: 200,
+										filterable: true,
+										property: {
+											targetClass: 'lt.fw.core.model.biz.Corp',
+											fieldTitle: '名称',
+											fieldTypeFlag: '0',
+											topFieldType: 'java.lang.String',
+											fieldType: 'java.lang.String',
+											fieldName: 'name',
+											topFieldTypeFlag: '0',
+										},
+										dataType: 'text',
+									},
+									{
+										title: '编码',
+										width: 200,
+										filterable: true,
+										property: {
+											targetClass: 'lt.fw.core.model.biz.Corp',
+											fieldTitle: '编码',
+											fieldTypeFlag: '0',
+											topFieldType: 'java.lang.String',
+											fieldType: 'java.lang.String',
+											fieldName: 'code',
+											topFieldTypeFlag: '0',
+										},
+										dataType: 'text',
+									},
+								],
+								enumOptions: [
+									{
+										label: '集团',
+										value: 'HEAD',
+									},
+									{
+										label: '公司',
+										value: 'SUBSIDIARY',
+									},
+									{
+										label: '工厂',
+										value: 'FACTORY',
+									},
+								],
+								dataType: 'enum',
+								editType: '1102238451895377920',
+								dateFormatter: 'YYYY-MM-DD HH:mm:ss',
+								timeFormatter: 'HH:mm:ss',
+								codeType: 'qrCode',
+							},
 						],
 						stripe: true,
 						showOverflow: true,
@@ -440,7 +750,48 @@ export default {
 				{
 					componentName: 'EntitySelector',
 					id: 'node_ocm9v2mvhd1',
-					props: {},
+					props: {
+						mode: 'default',
+						keywords: '公司选择器',
+						dataConfig: {
+							url: 'api/corpService/findCorps',
+							targetClass: 'lt.fw.core.model.biz.Corp',
+							method: 'POST',
+						},
+						columns: [
+							{
+								title: '名称',
+								width: 200,
+								filterable: true,
+								property: {
+									targetClass: 'lt.fw.core.model.biz.Corp',
+									fieldTitle: '名称',
+									fieldTypeFlag: '0',
+									topFieldType: 'java.lang.String',
+									fieldType: 'java.lang.String',
+									fieldName: 'name',
+									topFieldTypeFlag: '0',
+								},
+								dataType: 'text',
+							},
+							{
+								title: '编码',
+								width: 200,
+								filterable: true,
+								property: {
+									targetClass: 'lt.fw.core.model.biz.Corp',
+									fieldTitle: '编码',
+									fieldTypeFlag: '0',
+									topFieldType: 'java.lang.String',
+									fieldType: 'java.lang.String',
+									fieldName: 'code',
+									topFieldTypeFlag: '0',
+								},
+								dataType: 'text',
+							},
+						],
+					},
+					docId: 'docma2loqn0',
 					hidden: false,
 					title: '',
 					isLocked: false,

@@ -36,7 +36,10 @@ export default {
 			},
 			{
 				name: 'keywords',
-				title: '关键词',
+				title: {
+					label: '关键词',
+					tip: '关键词，用于模糊查询,这个实体选择器',
+				},
 				extraProps: {
 					supportVariable: false,
 				},
@@ -62,8 +65,6 @@ export default {
 										supportVariable: false,
 									},
 									setter: {
-										initialValue:
-											'api/mainProductPlanService/findMainsByPermission',
 										componentName: 'TextareaSetter',
 									},
 								},
@@ -71,7 +72,6 @@ export default {
 									name: 'targetClass',
 									title: '目标类',
 									setter: {
-										initialValue: 'lt.app.product.model.MainProductPlan',
 										componentName: 'TargetClassSetter',
 									},
 									extraProps: {
@@ -170,9 +170,9 @@ export default {
 								filterable: true,
 								dataType: 'text',
 								property: {
-									targetClass: target
-										.getParent()
-										.getPropValue('dataConfig.targetClass'),
+									targetClass:
+										target.getParent().getPropValue('dataConfig.targetClass') ||
+										'',
 								},
 							}),
 							props: {

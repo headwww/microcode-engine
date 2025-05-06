@@ -51,7 +51,9 @@ export default defineComponent({
 							id,
 							value: id,
 							pId: treeNode.dataRef.id,
-							title: `${item.fieldName}  (${item.fieldCommnet})`,
+							title: `${item.notNull === 1 ? '*' : ''}${item.fieldName}  (${
+								item.fieldCommnet
+							})`,
 							fieldCommnet: item.fieldCommnet,
 							fieldType: item.fieldType,
 							isLeaf: item.fieldTypeFlag !== '1',
@@ -75,7 +77,9 @@ export default defineComponent({
 					id: item.fieldName,
 					pId: 0,
 					value: item.fieldName,
-					title: `${item.fieldName}  (${item.fieldCommnet})`,
+					title: `${item.notNull === 1 ? '*' : ''}${item.fieldName}  (${
+						item.fieldCommnet
+					})`,
 					fieldCommnet: item.fieldCommnet,
 					isLeaf: item.fieldTypeFlag !== '1',
 					disabled: item.fieldTypeFlag === '1',

@@ -4,6 +4,7 @@ import {
 	PropertySetter,
 	ExpressionSetter,
 	TargetClassSetter,
+	EditTypeSetter,
 } from './biz-setters/setters';
 
 const InitSetter = (ctx: IPublicModelPluginContext) => ({
@@ -13,6 +14,7 @@ const InitSetter = (ctx: IPublicModelPluginContext) => ({
 		setters.registerSetter('PropertySetter', PropertySetter);
 		setters.registerSetter('ExpressionSetter', ExpressionSetter);
 		setters.registerSetter('TargetClassSetter', TargetClassSetter);
+		setters.registerSetter('EditTypeSetter', EditTypeSetter);
 		const VariableBindDialog = engineExt.widgets.VariableBindModal;
 		const EventBindModal = engineExt.widgets.EventBindModal;
 		skeleton.add({

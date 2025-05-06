@@ -1,4 +1,6 @@
 import { VxeColumnProps } from 'vxe-table';
+import { PropertySelectorValue } from '../property-selector/types';
+import { EntitySelectorProps } from '../entity-selector/types';
 
 export interface ActionConfig {
 	title?: string;
@@ -18,27 +20,7 @@ export interface ColumnProps extends VxeColumnProps {
 	/**
 	 * 属性配置
 	 */
-	property?: {
-		// 属性名称
-		fieldName?: string;
-		// 属性的名称
-		fieldCommnet?: string;
-		// 属性类型标识 0: 基本类型 1: class实体 2: 枚举实体
-		fieldTypeFlag?: string;
-		// 属性类型 实体.包名.属性名 例如: lt.fw.core.model.biz.Corp，也可以是java.lang.String
-		fieldType?: string;
-		// 是否为空
-		notNull?: 0 | 1;
-		// 枚举信息 { "value": "集团", "key": "HEAD"},
-		enumInfo?: {
-			// 枚举值
-			value: string;
-			// 枚举名称
-			key: string;
-			/** 枚举序号 */
-			ordinal?: number;
-		}[];
-	};
+	property?: PropertySelectorValue;
 
 	/**
 	 * 数据类型 渲染非编辑状态时显示的样式
@@ -52,7 +34,6 @@ export interface ColumnProps extends VxeColumnProps {
 		| 'date'
 		| 'time'
 		| 'enum'
-		| 'entity'
 		| 'code';
 
 	/**
@@ -98,6 +79,26 @@ export interface ColumnProps extends VxeColumnProps {
 	 * 当dataType为enum时，枚举对应的显示的文本
 	 */
 	enumOptions?: Array<Options>;
+
+	/**
+	 * 当整个字段是实体字段是例如corp.name，则需要使用实体编辑
+	 */
+	editDataConfig?: EntitySelectorProps['dataConfig'];
+
+	/**
+	 * 实体筛选器和实体选择器需要的列配置
+	 */
+	filterDataConfig?: EntitySelectorProps['dataConfig'];
+
+	/**
+	 * 实体编辑器需要的列配置
+	 */
+	editColumns?: EntitySelectorProps['columns'];
+
+	/**
+	 * 实体筛选器和实体选择器需要的列配置
+	 */
+	filterColumns?: EntitySelectorProps['columns'];
 
 	/**
 	 * 当dataType为code时，使用二维码还是条形码
