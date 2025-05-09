@@ -1,11 +1,30 @@
-import { computed, defineComponent, PropType } from 'vue';
-import { VxeGrid, VxeTablePropTypes } from 'vxe-table';
-import { omit } from 'lodash-es';
+import { computed, defineComponent, PropType, reactive, ref, watch } from 'vue';
+import {
+	VxeGrid,
+	VxeGridInstance,
+	VxeGridPropTypes,
+	VxeTablePropTypes,
+} from 'vxe-table';
+import { isArray, omit } from 'lodash-es';
+import { Button, Divider, Tooltip, Menu, Dropdown } from 'ant-design-vue';
+import {
+	DownloadOutlined,
+	FullscreenExitOutlined,
+	FullscreenOutlined,
+	PaperClipOutlined,
+	PrinterOutlined,
+	ReloadOutlined,
+	SearchOutlined,
+	TableOutlined,
+	UploadOutlined,
+} from '@ant-design/icons-vue';
 import {
 	ColumnProps,
 	ActionConfig,
 	RowSelectorProps,
 	SeqConfig,
+	ButtonOption,
+	FooterConfig,
 } from './types';
 import { useCellEdit, useCellFormat, useCellRender } from './render';
 
@@ -13,6 +32,7 @@ import { useCellEdit, useCellFormat, useCellRender } from './render';
 // 图片先支持二维码打印
 export default defineComponent({
 	name: 'LtTable',
+	emits: ['update:data'],
 	props: {
 		targetClass: {
 			type: String as PropType<string>,
@@ -65,7 +85,11 @@ export default defineComponent({
 			type: Object as PropType<VxeTablePropTypes.ColumnConfig>,
 		},
 		rowConfig: {
-			type: Object as PropType<VxeTablePropTypes.RowConfig>,
+			type: Object as PropType<
+				VxeTablePropTypes.RowConfig & {
+					beforeSelectMethod?: (params: any) => boolean;
+				}
+			>,
 		},
 		actionConfig: {
 			type: Object as PropType<ActionConfig>,
@@ -76,9 +100,36 @@ export default defineComponent({
 		seqConfig: {
 			type: Object as PropType<SeqConfig>,
 		},
-		data: Array,
+		buttons: {
+			type: Array as PropType<ButtonOption[]>,
+		},
+		onRefresh: {
+			type: Function as PropType<(params?: any) => void>,
+		},
+		pagerConfig: {
+			type: Object as PropType<
+				VxeGridPropTypes.PagerConfig & {
+					onPageChange: (params: any) => void;
+				}
+			>,
+		},
+		footerConfig: {
+			type: Object as PropType<FooterConfig>,
+		},
+		data: [Array, Object] as PropType<
+			| any[]
+			| {
+					[key: string]: any;
+					result: any[];
+					pageNo: number;
+					pageSize: number;
+					rowCount: number;
+			  }
+		>,
 	},
-	setup(props) {
+	setup(props, { expose }) {
+		const tableRef = ref<VxeGridInstance>();
+
 		const columns = computed(() => {
 			const { actionConfig, columns, rowSelectorConfig, seqConfig } = props;
 			const cols = [];
@@ -86,6 +137,7 @@ export default defineComponent({
 				const { title, width } = seqConfig;
 				cols.push({
 					type: 'seq',
+					field: '$seq',
 					title,
 					width,
 					fixed: 'left',
@@ -166,6 +218,18 @@ export default defineComponent({
 			return cols;
 		});
 
+		const editRules = computed(() => {
+			const { columns } = props;
+			const editRules: Record<string, any> = {};
+			columns?.forEach((item) => {
+				if (item.validConfig && item.property?.fieldName) {
+					editRules[item.property?.fieldName] =
+						item.validConfig.filter(Boolean);
+				}
+			});
+			return editRules;
+		});
+
 		const baseConfig = computed(() => {
 			const {
 				border,
@@ -188,6 +252,7 @@ export default defineComponent({
 				align,
 				stripe,
 				loading,
+				maxHeight: '100%',
 				// 虚拟滚动 只通过一个virtualScroll参数来控制 默认开启
 				virtualYConfig: {
 					enabled: virtualScroll,
@@ -260,40 +325,290 @@ export default defineComponent({
 			return null;
 		});
 
+		const renderButtons = () => (
+			<div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+				{props.buttons?.map((item) => {
+					const { id, mode, type, menus, loading } = item;
+					if (mode === 'button') {
+						return (
+							<Button
+								key={id}
+								type={type}
+								loading={loading}
+								disabled={item.disabled?.(params.value)}
+								onClick={() => item.onClick?.(params.value)}
+							>
+								{item.label}
+							</Button>
+						);
+					}
+
+					const menuItems = menus?.map((item: any) => ({
+						key: item.id,
+						label: item.label,
+						title: item.label,
+						onClick: () => {
+							item.onClick?.(params.value);
+						},
+						disabled: item.disabled?.(params.value),
+					}));
+
+					return (
+						<Dropdown
+							overlay={<Menu items={menuItems}></Menu>}
+							key={id}
+							trigger="click"
+							type={type}
+						>
+							<Button loading={loading} key={id} type={type}>
+								{item.label}
+							</Button>
+						</Dropdown>
+					);
+				})}
+			</div>
+		);
+
+		const renderTools = () => (
+			<div>
+				<Button
+					type="text"
+					style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
+					icon={<UploadOutlined />}
+				>
+					导入
+				</Button>
+				<Button
+					type="text"
+					style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
+					icon={<DownloadOutlined />}
+				>
+					导出
+				</Button>
+				<Button
+					type="text"
+					style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
+					icon={<PrinterOutlined />}
+				>
+					打印
+				</Button>
+				<Button
+					type="text"
+					style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
+					icon={<PaperClipOutlined />}
+				>
+					附件
+				</Button>
+				<Divider type="vertical" />
+				<Tooltip title="搜索">
+					<Button
+						icon={<SearchOutlined />}
+						style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
+						type="text"
+					></Button>
+				</Tooltip>
+				<Tooltip title="刷新">
+					<Button
+						icon={<ReloadOutlined />}
+						style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
+						type="text"
+						onClick={() => {
+							props.onRefresh?.(params.value);
+						}}
+					></Button>
+				</Tooltip>
+				<Tooltip title="显示列">
+					<Button
+						icon={<TableOutlined />}
+						style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
+						type="text"
+					></Button>
+				</Tooltip>
+				<Tooltip title={tableRef.value?.isMaximized() ? '还原' : '全屏'}>
+					<Button
+						type="text"
+						icon={
+							tableRef.value?.isMaximized() ? (
+								<FullscreenExitOutlined />
+							) : (
+								<FullscreenOutlined />
+							)
+						}
+						style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
+						onClick={() => {
+							tableRef.value?.zoom();
+						}}
+					></Button>
+				</Tooltip>
+			</div>
+		);
+
+		// 返回给父组件的参数
+		const params = computed(() => {
+			const { targetClass, columns } = props;
+
+			const queryPath = columns
+				?.filter(Boolean)
+				.map((item) => item.property?.fieldName);
+
+			if (pagerConfig?.enabled) {
+				return {
+					$table: tableRef.value,
+					pagerConfig: {
+						pageSize: pagerConfig?.pageSize,
+						pageNo: (pagerConfig?.currentPage ?? 1) - 1,
+						rowCountEnabled: true,
+					},
+					condition: {
+						targetClass,
+						queryPath,
+					},
+				};
+			}
+			return {
+				$table: tableRef.value,
+				condition: {
+					targetClass,
+					queryPath,
+				},
+			};
+		});
+
+		const data = computed({
+			get: () => {
+				if (props.data) {
+					if (isArray(props.data)) {
+						return props.data;
+					}
+					if (props.pagerConfig?.enabled) {
+						return props.data?.result;
+					}
+					return undefined;
+				}
+				return undefined;
+			},
+			set: (newVal: any) => {
+				newVal;
+			},
+		});
+
+		const pagerConfig = reactive({
+			total: 0,
+			currentPage: props.pagerConfig?.currentPage,
+			pageSize: props.pagerConfig?.pageSize,
+			pageSizes: props.pagerConfig?.pageSizes,
+			enabled: !!props.pagerConfig?.enabled,
+		});
+
+		watch(
+			() => props.pagerConfig,
+			(newVal) => {
+				pagerConfig.enabled = !!newVal?.enabled;
+				pagerConfig.pageSize = newVal?.pageSize;
+				pagerConfig.pageSizes = newVal?.pageSizes;
+				pagerConfig.currentPage = newVal?.currentPage;
+			}
+		);
+
+		watch(
+			() => props.data,
+			(newVal) => {
+				if (newVal) {
+					if (isArray(newVal)) {
+						return;
+					}
+					if (pagerConfig?.enabled) {
+						pagerConfig.total = newVal?.rowCount || 0;
+						pagerConfig.pageSize = newVal?.pageSize || 50;
+					}
+				}
+			}
+		);
+
+		const onPageChange = (params: any) => {
+			pagerConfig.pageSize = params.pageSize;
+			pagerConfig.currentPage = params.currentPage;
+			props.pagerConfig?.onPageChange?.(params.value);
+		};
+
+		const footerData = ref<any>([]);
+
+		watch(
+			() => [data.value, props.footerConfig] as const,
+			([newVal, footerConfig]) => {
+				if (footerConfig && footerConfig?.showFooter) {
+					footerData.value = footerConfig?.footerItems
+						?.filter(Boolean)
+						.map((item) => {
+							const { label, fields, footerDataMethod } = item;
+							const footerFields = fields?.reduce((acc: any, field: string) => {
+								acc[field] = footerDataMethod?.(newVal, field);
+								return acc;
+							}, {});
+							return {
+								$seq: label,
+								...footerFields,
+							};
+						});
+				}
+			},
+			{
+				deep: true,
+			}
+		);
+
+		expose({
+			getTable: () => tableRef.value,
+			getParams: () => params.value,
+		});
+
 		return () => (
 			<div style={{ height: '100%', overflow: 'hidden' }}>
 				<VxeGrid
+					ref={tableRef}
 					{...baseConfig.value}
+					mouseConfig={{
+						area: true,
+						extension: true,
+					}}
+					areaConfig={{
+						multiple: true,
+						extendDirection: true,
+						extendByCopy: true,
+						extendByCalc: false,
+					}}
 					keepSource={true}
 					columnConfig={props.columnConfig}
 					editConfig={props.editConfig}
 					rowConfig={props.rowConfig}
+					pagerConfig={pagerConfig}
 					columns={columns.value}
-					data={props.data}
+					data={data.value}
 					seqConfig={seqConfig.value}
 					checkboxConfig={rowSelectorConfig.value}
 					radioConfig={rowSelectorConfig.value}
-					editRules={{
-						id: [
-							{
-								required: true,
-								message: '请输入ID',
-							},
-						],
-						version: [
-							{
-								required: true,
-								message: '请输入ID',
-							},
-						],
-						updated: [
-							{
-								required: true,
-								message: '请输入ID',
-							},
-						],
+					editRules={editRules.value}
+					validConfig={{
+						msgMode: 'full',
 					}}
-				></VxeGrid>
+					currentRowConfig={{
+						beforeSelectMethod: props.rowConfig?.beforeSelectMethod,
+					}}
+					toolbarConfig={{
+						slots: {
+							buttons: 'buttons',
+							tools: 'tools',
+						},
+					}}
+					showFooter={props.footerConfig?.showFooter}
+					footerData={footerData.value}
+					onPageChange={onPageChange}
+				>
+					{{
+						buttons: () => renderButtons(),
+						tools: () => renderTools(),
+					}}
+				</VxeGrid>
 			</div>
 		);
 	},

@@ -1,8 +1,8 @@
 export default [
 	{
 		title: {
-			label: '编辑配置项',
-			tip: '设置编辑的配置项',
+			label: '编辑配置',
+			tip: '设置编辑的配置',
 		},
 		display: 'entry',
 		name: 'editConfig',
@@ -143,6 +143,25 @@ export default [
 				setter: {
 					initialValue: true,
 					componentName: 'BoolSetter',
+				},
+			},
+			{
+				name: 'beforeEditMethod',
+				title: {
+					label: '拦截编辑',
+					tip: '自定义编辑之前逻辑，该方法的返回值用来决定该单元格是否允许编辑',
+				},
+				setter: {
+					componentName: 'FunctionSetter',
+				},
+			},
+			{
+				name: 'afterEditMethod',
+				title: {
+					label: '自定义编辑之后逻辑',
+				},
+				setter: {
+					componentName: 'FunctionSetter',
 				},
 			},
 		],

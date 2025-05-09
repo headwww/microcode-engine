@@ -8,12 +8,18 @@ import otherProps from './other';
 import actionsProps from './actions';
 import rowSelectorProps from './rowSelector';
 import seqConfigProps from './seqConfig';
+import toolBarProps from './toolBar';
+import pagerProps from './pager';
+import footerProps from './footer';
 
 export default [
 	...basicProps,
 	...columnsProps,
+	...toolBarProps,
 	...actionsProps,
+	...footerProps,
 	...rowSelectorProps,
+	...pagerProps,
 	...seqConfigProps,
 	...styleProps,
 	...editProps,

@@ -1201,6 +1201,85 @@ export default [
 										target.getParent().getPropValue('dataType') === 'link',
 								},
 								{
+									name: 'validConfig',
+									title: {
+										label: '校验配置',
+									},
+									condition: (target: any) =>
+										!!target.getParent().getPropValue('property').fieldName,
+									setter: {
+										componentName: 'ArraySetter',
+										props: {
+											itemSetter: {
+												componentName: 'ObjectSetter',
+												props: {
+													config: {
+														items: [
+															{
+																name: 'content',
+																title: '提示消息',
+																isRequired: true,
+																setter: 'StringSetter',
+															},
+															{
+																name: 'required',
+																title: '是否必填',
+																isRequired: true,
+																setter: 'BoolSetter',
+															},
+															{
+																name: 'min',
+																title: '最小值',
+																setter: 'NumberSetter',
+															},
+															{
+																name: 'max',
+																title: '最大值',
+																setter: 'NumberSetter',
+															},
+															{
+																name: 'pattern',
+																title: '正则表达式',
+																setter: 'TextareaSetter',
+															},
+
+															{
+																name: 'trigger',
+																title: '触发方式',
+																initialValue: 'blur',
+																setter: {
+																	componentName: 'SelectSetter',
+																	props: {
+																		options: [
+																			{
+																				title: '失去焦点',
+																				value: 'blur',
+																			},
+																			{
+																				title: '值变化',
+																				value: 'change',
+																			},
+																			{
+																				title: '手动',
+																				value: 'manual',
+																			},
+																		],
+																	},
+																},
+															},
+															{
+																name: 'validator',
+																title: '自定义校验函数',
+																setter: 'FunctionSetter',
+															},
+														],
+													},
+												},
+											},
+										},
+									},
+								},
+								{
 									display: 'accordion',
 									type: 'group',
 									title: {

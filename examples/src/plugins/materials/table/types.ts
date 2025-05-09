@@ -1,4 +1,4 @@
-import { VxeColumnProps } from 'vxe-table';
+import { VxeColumnProps, VxeTableDefines } from 'vxe-table';
 import { PropertySelectorValue } from '../property-selector/types';
 import { EntitySelectorProps } from '../entity-selector/types';
 
@@ -109,6 +109,12 @@ export interface ColumnProps extends VxeColumnProps {
 	 * 提示内容
 	 */
 	tipContent?: string;
+
+	/**
+	 * 校验配置,产生这种配置
+	 * [{ required: true, message: '必须填写' }]
+	 */
+	validConfig?: Array<VxeTableDefines.ValidatorRule>;
 }
 
 /**
@@ -194,4 +200,39 @@ export interface SeqConfig {
 	width?: number;
 	startIndex?: number;
 	seqMethod?: Function;
+}
+
+/**
+ * 按钮配置
+ */
+export interface ButtonOption {
+	id: string;
+	label?: string;
+	mode?: 'button' | 'dropdown';
+	type?: 'link' | 'default' | 'primary' | 'ghost' | 'dashed' | 'text';
+	icon?: string;
+	onClick?: (params?: any) => void;
+	disabled?: (params?: any) => boolean;
+	loading?: boolean;
+	// 下拉菜单
+	menus?: Array<{
+		id: string;
+		label: string;
+		icon?: string;
+		onClick?: (params: any) => void;
+		disabled?: (params: any) => boolean;
+		[key: string]: any;
+	}>;
+	[key: string]: any;
+}
+
+export interface FooterConfig {
+	showFooter?: boolean;
+	footerItems?: Array<{
+		label: string;
+		// 需要表尾操作的字段
+		fields: Array<string>;
+		// 表尾操作的回调
+		footerDataMethod?: (params: any, field: string) => any;
+	}>;
 }

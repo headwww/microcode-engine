@@ -1,6 +1,6 @@
 export default [
 	{
-		title: '列配置信息',
+		title: '列配置',
 		name: 'columnConfig',
 		display: 'entry',
 		items: [

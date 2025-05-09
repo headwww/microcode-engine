@@ -1,6 +1,6 @@
 export default [
 	{
-		title: '行配置信息',
+		title: '行配置',
 		name: 'rowConfig',
 		display: 'entry',
 		items: [
@@ -40,6 +40,16 @@ export default [
 				setter: {
 					initialValue: true,
 					componentName: 'BoolSetter',
+				},
+			},
+			{
+				name: 'beforeSelectMethod',
+				title: {
+					label: '拦截选中',
+					tip: '拦截选中，返回false时，不选中',
+				},
+				setter: {
+					componentName: 'FunctionSetter',
 				},
 			},
 		],
