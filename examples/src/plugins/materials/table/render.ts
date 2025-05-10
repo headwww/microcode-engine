@@ -1,3 +1,11 @@
+import { Ref } from 'vue';
+import { VxeColumnPropTypes } from 'vxe-table';
+import {
+	ComparisonOperator,
+	FilterMode,
+	LogicalOperators,
+	TemporalOperator,
+} from '../_global/filterRenders/types';
 import { ColumnProps } from './types';
 
 export function useCellRender(column: ColumnProps) {
@@ -178,5 +186,86 @@ export function useCellEdit(column: ColumnProps) {
 	return {
 		name: 'LtDefaultRenderTableEdit',
 		props: getProps(column),
+	};
+}
+
+export function useFilter(
+	column: ColumnProps,
+	filters: Ref<VxeColumnPropTypes.Filters>
+) {
+	const obj: VxeColumnPropTypes.FilterItem = {
+		label: column.property?.fieldName,
+		data: {
+			currentMode: '',
+		},
+	};
+
+	const filterModes = [];
+	const fieldType = column.property?.fieldType;
+	if (fieldType === 'java.lang.String') {
+		filterModes.push(FilterMode.TEXT);
+		obj.data = {
+			...obj.data,
+			textFilterData: {
+				logicalOperators: LogicalOperators.AND,
+				firstQueryCondition: ComparisonOperator.INCLUDE,
+				firstQueryText: '',
+				secondQueryCondition: ComparisonOperator.EMPTY,
+				secondQueryText: '',
+			},
+		};
+	}
+	if (
+		fieldType === 'java.lang.Integer' ||
+		fieldType === 'java.lang.Long' ||
+		fieldType === 'java.math.BigDecimal'
+	) {
+		filterModes.push(FilterMode.NUMBER);
+		obj.data = {
+			...obj.data,
+			numberFilterData: {
+				logicalOperators: LogicalOperators.AND,
+				firstQueryCondition: ComparisonOperator.INCLUDE,
+				firstQueryText: '',
+				secondQueryCondition: ComparisonOperator.EMPTY,
+				secondQueryText: '',
+			},
+		};
+	}
+	if (fieldType === 'java.util.Date') {
+		filterModes.push(FilterMode.DATE);
+		obj.data = {
+			...obj.data,
+			dateFilterData: {
+				logicalOperators: LogicalOperators.AND,
+				firstQueryCondition: TemporalOperator.EQUALS,
+				firstQueryText: '',
+				secondQueryCondition: TemporalOperator.EMPTY,
+				secondQueryText: '',
+			},
+		};
+	}
+	if (column.property?.topFieldTypeFlag === '1') {
+		filterModes.push(FilterMode.ENTITY);
+	}
+	filterModes.push(FilterMode.CONTENT);
+
+	obj.data.currentMode = filterModes.length > 0 ? filterModes[0] : '';
+	filters.value.push(obj);
+
+	console.log(filters.value);
+
+	return {
+		filterRender: {
+			name: 'LtFilterRender',
+			props: {
+				filterModes,
+			},
+			events: {
+				onChange: (data: any = []) => {
+					filters.value = [...data];
+				},
+			},
+		},
 	};
 }

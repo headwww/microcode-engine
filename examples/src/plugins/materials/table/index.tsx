@@ -1,5 +1,6 @@
 import { computed, defineComponent, PropType, reactive, ref, watch } from 'vue';
 import {
+	VxeColumnPropTypes,
 	VxeGrid,
 	VxeGridInstance,
 	VxeGridPropTypes,
@@ -130,8 +131,12 @@ export default defineComponent({
 	setup(props, { expose }) {
 		const tableRef = ref<VxeGridInstance>();
 
+		const filters = ref<VxeColumnPropTypes.Filters>([]);
+
+		// 列配置
 		const columns = computed(() => {
 			const { actionConfig, columns, rowSelectorConfig, seqConfig } = props;
+
 			const cols = [];
 			if (seqConfig && seqConfig.visible) {
 				const { title, width } = seqConfig;
@@ -162,6 +167,8 @@ export default defineComponent({
 					const { cellRender } = useCellRender(item);
 					const { formatter } = useCellFormat(item);
 					const editRender = useCellEdit(item);
+					// const { filterRender } = useFilter(item, filters);
+
 					const { tipContent } = item;
 
 					const column = {
@@ -178,8 +185,11 @@ export default defineComponent({
 							'codeType',
 							'tipContent',
 						]),
+
 						cellRender,
 						editRender,
+						filters: filters.value,
+						// filterRender,
 						titleSuffix: tipContent
 							? {
 									content: tipContent,
@@ -218,6 +228,7 @@ export default defineComponent({
 			return cols;
 		});
 
+		// 编辑规则
 		const editRules = computed(() => {
 			const { columns } = props;
 			const editRules: Record<string, any> = {};
@@ -230,6 +241,7 @@ export default defineComponent({
 			return editRules;
 		});
 
+		// 基础配置
 		const baseConfig = computed(() => {
 			const {
 				border,
@@ -271,6 +283,7 @@ export default defineComponent({
 			};
 		});
 
+		// 序号配置
 		const seqConfig = computed((): any => {
 			const { seqConfig } = props;
 			if (seqConfig && seqConfig.visible) {
@@ -283,6 +296,7 @@ export default defineComponent({
 			return null;
 		});
 
+		// 行选择器配置
 		const rowSelectorConfig = computed((): any => {
 			const { rowSelectorConfig } = props;
 			if (rowSelectorConfig && rowSelectorConfig.visible) {
@@ -325,6 +339,7 @@ export default defineComponent({
 			return null;
 		});
 
+		// 按钮渲染
 		const renderButtons = () => (
 			<div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
 				{props.buttons?.map((item) => {
@@ -369,6 +384,7 @@ export default defineComponent({
 			</div>
 		);
 
+		// 工具栏渲染
 		const renderTools = () => (
 			<div>
 				<Button
@@ -474,6 +490,7 @@ export default defineComponent({
 			};
 		});
 
+		// 数据
 		const data = computed({
 			get: () => {
 				if (props.data) {
@@ -492,6 +509,7 @@ export default defineComponent({
 			},
 		});
 
+		// 分页配置
 		const pagerConfig = reactive({
 			total: 0,
 			currentPage: props.pagerConfig?.currentPage,
@@ -506,7 +524,6 @@ export default defineComponent({
 				pagerConfig.enabled = !!newVal?.enabled;
 				pagerConfig.pageSize = newVal?.pageSize;
 				pagerConfig.pageSizes = newVal?.pageSizes;
-				pagerConfig.currentPage = newVal?.currentPage;
 			}
 		);
 
@@ -525,9 +542,9 @@ export default defineComponent({
 			}
 		);
 
-		const onPageChange = (params: any) => {
-			pagerConfig.pageSize = params.pageSize;
-			pagerConfig.currentPage = params.currentPage;
+		const onPageChange = (pager: any) => {
+			pagerConfig.pageSize = pager.pageSize;
+			pagerConfig.currentPage = pager.currentPage;
 			props.pagerConfig?.onPageChange?.(params.value);
 		};
 
@@ -567,16 +584,6 @@ export default defineComponent({
 				<VxeGrid
 					ref={tableRef}
 					{...baseConfig.value}
-					mouseConfig={{
-						area: true,
-						extension: true,
-					}}
-					areaConfig={{
-						multiple: true,
-						extendDirection: true,
-						extendByCopy: true,
-						extendByCalc: false,
-					}}
 					keepSource={true}
 					columnConfig={props.columnConfig}
 					editConfig={props.editConfig}

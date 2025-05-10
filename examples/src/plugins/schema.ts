@@ -2,7 +2,7 @@
  * @Author: shuwen 1243889238@qq.com
  * @Date: 2025-04-08 14:35:21
  * @LastEditors: shuwen 1243889238@qq.com
- * @LastEditTime: 2025-05-08 14:08:57
+ * @LastEditTime: 2025-05-09 13:28:38
  * @FilePath: /microcode-engine/examples/src/plugins/schema.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -106,11 +106,30 @@ export default {
 							value: 'function dataHandler(res) { \n\treturn res\n}\n',
 						},
 					},
+					{
+						id: 'findmainsByPage',
+						description: '生产工单维护',
+						isInit: false,
+						isSync: false,
+						options: {
+							uri: 'api/productOrderService/findmainsByPage',
+							method: 'POST',
+						},
+						dataHandler: {
+							type: 'JSFunction',
+							value: 'function dataHandler(res) { \n\treturn res\n}\n',
+						},
+						willFetch: {
+							type: 'JSFunction',
+							value:
+								'function willFetch(options) {\n    return {\n        ...options,\n        params: [options.params[0], options.params[1]]\n    };\n}\n',
+						},
+					},
 				],
 			},
 			css: 'body {\n }\n\n',
 			originCode:
-				"import { defineComponent } from 'vue';\n\nexport default defineComponent({\n  data: () => ({\n    data: []\n  }),\n  watch: {\n  },\n  mounted() {\n    console.log('did mount', this);\n  },\n  methods: {\n    onClick_m9jmiqf6(event, extParams) {\n      // 点击按钮时的回调\n      this.dataSourceMap.findOrderClassessByPage.load().then((resp)=>{\n        this.data = resp.result\n      })\n      console.log('onClick', this);\n    },\n    rowStyle_m9s2rm1y(params) {\n            const { row, column} = params\n      \n      if (column.field==='name'&&this.__appHelper.lodash.get(row,'name')==='中班') {\n        return {\n          color:\"red\"\n        }\n\n      }\n      return {}\n      \n    },\n    login(event,extParams){\n      this.dataSourceMap.login.load()\n   },\n    save123(event,extParams){\n    // 点击按钮时的回调\n      this.dataSourceMap.saveSelectorList.load()\n    console.log('onClick', event);},\n    relationFunc_mac97olr(params) {\n      console.log(params)\n      return `this.name ='${params.row.corp.name}'`\n\n    }\n  },\n})\n",
+				"import { defineComponent } from 'vue';\n\nexport default defineComponent({\n  data: () => ({\n    data: [],\n    data1: {\n      result:[]\n    },\n    loading:false\n  }),\n  watch: {\n  },\n  mounted() {\n    console.log('did mount', this);\n  },\n  methods: {\n    onClick_m9jmiqf6(event, extParams) {\n      // 点击按钮时的回调\n      this.dataSourceMap.findOrderClassessByPage.load().then((resp)=>{\n        this.data = resp.result\n      })\n      console.log('onClick', this);\n    },\n    rowStyle_m9s2rm1y(params) {\n            const { row, column} = params\n      \n      if (column.field==='name'&&this.__appHelper.lodash.get(row,'name')==='中班') {\n        return {\n          color:\"red\"\n        }\n\n      }\n      return {}\n      \n    },\n    login(event,extParams){\n      this.dataSourceMap.login.load()\n   },\n    save123(event,extParams){\n      this.dataSourceMap.saveSelectorList.load()\n      console.log('onClick', event);\n    },\n    relationFunc_mac97olr(params) {\n      console.log(params)\n      return `this.name ='${params.row.corp.name}'`\n\n    },\n    onRefresh_mag45v52(params) {\n      this.loading = true\n      this.dataSourceMap.findmainsByPage\n      .load([params.pagerConfig, params.condition])\n      .then((resp) => {\n        this.data1 = resp\n      }).finally(()=>{\n        this.loading = false\n      })\n    }\n  },\n})\n",
 			hidden: false,
 			title: '',
 			isLocked: false,
@@ -135,20 +154,29 @@ export default {
 				save123: {
 					type: 'JSFunction',
 					value:
-						"function (event,extParams){\n    // 点击按钮时的回调\n      this.dataSourceMap.saveSelectorList.load()\n    console.log('onClick', event);}",
+						"function (event,extParams){\n      this.dataSourceMap.saveSelectorList.load()\n      console.log('onClick', event);\n    }",
 				},
 				relationFunc_mac97olr: {
 					type: 'JSFunction',
 					value:
 						"function (params) {\n      console.log(params)\n      return `this.name ='${params.row.corp.name}'`\n\n    }",
 				},
+				onRefresh_mag45v52: {
+					type: 'JSFunction',
+					value:
+						'function (params) {\n      this.loading = true\n      this.dataSourceMap.findmainsByPage\n      .load([params.pagerConfig, params.condition])\n      .then((resp) => {\n        this.data1 = resp\n      }).finally(()=>{\n        this.loading = false\n      })\n    }',
+				},
 			},
 			meta: {
 				originCode:
-					"import { defineComponent } from 'vue';\n\nexport default defineComponent({\n  data: () => ({\n    data: []\n  }),\n  watch: {\n  },\n  mounted() {\n    console.log('did mount', this);\n  },\n  methods: {\n    onClick_m9jmiqf6(event, extParams) {\n      // 点击按钮时的回调\n      this.dataSourceMap.findOrderClassessByPage.load().then((resp)=>{\n        this.data = resp.result\n      })\n      console.log('onClick', this);\n    },\n    rowStyle_m9s2rm1y(params) {\n            const { row, column} = params\n      \n      if (column.field==='name'&&this.__appHelper.lodash.get(row,'name')==='中班') {\n        return {\n          color:\"red\"\n        }\n\n      }\n      return {}\n      \n    },\n    login(event,extParams){\n      this.dataSourceMap.login.load()\n   },\n    save123(event,extParams){\n    // 点击按钮时的回调\n      this.dataSourceMap.saveSelectorList.load()\n    console.log('onClick', event);},\n    relationFunc_mac97olr(params) {\n      console.log(params)\n      return `this.name ='${params.row.corp.name}'`\n\n    }\n  },\n})\n",
+					"import { defineComponent } from 'vue';\n\nexport default defineComponent({\n  data: () => ({\n    data: [],\n    data1: {\n      result:[]\n    },\n    loading:false\n  }),\n  watch: {\n  },\n  mounted() {\n    console.log('did mount', this);\n  },\n  methods: {\n    onClick_m9jmiqf6(event, extParams) {\n      // 点击按钮时的回调\n      this.dataSourceMap.findOrderClassessByPage.load().then((resp)=>{\n        this.data = resp.result\n      })\n      console.log('onClick', this);\n    },\n    rowStyle_m9s2rm1y(params) {\n            const { row, column} = params\n      \n      if (column.field==='name'&&this.__appHelper.lodash.get(row,'name')==='中班') {\n        return {\n          color:\"red\"\n        }\n\n      }\n      return {}\n      \n    },\n    login(event,extParams){\n      this.dataSourceMap.login.load()\n   },\n    save123(event,extParams){\n      this.dataSourceMap.saveSelectorList.load()\n      console.log('onClick', event);\n    },\n    relationFunc_mac97olr(params) {\n      console.log(params)\n      return `this.name ='${params.row.corp.name}'`\n\n    },\n    onRefresh_mag45v52(params) {\n      this.loading = true\n      this.dataSourceMap.findmainsByPage\n      .load([params.pagerConfig, params.condition])\n      .then((resp) => {\n        this.data1 = resp\n      }).finally(()=>{\n        this.loading = false\n      })\n    }\n  },\n})\n",
 			},
 			state: {
 				data: [],
+				data1: {
+					result: [],
+				},
+				loading: false,
 			},
 			lifeCycles: {
 				mounted: {
@@ -293,6 +321,7 @@ export default {
 							height: '300px',
 						},
 					},
+					docId: 'docmag45u2b',
 					hidden: false,
 					title: '',
 					isLocked: false,
@@ -771,6 +800,7 @@ export default {
 							height: '250px',
 						},
 					},
+					docId: 'docmag45u2b',
 					hidden: false,
 					title: '',
 					isLocked: false,
@@ -781,13 +811,13 @@ export default {
 							componentName: 'Table',
 							id: 'node_ocmaeysu2z3',
 							props: {
-								targetClass: 'lt.app.productbasic.model.OrderClasses',
+								targetClass: 'lt.app.product.model.ProductOrder',
 								columns: [
 									{
 										title: 'ID',
 										width: 200,
 										property: {
-											targetClass: 'lt.app.productbasic.model.OrderClasses',
+											targetClass: 'lt.app.product.model.ProductOrder',
 											fieldTitle: 'ID',
 											fieldTypeFlag: '0',
 											topFieldType: 'java.lang.String',
@@ -799,19 +829,125 @@ export default {
 										editType: 'text',
 									},
 									{
-										title: '班次名称',
+										title: '单据日期',
 										width: 200,
 										property: {
-											targetClass: 'lt.app.productbasic.model.OrderClasses',
-											fieldTitle: '班次名称',
+											targetClass: 'lt.app.product.model.ProductOrder',
+											fieldTitle: '单据日期',
 											fieldTypeFlag: '0',
-											topFieldType: 'java.lang.String',
-											fieldType: 'java.lang.String',
-											fieldName: 'name',
+											topFieldType: 'java.util.Date',
+											fieldType: 'java.util.Date',
+											fieldName: 'date',
 											topFieldTypeFlag: '0',
 										},
-										dataType: 'text',
-										editType: 'text',
+										dateFormatter: 'YYYY-MM-DD HH:mm:ss',
+										dataType: 'date',
+										editType: 'date',
+									},
+									{
+										title: '审核',
+										width: 200,
+										property: {
+											targetClass: 'lt.app.product.model.ProductOrder',
+											fieldTitle: '审核',
+											fieldTypeFlag: '2',
+											enumInfo: [
+												{
+													value: '未审核',
+													key: 'UNAUDIT',
+													ordinal: 0,
+												},
+												{
+													value: '已审核',
+													key: 'AUDITED',
+													ordinal: 1,
+												},
+												{
+													value: '未通过',
+													key: 'NOT_PASS',
+													ordinal: 2,
+												},
+											],
+											topFieldType: 'lt.app.common.model.AuditStatus$Audit',
+											fieldType: 'lt.app.common.model.AuditStatus$Audit',
+											fieldName: 'status',
+											topFieldTypeFlag: '2',
+										},
+										enumOptions: [
+											{
+												label: '未审核',
+												value: 'UNAUDIT',
+											},
+											{
+												label: '已审核',
+												value: 'AUDITED',
+											},
+											{
+												label: '未通过',
+												value: 'NOT_PASS',
+											},
+										],
+										dataType: 'enum',
+										editType: 'select',
+									},
+									{
+										title: '关闭',
+										width: 200,
+										property: {
+											targetClass: 'lt.app.product.model.ProductOrder',
+											fieldTitle: '关闭',
+											fieldTypeFlag: '0',
+											topFieldType: 'java.lang.Boolean',
+											fieldType: 'java.lang.Boolean',
+											fieldName: 'isClose',
+											topFieldTypeFlag: '0',
+										},
+										boolOptions: [
+											{
+												label: '是',
+												value: true,
+												color: 'blue',
+											},
+											{
+												label: '否',
+												value: false,
+												color: 'red',
+											},
+										],
+										dataType: 'boolean',
+										editType: 'boolean',
+									},
+									{
+										title: '制单日期',
+										width: 200,
+										property: {
+											targetClass: 'lt.app.product.model.ProductOrder',
+											fieldTitle: '制单日期',
+											fieldTypeFlag: '0',
+											topFieldType: 'java.util.Date',
+											fieldType: 'java.util.Date',
+											fieldName: 'createDate',
+											topFieldTypeFlag: '0',
+										},
+										dateFormatter: 'YYYY-MM-DD HH:mm:ss',
+										dataType: 'date',
+										editType: 'date',
+									},
+									{
+										title: '版本',
+										width: 200,
+										property: {
+											targetClass: 'lt.app.product.model.ProductOrder',
+											fieldTitle: '',
+											fieldTypeFlag: '0',
+											topFieldType: 'java.lang.Long',
+											fieldType: 'java.lang.Long',
+											fieldName: 'version',
+											topFieldTypeFlag: '0',
+										},
+										digits: 0,
+										dataType: 'number',
+										editType: 'number',
 									},
 								],
 								pagerConfig: {
@@ -829,8 +965,47 @@ export default {
 											value: -1,
 										},
 									],
+									onPageChange: {
+										type: 'JSFunction',
+										value:
+											'function(){ return this.onRefresh_mag45v52.apply(this,Array.prototype.slice.call(arguments).concat([{}])) }',
+									},
+								},
+								onRefresh: {
+									type: 'JSFunction',
+									value:
+										'function(){ return this.onRefresh_mag45v52.apply(this,Array.prototype.slice.call(arguments).concat([{}])) }',
+								},
+								ref: 'vxetable',
+								data: {
+									type: 'JSExpression',
+									value: 'this.$data.data1',
+								},
+								editConfig: {
+									enabled: true,
+									trigger: 'dblclick',
+									mode: 'cell',
+									showAsterisk: true,
+									showIcon: true,
+									showUpdateStatus: true,
+									showInsertStatus: true,
+									autoPos: true,
+									autoFocus: true,
+									autoClear: true,
+								},
+								stripe: true,
+								showOverflow: true,
+								virtualScroll: true,
+								round: true,
+								border: 'full',
+								size: 'mini',
+								align: 'left',
+								loading: {
+									type: 'JSExpression',
+									value: 'this.$data.loading',
 								},
 							},
+							docId: 'docmag45u2b',
 							hidden: false,
 							title: '',
 							isLocked: false,
