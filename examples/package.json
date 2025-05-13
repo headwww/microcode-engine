@@ -30,7 +30,7 @@
 		"@arvin-shu/microcode-plugin-layers-pane": "^1.0.0",
 		"@arvin-shu/microcode-plugin-undo-redo": "^1.0.0",
 		"@arvin-shu/microcode-plugin-vue-code-editor": "^1.0.7",
-		"@arvin-shu/microcode-renderer-core": "^",
+		"@arvin-shu/microcode-renderer-core": "workspace:^",
 		"@arvin-shu/microcode-shell": "^1.0.0",
 		"@arvin-shu/microcode-theme": "workspace:^",
 		"@arvin-shu/microcode-types": "^1.0.4",

@@ -546,6 +546,8 @@ export default defineComponent({
 		const onPageChange = (pager: any) => {
 			pagerConfig.pageSize = pager.pageSize;
 			pagerConfig.currentPage = pager.currentPage;
+			console.log('====', props.pagerConfig);
+
 			props.pagerConfig?.onPageChange?.(params.value);
 		};
 
