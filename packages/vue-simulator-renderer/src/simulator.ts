@@ -506,6 +506,8 @@ function createSimulatorRenderer() {
 		})
 	);
 
+	const instId = ref();
+
 	disposeFunctions.push(
 		host.watchEffect(async () => {
 			const { router } = simulator;
@@ -547,17 +549,24 @@ function createSimulatorRenderer() {
 					documentInstanceMap.delete(id);
 				}
 			});
-			// TODO:切换documents用 路由切换实现不同的协议的加载， 先不考虑路由切换会出现无限循环的问题
-			// const inst = simulator.getCurrentDocument();
-			// if (inst) {
-			// 	try {
-			// 		context.suspense = true;
-			// 		await router.replace({ name: inst.id, force: true });
-			// 	} finally {
-			// 		context.suspense = false;
-			// 	}
-			// }
+
+			const inst = simulator.getCurrentDocument();
+			if (inst) {
+				instId.value = inst.id;
+			}
 		})
+	);
+
+	watch(
+		() => instId.value,
+		async (newVal) => {
+			try {
+				context.suspense = true;
+				await simulator.router.replace({ name: newVal, force: true });
+			} finally {
+				context.suspense = false;
+			}
+		}
 	);
 
 	host.componentsConsumer.consume(async (componentsAsset: any) => {
