@@ -1,5 +1,5 @@
-import renderer from './renderer';
-// import renderer from './simulator';
+// import renderer from './renderer';
+import renderer from './simulator';
 
 if (typeof window !== 'undefined') {
 	(window as any).SimulatorRenderer = renderer;

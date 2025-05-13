@@ -95,6 +95,8 @@ export const Hoc = defineComponent({
 							// 触发渲染器改变的核心代码逻辑，
 							// 1. 监听子节点的显示状态变化（是否创建），然后刷新最外层的组件
 							const cancelVisibleChange = childNode.onVisibleChange(() =>
+								// TODO 目前在 Hoc 组件中，当属性变化时，无论是什么类型的属性变化，
+								// 都直接调用了 rerenderParent()，这导致了不必要的完整重渲染
 								rerender()
 							);
 							// 2. 监听子节点的属性变化，然后刷新最外层的组件

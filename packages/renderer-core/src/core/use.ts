@@ -15,6 +15,7 @@ import {
 	inject,
 	InjectionKey,
 	isVNode,
+	markRaw,
 	mergeProps,
 	onBeforeMount,
 	provide,
@@ -70,6 +71,7 @@ import {
 	isPromise,
 	fromPairs,
 	getCurrentNodeKey,
+	isPlainObject,
 } from '../utils';
 import { Live } from './leaf/live';
 import { createHookCaller } from './lifecycles';
@@ -395,27 +397,94 @@ export function useLeaf(
 			};
 		}
 		if (isArray(schema)) {
-			// 属性值为 array，递归处理属性的每一项
-			return schema.map((item, idx) =>
-				buildNormalProp(item, scope, blockScope, `${path}.${idx}`, node)
-			);
-		}
-		if (schema && isObject(schema)) {
-			// 属性值为 object，递归处理属性的每一项
-			const res: Record<string, unknown> = {};
-			Object.keys(schema).forEach((key) => {
-				if (key.startsWith('__')) return;
-				const val = schema[key];
-				res[key] = buildNormalProp(
-					val,
-					scope,
-					blockScope,
-					`${path}.${key}`,
-					node
-				);
+			// 如果数组是空的，直接返回原数组
+			if (schema.length === 0) {
+				return markRaw(schema);
+			}
+			// 检查数组中的每个元素是否需要更新
+			const needsUpdate = schema.some((item, idx) => {
+				// 只检查非对象和非数组类型的元素
+				if (!isPlainObject(item) && !isArray(item)) {
+					const newItem = buildNormalProp(
+						item,
+						scope,
+						blockScope,
+						`${path}.${idx}`,
+						node
+					);
+					return newItem !== item;
+				}
+				return false;
 			});
-			return res;
+
+			if (!needsUpdate) {
+				return markRaw(schema);
+			}
+
+			// 只有在必要时才创建新数组
+			const newArray = schema.map((item, idx) => {
+				// 对于对象和数组类型的元素，保持原引用
+				if (isPlainObject(item) || isArray(item)) {
+					return item;
+				}
+				return buildNormalProp(item, scope, blockScope, `${path}.${idx}`, node);
+			});
+
+			return markRaw(newArray);
 		}
+
+		if (isPlainObject(schema) && !isVNode(schema)) {
+			// 检查对象中的每个属性是否需要更新
+			const needsUpdate = Object.keys(schema).some((key) => {
+				if (key.startsWith('__')) {
+					return false;
+				}
+				const value = schema[key];
+				// 只检查非对象和非数组类型的属性
+				if (!isPlainObject(value) && !isArray(value)) {
+					const newValue = buildNormalProp(
+						value,
+						scope,
+						blockScope,
+						`${path}.${key}`,
+						node
+					);
+					return newValue !== value;
+				}
+				return false;
+			});
+
+			if (!needsUpdate) {
+				return markRaw(schema);
+			}
+
+			// 只有在必要时才创建新对象
+			const newObject: Record<string, unknown> = {};
+			for (const key in schema) {
+				if (Object.prototype.hasOwnProperty.call(schema, key)) {
+					if (key.startsWith('__')) {
+						newObject[key] = schema[key];
+						continue;
+					}
+					const value = schema[key];
+					// 对于对象和数组类型的属性，保持原引用
+					newObject[key] =
+						isPlainObject(value) || isArray(value)
+							? value
+							: buildNormalProp(
+									value,
+									scope,
+									blockScope,
+									`${path}.${key}`,
+									node
+								);
+				}
+			}
+
+			return markRaw(newObject);
+		}
+
+		// 原始类型、VNode、函数等直接返回
 		return schema;
 	};
 

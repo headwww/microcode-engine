@@ -132,10 +132,11 @@ export default defineComponent({
 		const tableRef = ref<VxeGridInstance>();
 
 		const filters = ref<VxeColumnPropTypes.Filters>([]);
-
 		// 列配置
 		const columns = computed(() => {
 			const { actionConfig, columns, rowSelectorConfig, seqConfig } = props;
+
+			console.log('====');
 
 			const cols = [];
 			if (seqConfig && seqConfig.visible) {

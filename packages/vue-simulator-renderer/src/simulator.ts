@@ -11,6 +11,7 @@ import {
 	Ref,
 	shallowReactive,
 	shallowRef,
+	watch,
 } from 'vue';
 import { createMemoryHistory, createRouter } from 'vue-router';
 import { AssetLoader, cursor } from '@arvin-shu/microcode-utils';
@@ -25,7 +26,7 @@ import MicrocodeRenderer, {
 	config,
 	SchemaParser,
 } from '@arvin-shu/microcode-renderer-core';
-import { Renderer, SimulatorRendererView } from './renderer-view';
+import { Renderer, SimulatorRendererView } from './simulator-view';
 import {
 	buildComponents,
 	buildUtils,
@@ -82,10 +83,7 @@ export interface ProjectContext {
 	suspense: boolean;
 }
 
-function createDocumentInstance(
-	document: IPublicModelDocumentModel,
-	context: ProjectContext
-) {
+function createDocumentInstance(document: any, context: ProjectContext) {
 	/** 记录单个节点的组件实例列表 */
 	const instancesMap = new Map<string, ComponentInstance[]>();
 	/** 记录 vue 组件实例和组件 uid 的映射关系 */
@@ -93,16 +91,22 @@ function createDocumentInstance(
 
 	const timestamp = ref(Date.now());
 
-	const schema = computed((): any => {
-		// eslint-disable-next-line no-void
-		void timestamp.value;
-		return (
-			exportSchema(document) ?? {
+	const schema = ref<any>(
+		exportSchema(document) ?? {
+			fileName: '/',
+			componentName: 'Page',
+		}
+	);
+
+	watch(
+		() => timestamp.value,
+		() => {
+			schema.value = exportSchema(document) ?? {
 				fileName: '/',
 				componentName: 'Page',
-			}
-		);
-	});
+			};
+		}
+	);
 
 	const checkInstanceMounted = (
 		instance: ComponentInstance | HTMLElement
@@ -206,11 +210,9 @@ function createDocumentInstance(
 
 	const getComponentInstance = (id: number) => vueInstanceMap.get(id);
 
-	const getNode = (id: string) =>
-		// @ts-expect-error getNodeById 不存在，使用 getNode 代替，这里的 ts 类型声明不正确
-		id ? document.getNode(id) : null;
+	const getNode = (id: string) => (id ? document.getNode(id) : null);
 
-	return {
+	return reactive({
 		id: computed(() => document.id),
 		path: computed(() => parseFileNameToPath(schema.value.fileName ?? '')),
 		get key() {
@@ -259,7 +261,7 @@ function createDocumentInstance(
 			}
 			SchemaParser.cleanCachedModules();
 		},
-	};
+	});
 }
 
 const loader = new AssetLoader();
@@ -270,22 +272,17 @@ function createSimulatorRenderer() {
 	const device: Ref<string> = shallowRef('default');
 	const locale: Ref<string | undefined> = shallowRef();
 	const autoRender = shallowRef(host.autoRender);
-	const disableCompMock: Ref<boolean | string[]> = shallowRef(true);
-
 	const designMode: Ref<string> = shallowRef('design');
-
+	const libraryMap: Ref<Record<string, string>> = shallowRef({});
 	const components: Ref<Record<string, ComponentInstance>> = shallowRef({});
-
-	const documentInstanceMap = new Map<string, DocumentInstance>();
-
-	const documentInstances: Ref<DocumentInstance[]> = shallowRef([]);
+	const componentsMap: Ref<Record<string, MixedComponent>> = shallowRef({});
+	const disableCompMock: Ref<boolean | string[]> = shallowRef(true);
 	const requestHandlersMap: Ref<Record<string, CallableFunction>> = shallowRef(
 		{}
 	);
+	const documentInstanceMap = new Map<string, DocumentInstance>();
+	const documentInstances: Ref<DocumentInstance[]> = shallowRef([]);
 	const thisRequiredInJSE: Ref<boolean> = shallowRef(false);
-
-	const libraryMap: Ref<Record<string, string>> = shallowRef({});
-	const componentsMap: Ref<Record<string, MixedComponent>> = shallowRef({});
 
 	const context: ProjectContext = shallowReactive({
 		i18n: {},
@@ -295,6 +292,8 @@ function createSimulatorRenderer() {
 		},
 		suspense: false,
 	});
+
+	const disposeFunctions: Array<() => void> = [];
 
 	function _buildComponents() {
 		components.value = buildComponents(
@@ -380,9 +379,9 @@ function createSimulatorRenderer() {
 		isSimulatorRenderer: true,
 	});
 
-	const disposeFunctions: Array<() => void> = [];
-
-	simulator.app = markRaw(createApp(SimulatorRendererView, { simulator }));
+	simulator.app = markRaw(
+		createApp(SimulatorRendererView, { rendererContainer: simulator })
+	);
 
 	simulator.router = markRaw(
 		createRouter({
@@ -395,19 +394,18 @@ function createSimulatorRenderer() {
 		const paths = componentName.split('.');
 		const subs: string[] = [];
 		// eslint-disable-next-line no-constant-condition
-		while (true) {
+		while (paths.length > 0) {
 			const component = components.value?.[componentName];
 			if (component) {
 				return getSubComponent(component, subs);
 			}
 
 			const sub = paths.pop();
-			if (!sub) {
-				return null;
-			}
+			if (!sub) break;
 			subs.unshift(sub);
 			componentName = paths.join('.');
 		}
+		return null!;
 	};
 
 	simulator.getClosestNodeInstance = (el: ComponentRecord, specId?: string) => {
@@ -511,18 +509,26 @@ function createSimulatorRenderer() {
 	disposeFunctions.push(
 		host.watchEffect(async () => {
 			const { router } = simulator;
+
 			documentInstances.value = host.project.documents.map((doc: any) => {
-				let documentInstance = documentInstanceMap.get(doc.id) as any;
+				let documentInstance: any = documentInstanceMap.get(doc.id);
 				if (!documentInstance) {
-					// TODO: 类型不兼容 IDocumentModel to DocumentModel，暂时用类型强转处理
-					documentInstance = createDocumentInstance(doc as any, context) as any;
+					documentInstance = createDocumentInstance(
+						{
+							id: doc.id,
+							getNode: doc?.getNode?.bind(doc),
+							export: doc?.export?.bind(doc),
+							exportSchema: doc?.exportSchema?.bind(doc),
+						},
+						context
+					) as any;
 					documentInstanceMap.set(doc.id, documentInstance as any);
 				} else if (router.hasRoute(documentInstance.id)) {
 					router.removeRoute(documentInstance.id);
 				}
 				router.addRoute({
-					name: documentInstance.id.value,
-					path: documentInstance.path.value,
+					name: documentInstance.id,
+					path: documentInstance.path,
 					meta: {},
 					component: Renderer,
 					props: ((doc, sim) => () => ({
@@ -532,6 +538,7 @@ function createSimulatorRenderer() {
 				});
 				return documentInstance;
 			});
+
 			router.getRoutes().forEach((route: any) => {
 				const id = route.name as string;
 				const hasDoc = documentInstances.value.some((doc) => doc.id === id);
@@ -540,17 +547,39 @@ function createSimulatorRenderer() {
 					documentInstanceMap.delete(id);
 				}
 			});
-			const inst = simulator.getCurrentDocument();
-			if (inst) {
-				try {
-					context.suspense = true;
-					await router.replace({ name: inst.id, force: true });
-				} finally {
-					context.suspense = false;
-				}
-			}
+			// TODO:切换documents用 路由切换实现不同的协议的加载， 先不考虑路由切换会出现无限循环的问题
+			// const inst = simulator.getCurrentDocument();
+			// if (inst) {
+			// 	try {
+			// 		context.suspense = true;
+			// 		await router.replace({ name: inst.id, force: true });
+			// 	} finally {
+			// 		context.suspense = false;
+			// 	}
+			// }
 		})
 	);
+
+	host.componentsConsumer.consume(async (componentsAsset: any) => {
+		if (componentsAsset) {
+			await loader.load(componentsAsset);
+			_buildComponents();
+		}
+	});
+
+	host.injectionConsumer.consume((data: any) => {
+		if (data.appHelper) {
+			const { utils, constants, ...others } = data.appHelper;
+			Object.assign(context.appHelper, {
+				utils: Array.isArray(utils)
+					? buildUtils(host.libraryMap, utils)
+					: (utils ?? {}),
+				constants: constants ?? {},
+				...others,
+			});
+		}
+		context.i18n = data.i18n ?? {};
+	});
 
 	return simulator;
 }
