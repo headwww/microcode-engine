@@ -1,6 +1,5 @@
 import { computed, defineComponent, PropType, reactive, ref, watch } from 'vue';
 import {
-	VxeColumnPropTypes,
 	VxeGrid,
 	VxeGridInstance,
 	VxeGridPropTypes,
@@ -27,7 +26,7 @@ import {
 	ButtonOption,
 	FooterConfig,
 } from './types';
-import { useCellEdit, useCellFormat, useCellRender } from './render';
+import { useCellEdit, useCellFormat, useCellRender, useFilter } from './render';
 
 // 字符，数字，布尔，日期（日期格式，时间选择器），枚举，实体（数据源，），
 // 图片先支持二维码打印
@@ -131,13 +130,9 @@ export default defineComponent({
 	setup(props, { expose }) {
 		const tableRef = ref<VxeGridInstance>();
 
-		const filters = ref<VxeColumnPropTypes.Filters>([]);
 		// 列配置
 		const columns = computed(() => {
 			const { actionConfig, columns, rowSelectorConfig, seqConfig } = props;
-
-			console.log('====');
-
 			const cols = [];
 			if (seqConfig && seqConfig.visible) {
 				const { title, width } = seqConfig;
@@ -168,7 +163,8 @@ export default defineComponent({
 					const { cellRender } = useCellRender(item);
 					const { formatter } = useCellFormat(item);
 					const editRender = useCellEdit(item);
-					// const { filterRender } = useFilter(item, filters);
+
+					const { filterRender, filters } = useFilter(item);
 
 					const { tipContent } = item;
 
@@ -185,12 +181,13 @@ export default defineComponent({
 							'enumOptions',
 							'codeType',
 							'tipContent',
+							'enableFilter',
 						]),
 
 						cellRender,
 						editRender,
-						filters: filters.value,
-						// filterRender,
+						filters: item.enableFilter ? filters : null,
+						filterRender: item.enableFilter ? filterRender : null,
 						titleSuffix: tipContent
 							? {
 									content: tipContent,
@@ -385,6 +382,93 @@ export default defineComponent({
 			</div>
 		);
 
+		const menuConfig = computed(() => ({
+			header: {
+				options: [
+					[
+						{ code: 'COPY_TITLE', name: '复制标题' },
+						{ code: 'HIDDEN_COLUMN', name: '隐藏列' },
+						{ code: 'CLEAR_SORT', name: '清除排序' },
+						{ code: 'RESET_COLUMN', name: '重置' },
+					],
+				],
+			},
+			body: {
+				options: [
+					[{ code: 'REFRESH', name: '刷新' }],
+					[
+						{
+							name: '复制',
+							children: [
+								{ code: 'COPY_CELL', name: '单元格复制(ctrl+c)' },
+								{ code: 'COPY_ROW', name: '行复制(ctrl+r)' },
+							],
+						},
+						{
+							name: '粘贴',
+							children: [
+								{ code: 'PASTE_CELL', name: '单元格粘贴(ctrl+v)' },
+								{ code: 'PASTE_ROW', name: '行粘贴(ctrl+shift+v)' },
+							],
+						},
+					],
+					[
+						{ code: 'CLEAR_CELL', name: '清除值' },
+						{ code: 'REVERT_CELL', name: '还原值' },
+					],
+					[
+						{
+							name: '插入单行数据',
+							children: [
+								{ code: 'INSERT_AT_ROW', name: '顶部插入单行' },
+								{ code: 'INSERT_NEXT_AT_ROW', name: '向下插入单行' },
+								{ code: 'INSERT_AT_EDIT_ROW', name: '顶部插入单行并编辑' },
+								{
+									code: 'INSERT_NEXT_AT_EDIT_ROW',
+									name: '向下插入单行并编辑',
+								},
+							],
+						},
+						{
+							name: '插入多行数据',
+							children: [
+								{ code: 'BATCH_INSERT_AT_ROW', name: '顶部插入多行' },
+								{ code: 'BATCH_INSERT_NEXT_AT_ROW', name: '向下插入多行' },
+								{
+									code: 'BATCH_INSERT_AT_EDIT_ROW',
+									name: '顶部插入多行并编辑',
+								},
+								{
+									code: 'BATCH_INSERT_NEXT_AT_EDIT_ROW',
+									name: '向下插入多行并编辑 ',
+								},
+							],
+						},
+					],
+					[
+						{
+							name: '删除数据',
+							children: [
+								{ code: 'DELETE_ROW', name: '删除行' },
+								{ code: 'DELETE_CHECKBOX_ROW', name: '删除复选框勾选行' },
+							],
+						},
+					],
+					[
+						{
+							name: '排序',
+							children: [
+								{ code: 'SORT_ASC', name: '升序' },
+								{ code: 'SORT_DESC', name: '倒序' },
+								{ code: 'CLEAR_SORT', name: '清除当前列排序' },
+								{ code: 'CLEAR_ALL_SORT', name: '清除所有列排序' },
+							],
+						},
+					],
+				],
+			},
+		}));
+
 		// 工具栏渲染
 		const renderTools = () => (
 			<div>
@@ -424,13 +508,19 @@ export default defineComponent({
 						type="text"
 					></Button>
 				</Tooltip>
-				<Tooltip title="刷新">
+				<Tooltip title="点击刷新，单击右键重置筛选并刷新">
 					<Button
 						icon={<ReloadOutlined />}
 						style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
 						type="text"
 						onClick={() => {
 							props.onRefresh?.(params.value);
+						}}
+						onContextmenu={(e: any) => {
+							e.preventDefault();
+							// 右键点击事件，可以调用另一个方法
+							props.onRefresh?.(params.value);
+							tableRef.value?.clearFilter();
 						}}
 					></Button>
 				</Tooltip>
@@ -523,7 +613,6 @@ export default defineComponent({
 			() => props.pagerConfig,
 			(newVal) => {
 				pagerConfig.enabled = !!newVal?.enabled;
-				pagerConfig.pageSize = newVal?.pageSize;
 				pagerConfig.pageSizes = newVal?.pageSizes;
 			}
 		);
@@ -537,7 +626,6 @@ export default defineComponent({
 					}
 					if (pagerConfig?.enabled) {
 						pagerConfig.total = newVal?.rowCount || 0;
-						pagerConfig.pageSize = newVal?.pageSize || 50;
 					}
 				}
 			}
@@ -546,8 +634,6 @@ export default defineComponent({
 		const onPageChange = (pager: any) => {
 			pagerConfig.pageSize = pager.pageSize;
 			pagerConfig.currentPage = pager.currentPage;
-			console.log('====', props.pagerConfig);
-
 			props.pagerConfig?.onPageChange?.(params.value);
 		};
 
@@ -598,6 +684,7 @@ export default defineComponent({
 					checkboxConfig={rowSelectorConfig.value}
 					radioConfig={rowSelectorConfig.value}
 					editRules={editRules.value}
+					menuConfig={menuConfig.value}
 					validConfig={{
 						msgMode: 'full',
 					}}

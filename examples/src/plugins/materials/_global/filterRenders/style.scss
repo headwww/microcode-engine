@@ -6,11 +6,24 @@
 	border-radius: 4px;
 	display: flex;
 	gap: 6px;
+	overflow: hidden;
 	flex-direction: column;
 
 	.lt-advanced-filter-footer {
 		display: flex;
 		justify-content: flex-end;
 		gap: 8px;
+	}
+}
+
+.lt-filter-content {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+
+	.lt-filter-content-tree {
+		border: 1px solid #dfdede;
+		border-radius: 6px;
+		height: 200px;
 	}
 }

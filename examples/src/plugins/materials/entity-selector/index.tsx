@@ -8,7 +8,7 @@ import {
 	reactive,
 	watch,
 } from 'vue';
-import { VxeGrid, VxeGridProps } from 'vxe-table';
+import { VxeGrid, VxeGridInstance, VxeGridProps } from 'vxe-table';
 import { debounce, get, omit } from 'lodash-es';
 import { CloseCircleFilled } from '@ant-design/icons-vue';
 import { entitySelectorProps } from './types';
@@ -20,7 +20,9 @@ import './style.scss';
 export default defineComponent({
 	name: 'LtEntitySelector',
 	props: entitySelectorProps,
-	setup(props) {
+	setup(props, { expose }) {
+		const tableRef = ref<VxeGridInstance>();
+
 		const open = ref(false);
 
 		const data = ref([]);
@@ -292,14 +294,17 @@ export default defineComponent({
 								trigger: 'row',
 							},
 			};
+
 			const pager = dataConfig?.pagination
 				? pagerConfig
 				: {
 						enabled: false,
 					};
+
 			return (
 				<VxeGrid
 					{...basicProps}
+					ref={tableRef}
 					loading={loading.value}
 					columns={columns.value}
 					menuConfig={{
@@ -314,6 +319,7 @@ export default defineComponent({
 					pagerConfig={pager as any}
 					onPageChange={onPageChange}
 					data={data.value}
+					emptyText=" "
 					onRadioChange={(v) => {
 						setTimeout(() => {
 							open.value = false;
@@ -339,6 +345,10 @@ export default defineComponent({
 				/>
 			</Tooltip>
 		);
+
+		expose({
+			getTableInstance: () => tableRef.value,
+		});
 
 		return () => {
 			const { mode, placeholder } = props;

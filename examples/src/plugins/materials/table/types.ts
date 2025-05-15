@@ -115,6 +115,11 @@ export interface ColumnProps extends VxeColumnProps {
 	 * [{ required: true, message: '必须填写' }]
 	 */
 	validConfig?: Array<VxeTableDefines.ValidatorRule>;
+
+	/**
+	 * 是否开启筛选器
+	 */
+	enableFilter?: boolean;
 }
 
 /**

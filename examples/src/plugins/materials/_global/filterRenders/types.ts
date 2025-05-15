@@ -9,12 +9,30 @@ export enum FilterMode {
 	CONTENT = '内容筛选',
 }
 
+export function getFilterMode(option: string) {
+	if (option === '数字筛选') {
+		return 'numberFilterData';
+	}
+	if (option === '文本筛选') {
+		return 'textFilterData';
+	}
+	if (option === '实体筛选') {
+		return 'entityFilterData';
+	}
+	if (option === '日期筛选') {
+		return 'dateFilterData';
+	}
+	if (option === '内容筛选') {
+		return 'contentFilterData';
+	}
+}
+
 /**
  * 逻辑操作符
  */
 export enum LogicalOperators {
-	AND = '与',
-	OR = '或',
+	AND = '与(AND)',
+	OR = '或(OR)',
 }
 
 export const plainOptions = [LogicalOperators.AND, LogicalOperators.OR];
@@ -65,4 +83,20 @@ export interface FilterData {
 	secondQueryCondition: ComparisonOperator | TemporalOperator;
 	// 第二个查询文本
 	secondQueryText: any;
+}
+
+/**
+ * 内容筛选配置
+ */
+export interface ContentFilterData {
+	// 选中的项 默认全选项是选中的
+	checkedKeys: Array<any>;
+}
+
+/**
+ * 实体筛选配置
+ */
+export interface EntityFilterData {
+	// 选中的row
+	records: any[];
 }

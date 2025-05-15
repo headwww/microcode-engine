@@ -1168,6 +1168,11 @@ export default [
 									setter: 'BoolSetter',
 								},
 								{
+									name: 'enableFilter',
+									title: '筛选',
+									setter: 'BoolSetter',
+								},
+								{
 									name: 'fixed',
 									title: '固定列',
 									setter: {

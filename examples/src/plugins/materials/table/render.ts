@@ -1,4 +1,3 @@
-import { Ref } from 'vue';
 import { VxeColumnPropTypes } from 'vxe-table';
 import {
 	ComparisonOperator,
@@ -189,10 +188,8 @@ export function useCellEdit(column: ColumnProps) {
 	};
 }
 
-export function useFilter(
-	column: ColumnProps,
-	filters: Ref<VxeColumnPropTypes.Filters>
-) {
+export function useFilter(column: ColumnProps) {
+	const filters: VxeColumnPropTypes.Filters = [];
 	const obj: VxeColumnPropTypes.FilterItem = {
 		label: column.property?.fieldName,
 		data: {
@@ -248,24 +245,24 @@ export function useFilter(
 	if (column.property?.topFieldTypeFlag === '1') {
 		filterModes.push(FilterMode.ENTITY);
 	}
+
 	filterModes.push(FilterMode.CONTENT);
+	obj.data.contentFilterData = {
+		checkedKeys: ['$SELECT_ALL'],
+	};
 
 	obj.data.currentMode = filterModes.length > 0 ? filterModes[0] : '';
-	filters.value.push(obj);
-
-	console.log(filters.value);
-
+	filters.push(obj);
 	return {
 		filterRender: {
 			name: 'LtFilterRender',
 			props: {
 				filterModes,
-			},
-			events: {
-				onChange: (data: any = []) => {
-					filters.value = [...data];
-				},
+				...getProps(column),
+				filterDataConfig: column?.filterDataConfig,
+				filterColumns: column?.filterColumns,
 			},
 		},
+		filters,
 	};
 }
