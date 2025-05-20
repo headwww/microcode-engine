@@ -1,0 +1,113 @@
+.lt-table-area {
+	height: 0;
+	font-size: 0;
+	display: none;
+	position: static;
+}
+
+.lt-table-area {
+	.vxe-table--cell-active-area {
+		display: none;
+		position: absolute;
+		pointer-events: none;
+		z-index: 1;
+		border: 2px solid #409eff;
+		background-color: transparent;
+	}
+}
+
+.lt-table-area {
+	.vxe-table--cell-main-area {
+		display: none;
+		position: absolute;
+		pointer-events: none;
+		z-index: 1;
+		background-color: rgb(64 158 255 / 20%);
+		border: 1px solid #409eff;
+		// .vxe-table--cell-main-area-btn {
+		// 	position: absolute;
+		// 	right: -1px;
+		// 	bottom: -1px;
+		// 	width: 7px;
+		// 	height: 7px;
+		// 	border-style: solid;
+		// 	border-color: #fff;
+		// 	border-width: 1px 0 0 1px;
+		// 	background-color: #409eff;
+		// 	pointer-events: auto;
+		// 	cursor: crosshair;
+		// }
+	}
+
+	.vxe-table--cell-copy-area {
+		display: none;
+		position: absolute;
+		pointer-events: none;
+		z-index: 1;
+		background:
+			linear-gradient(0deg, transparent 6px, #409eff 6px) repeat-y,
+			linear-gradient(0deg, transparent 50%, #409eff 0) repeat-y,
+			linear-gradient(90deg, transparent 50%, #409eff 0) repeat-x,
+			linear-gradient(90deg, transparent 50%, #409eff 0) repeat-x;
+		background-size:
+			3px 12px,
+			3px 12px,
+			12px 3px,
+			12px 3px;
+		background-position:
+			0 0,
+			100% 0,
+			0 0,
+			0 100%;
+		animation: moveCopyCellBorder 0.5s linear infinite;
+	}
+}
+
+// .lt-table-area .vxe-table--cell-main-area,
+// .lt-table-area .vxe-table--cell-copy-area,
+// .lt-table-area .vxe-table--cell-extend-area,
+// .lt-table-area .vxe-table--cell-multi-area,
+// .lt-table-area .vxe-table--cell-active-area,
+// .lt-table-area .vxe-table--cell-row-status-area {
+// 	position: absolute;
+// 	pointer-events: none;
+// }
+// .lt-table-area .vxe-table--cell-main-area {
+// 	position: absolute;
+// 	background-color: rgb(64 158 255 / 20%);
+// 	border: 1px solid var(--vxe-ui-font-primary-color, #409eff);
+// }
+// .lt-table-area .vxe-table--cell-main-area-btn {
+// 	position: absolute;
+// 	right: -1px;
+// 	bottom: -1px;
+// 	width: 7px;
+// 	height: 7px;
+// 	border-style: solid;
+// 	border-width: 0 1px 1px 0;
+// 	border-color: #fff;
+// 	background-color: var(--vxe-ui-font-primary-color, #409eff);
+// 	pointer-events: auto;
+// 	cursor: crosshair;
+// }
+// .lt-table-area .vxe-table--cell-active-area {
+// 	position: absolute;
+// 	border: 2px solid var(--vxe-ui-font-primary-color, #409eff);
+// }
+// .lt-table-area .vxe-table--cell-extend-area {
+// 	position: absolute;
+// 	border: 2px dashed var(--vxe-ui-font-primary-color, #409eff);
+// 	background-color: rgb(64 158 255 / 10%);
+// }
+// .lt-table-area .vxe-table--cell-copy-area {
+// 	position: absolute;
+// 	border: 3px dashed var(--vxe-ui-font-primary-color, #409eff);
+// }
+// .lt-table-area .vxe-table--cell-multi-area {
+// 	position: absolute;
+// 	border: 1px dashed var(--vxe-ui-font-primary-color, #409eff);
+// }
+// .lt-table-area .vxe-table--cell-row-status-area {
+// 	position: absolute;
+// 	background-color: rgb(50 128 252 / 20%);
+// }

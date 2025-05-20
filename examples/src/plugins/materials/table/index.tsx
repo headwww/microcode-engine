@@ -4,9 +4,17 @@ import {
 	VxeGridInstance,
 	VxeGridPropTypes,
 	VxeTablePropTypes,
+	VxeUI,
 } from 'vxe-table';
-import { isArray, omit } from 'lodash-es';
-import { Button, Divider, Tooltip, Menu, Dropdown } from 'ant-design-vue';
+import { get, isArray, omit } from 'lodash-es';
+import {
+	Button,
+	Divider,
+	Tooltip,
+	Menu,
+	Dropdown,
+	message,
+} from 'ant-design-vue';
 import {
 	DownloadOutlined,
 	FullscreenExitOutlined,
@@ -27,6 +35,9 @@ import {
 	FooterConfig,
 } from './types';
 import { useCellEdit, useCellFormat, useCellRender, useFilter } from './render';
+import { useArea } from './area';
+import './style.scss';
+import { formatTableCell } from '../_global/utils';
 
 // 字符，数字，布尔，日期（日期格式，时间选择器），枚举，实体（数据源，），
 // 图片先支持二维码打印
@@ -128,7 +139,7 @@ export default defineComponent({
 		>,
 	},
 	setup(props, { expose }) {
-		const tableRef = ref<VxeGridInstance>();
+		const tableRef = ref<VxeGridInstance & HTMLDivElement>();
 
 		// 列配置
 		const columns = computed(() => {
@@ -382,93 +393,6 @@ export default defineComponent({
 			</div>
 		);
 
-		const menuConfig = computed(() => ({
-			header: {
-				options: [
-					[
-						{ code: 'COPY_TITLE', name: '复制标题' },
-						{ code: 'HIDDEN_COLUMN', name: '隐藏列' },
-						{ code: 'CLEAR_SORT', name: '清除排序' },
-						{ code: 'RESET_COLUMN', name: '重置' },
-					],
-				],
-			},
-			body: {
-				options: [
-					[{ code: 'REFRESH', name: '刷新' }],
-					[
-						{
-							name: '复制',
-							children: [
-								{ code: 'COPY_CELL', name: '单元格复制(ctrl+c)' },
-								{ code: 'COPY_ROW', name: '行复制(ctrl+r)' },
-							],
-						},
-						{
-							name: '粘贴',
-							children: [
-								{ code: 'PASTE_CELL', name: '单元格粘贴(ctrl+v)' },
-								{ code: 'PASTE_ROW', name: '行粘贴(ctrl+shift+v)' },
-							],
-						},
-					],
-					[
-						{ code: 'CLEAR_CELL', name: '清除值' },
-						{ code: 'REVERT_CELL', name: '还原值' },
-					],
-					[
-						{
-							name: '插入单行数据',
-							children: [
-								{ code: 'INSERT_AT_ROW', name: '顶部插入单行' },
-								{ code: 'INSERT_NEXT_AT_ROW', name: '向下插入单行' },
-								{ code: 'INSERT_AT_EDIT_ROW', name: '顶部插入单行并编辑' },
-								{
-									code: 'INSERT_NEXT_AT_EDIT_ROW',
-									name: '向下插入单行并编辑',
-								},
-							],
-						},
-						{
-							name: '插入多行数据',
-							children: [
-								{ code: 'BATCH_INSERT_AT_ROW', name: '顶部插入多行' },
-								{ code: 'BATCH_INSERT_NEXT_AT_ROW', name: '向下插入多行' },
-								{
-									code: 'BATCH_INSERT_AT_EDIT_ROW',
-									name: '顶部插入多行并编辑',
-								},
-								{
-									code: 'BATCH_INSERT_NEXT_AT_EDIT_ROW',
-									name: '向下插入多行并编辑 ',
-								},
-							],
-						},
-					],
-					[
-						{
-							name: '删除数据',
-							children: [
-								{ code: 'DELETE_ROW', name: '删除行' },
-								{ code: 'DELETE_CHECKBOX_ROW', name: '删除复选框勾选行' },
-							],
-						},
-					],
-					[
-						{
-							name: '排序',
-							children: [
-								{ code: 'SORT_ASC', name: '升序' },
-								{ code: 'SORT_DESC', name: '倒序' },
-								{ code: 'CLEAR_SORT', name: '清除当前列排序' },
-								{ code: 'CLEAR_ALL_SORT', name: '清除所有列排序' },
-							],
-						},
-					],
-				],
-			},
-		}));
-
 		// 工具栏渲染
 		const renderTools = () => (
 			<div>
@@ -529,6 +453,9 @@ export default defineComponent({
 						icon={<TableOutlined />}
 						style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
 						type="text"
+						onClick={() => {
+							tableRef.value?.openCustom();
+						}}
 					></Button>
 				</Tooltip>
 				<Tooltip title={tableRef.value?.isMaximized() ? '还原' : '全屏'}>
@@ -549,6 +476,136 @@ export default defineComponent({
 				</Tooltip>
 			</div>
 		);
+
+		const menuConfig = computed(() => ({
+			header: {
+				options: [
+					[
+						{ code: 'HIDDEN_COLUMN', name: '隐藏列' },
+						{ code: 'RESET_COLUMN', name: '取消隐藏' },
+						{ code: 'CLEAR_SORT', name: '清除排序(当前列)' },
+						{ code: 'CLEAR_ALL_SORT', name: '清除排序(全部)' },
+						{ code: 'RESET_FILTER', name: '重置筛选' },
+					],
+				],
+			},
+			body: {
+				options: [
+					[{ code: 'REFRESH', name: '刷新' }],
+					[
+						{
+							name: '复制',
+							children: [
+								{
+									code: 'COPY_AREA',
+									name: '复制(ctrl+c)',
+									disabled: !hasSelection.value,
+								},
+								{ code: 'COPY_TEXT', name: '文本复制(单元格)' },
+								{ code: 'COPY_ROW', name: '复制(行)' },
+							],
+						},
+						{
+							name: '粘贴',
+							children: [
+								{ code: 'PASTE_AREA', name: '粘贴(ctrl+v)' },
+								{
+									code: 'PASTE_ROW',
+									name: '粘贴(行)',
+									disabled: !copyRowData.value,
+								},
+								{
+									code: 'PASTE_ROW_SELECT',
+									name: '粘贴到选中行',
+									disabled: !copyRowData.value,
+								},
+							],
+						},
+					],
+					[
+						{ code: 'CLEAR_CELL', name: '清除内容(选区)' },
+						{
+							name: '还原',
+							children: [
+								{ code: 'REVERT_CELL', name: '还原(选区)' },
+								{ code: 'REVERT_ALL', name: '还原所有' },
+							],
+						},
+					],
+					[
+						{
+							code: 'CLOSE_SELECTION',
+							name: '取消选区',
+						},
+						{
+							code: 'INSERT',
+							name: '插入',
+						},
+					],
+				],
+			},
+		}));
+
+		const { renderArea, destroyAreaBox, hasSelection } = useArea(tableRef);
+
+		const copyRowData = ref();
+
+		const onMenuClick = (parameter: any) => {
+			const { menu, $table, row, column } = parameter;
+			console.log(parameter);
+
+			switch (menu.code) {
+				case 'REFRESH':
+					props.onRefresh?.(params.value);
+					break;
+				case 'CLEAR_CELL':
+					$table.closeSelection();
+					break;
+				case 'CLOSE_SELECTION':
+					destroyAreaBox();
+					break;
+				case 'COPY_TEXT':
+					if (row && column) {
+						const cellValue = get(row, column.field);
+						const formatCellValue = formatTableCell({ cellValue, row, column });
+						VxeUI.clipboard.copy(formatCellValue)
+							? message.success('复制到剪贴板')
+							: message.error('复制失败');
+					}
+					break;
+				case 'COPY_ROW':
+					if (row && column) {
+						copyRowData.value = omit(row, ['id', '_X_ROW_KEY']);
+						message.success('复制行');
+					}
+					break;
+				case 'PASTE_ROW':
+					if (row && column) {
+						$table?.setRow(row, {
+							id: row?.id,
+							...copyRowData.value,
+						});
+					}
+					break;
+				case 'PASTE_ROW_SELECT':
+					if (row && column) {
+						const records = [
+							...($table?.getCheckboxRecords() || []),
+							...($table?.getRadioRecord() || []),
+						];
+						records.forEach((r) => {
+							$table?.setRow(r, {
+								id: r?.id,
+								...copyRowData.value,
+							});
+						});
+					}
+					break;
+				case 'INSERT':
+					tableRef.value?.insert({});
+					break;
+			}
+		};
 
 		// 返回给父组件的参数
 		const params = computed(() => {
@@ -670,6 +727,10 @@ export default defineComponent({
 
 		return () => (
 			<div style={{ height: '100%', overflow: 'hidden' }}>
+				{
+					// 渲染区域 复制粘贴选区等操作
+					renderArea()
+				}
 				<VxeGrid
 					ref={tableRef}
 					{...baseConfig.value}
@@ -700,6 +761,7 @@ export default defineComponent({
 					showFooter={props.footerConfig?.showFooter}
 					footerData={footerData.value}
 					onPageChange={onPageChange}
+					onMenuClick={onMenuClick}
 				>
 					{{
 						buttons: () => renderButtons(),
