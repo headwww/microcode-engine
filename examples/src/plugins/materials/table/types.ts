@@ -235,7 +235,7 @@ export interface FooterConfig {
 	showFooter?: boolean;
 	footerItems?: Array<{
 		label: string;
-		// 需要表尾操作的字段
+		// 需要表尾操作的字段["code","unit"....]
 		fields: Array<string>;
 		// 表尾操作的回调
 		footerDataMethod?: (params: any, field: string) => any;

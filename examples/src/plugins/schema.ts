@@ -2,7 +2,7 @@
  * @Author: shuwen 1243889238@qq.com
  * @Date: 2025-04-08 14:35:21
  * @LastEditors: shuwen 1243889238@qq.com
- * @LastEditTime: 2025-05-09 13:28:38
+ * @LastEditTime: 2025-05-20 16:36:18
  * @FilePath: /microcode-engine/examples/src/plugins/schema.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -948,6 +948,184 @@ export default {
 										digits: 0,
 										dataType: 'number',
 										editType: 'number',
+									},
+									{
+										title: '名称',
+										width: 200,
+										property: {
+											targetClass: 'lt.app.product.model.ProductOrder',
+											fieldTitle: '名称',
+											fieldTypeFlag: '0',
+											topFieldType: 'lt.fw.core.model.biz.Corp',
+											fieldType: 'java.lang.String',
+											fieldName: 'corp.name',
+											topFieldTypeFlag: '1',
+										},
+										editDataConfig: {
+											url: 'api/corpService/findCorps',
+											targetClass: 'lt.fw.core.model.biz.Corp',
+											method: 'POST',
+										},
+										editColumns: [
+											{
+												title: '名称',
+												width: 200,
+												filterable: true,
+												property: {
+													targetClass: 'lt.fw.core.model.biz.Corp',
+													fieldTitle: '名称',
+													fieldTypeFlag: '0',
+													topFieldType: 'java.lang.String',
+													fieldType: 'java.lang.String',
+													fieldName: 'name',
+													topFieldTypeFlag: '0',
+												},
+												dataType: 'text',
+											},
+											{
+												title: '编码',
+												width: 200,
+												filterable: true,
+												property: {
+													targetClass: 'lt.fw.core.model.biz.Corp',
+													fieldTitle: '编码',
+													fieldTypeFlag: '0',
+													topFieldType: 'java.lang.String',
+													fieldType: 'java.lang.String',
+													fieldName: 'code',
+													topFieldTypeFlag: '0',
+												},
+												dataType: 'text',
+											},
+										],
+										filterDataConfig: {
+											url: 'api/corpService/findCorps',
+											targetClass: 'lt.fw.core.model.biz.Corp',
+											method: 'POST',
+										},
+										filterColumns: [
+											{
+												title: '名称',
+												width: 200,
+												filterable: true,
+												property: {
+													targetClass: 'lt.fw.core.model.biz.Corp',
+													fieldTitle: '名称',
+													fieldTypeFlag: '0',
+													topFieldType: 'java.lang.String',
+													fieldType: 'java.lang.String',
+													fieldName: 'name',
+													topFieldTypeFlag: '0',
+												},
+												dataType: 'text',
+											},
+											{
+												title: '编码',
+												width: 200,
+												filterable: true,
+												property: {
+													targetClass: 'lt.fw.core.model.biz.Corp',
+													fieldTitle: '编码',
+													fieldTypeFlag: '0',
+													topFieldType: 'java.lang.String',
+													fieldType: 'java.lang.String',
+													fieldName: 'code',
+													topFieldTypeFlag: '0',
+												},
+												dataType: 'text',
+											},
+										],
+										dataType: 'text',
+										editType: '1102238451895377920',
+									},
+									{
+										title: '编码',
+										width: 200,
+										property: {
+											targetClass: 'lt.app.product.model.ProductOrder',
+											fieldTitle: '编码',
+											fieldTypeFlag: '0',
+											topFieldType: 'lt.fw.core.model.biz.Corp',
+											fieldType: 'java.lang.String',
+											fieldName: 'corp.code',
+											topFieldTypeFlag: '1',
+										},
+										editType: '1102238451895377920',
+										editDataConfig: {
+											url: 'api/corpService/findCorps',
+											targetClass: 'lt.fw.core.model.biz.Corp',
+											method: 'POST',
+										},
+										editColumns: [
+											{
+												title: '名称',
+												width: 200,
+												filterable: true,
+												property: {
+													targetClass: 'lt.fw.core.model.biz.Corp',
+													fieldTitle: '名称',
+													fieldTypeFlag: '0',
+													topFieldType: 'java.lang.String',
+													fieldType: 'java.lang.String',
+													fieldName: 'name',
+													topFieldTypeFlag: '0',
+												},
+												dataType: 'text',
+											},
+											{
+												title: '编码',
+												width: 200,
+												filterable: true,
+												property: {
+													targetClass: 'lt.fw.core.model.biz.Corp',
+													fieldTitle: '编码',
+													fieldTypeFlag: '0',
+													topFieldType: 'java.lang.String',
+													fieldType: 'java.lang.String',
+													fieldName: 'code',
+													topFieldTypeFlag: '0',
+												},
+												dataType: 'text',
+											},
+										],
+										filterDataConfig: {
+											url: 'api/corpService/findCorps',
+											targetClass: 'lt.fw.core.model.biz.Corp',
+											method: 'POST',
+										},
+										filterColumns: [
+											{
+												title: '名称',
+												width: 200,
+												filterable: true,
+												property: {
+													targetClass: 'lt.fw.core.model.biz.Corp',
+													fieldTitle: '名称',
+													fieldTypeFlag: '0',
+													topFieldType: 'java.lang.String',
+													fieldType: 'java.lang.String',
+													fieldName: 'name',
+													topFieldTypeFlag: '0',
+												},
+												dataType: 'text',
+											},
+											{
+												title: '编码',
+												width: 200,
+												filterable: true,
+												property: {
+													targetClass: 'lt.fw.core.model.biz.Corp',
+													fieldTitle: '编码',
+													fieldTypeFlag: '0',
+													topFieldType: 'java.lang.String',
+													fieldType: 'java.lang.String',
+													fieldName: 'code',
+													topFieldTypeFlag: '0',
+												},
+												dataType: 'text',
+											},
+										],
+										dataType: 'text',
 									},
 								],
 								pagerConfig: {

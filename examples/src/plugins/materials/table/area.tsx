@@ -171,6 +171,7 @@ export function useArea(
 
 	// 销毁选区框
 	function destroyAreaBox() {
+		copyAreaData.value = null;
 		styles.body = {};
 		styles.active = {};
 		styles.main = {};
@@ -192,11 +193,149 @@ export function useArea(
 			(event.ctrlKey && event.key === 'c') ||
 			(event.metaKey && event.key === 'c')
 		) {
-			styles.copy = {
-				...styles.main,
-				display: 'block',
-			};
+			copyArea();
 		}
+		if (
+			(event.ctrlKey && event.key === 'v') ||
+			(event.metaKey && event.key === 'v')
+		) {
+			pasteArea();
+		}
+	}
+
+	function getNextRow(currentRow: any) {
+		if (tableInstance.value) {
+			// 1. 获取当前可见数据
+			const visibleData = tableInstance.value.getTableData().visibleData;
+
+			// 2. 获取当前行的 rowId
+			const rowId = tableInstance.value.getRowid(currentRow);
+
+			// 3. 在 visibleData 里查找 rowId 的位置
+			const currentIndex = visibleData.findIndex(
+				(row) => row._X_ROW_KEY === rowId
+			);
+
+			if (currentIndex === -1) {
+				return null;
+			}
+			const nextRow = visibleData[currentIndex + 1] || null;
+			return nextRow;
+		}
+		return null;
+	}
+
+	const copyAreaData = ref();
+
+	function copyArea() {
+		styles.copy = {
+			...styles.main,
+			display: 'block',
+		};
+		const { columns, rows } = getSelectionData();
+		copyAreaData.value = {
+			columns,
+			rows: rows.map((row) => {
+				const fields = columns.map((col) => {
+					const field = col.field.split('.');
+					if (field.length > 1) {
+						return field[0];
+					}
+					return col.field;
+				});
+				// 根据fields获取新的row数据
+				const newRow: any = {};
+				fields.forEach((field) => {
+					newRow[field] = row[field];
+				});
+				return newRow;
+			}),
+		};
+	}
+
+	function pasteArea() {
+		if (!copyAreaData.value) {
+			return;
+		}
+		const { rows, columns } = getSelectionData();
+		const { rows: copyRows, columns: copyColumns } = copyAreaData.value;
+		if (copyRows?.length === 0) {
+			return;
+		}
+		// 复制区域是多行的情况
+		if (copyRows?.length > 1) {
+			/// / 粘贴前需要比对起始的列是否和 复制时候的启始列是一个列，是的话则将复制区域的数据按顺序依次粘贴到对应的列
+			if (copyColumns.length > 0 && columns.length > 0) {
+				if (copyColumns[0].field === columns[0].field) {
+					let currentRow = rows[0];
+					for (const item of copyRows) {
+						tableInstance.value?.setRow(currentRow, {
+							...currentRow,
+							...item,
+						});
+						currentRow = getNextRow(currentRow);
+						if (!currentRow) break;
+					}
+				}
+			}
+		}
+		// 复制区域是单行的情况
+		if (copyRows?.length === 1) {
+			/// / 粘贴前先比对一下，复制区域的列和粘贴区域时候的列，字段和数量，一样，则将复制区域的一行数据复制到复制区域的每一行
+			if (
+				copyColumns.length === columns.length &&
+				copyColumns.every(
+					(col: any) =>
+						col.field === columns.find((c: any) => c.field === col.field)?.field
+				)
+			) {
+				rows.forEach((row) => {
+					tableInstance.value?.setRow(row, {
+						...row,
+						...copyRows[0],
+					});
+				});
+			} else {
+				// 如果不一样则取启始的列来比对
+				if (copyColumns.length > 0 && columns.length > 0) {
+					if (copyColumns[0].field === columns[0].field) {
+						tableInstance.value?.setRow(rows[0], {
+							...rows[0],
+							...copyRows[0],
+						});
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * 获取选区内的数据和对应的列信息
+	 *
+	 * @returns
+	 */
+	function getSelectionData() {
+		const table = tableInstance.value;
+		if (!table) return { columns: [], rows: [] };
+
+		const visibleColumn = table.getTableColumn().visibleColumn || [];
+		const visibleData = table.getTableData().visibleData || [];
+
+		// 计算选区的起始和结束位置
+		const startRow = Math.min(selectionStart.rowIndex, selectionEnd.rowIndex);
+		const endRow = Math.max(selectionStart.rowIndex, selectionEnd.rowIndex);
+		const startCol = Math.min(selectionStart.cellIndex, selectionEnd.cellIndex);
+		const endCol = Math.max(selectionStart.cellIndex, selectionEnd.cellIndex);
+
+		// 获取选区内的列
+		const selectedColumns = visibleColumn.slice(startCol, endCol + 1);
+
+		// 获取选区内的行数据
+		const selectedRows = visibleData.slice(startRow, endRow + 1);
+
+		return {
+			columns: selectedColumns,
+			rows: selectedRows,
+		};
 	}
 
 	/**
@@ -218,6 +357,18 @@ export function useArea(
 			const { rowIndex, cellIndex, colid, rowid } = getCellPosition(
 				event.target as HTMLElement
 			);
+
+			if (colid) {
+				const col = tableInstance.value?.getColumnById(colid);
+				if (
+					col?.type === 'checkbox' ||
+					col?.type === 'radio' ||
+					col?.type === 'seq'
+				) {
+					return;
+				}
+			}
+
 			selectionStart.rowIndex = rowIndex;
 			selectionStart.cellIndex = cellIndex;
 			selectionStart.colid = colid || '';
@@ -553,10 +704,13 @@ export function useArea(
 	);
 
 	const api = {
+		hasSelection,
+		copyAreaData,
+		copyArea,
+		pasteArea,
 		renderArea,
 		deactivate,
 		destroyAreaBox,
-		hasSelection,
 	};
 	return api;
 }

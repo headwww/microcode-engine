@@ -477,6 +477,7 @@ export default defineComponent({
 			</div>
 		);
 
+		// 右键菜单配置
 		const menuConfig = computed(() => ({
 			header: {
 				options: [
@@ -508,7 +509,11 @@ export default defineComponent({
 						{
 							name: '粘贴',
 							children: [
-								{ code: 'PASTE_AREA', name: '粘贴(ctrl+v)' },
+								{
+									code: 'PASTE_AREA',
+									name: '粘贴(ctrl+v)',
+									disabled: !copyAreaData.value,
+								},
 								{
 									code: 'PASTE_ROW',
 									name: '粘贴(行)',
@@ -523,37 +528,33 @@ export default defineComponent({
 						},
 					],
 					[
-						{ code: 'CLEAR_CELL', name: '清除内容(选区)' },
 						{
+							code: 'REVERT_ALL',
 							name: '还原',
-							children: [
-								{ code: 'REVERT_CELL', name: '还原(选区)' },
-								{ code: 'REVERT_ALL', name: '还原所有' },
-							],
 						},
-					],
-					[
 						{
 							code: 'CLOSE_SELECTION',
 							name: '取消选区',
-						},
-						{
-							code: 'INSERT',
-							name: '插入',
 						},
 					],
 				],
 			},
 		}));
 
-		const { renderArea, destroyAreaBox, hasSelection } = useArea(tableRef);
+		const {
+			renderArea,
+			destroyAreaBox,
+			hasSelection,
+			copyAreaData,
+			pasteArea,
+			copyArea,
+		} = useArea(tableRef);
 
+		// 复制行数据
 		const copyRowData = ref();
 
 		const onMenuClick = (parameter: any) => {
 			const { menu, $table, row, column } = parameter;
-			console.log(parameter);
-
 			switch (menu.code) {
 				case 'REFRESH':
 					props.onRefresh?.(params.value);
@@ -601,8 +602,11 @@ export default defineComponent({
 						});
 					}
 					break;
-				case 'INSERT':
-					tableRef.value?.insert({});
+				case 'COPY_AREA':
+					copyArea();
+					break;
+				case 'PASTE_AREA':
+					pasteArea();
 					break;
 			}
 		};
@@ -696,6 +700,7 @@ export default defineComponent({
 
 		const footerData = ref<any>([]);
 
+		// 表尾数据
 		watch(
 			() => [data.value, props.footerConfig] as const,
 			([newVal, footerConfig]) => {
