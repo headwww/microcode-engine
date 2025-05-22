@@ -1,0 +1,24 @@
+.lt-page-layout {
+	position: relative;
+
+	.lt-page-layout-content {
+		// margin: 16px;
+	}
+
+	.ant-page-header {
+		&:empty {
+			padding: 0;
+		}
+	}
+
+	&-content-bg {
+		background-color: #fff;
+		// background-color: rgb(242 243 245);
+	}
+
+	&--dense {
+		.page-layout-content {
+			margin: 0;
+		}
+	}
+}

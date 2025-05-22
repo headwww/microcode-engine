@@ -12,7 +12,7 @@ export default {
 		version: '1.0.0',
 	},
 	configure: {
-		component: { isContainer: true },
+		// component: { isContainer: true },
 		props,
 	},
 	snippets: [

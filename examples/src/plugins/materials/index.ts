@@ -5,6 +5,9 @@ export { default as BarCode } from './bar-code';
 export { default as EntitySelector } from './entity-selector';
 export { default as PropertySelector } from './property-selector';
 export { ExpressionBuilder } from './expression-builder';
+export { default as Split } from './split';
+export { default as LtPage } from './page';
+export { default as Modal } from './modal';
 
 export {
 	Typography,

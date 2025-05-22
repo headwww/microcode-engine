@@ -10,6 +10,9 @@ import formItem from './form.item/meta';
 import form from './form/meta';
 import table from './table/meta';
 import entitySelector from './entity-selector/meta';
+import split from './split/meta';
+import page from './page/meta';
+import modal from './modal/meta';
 
 export default [
 	form,
@@ -24,4 +27,7 @@ export default [
 	layout,
 	table,
 	entitySelector,
+	split,
+	page,
+	modal,
 ];
