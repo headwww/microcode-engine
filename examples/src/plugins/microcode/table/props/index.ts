@@ -11,6 +11,7 @@ import seqConfigProps from './seqConfig';
 import toolBarProps from './toolBar';
 import pagerProps from './pager';
 import footerProps from './footer';
+import treeProps from './tree';
 
 export default [
 	...basicProps,
@@ -25,5 +26,6 @@ export default [
 	...editProps,
 	...columnConfigProps,
 	...rowProps,
+	...treeProps,
 	...otherProps,
 ];

@@ -47,7 +47,6 @@ export default defineComponent({
 	props: {
 		tableId: {
 			type: String as PropType<string>,
-			required: true,
 		},
 		targetClass: {
 			type: String as PropType<string>,
@@ -131,6 +130,13 @@ export default defineComponent({
 		footerConfig: {
 			type: Object as PropType<FooterConfig>,
 		},
+		treeConfig: {
+			type: Object as PropType<
+				VxeTablePropTypes.TreeConfig & {
+					treeNode?: string;
+				}
+			>,
+		},
 		data: [Array, Object] as PropType<
 			| any[]
 			| {
@@ -198,7 +204,7 @@ export default defineComponent({
 							'tipContent',
 							'enableFilter',
 						]),
-
+						treeNode: item.property?.fieldName === props.treeConfig?.treeNode,
 						cellRender,
 						editRender,
 						filters: item.enableFilter ? filters : null,
@@ -749,6 +755,7 @@ export default defineComponent({
 					editConfig={props.editConfig}
 					rowConfig={props.rowConfig}
 					pagerConfig={pagerConfig}
+					treeConfig={props.treeConfig}
 					columns={columns.value}
 					data={data.value}
 					seqConfig={seqConfig.value}
