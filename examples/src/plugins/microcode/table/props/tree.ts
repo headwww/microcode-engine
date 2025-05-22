@@ -30,7 +30,6 @@ export default [
 					!!target.getParent().getPropValue('transform'),
 				setter: {
 					initialValue: (target: any) => {
-						console.log();
 						const columns = target.top.getPropValue('columns');
 						if (columns && isArray(columns) && columns.length > 0) {
 							return columns[0]?.property?.fieldName;
