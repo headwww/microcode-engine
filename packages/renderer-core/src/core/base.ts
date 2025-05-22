@@ -86,6 +86,10 @@ export const leafProps = {
 		type: Object as PropType<Record<string, unknown>>,
 		default: () => ({}),
 	},
+	__designMode: {
+		type: String as PropType<'live' | 'design'>,
+		default: 'live',
+	},
 	__isRootNode: Boolean,
 } as const;
 

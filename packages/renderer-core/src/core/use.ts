@@ -309,6 +309,7 @@ export function useLeaf(
 					__schema: schema,
 					__scope: scope,
 					__vnodeProps: vnodeProps,
+					__designMode: designMode,
 					...compProps,
 				},
 				buildSlots(rawSlots, scope, node)
@@ -334,6 +335,7 @@ export function useLeaf(
 					__scope: mergedScope,
 					__schema: schema,
 					__vnodeProps: vnodeProps,
+					__designMode: designMode,
 					...compProps,
 				},
 				buildSlots(rawSlots, mergedScope, node)
@@ -805,6 +807,7 @@ export function useRenderer(rendererProps: RendererProps, scope: RuntimeScope) {
 		__isRootNode: true,
 		__vnodeProps: {},
 		__schema: rendererProps.__schema,
+		__designMode: rendererProps.__designMode,
 	};
 
 	const designModeRef = computed(() => rendererProps.__designMode ?? 'live');

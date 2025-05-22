@@ -1,9 +1,16 @@
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { Modal as OriginalModal } from 'ant-design-vue';
 
 export default defineComponent({
 	name: 'Modal',
 	inheritAttrs: false,
+	props: {
+		// eslint-disable-next-line vue/prop-name-casing
+		__designMode: {
+			type: String as PropType<'live' | 'design'>,
+			default: 'live',
+		},
+	},
 	setup(props, { attrs, slots }) {
 		// 获取iframe中的目标容器
 		const getIframeContainer = () => {
