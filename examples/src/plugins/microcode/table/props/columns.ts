@@ -539,6 +539,8 @@ export default [
 		extraProps: {
 			supportVariable: false,
 		},
+		condition: (target: any) =>
+			!!target.getParent().getPropValue('targetClass'),
 		setter: {
 			componentName: 'ArraySetter',
 			props: {

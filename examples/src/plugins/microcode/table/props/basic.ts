@@ -1,5 +1,22 @@
 export default [
 	{
+		name: 'tableId',
+		title: {
+			label: 'ID',
+			tip: '用于分配权限使用，全局唯一ID，避免重复，重复会导致分配权限出现问题',
+		},
+		setter: {
+			componentName: 'StringSetter',
+			initialValue: () => {
+				let guid = Date.now();
+				function uniqueId(prefix = '') {
+					return `${prefix}${(guid++).toString(36).toLowerCase()}`;
+				}
+				return uniqueId('lt_table_');
+			},
+		},
+	},
+	{
 		title: {
 			label: 'refId',
 			tip: '用于获取组件实例，调用物料内部方法',

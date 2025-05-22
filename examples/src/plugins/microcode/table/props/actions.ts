@@ -8,11 +8,23 @@ export default [
 		display: 'entry',
 		items: [
 			{
+				name: 'enable',
+				title: {
+					label: '是否启用',
+					tip: '是否启用,关闭是不启用，用于显示操作列的启用状态',
+				},
+				setter: {
+					initialValue: false,
+					componentName: 'BoolSetter',
+				},
+			},
+			{
 				name: 'title',
 				title: {
 					label: '标题',
 					tip: '标题, 用于显示操作列的标题',
 				},
+				condition: (target: any) => !!target.getParent().getPropValue('enable'),
 				setter: {
 					initialValue: '操作',
 					componentName: 'StringSetter',
@@ -24,6 +36,7 @@ export default [
 					label: '宽度',
 					tip: '宽度, 用于显示操作列的宽度',
 				},
+				condition: (target: any) => !!target.getParent().getPropValue('enable'),
 				setter: {
 					initialValue: 200,
 					componentName: 'NumberSetter',
@@ -32,6 +45,7 @@ export default [
 			{
 				name: 'fixed',
 				title: '固定列',
+				condition: (target: any) => !!target.getParent().getPropValue('enable'),
 				setter: {
 					initialValue: 'right',
 					componentName: 'SelectSetter',
@@ -55,6 +69,7 @@ export default [
 			},
 			{
 				name: 'buttonType',
+				condition: (target: any) => !!target.getParent().getPropValue('enable'),
 				title: {
 					label: '按钮类型',
 					tip: '按钮类型, 用于显示操作列的按钮类型',
@@ -70,19 +85,10 @@ export default [
 					},
 				},
 			},
-			{
-				name: 'hidden',
-				title: {
-					label: '是否隐藏',
-					tip: '是否隐藏,关闭是不隐藏，用于显示操作列的隐藏状态',
-				},
-				setter: {
-					initialValue: false,
-					componentName: 'BoolSetter',
-				},
-			},
+
 			{
 				name: 'maxShowCount',
+				condition: (target: any) => !!target.getParent().getPropValue('enable'),
 				title: {
 					label: '展示数量',
 					tip: '最大展示数量, 用于显示操作列的最大展示数量,超过的部分会折叠',
@@ -100,6 +106,7 @@ export default [
 				extraProps: {
 					supportVariable: false,
 				},
+				condition: (target: any) => !!target.getParent().getPropValue('enable'),
 				setter: {
 					componentName: 'ArraySetter',
 					props: {

@@ -45,6 +45,10 @@ export default defineComponent({
 	name: 'LtTable',
 	emits: ['update:data'],
 	props: {
+		tableId: {
+			type: String as PropType<string>,
+			required: true,
+		},
 		targetClass: {
 			type: String as PropType<string>,
 		},
@@ -214,7 +218,7 @@ export default defineComponent({
 
 			cols.push(...fields);
 
-			if (actionConfig && !actionConfig.hidden) {
+			if (actionConfig && actionConfig.enable) {
 				const { title, width, buttonType, maxShowCount, actions } =
 					actionConfig;
 				const actionColumn = {
@@ -726,7 +730,7 @@ export default defineComponent({
 		);
 
 		expose({
-			getTable: () => tableRef.value,
+			$table: () => tableRef.value,
 			getParams: () => params.value,
 		});
 
@@ -737,6 +741,7 @@ export default defineComponent({
 					renderArea()
 				}
 				<VxeGrid
+					id={props.tableId}
 					ref={tableRef}
 					{...baseConfig.value}
 					keepSource={true}

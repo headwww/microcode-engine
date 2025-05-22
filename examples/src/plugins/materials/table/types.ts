@@ -6,7 +6,7 @@ export interface ActionConfig {
 	title?: string;
 	width?: number;
 	buttonType?: string;
-	hidden?: boolean;
+	enable?: boolean;
 	maxShowCount?: number;
 	fixed?: 'left' | 'right' | 'none';
 	actions?: Array<{
