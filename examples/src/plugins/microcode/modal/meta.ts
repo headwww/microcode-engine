@@ -24,9 +24,6 @@ export default {
 			title: '对话框',
 			schema: {
 				componentName: 'Modal',
-				props: {
-					open: true,
-				},
 			},
 		},
 	],

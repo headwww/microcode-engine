@@ -1,17 +1,31 @@
-import { defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import { Modal as OriginalModal } from 'ant-design-vue';
 
 export default defineComponent({
 	name: 'Modal',
 	inheritAttrs: false,
+	emits: ['update:open'],
 	props: {
 		// eslint-disable-next-line vue/prop-name-casing
 		__designMode: {
 			type: String as PropType<'live' | 'design'>,
 			default: 'live',
 		},
+		open: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	setup(props, { attrs, slots }) {
+	setup(props, { slots, emit }) {
+		const open = computed({
+			get() {
+				return props.__designMode === 'design' ? true : props.open;
+			},
+			set(value) {
+				emit('update:open', value);
+			},
+		});
+
 		// 获取iframe中的目标容器
 		const getIframeContainer = () => {
 			// 查找iframe中class为engine-document的body元素
@@ -34,7 +48,7 @@ export default defineComponent({
 		};
 
 		return () => (
-			<OriginalModal {...attrs} getContainer={getIframeContainer}>
+			<OriginalModal getContainer={getIframeContainer} open={open.value}>
 				{slots.default?.()}
 			</OriginalModal>
 		);
