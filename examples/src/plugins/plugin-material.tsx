@@ -8,7 +8,10 @@ const InitMaterial = (ctx: IPublicModelPluginContext) => ({
 
 		await material.setAssets(assets as any);
 
-		project.importSchema(schema as any);
+		const projectSchema = localStorage.getItem('lt_microcode_project')
+			? JSON.parse(localStorage.getItem('lt_microcode_project') || '{}')
+			: schema;
+		project.importSchema(projectSchema as any);
 
 		// material.loadIncrementalAssets({
 		// 	version: '',

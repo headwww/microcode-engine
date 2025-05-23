@@ -8,6 +8,7 @@ export const StringSetter = defineComponent({
 		value: String,
 		defaultValue: String,
 		placeholder: String,
+		disabled: Boolean,
 	},
 	inheritAttrs: false,
 	setup(props, { emit }) {
@@ -27,6 +28,7 @@ export const StringSetter = defineComponent({
 					placeholder={placeholder || ''}
 					v-model:value={value.value}
 					style={{ width: '100%' }}
+					disabled={props.disabled}
 				/>
 			);
 		};

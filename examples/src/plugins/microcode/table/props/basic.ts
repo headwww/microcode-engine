@@ -24,7 +24,17 @@ export default [
 		},
 		name: 'ref',
 		setter: {
+			initialValue: () => {
+				let guid = Date.now();
+				function uniqueId(prefix = '') {
+					return `${prefix}${(guid++).toString(36).toLowerCase()}`;
+				}
+				return uniqueId('lt_modal_');
+			},
 			componentName: 'StringSetter',
+			props: {
+				disabled: true,
+			},
 		},
 		extraProps: {
 			display: 'block',

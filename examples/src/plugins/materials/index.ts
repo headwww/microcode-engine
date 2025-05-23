@@ -22,4 +22,6 @@ export {
 	Textarea,
 	Form,
 	FormItem,
+	Tabs,
+	TabPane,
 } from 'ant-design-vue';

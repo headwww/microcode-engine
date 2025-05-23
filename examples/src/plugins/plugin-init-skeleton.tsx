@@ -25,6 +25,12 @@ const InitSkeleton = (ctx: IPublicModelPluginContext) => ({
 					type={'primary'}
 					onClick={() => {
 						console.log(project.exportSchema(IPublicEnumTransformStage.Save));
+						localStorage.setItem(
+							'lt_microcode_project',
+							JSON.stringify(
+								project.exportSchema(IPublicEnumTransformStage.Save)
+							)
+						);
 					}}
 				>
 					保存

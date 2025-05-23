@@ -111,6 +111,9 @@ export function useArea(
 	function bindView() {
 		nextTick(() => {
 			const tableElement = tableInstance.value?.$el;
+			if (!tableInstance.value) {
+				return;
+			}
 			tableWrapper.value = tableElement.querySelector(
 				'.vxe-table--body-inner-wrapper'
 			);
