@@ -1,5 +1,14 @@
-import { defineComponent } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import { VxeSplit, VxeSplitPane } from 'vxe-pc-ui';
+
+type SplitItem = {
+	key: string;
+	children: any;
+	width: string;
+	height: string;
+	minWidth: string;
+	minHeight: string;
+};
 
 export default defineComponent({
 	name: 'LtSplit',
@@ -8,87 +17,55 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
-		border: {
-			type: Boolean,
-			default: false,
+		width: {
+			type: String,
+			default: '100%',
 		},
 		height: {
-			type: [Number, String],
+			type: String,
+			default: '100%',
 		},
-		width: {
-			type: [Number, String],
+		splitLine: {
+			type: Number,
+			default: 2,
 		},
-
-		pane1Width: {
-			type: [Number, String],
-		},
-		pane1MinWidth: {
-			type: [Number, String],
-		},
-		pane1MaxWidth: {
-			type: [Number, String],
-		},
-		pane1Height: {
-			type: [Number, String],
-		},
-		pane1MinHeight: {
-			type: [Number, String],
-		},
-		pane1MaxHeight: {
-			type: [Number, String],
-		},
-		pane2Width: {
-			type: [Number, String],
-		},
-		pane2MinWidth: {
-			type: [Number, String],
-		},
-		pane2MaxWidth: {
-			type: [Number, String],
-		},
-		pane2Height: {
-			type: [Number, String],
-		},
-
-		pane2MinHeight: {
-			type: [Number, String],
-		},
-		pane2MaxHeight: {
-			type: [Number, String],
+		items: {
+			type: Array as PropType<SplitItem[]>,
+			default: () => [],
 		},
 	},
-	setup(props, { slots }) {
+	setup(props) {
+		const splitLine = computed(() => {
+			if (props.vertical) {
+				return {
+					width: '100%',
+					height: `${props.splitLine || 2}px`,
+				};
+			}
+			return {
+				width: `${props.splitLine || 2}px`,
+				height: '100%',
+			};
+		});
+
 		return () => (
 			<VxeSplit
-				vertical={props.vertical}
-				border={props.border}
-				height={props.height}
 				width={props.width}
+				height={props.height}
+				vertical={props.vertical}
+				barConfig={splitLine.value}
 			>
-				<VxeSplitPane
-					width={props.pane1Width}
-					height={props.pane1Height}
-					minHeight={props.pane1MinHeight}
-					maxHeight={props.pane1MaxHeight}
-					minWidth={props.pane1MinWidth}
-					maxWidth={props.pane1MaxWidth}
-				>
-					{{
-						default: () => slots.pane1?.(),
-					}}
-				</VxeSplitPane>
-				<VxeSplitPane
-					width={props.pane2Width}
-					height={props.pane2Height}
-					minHeight={props.pane2MinHeight}
-					maxHeight={props.pane2MaxHeight}
-					minWidth={props.pane2MinWidth}
-					maxWidth={props.pane2MaxWidth}
-				>
-					{{
-						default: () => slots.pane2?.(),
-					}}
-				</VxeSplitPane>
+				{props.items.map((item) => (
+					<VxeSplitPane
+						key={item.key}
+						width={item.width}
+						height={item.height}
+						minWidth={item.minWidth}
+						minHeight={item.minHeight}
+					>
+						{item?.children?.()}
+					</VxeSplitPane>
+				))}
 			</VxeSplit>
 		);
 	},

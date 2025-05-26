@@ -23,109 +23,120 @@ export default {
 				},
 			},
 			{
-				name: 'border',
-				title: { label: '显示边框', tip: '是否显示分割线边框' },
+				name: 'items',
+				title: '分割器项',
 				setter: {
-					componentName: 'BoolSetter',
-					initialValue: false,
+					componentName: 'ArraySetter',
+					props: {
+						itemSetter: {
+							componentName: 'ObjectSetter',
+							props: {
+								config: {
+									items: [
+										{
+											name: 'key',
+											title: 'key',
+											setter: 'StringSetter',
+											initialValue: (val: any) =>
+												val ||
+												`pane-item-${((Math.random() * 1e6) >> 0).toString(36)}`,
+											isRequired: true,
+										},
+										{
+											name: 'width',
+											title: '面板的宽度',
+											setter: {
+												componentName: 'StringSetter',
+												props: {
+													placeholder: '单位(px,%,vh,vw)',
+												},
+											},
+										},
+										{
+											name: 'height',
+											title: '面板的高度',
+											setter: {
+												componentName: 'StringSetter',
+												props: {
+													placeholder: '单位(px,%,vh,vw)',
+												},
+											},
+										},
+										{
+											name: 'minWidth',
+											title: '面板的最小宽度',
+											setter: {
+												componentName: 'StringSetter',
+												props: {
+													placeholder: '单位(px,%,vh,vw)',
+												},
+											},
+											initialValue: '',
+										},
+										{
+											name: 'minHeight',
+											title: '面板的最小高度',
+											setter: {
+												componentName: 'StringSetter',
+												props: {
+													placeholder: '单位(px,%,vh,vw)',
+												},
+											},
+											initialValue: '',
+										},
+										{
+											name: 'children',
+											title: '内容',
+											setter: {
+												componentName: 'SlotSetter',
+												initialValue: {
+													type: 'JSSlot',
+													value: [],
+												},
+											},
+										},
+									],
+								},
+							},
+							initialValue: () => ({
+								key: `pane-item-${((Math.random() * 1e6) >> 0).toString(36)}`,
+								children: {
+									type: 'JSSlot',
+									value: [],
+								},
+							}),
+						},
+					},
 				},
 			},
 			{
-				name: 'height',
-				title: { label: '容器高度', tip: '整体容器高度' },
+				name: 'splitLine',
+				title: '分割线像素',
 				setter: {
-					componentName: 'StringSetter',
+					componentName: 'NumberSetter',
+					initialValue: 2,
 				},
 			},
 			{
 				name: 'width',
-				title: { label: '容器宽度', tip: '整体容器宽度' },
+				title: '宽度',
 				setter: {
 					componentName: 'StringSetter',
+					props: {
+						placeholder: '单位(px,%,vh,vw)',
+					},
+					initialValue: '100%',
 				},
 			},
 			{
-				name: 'pane1Width',
-				title: { label: '面板1宽度', tip: '垂直布局时面板1的宽度' },
+				name: 'height',
+				title: '高度',
 				setter: {
 					componentName: 'StringSetter',
-				},
-			},
-			{
-				name: 'pane1MinWidth',
-				title: { label: '面板1最小宽度', tip: '面板1的最小宽度限制' },
-				setter: {
-					componentName: 'StringSetter',
-				},
-			},
-			{
-				name: 'pane1MaxWidth',
-				title: { label: '面板1最大宽度', tip: '面板1的最大宽度限制' },
-				setter: {
-					componentName: 'StringSetter',
-				},
-			},
-			{
-				name: 'pane1Height',
-				title: { label: '面板1高度', tip: '水平布局时面板1的高度' },
-				setter: {
-					componentName: 'StringSetter',
-				},
-			},
-			{
-				name: 'pane1MinHeight',
-				title: { label: '面板1最小高度', tip: '面板1的最小高度限制' },
-				setter: {
-					componentName: 'StringSetter',
-				},
-			},
-			{
-				name: 'pane1MaxHeight',
-				title: { label: '面板1最大高度', tip: '面板1的最大高度限制' },
-				setter: {
-					componentName: 'StringSetter',
-				},
-			},
-			{
-				name: 'pane2Width',
-				title: { label: '面板2宽度', tip: '垂直布局时面板2的宽度' },
-				setter: {
-					componentName: 'StringSetter',
-				},
-			},
-			{
-				name: 'pane2MinWidth',
-				title: { label: '面板2最小宽度', tip: '面板2的最小宽度限制' },
-				setter: {
-					componentName: 'StringSetter',
-				},
-			},
-			{
-				name: 'pane2MaxWidth',
-				title: { label: '面板2最大宽度', tip: '面板2的最大宽度限制' },
-				setter: {
-					componentName: 'StringSetter',
-				},
-			},
-			{
-				name: 'pane2Height',
-				title: { label: '面板2高度', tip: '水平布局时面板2的高度' },
-				setter: {
-					componentName: 'StringSetter',
-				},
-			},
-			{
-				name: 'pane2MinHeight',
-				title: { label: '面板2最小高度', tip: '面板2的最小高度限制' },
-				setter: {
-					componentName: 'StringSetter',
-				},
-			},
-			{
-				name: 'pane2MaxHeight',
-				title: { label: '面板2最大高度', tip: '面板2的最大高度限制' },
-				setter: {
-					componentName: 'StringSetter',
+					props: {
+						placeholder: '单位(px,%,vh,vw)',
+					},
+					initialValue: '100%',
 				},
 			},
 		],
@@ -136,32 +147,22 @@ export default {
 			schema: {
 				componentName: 'Split',
 				props: {
-					pane1: {
-						type: 'JSSlot',
-						value: [
-							{
-								componentName: 'Layout',
-								props: {
-									style: {
-										height: '100%',
-									},
-								},
+					items: [
+						{
+							key: 'pane-item-1',
+							children: {
+								type: 'JSSlot',
+								value: [],
 							},
-						],
-					},
-					pane2: {
-						type: 'JSSlot',
-						value: [
-							{
-								componentName: 'Layout',
-								props: {
-									style: {
-										height: '100%',
-									},
-								},
+						},
+						{
+							key: 'pane-item-2',
+							children: {
+								type: 'JSSlot',
+								value: [],
 							},
-						],
-					},
+						},
+					],
 				},
 			},
 		},
