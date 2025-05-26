@@ -15,14 +15,6 @@ export default {
 		},
 		props: [
 			{
-				name: 'vertical',
-				title: { label: '布局方式', tip: 'true是垂直布局，false是水平布局' },
-				setter: {
-					componentName: 'BoolSetter',
-					initialValue: true,
-				},
-			},
-			{
 				name: 'items',
 				title: '分割器项',
 				setter: {
@@ -107,6 +99,14 @@ export default {
 							}),
 						},
 					},
+				},
+			},
+			{
+				name: 'vertical',
+				title: { label: '布局方式', tip: 'true是垂直布局，false是水平布局' },
+				setter: {
+					componentName: 'BoolSetter',
+					initialValue: true,
 				},
 			},
 			{

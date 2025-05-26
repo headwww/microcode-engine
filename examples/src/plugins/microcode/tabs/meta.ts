@@ -30,7 +30,8 @@ export default {
 											title: 'key',
 											setter: 'StringSetter',
 											initialValue: (val: any) =>
-												val || ((Math.random() * 1e6) >> 0).toString(36),
+												val ||
+												`tab-item-${((Math.random() * 1e6) >> 0).toString(36)}`,
 											supportVariable: true,
 										},
 										{
@@ -56,7 +57,7 @@ export default {
 								},
 							},
 							initialValue: () => ({
-								key: ((Math.random() * 1e6) >> 0).toString(36),
+								key: `tab-item-${((Math.random() * 1e6) >> 0).toString(36)}`,
 								label: '标签项',
 								children: {
 									type: 'JSSlot',
@@ -77,6 +78,17 @@ export default {
 				supportVariable: true,
 			},
 			{
+				name: 'full',
+				title: {
+					label: '自适应',
+					tip: 'tabs的pane不自带100%，开启后，pane会自适应100%',
+				},
+				setter: {
+					componentName: 'BoolSetter',
+					initialValue: true,
+				},
+			},
+			{
 				name: 'size',
 				title: {
 					label: '尺寸',
@@ -92,6 +104,20 @@ export default {
 							{ label: '大', value: 'large' },
 						],
 					},
+				},
+			},
+			{
+				name: 'onChange',
+				title: { label: '切换面板的回调	', tip: '切换面板的回调	' },
+				setter: {
+					componentName: 'FunctionSetter',
+				},
+			},
+			{
+				name: 'onTabClick',
+				title: { label: 'tab点击回调', tip: 'tab被点击的回调' },
+				setter: {
+					componentName: 'FunctionSetter',
 				},
 			},
 		],

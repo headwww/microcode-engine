@@ -1,5 +1,6 @@
 import { Tabs } from 'ant-design-vue';
 import { defineComponent, PropType, ref } from 'vue';
+import './style.scss';
 
 type TabItem = {
 	label: string;
@@ -22,13 +23,29 @@ export default defineComponent({
 			type: String as PropType<'small' | 'middle' | 'large' | undefined>,
 			default: 'middle',
 		},
+		full: {
+			type: Boolean,
+			default: true,
+		},
+		onChange: {
+			type: Function as PropType<(params?: any) => void>,
+		},
+		onTabClick: {
+			type: Function as PropType<(params?: any) => void>,
+		},
 	},
 	setup(props) {
 		const activeKey = ref(props.defaultActiveKey);
 
 		return () => (
-			<Tabs size={props.size} v-model:activeKey={activeKey.value}>
-				{props.items.map((item) => (
+			<Tabs
+				prefixCls={props.full ? 'lt-tabs-full' : ''}
+				size={props.size}
+				v-model:activeKey={activeKey.value}
+				onChange={props.onChange}
+				onTabClick={props.onTabClick}
+			>
+				{props.items?.map((item) => (
 					<Tabs.TabPane tab={item.label} key={item.key}>
 						{item?.children?.()}
 					</Tabs.TabPane>
