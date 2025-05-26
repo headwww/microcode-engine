@@ -9,7 +9,6 @@ export default {
 		exportName: 'Split',
 		version: '1.0.0',
 	},
-	props: [],
 	configure: {
 		component: {
 			isContainer: true,

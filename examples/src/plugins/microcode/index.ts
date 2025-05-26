@@ -13,6 +13,7 @@ import entitySelector from './entity-selector/meta';
 import split from './split/meta';
 import page from './page/meta';
 import modal from './modal/meta';
+import tabs from './tabs/meta';
 
 export default [
 	form,
@@ -30,4 +31,5 @@ export default [
 	split,
 	page,
 	modal,
+	tabs,
 ];

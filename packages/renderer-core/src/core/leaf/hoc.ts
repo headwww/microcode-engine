@@ -174,6 +174,7 @@ export const Hoc = defineComponent({
 			const scope = toRaw(props.__scope);
 			const vnodeProps = {
 				...props.__vnodeProps,
+				// TODO 这里需要优化，
 				__designMode: props.__designMode,
 			};
 			const compProps = splitLeafProps(attrs)[1];

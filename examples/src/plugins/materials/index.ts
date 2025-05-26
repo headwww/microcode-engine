@@ -8,7 +8,7 @@ export { ExpressionBuilder } from './expression-builder';
 export { default as Split } from './split';
 export { default as LtPage } from './page';
 export { default as Modal } from './modal';
-
+export { default as Tabs } from './tabs';
 export {
 	Typography,
 	TypographyText,
@@ -22,6 +22,5 @@ export {
 	Textarea,
 	Form,
 	FormItem,
-	Tabs,
 	TabPane,
 } from 'ant-design-vue';
