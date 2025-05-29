@@ -1,7 +1,143 @@
-import { VxeColumnProps, VxeTableDefines } from 'vxe-table';
+import {
+	VxeColumnProps,
+	VxeTableDefines,
+	VxeGridPropTypes,
+	VxeTablePropTypes,
+	VxeFormProps,
+	VxeFormItemProps,
+} from 'vxe-table';
+import { ExtractPropTypes, PropType } from 'vue';
 import { PropertySelectorValue } from '../property-selector/types';
 import { EntitySelectorProps } from '../entity-selector/types';
 
+export const tableProps = {
+	__designMode: {
+		type: String as PropType<'design' | 'live'>,
+		default: 'live',
+	},
+	tableId: {
+		type: String as PropType<string>,
+	},
+	targetClass: {
+		type: String as PropType<string>,
+	},
+	columns: {
+		type: Array as PropType<ColumnProps[]>,
+	},
+	border: {
+		type: String as PropType<VxeTablePropTypes.Border>,
+		default: 'default',
+	},
+	size: {
+		type: String as PropType<VxeTablePropTypes.Size>,
+		default: 'mini',
+	},
+	round: {
+		type: Boolean,
+		default: true,
+	},
+	stripe: {
+		type: Boolean,
+		default: true,
+	},
+	align: {
+		type: String as PropType<VxeTablePropTypes.Align>,
+		default: 'center',
+	},
+	showOverflow: {
+		type: Boolean,
+		default: true,
+	},
+	virtualScroll: {
+		type: Boolean,
+		default: true,
+	},
+	loading: {
+		type: Boolean,
+		default: false,
+	},
+	rowStyle: {
+		type: [Function, Object] as PropType<VxeTablePropTypes.RowStyle>,
+	},
+	cellStyle: {
+		type: [Function, Object] as PropType<VxeTablePropTypes.CellStyle>,
+	},
+	editConfig: {
+		type: Object as PropType<VxeTablePropTypes.EditConfig>,
+	},
+	columnConfig: {
+		type: Object as PropType<VxeTablePropTypes.ColumnConfig>,
+	},
+	rowConfig: {
+		type: Object as PropType<
+			VxeTablePropTypes.RowConfig & {
+				beforeSelectMethod?: (params: any) => boolean;
+			}
+		>,
+	},
+	actionConfig: {
+		type: Object as PropType<ActionConfig>,
+	},
+	rowSelectorConfig: {
+		type: Object as PropType<RowSelectorProps>,
+	},
+	seqConfig: {
+		type: Object as PropType<SeqConfig>,
+	},
+	buttons: {
+		type: Array as PropType<ButtonOption[]>,
+	},
+	onRefresh: {
+		type: Function as PropType<(params?: any) => void>,
+	},
+	pagerConfig: {
+		type: Object as PropType<
+			VxeGridPropTypes.PagerConfig & {
+				onPageChange: (params: any) => void;
+			}
+		>,
+	},
+	footerConfig: {
+		type: Object as PropType<FooterConfig>,
+	},
+	treeConfig: {
+		type: Object as PropType<
+			VxeTablePropTypes.TreeConfig & {
+				treeNode?: string;
+			}
+		>,
+	},
+	data: [Array, Object] as PropType<
+		| any[]
+		| {
+				[key: string]: any;
+				result: any[];
+				pageNo: number;
+				pageSize: number;
+				rowCount: number;
+		  }
+	>,
+	// 表单的配置
+	formConfig: {
+		type: Object as PropType<VxeFormProps>,
+	},
+	formItems: {
+		type: Array as PropType<FormItemProps[]>,
+	},
+} as const;
+
+export type TableProps = ExtractPropTypes<typeof tableProps>;
+
+export interface FormItemProps extends VxeFormItemProps {
+	/**
+	 * 属性配置
+	 */
+	property?: PropertySelectorValue;
+}
+
+/**
+ * 操作栏配置
+ */
 export interface ActionConfig {
 	title?: string;
 	width?: number;
@@ -16,6 +152,9 @@ export interface ActionConfig {
 	}>;
 }
 
+/**
+ * 列配置
+ */
 export interface ColumnProps extends VxeColumnProps {
 	/**
 	 * 属性配置

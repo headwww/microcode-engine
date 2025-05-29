@@ -2,7 +2,7 @@
  * @Author: shuwen 1243889238@qq.com
  * @Date: 2025-04-17 18:39:54
  * @LastEditors: shuwen 1243889238@qq.com
- * @LastEditTime: 2025-05-23 15:51:00
+ * @LastEditTime: 2025-05-27 15:34:36
  * @FilePath: /microcode-engine/examples/vite.config.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -27,8 +27,8 @@ export default defineConfig({
 		open: true, // 自动打开浏览器
 		proxy: {
 			'/ltApi': {
-				// target: 'http://ltscn.kmdns.net:9094/',
-				target: 'http://ltscn.kmdns.net:9092/',
+				target: 'http://ltscn.kmdns.net:9094/',
+				// target: 'http://ltscn.kmdns.net:9092/',
 				// target: 'http://192.168.1.241:9090/',
 				// target: 'http://192.168.1.153:8080/',
 				// target: 'http://192.168.1.244:9094/',

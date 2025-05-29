@@ -12,10 +12,12 @@ import toolBarProps from './toolBar';
 import pagerProps from './pager';
 import footerProps from './footer';
 import treeProps from './tree';
+import formProps from './form';
 
 export default [
 	...basicProps,
 	...columnsProps,
+	...formProps,
 	...toolBarProps,
 	...actionsProps,
 	...footerProps,

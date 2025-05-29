@@ -1,11 +1,5 @@
-import { computed, defineComponent, PropType, reactive, ref, watch } from 'vue';
-import {
-	VxeGrid,
-	VxeGridInstance,
-	VxeGridPropTypes,
-	VxeTablePropTypes,
-	VxeUI,
-} from 'vxe-table';
+import { computed, defineComponent, reactive, ref, watch } from 'vue';
+import { VxeGrid, VxeGridInstance, VxeUI } from 'vxe-table';
 import { get, isArray, omit } from 'lodash-es';
 import {
 	Button,
@@ -26,128 +20,21 @@ import {
 	TableOutlined,
 	UploadOutlined,
 } from '@ant-design/icons-vue';
-import {
-	ColumnProps,
-	ActionConfig,
-	RowSelectorProps,
-	SeqConfig,
-	ButtonOption,
-	FooterConfig,
-} from './types';
 import { useCellEdit, useCellFormat, useCellRender, useFilter } from './render';
 import { useArea } from './area';
 import './style.scss';
 import { formatTableCell } from '../_global/utils';
+import { useTableForm } from './form';
+import { tableProps } from './types';
 
 // 字符，数字，布尔，日期（日期格式，时间选择器），枚举，实体（数据源，），
 // 图片先支持二维码打印
 export default defineComponent({
 	name: 'LtTable',
-	emits: ['update:data'],
 	props: {
-		tableId: {
-			type: String as PropType<string>,
-		},
-		targetClass: {
-			type: String as PropType<string>,
-		},
-		columns: {
-			type: Array as PropType<ColumnProps[]>,
-		},
-		border: {
-			type: String as PropType<VxeTablePropTypes.Border>,
-			default: 'default',
-		},
-		size: {
-			type: String as PropType<VxeTablePropTypes.Size>,
-			default: 'mini',
-		},
-		round: {
-			type: Boolean,
-			default: true,
-		},
-		stripe: {
-			type: Boolean,
-			default: true,
-		},
-		align: {
-			type: String as PropType<VxeTablePropTypes.Align>,
-			default: 'center',
-		},
-		showOverflow: {
-			type: Boolean,
-			default: true,
-		},
-		virtualScroll: {
-			type: Boolean,
-			default: true,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-		rowStyle: {
-			type: [Function, Object] as PropType<VxeTablePropTypes.RowStyle>,
-		},
-		cellStyle: {
-			type: [Function, Object] as PropType<VxeTablePropTypes.CellStyle>,
-		},
-		editConfig: {
-			type: Object as PropType<VxeTablePropTypes.EditConfig>,
-		},
-		columnConfig: {
-			type: Object as PropType<VxeTablePropTypes.ColumnConfig>,
-		},
-		rowConfig: {
-			type: Object as PropType<
-				VxeTablePropTypes.RowConfig & {
-					beforeSelectMethod?: (params: any) => boolean;
-				}
-			>,
-		},
-		actionConfig: {
-			type: Object as PropType<ActionConfig>,
-		},
-		rowSelectorConfig: {
-			type: Object as PropType<RowSelectorProps>,
-		},
-		seqConfig: {
-			type: Object as PropType<SeqConfig>,
-		},
-		buttons: {
-			type: Array as PropType<ButtonOption[]>,
-		},
-		onRefresh: {
-			type: Function as PropType<(params?: any) => void>,
-		},
-		pagerConfig: {
-			type: Object as PropType<
-				VxeGridPropTypes.PagerConfig & {
-					onPageChange: (params: any) => void;
-				}
-			>,
-		},
-		footerConfig: {
-			type: Object as PropType<FooterConfig>,
-		},
-		treeConfig: {
-			type: Object as PropType<
-				VxeTablePropTypes.TreeConfig & {
-					treeNode?: string;
-				}
-			>,
-		},
-		data: [Array, Object] as PropType<
-			| any[]
-			| {
-					[key: string]: any;
-					result: any[];
-					pageNo: number;
-					pageSize: number;
-					rowCount: number;
-			  }
-		>,
+		...tableProps,
 	},
+	emits: ['update:data'],
 	setup(props, { expose }) {
 		const tableRef = ref<VxeGridInstance & HTMLDivElement>();
 
@@ -458,7 +345,7 @@ export default defineComponent({
 						}}
 					></Button>
 				</Tooltip>
-				<Tooltip title="显示列">
+				<Tooltip title="切换表单">
 					<Button
 						icon={<TableOutlined />}
 						style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
@@ -503,6 +390,7 @@ export default defineComponent({
 			body: {
 				options: [
 					[{ code: 'REFRESH', name: '刷新' }],
+					[{ code: 'OPEN_FORM', name: '切换到表单' }],
 					[
 						{
 							name: '复制',
@@ -568,6 +456,12 @@ export default defineComponent({
 			switch (menu.code) {
 				case 'REFRESH':
 					props.onRefresh?.(params.value);
+					break;
+				case 'OPEN_FORM':
+					if (row) {
+						tableRef.value?.setCurrentRow(row);
+						openForm();
+					}
 					break;
 				case 'CLEAR_CELL':
 					$table.closeSelection();
@@ -735,17 +629,25 @@ export default defineComponent({
 			}
 		);
 
+		const {
+			renderForm,
+			renderSwitchButton,
+			renderFormTools,
+			showForm,
+			openForm,
+		} = useTableForm(tableRef, props);
+
 		expose({
 			$table: () => tableRef.value,
 			getParams: () => params.value,
 		});
 
 		return () => (
-			<div style={{ height: '100%', overflow: 'hidden' }}>
-				{
-					// 渲染区域 复制粘贴选区等操作
-					renderArea()
-				}
+			<div style={{ height: '100%', overflow: 'hidden', position: 'relative' }}>
+				{props.__designMode === 'design' && renderSwitchButton()}
+				{renderForm()}
+				{/*  渲染区域 复制粘贴选区等操作 */}
+				{renderArea()}
 				<VxeGrid
 					id={props.tableId}
 					ref={tableRef}
@@ -754,7 +656,13 @@ export default defineComponent({
 					columnConfig={props.columnConfig}
 					editConfig={props.editConfig}
 					rowConfig={props.rowConfig}
-					pagerConfig={pagerConfig}
+					pagerConfig={
+						showForm.value
+							? {
+									enabled: false,
+								}
+							: pagerConfig
+					}
 					treeConfig={props.treeConfig}
 					columns={columns.value}
 					data={data.value}
@@ -782,7 +690,7 @@ export default defineComponent({
 				>
 					{{
 						buttons: () => renderButtons(),
-						tools: () => renderTools(),
+						tools: () => (showForm.value ? renderFormTools() : renderTools()),
 					}}
 				</VxeGrid>
 			</div>
