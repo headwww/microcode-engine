@@ -130,6 +130,18 @@ export const TreeArraySetter = defineComponent({
 				_DATA_TYPE: type,
 			});
 			props.onChange?.(data.value);
+
+			// 添加延时以确保 DOM 已更新
+			setTimeout(() => {
+				const bodyElement = document.querySelector(
+					'.mtc-tree-array-setter-body'
+				);
+				if (bodyElement) {
+					if (bodyElement.scrollHeight > bodyElement.clientHeight) {
+						bodyElement.scrollTop = bodyElement.scrollHeight;
+					}
+				}
+			});
 		};
 
 		// 变更的组集合 如果长度是一则是本集合内拖拽交换，如果长度是2则是主子集拖拽 第一位是新增的组，第二位是移除的组
@@ -139,144 +151,146 @@ export const TreeArraySetter = defineComponent({
 
 		return () => (
 			<div class="mtc-block-setter mtc-tree-array-setter">
-				{props.value && props.value.length !== 0 ? (
-					<NestedComponent
-						root={true}
-						v-model:value={data.value}
-						fields={fields.value}
-						field={props.field}
-						groupField={props.field}
-						groupSetter={props.groupSetter}
-						childrenSetter={props.childrenSetter}
-						onChangeGroup={(field: any) => {
-							changeGroup.value.push(field);
-						}}
-						onSort={(event: SortableEvent) => {
-							const { to, from, newIndex = 0, oldIndex = 0 } = event as any;
-							if (to === from) {
-								// 同级拖拽
-								if (changeGroup.value.length === 1) {
-									const propsValue = cloneDeep(props.field?.getValue()) || [];
-									const path = clone(toRaw(changeGroup.value[0]).path);
-									path.shift();
-									let newArr = [];
-									if (path.length > 0) {
-										newArr = moveItem(
-											get(propsValue, path),
-											oldIndex,
-											newIndex
-										);
-										set(propsValue, path, newArr);
-										data.value = [...propsValue];
-									} else {
-										newArr = moveItem(props.value, oldIndex, newIndex);
-										data.value = [...newArr];
+				<div class="mtc-tree-array-setter-body">
+					{props.value && props.value.length !== 0 ? (
+						<NestedComponent
+							root={true}
+							v-model:value={data.value}
+							fields={fields.value}
+							field={props.field}
+							groupField={props.field}
+							groupSetter={props.groupSetter}
+							childrenSetter={props.childrenSetter}
+							onChangeGroup={(field: any) => {
+								changeGroup.value.push(field);
+							}}
+							onSort={(event: SortableEvent) => {
+								const { to, from, newIndex = 0, oldIndex = 0 } = event as any;
+								if (to === from) {
+									// 同级拖拽
+									if (changeGroup.value.length === 1) {
+										const propsValue = cloneDeep(props.field?.getValue()) || [];
+										const path = clone(toRaw(changeGroup.value[0]).path);
+										path.shift();
+										let newArr = [];
+										if (path.length > 0) {
+											newArr = moveItem(
+												get(propsValue, path),
+												oldIndex,
+												newIndex
+											);
+											set(propsValue, path, newArr);
+											data.value = [...propsValue];
+										} else {
+											newArr = moveItem(props.value, oldIndex, newIndex);
+											data.value = [...newArr];
+										}
+										props.onChange?.(data.value);
 									}
-									props.onChange?.(data.value);
-								}
-							} else {
-								// 在你的组件代码中
-								if (changeGroup.value.length === 2 && !isSorting.value) {
-									isSorting.value = true;
-									// 第一位是新增的组，第二位是移除的组
-									const arr = cloneDeep(props.field?.getValue()) || [];
+								} else {
+									// 在你的组件代码中
+									if (changeGroup.value.length === 2 && !isSorting.value) {
+										isSorting.value = true;
+										// 第一位是新增的组，第二位是移除的组
+										const arr = cloneDeep(props.field?.getValue()) || [];
 
-									// 获取新增的位置
-									const newPath = clone(toRaw(changeGroup.value[0]).path);
-									// 获取移除的位置
-									const oldPath = clone(toRaw(changeGroup.value[1]).path);
+										// 获取新增的位置
+										const newPath = clone(toRaw(changeGroup.value[0]).path);
+										// 获取移除的位置
+										const oldPath = clone(toRaw(changeGroup.value[1]).path);
 
-									newPath.shift();
-									oldPath.shift();
-									// 如果新增的位置长度小于移除的位置，则是从子往父拖拽，先处理移除再处理新增
-									if (newPath.length < oldPath.length) {
-										// 先从原位置获取要移动的项
-										const clonedData =
-											oldPath.length > 0
-												? get(arr, oldPath.join('.'))[oldIndex]
-												: arr[oldIndex];
-										// 从原位置删除
-										if (oldPath.length > 0) {
-											const oldArr = get(arr, oldPath.join('.'));
-											oldArr.splice(oldIndex, 1);
-											set(arr, oldPath.join('.'), oldArr);
+										newPath.shift();
+										oldPath.shift();
+										// 如果新增的位置长度小于移除的位置，则是从子往父拖拽，先处理移除再处理新增
+										if (newPath.length < oldPath.length) {
+											// 先从原位置获取要移动的项
+											const clonedData =
+												oldPath.length > 0
+													? get(arr, oldPath.join('.'))[oldIndex]
+													: arr[oldIndex];
+											// 从原位置删除
+											if (oldPath.length > 0) {
+												const oldArr = get(arr, oldPath.join('.'));
+												oldArr.splice(oldIndex, 1);
+												set(arr, oldPath.join('.'), oldArr);
+											} else {
+												arr.splice(oldIndex, 1);
+											}
+											// 在新位置插入
+											if (newPath.length > 0) {
+												const newArr = get(arr, newPath.join('.'));
+												newArr.splice(newIndex, 0, clonedData);
+												set(arr, newPath.join('.'), newArr);
+											} else {
+												arr.splice(newIndex, 0, clonedData);
+											}
 										} else {
-											arr.splice(oldIndex, 1);
+											// 反之是父往子拖拽，先处理新增再处理移除
+											// 在新位置插入
+											const clonedData =
+												oldPath.length > 0
+													? get(arr, oldPath.join('.'))[oldIndex]
+													: arr[oldIndex];
+											if (newPath.length > 0) {
+												const newArr = get(arr, newPath.join('.'));
+												newArr.splice(newIndex, 0, clonedData);
+												set(arr, newPath.join('.'), newArr);
+											} else {
+												arr.splice(newIndex, 0, clonedData);
+											}
+											// 从原位置删除
+											if (oldPath.length > 0) {
+												const oldArr = get(arr, oldPath.join('.'));
+												oldArr.splice(oldIndex, 1);
+												set(arr, oldPath.join('.'), oldArr);
+											} else {
+												arr.splice(oldIndex, 1);
+											}
 										}
-										// 在新位置插入
-										if (newPath.length > 0) {
-											const newArr = get(arr, newPath.join('.'));
-											newArr.splice(newIndex, 0, clonedData);
-											set(arr, newPath.join('.'), newArr);
-										} else {
-											arr.splice(newIndex, 0, clonedData);
-										}
-									} else {
-										// 反之是父往子拖拽，先处理新增再处理移除
-										// 在新位置插入
-										const clonedData =
-											oldPath.length > 0
-												? get(arr, oldPath.join('.'))[oldIndex]
-												: arr[oldIndex];
-										if (newPath.length > 0) {
-											const newArr = get(arr, newPath.join('.'));
-											newArr.splice(newIndex, 0, clonedData);
-											set(arr, newPath.join('.'), newArr);
-										} else {
-											arr.splice(newIndex, 0, clonedData);
-										}
-										// 从原位置删除
-										if (oldPath.length > 0) {
-											const oldArr = get(arr, oldPath.join('.'));
-											oldArr.splice(oldIndex, 1);
-											set(arr, oldPath.join('.'), oldArr);
-										} else {
-											arr.splice(oldIndex, 1);
-										}
+
+										data.value = [...arr];
+										props.onChange?.(data.value);
 									}
-
-									data.value = [...arr];
-									props.onChange?.(data.value);
 								}
-							}
 
-							setTimeout(() => {
-								isSorting.value = false;
-							}, 0);
-						}}
-						onStart={() => {
-							changeGroup.value.length = 0;
-						}}
-						onDelete={() => {
-							props.onChange?.(data.value);
-						}}
-						onAdd={(path, type) => {
-							const newData = cloneDeep(data.value);
-							const initialValue =
-								type === 'group'
-									? (props.groupSetter as any)?.initialValue
-									: (props.childrenSetter as any)?.initialValue;
-							const defaultValue =
-								initialValue ||
-								(typeof initialValue === 'function'
-									? initialValue(props.field)
-									: initialValue);
+								setTimeout(() => {
+									isSorting.value = false;
+								}, 0);
+							}}
+							onStart={() => {
+								changeGroup.value.length = 0;
+							}}
+							onDelete={() => {
+								props.onChange?.(data.value);
+							}}
+							onAdd={(path, type) => {
+								const newData = cloneDeep(data.value);
+								const initialValue =
+									type === 'group'
+										? (props.groupSetter as any)?.initialValue
+										: (props.childrenSetter as any)?.initialValue;
+								const defaultValue =
+									initialValue ||
+									(typeof initialValue === 'function'
+										? initialValue(props.field)
+										: initialValue);
 
-							const newItem = get(newData, path);
-							newItem.push({
-								...defaultValue,
-								_DATA_TYPE: type,
-							});
+								const newItem = get(newData, path);
+								newItem.push({
+									...defaultValue,
+									_DATA_TYPE: type,
+								});
 
-							set(newData, path, newItem);
-							data.value = newData;
+								set(newData, path, newItem);
+								data.value = newData;
 
-							props.onChange?.(data.value);
-						}}
-					/>
-				) : (
-					<Alert message="暂无内容，请添加数据！" showIcon type="info" />
-				)}
+								props.onChange?.(data.value);
+							}}
+						/>
+					) : (
+						<Alert message="暂无内容，请添加数据！" showIcon type="info" />
+					)}
+				</div>
 				<Dropdown>
 					{{
 						default: () => (
@@ -346,25 +360,6 @@ const NestedComponent = defineComponent({
 		});
 
 		function onAdd(field: IPublicModelSettingField, type: string) {
-			// const oldValue = cloneDeep(list.value);
-			// const initialValue =
-			// 	type === 'group'
-			// 		? (props.groupSetter as any)?.initialValue
-			// 		: (props.childrenSetter as any)?.initialValue;
-			// const defaultValue =
-			// 	initialValue ||
-			// 	(typeof initialValue === 'function'
-			// 		? initialValue(field)
-			// 		: initialValue);
-
-			// list.value[index].children = [
-			// 	...(oldValue[index].children || []),
-			// 	{
-			// 		...defaultValue,
-			// 		_DATA_TYPE: type,
-			// 	},
-			// ];
-
 			const path = clone(toRaw(field).path);
 			path.shift();
 			props.onAdd?.(path.join('.'), type);
@@ -395,7 +390,6 @@ const NestedComponent = defineComponent({
 						<div key={index} class={'mtc-tree-array-item'}>
 							<div class={'mtc-tree-array-item-body'}>
 								<div class={'mtc-tree-array-item-body-content'}>
-									{item.name}
 									{createSettingFieldView(
 										obj?.settingField[settingFieldSymbol],
 										obj?.settingField.parent

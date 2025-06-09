@@ -1,7 +1,9 @@
 .mtc-tree-array-setter {
-	overflow-y: auto;
-	max-height: 300px;
-	scroll-behavior: smooth;
+	.mtc-tree-array-setter-body {
+		overflow-y: auto;
+		max-height: 300px;
+		scroll-behavior: smooth;
+	}
 
 	.mtc-tree-array-setter-add {
 		display: flex;
