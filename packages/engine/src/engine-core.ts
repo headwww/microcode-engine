@@ -59,10 +59,10 @@ editor.set('designer', designer);
 const { project: innerProject } = designer;
 
 const innerHotkey = new InnerHotkey();
-const hotkey = new Hotkey(innerHotkey);
-const project = new Project(innerProject);
+const hotkey = new Hotkey(innerHotkey as any);
+const project = new Project(innerProject as any);
 
-const skeleton = new Skeleton(innerSkeleton, 'any', false);
+const skeleton = new Skeleton(innerSkeleton as any, 'any', false);
 const innerSetters = new InnerSetters();
 const setters = new Setters(innerSetters);
 
@@ -86,7 +86,7 @@ const pluginContextApiAssembler: IMicroodePluginContextApiAssembler = {
 		meta: IPublicTypePluginMeta
 	) {
 		context.hotkey = hotkey;
-		context.skeleton = new Skeleton(innerSkeleton, pluginName, false);
+		context.skeleton = new Skeleton(innerSkeleton as any, pluginName, false);
 		context.plugins = plugins;
 		context.setters = setters;
 		context.config = config;

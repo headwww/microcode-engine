@@ -160,12 +160,9 @@ export const ListSetter = defineComponent({
 					items.value.length = 0;
 					return;
 				}
-				// console.log('watch', newValue.length, newValue);
 				const newItems: IPublicModelSettingField[] = [];
 				for (let i = 0; i < newValue.length; i++) {
 					let item: any = items.value[i];
-					// console.log(item, 'item');
-
 					if (!item) {
 						item = props.field?.createField({
 							name: i.toString(),
@@ -223,7 +220,6 @@ export const ListSetter = defineComponent({
 			const pureValues = values.map((item: any) =>
 				typeof item === 'object' ? { ...item } : item
 			);
-
 			props.onChange?.(pureValues);
 		};
 

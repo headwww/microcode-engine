@@ -131,45 +131,42 @@ export const RowSetter = defineComponent({
 			return fields;
 		}
 
-		return () => {
-			pipe?.sent(
-				<FormSetter
-					key={props.field?.id}
-					field={props.field}
-					config={props.config}
-				></FormSetter>,
-				<Title title={descriptorText.value}></Title>
-			);
+		pipe?.sent(
+			<FormSetter
+				key={props.field?.id}
+				field={props.field}
+				config={props.config}
+			></FormSetter>,
+			<Title title={descriptorText.value}></Title>
+		);
+		return () => (
+			<div className="mtc-setter-object-row">
+				<Button
+					size="small"
+					type="text"
+					icon={<EditIcon />}
+					onClick={(e) => {
+						pipe?.show(e.target as HTMLElement, props.field?.id);
+					}}
+				></Button>
 
-			return (
-				<div className="mtc-setter-object-row">
-					<Button
-						size="small"
-						type="text"
-						icon={<EditIcon />}
-						onClick={(e) =>
-							pipe?.show(e.target as HTMLElement, props.field?.id)
-						}
-					></Button>
-
-					{items.value && items.value.length ? (
-						<div class="mtc-setter-object-row-body">
-							{items.value.map((item: any, index: number) =>
-								createSettingFieldView(
-									toRaw((item as any)[settingFieldSymbol]) || item,
-									toRaw(props.field) as any,
-									index
-								)
-							)}
-						</div>
-					) : (
-						<div class="mtc-setter-object-row-body">
-							{`${descriptorText.value}: 未配置快捷编辑项`}
-						</div>
-					)}
-				</div>
-			);
-		};
+				{items.value && items.value.length ? (
+					<div class="mtc-setter-object-row-body">
+						{items.value.map((item: any, index: number) =>
+							createSettingFieldView(
+								toRaw((item as any)[settingFieldSymbol]) || item,
+								toRaw(props.field) as any,
+								index
+							)
+						)}
+					</div>
+				) : (
+					<div class="mtc-setter-object-row-body">
+						{`${descriptorText.value}: 未配置快捷编辑项`}
+					</div>
+				)}
+			</div>
+		);
 	},
 });
 

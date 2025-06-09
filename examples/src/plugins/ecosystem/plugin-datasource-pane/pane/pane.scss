@@ -1,0 +1,27 @@
+.datasource-pane {
+	border-right: 1px solid var(--color-line-normal, rgb(31 56 88 / 10%));
+	display: inline-block;
+	height: 100%;
+	overflow: hidden;
+	padding-top: 44px;
+	user-select: auto;
+	user-select: initial;
+	vertical-align: top;
+	width: 320px;
+
+	.datasource-pane-header {
+		background: var(--color-block-background-light, rgb(31 56 88 / 4%));
+		line-height: 44px;
+		padding: 0 12px;
+		position: absolute;
+		text-align: left;
+		top: 0;
+		font-size: 16px;
+		font-weight: 700;
+		width: 320px;
+	}
+}
+
+.datasource-pane-create-button {
+	margin: 10px 0 0 10px;
+}

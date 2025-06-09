@@ -4,13 +4,13 @@ import {
 	plugins,
 	registryInnerPlugin,
 } from '@arvin-shu/microcode-engine';
-import InitVueCodeEditor from '@arvin-shu/microcode-plugin-vue-code-editor';
-import PluginUndoRedo from '@arvin-shu/microcode-plugin-undo-redo';
-import LayersPane from '@arvin-shu/microcode-plugin-layers-pane';
-import ComponentPanelPlugin from '@arvin-shu/microcode-plugin-components-pane';
-import DataSourcePane from '@arvin-shu/microcode-plugin-datasource-pane';
 import VxeUIAll from 'vxe-pc-ui';
 import VxeUITable from 'vxe-table';
+import InitVueCodeEditor from './plugins/ecosystem/plugin-vue-code-editor';
+import PluginUndoRedo from './plugins/ecosystem/plugin-undo-redo';
+import LayersPane from './plugins/ecosystem/plugin-layers-pane';
+import ComponentPanelPlugin from './plugins/ecosystem/plugin-components-pane';
+import DataSourcePane from './plugins/ecosystem/plugin-datasource-pane';
 import App from './App.vue';
 import InitSkeleton from './plugins/plugin-init-skeleton';
 import InitMaterial from './plugins/plugin-material';

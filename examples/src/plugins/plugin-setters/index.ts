@@ -22,6 +22,7 @@ import {
 	MultipleSelectSetter,
 	SegmentedSetter,
 	StyleSetter,
+	TreeArraySetter,
 } from './setters';
 import { VariableBindModal, EventBindModal } from './widget';
 
@@ -65,6 +66,19 @@ const DataArraySetter = {
 	valueType: ['array'],
 };
 
+const DataTreeArraySetter = {
+	component: TreeArraySetter,
+	defaultProps: {},
+	title: 'TreeArraySetter',
+	condition: (field: any) => {
+		const v = field.getValue();
+		return v == null || Array.isArray(v);
+	},
+	initialValue: [],
+	recommend: true,
+	valueType: ['array'],
+};
+
 const DataObjectSetter = {
 	component: ObjectSetter,
 	defaultProps: {},
@@ -88,6 +102,7 @@ export const engineExt = {
 		JsonSetter: DataJsonSetter,
 		EventsSetter,
 		ArraySetter: DataArraySetter,
+		TreeArraySetter: DataTreeArraySetter,
 		FunctionSetter: FunctionBindSetter,
 		VariableSetter: DataVariableSetter,
 		ObjectSetter: DataObjectSetter,
@@ -109,6 +124,7 @@ export const engineExt = {
 		JsonSetter: DataJsonSetter,
 		EventsSetter,
 		ArraySetter: DataArraySetter,
+		TreeArraySetter: DataTreeArraySetter,
 		FunctionSetter: FunctionBindSetter,
 		VariableSetter: DataVariableSetter,
 		ObjectSetter: DataObjectSetter,

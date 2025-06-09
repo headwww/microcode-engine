@@ -30,10 +30,13 @@ export function checkStatus(
 	}
 	if (errMessage) {
 		if (errorMessageMode === 'modal') {
+			// eslint-disable-next-line no-console
 			console.log('错误提示');
 		} else if (errorMessageMode === 'message') {
+			// eslint-disable-next-line no-console
 			console.log('错误提示');
 		} else if (errorMessageMode === 'notification') {
+			// eslint-disable-next-line no-console
 			console.log('请求失败');
 		}
 	}

@@ -41,7 +41,8 @@
 // };
 
 export default {
-	componentsTree: [
+	componentsTree: 
+	[
 		{
 			componentName: 'Page',
 			id: 'node_docmtciv3eo1',

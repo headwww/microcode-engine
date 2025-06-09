@@ -1,6 +1,7 @@
 import {
 	defineComponent,
 	inject,
+	nextTick,
 	onBeforeUnmount,
 	onMounted,
 	PropType,
@@ -204,18 +205,20 @@ export const PopupField = defineComponent({
 
 		const pipe = context?.create({ width: props.width });
 
-		return () => {
-			const { className, title } = props;
+		nextTick(() => {
 			const children = slots.default ? slots.default() : null;
-
 			pipe?.sent(
 				<div class="mtc-field-body">{children}</div>,
-				title && (
+				props.title && (
 					<div class="mtc-field-title">
-						<Title title={title}></Title>
+						<Title title={props.title}></Title>
 					</div>
 				)
 			);
+		});
+
+		return () => {
+			const { className, title } = props;
 
 			return (
 				<div class={['mtc-field', 'mtc-popup-field', className]}>
