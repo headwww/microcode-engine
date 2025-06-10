@@ -20,12 +20,13 @@ import {
 	TableOutlined,
 	UploadOutlined,
 } from '@ant-design/icons-vue';
+import { eachTree, mapTree } from 'xe-utils';
 import { useCellEdit, useCellFormat, useCellRender, useFilter } from './render';
 import { useArea } from './area';
 import './style.scss';
 import { formatTableCell } from '../_global/utils';
 import { useTableForm } from './form';
-import { tableProps } from './types';
+import { ColumnProps, tableProps } from './types';
 
 // 字符，数字，布尔，日期（日期格式，时间选择器），枚举，实体（数据源，），
 // 图片先支持二维码打印
@@ -66,8 +67,8 @@ export default defineComponent({
 			}
 
 			// 字段列
-			const fields =
-				columns?.filter(Boolean).map((item) => {
+			const fields = mapTree(columns, (item: ColumnProps) => {
+				if (item?._DATA_TYPE === 'children') {
 					const { cellRender } = useCellRender(item);
 					const { formatter } = useCellFormat(item);
 					const editRender = useCellEdit(item);
@@ -91,7 +92,9 @@ export default defineComponent({
 							'tipContent',
 							'enableFilter',
 						]),
-						treeNode: item.property?.fieldName === props.treeConfig?.treeNode,
+						treeNode:
+							item.property?.fieldName &&
+							item.property?.fieldName === props.treeConfig?.treeNode,
 						cellRender,
 						editRender,
 						filters: item.enableFilter ? filters : null,
@@ -107,7 +110,12 @@ export default defineComponent({
 						},
 					};
 					return column as any;
-				}) || [];
+				}
+				return {
+					title: item.title,
+					fixed: item.fixed,
+				};
+			});
 
 			cols.push(...fields);
 
@@ -134,14 +142,16 @@ export default defineComponent({
 			return cols;
 		});
 
-		// 编辑规则
+		// 编辑校验
 		const editRules = computed(() => {
 			const { columns } = props;
 			const editRules: Record<string, any> = {};
-			columns?.forEach((item) => {
-				if (item.validConfig && item.property?.fieldName) {
-					editRules[item.property?.fieldName] =
-						item.validConfig.filter(Boolean);
+			eachTree(columns, (item) => {
+				if (item?._DATA_TYPE === 'children') {
+					if (item.validConfig && item.property?.fieldName) {
+						editRules[item.property?.fieldName] =
+							item.validConfig.filter(Boolean);
+					}
 				}
 			});
 			return editRules;
@@ -519,9 +529,12 @@ export default defineComponent({
 		const params = computed(() => {
 			const { targetClass, columns } = props;
 
-			const queryPath = columns
-				?.filter(Boolean)
-				.map((item) => item.property?.fieldName);
+			const queryPath: string[] = [];
+			eachTree(columns, (item) => {
+				if (item?._DATA_TYPE === 'children') {
+					queryPath.push(item.property?.fieldName);
+				}
+			});
 
 			if (pagerConfig?.enabled) {
 				return {

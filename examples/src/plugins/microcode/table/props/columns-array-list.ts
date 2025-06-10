@@ -1,4 +1,4 @@
-import { cloneDeep, get, omit, set } from 'lodash';
+import { omit } from 'lodash';
 
 function getEntitySelectorConfig(dataConfigName: any, columnsName: any) {
 	return [
@@ -542,55 +542,9 @@ export default [
 		condition: (target: any) =>
 			!!target.getParent().getPropValue('targetClass'),
 		setter: {
-			componentName: 'TreeArraySetter',
+			componentName: 'ArraySetter',
 			props: {
-				groupSetter: {
-					componentName: 'ObjectSetter',
-					initialValue: () => ({
-						title: '标题',
-						width: 200,
-					}),
-					props: {
-						config: {
-							items: [
-								{
-									name: 'title',
-									title: '列标题',
-									propType: 'string',
-									isRequired: true,
-									setter: 'StringSetter',
-								},
-								{
-									name: 'fixed',
-									title: '固定列',
-									extraProps: {
-										supportVariable: false,
-									},
-									setter: {
-										componentName: 'SelectSetter',
-										props: {
-											options: [
-												{
-													title: '不固定',
-													value: '',
-												},
-												{
-													title: '左固定',
-													value: 'left',
-												},
-												{
-													title: '右固定',
-													value: 'right',
-												},
-											],
-										},
-									},
-								},
-							],
-						},
-					},
-				},
-				childrenSetter: {
+				itemSetter: {
 					componentName: 'ObjectSetter',
 					initialValue: (target: any) => ({
 						title: '标题',
@@ -803,37 +757,36 @@ export default [
 												editType: string,
 												obj?: Record<string, any>
 											) {
-												const path = cloneDeep(target.getParent().path);
-												path?.shift();
-												const position = path?.join('.');
-												const columnsValue = cloneDeep(
-													target.top.getPropValue('columns')
+												const position = target.getParent().key;
+												const columns = target.top.getPropValue('columns');
+												const newColumns = columns.map(
+													(column: any, index: number) => {
+														if (index.toString() === position) {
+															return {
+																...omit(
+																	column,
+																	'dataType',
+																	'dateFormatter',
+																	'timeFormatter',
+																	'digits',
+																	'boolOptions',
+																	'enumOptions',
+																	'editDataConfig',
+																	'editColumns',
+																	'filterDataConfig',
+																	'filterColumns',
+																	'codeType'
+																),
+																...obj,
+																title: value.fieldTitle,
+																dataType,
+																editType,
+															};
+														}
+														return column;
+													}
 												);
-
-												const oldColumn = get(columnsValue, position) || {};
-
-												const newColumn = {
-													...omit(
-														oldColumn,
-														'dataType',
-														'dateFormatter',
-														'timeFormatter',
-														'digits',
-														'boolOptions',
-														'enumOptions',
-														'editDataConfig',
-														'editColumns',
-														'filterDataConfig',
-														'filterColumns',
-														'codeType'
-													),
-													...obj,
-													title: value.fieldTitle,
-													dataType,
-													editType,
-												};
-												set(columnsValue, position, newColumn);
-												target.node.setPropValue('columns', columnsValue);
+												target.node.setPropValue('columns', newColumns);
 											}
 										},
 									},
@@ -850,47 +803,6 @@ export default [
 									title: {
 										label: '数据类型',
 										tip: '渲染非编辑状态时显示的样式',
-									},
-									setter: {
-										componentName: 'SelectSetter',
-										initialValue: 'text',
-										props: {
-											options: [
-												{
-													title: '文本',
-													value: 'text',
-												},
-												{
-													title: '链接',
-													value: 'link',
-												},
-												{
-													title: '数字',
-													value: 'number',
-												},
-												{
-													title: '布尔',
-													value: 'boolean',
-												},
-												{
-													title: '日期（年月日时分秒）',
-													value: 'date',
-												},
-												{
-													title: '时间（仅时分秒）',
-													value: 'time',
-												},
-												{
-													title: '枚举',
-													value: 'enum',
-												},
-
-												{
-													title: '条码',
-													value: 'code',
-												},
-											],
-										},
 									},
 									extraProps: {
 										setValue: (target: any, value: any) => {
@@ -953,31 +865,71 @@ export default [
 													updateColumns();
 											}
 											function updateColumns(obj?: Record<string, any>) {
-												const path = cloneDeep(target.getParent().path);
-												path?.shift();
-												const position = path?.join('.');
-												const columnsValue = cloneDeep(
-													target.top.getPropValue('columns')
+												const position = target.getParent().key;
+												const columns = target.top.getPropValue('columns');
+												const newColumns = columns.map(
+													(column: any, index: number) => {
+														if (index.toString() === position) {
+															return {
+																...omit(
+																	column,
+																	'dateFormatter',
+																	'timeFormatter',
+																	'digits',
+																	'boolOptions',
+																	'enumOptions',
+																	'codeType',
+																	'onLinkClick'
+																),
+																...obj,
+															};
+														}
+														return column;
+													}
 												);
-
-												const oldColumn = get(columnsValue, position) || {};
-
-												const newColumn = {
-													...omit(
-														oldColumn,
-														'dateFormatter',
-														'timeFormatter',
-														'digits',
-														'boolOptions',
-														'enumOptions',
-														'codeType',
-														'onLinkClick'
-													),
-													...obj,
-												};
-												set(columnsValue, position, newColumn);
-												target.node.setPropValue('columns', columnsValue);
+												target.node.setPropValue('columns', newColumns);
 											}
+										},
+									},
+									setter: {
+										componentName: 'SelectSetter',
+										initialValue: 'text',
+										props: {
+											options: [
+												{
+													title: '文本',
+													value: 'text',
+												},
+												{
+													title: '链接',
+													value: 'link',
+												},
+												{
+													title: '数字',
+													value: 'number',
+												},
+												{
+													title: '布尔',
+													value: 'boolean',
+												},
+												{
+													title: '日期（年月日时分秒）',
+													value: 'date',
+												},
+												{
+													title: '时间（仅时分秒）',
+													value: 'time',
+												},
+												{
+													title: '枚举',
+													value: 'enum',
+												},
+
+												{
+													title: '条码',
+													value: 'code',
+												},
+											],
 										},
 									},
 								},
@@ -1013,27 +965,26 @@ export default [
 											}
 
 											function updateColumns(obj?: Record<string, any>) {
-												const path = cloneDeep(target.getParent().path);
-												path?.shift();
-												const position = path?.join('.');
-												const columnsValue = cloneDeep(
-													target.top.getPropValue('columns')
+												const position = target.getParent().key;
+												const columns = target.top.getPropValue('columns');
+												const newColumns = columns.map(
+													(column: any, index: number) => {
+														if (index.toString() === position) {
+															return {
+																...omit(
+																	column,
+																	'editDataConfig',
+																	'editColumns',
+																	'filterDataConfig',
+																	'filterColumns'
+																),
+																...obj,
+															};
+														}
+														return column;
+													}
 												);
-
-												const oldColumn = get(columnsValue, position) || {};
-
-												const newColumn = {
-													...omit(
-														oldColumn,
-														'editDataConfig',
-														'editColumns',
-														'filterDataConfig',
-														'filterColumns'
-													),
-													...obj,
-												};
-												set(columnsValue, position, newColumn);
-												target.node.setPropValue('columns', columnsValue);
+												target.node.setPropValue('columns', newColumns);
 											}
 										},
 									},

@@ -156,6 +156,7 @@ export interface ActionConfig {
  * 列配置
  */
 export interface ColumnProps extends VxeColumnProps {
+	[key: string]: any;
 	/**
 	 * 属性配置
 	 */
@@ -259,6 +260,8 @@ export interface ColumnProps extends VxeColumnProps {
 	 * 是否开启筛选器
 	 */
 	enableFilter?: boolean;
+
+	children?: ColumnProps[];
 }
 
 /**

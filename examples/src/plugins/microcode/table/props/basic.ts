@@ -1,48 +1,5 @@
 export default [
 	{
-		name: 'a1',
-		title: '测试设置器',
-		extraProps: {
-			supportVariable: false,
-		},
-		setter: {
-			componentName: 'TreeArraySetter',
-			props: {
-				defaultCollapsed: true,
-				groupSetter: {
-					componentName: 'ObjectSetter',
-					props: {
-						config: {
-							items: [
-								{
-									name: 'name',
-									title: 'ceshi',
-									isRequired: true,
-									setter: 'StringSetter',
-								},
-							],
-						},
-					},
-				},
-				childrenSetter: {
-					componentName: 'ObjectSetter',
-					props: {
-						config: {
-							items: [
-								{
-									name: 'name',
-									title: 'ceshi',
-									isRequired: true,
-									setter: 'StringSetter',
-								},
-							],
-						},
-					},
-				},
-			},
-		},
-	},
-	{
 		name: 'tableId',
 		title: {
 			label: 'ID',

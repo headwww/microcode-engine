@@ -36,12 +36,58 @@ function moveItem(array: any, oldIndex: number, newIndex: number) {
 	newArr.splice(newIndex, 0, item);
 	return newArr;
 }
+/**
+ * 使用方法
+ {
+	name: 'a1',
+	title: '测试设置器',
+	extraProps: {
+		supportVariable: false,
+	},
+	setter: {
+		componentName: 'TreeArraySetter',
+		props: {
+			defaultCollapsed: true,
+			groupSetter: {
+				componentName: 'ObjectSetter',
+				props: {
+					config: {
+						items: [
+							{
+								name: 'name',
+								title: 'ceshi',
+								isRequired: true,
+								setter: 'StringSetter',
+							},
+						],
+					},
+				},
+			},
+			childrenSetter: {
+				componentName: 'ObjectSetter',
+				props: {
+					config: {
+						items: [
+							{
+								name: 'name',
+								title: 'ceshi',
+								isRequired: true,
+								setter: 'StringSetter',
+							},
+						],
+					},
+				},
+			},
+		},
+	},
+}
+	*/
 
 export const TreeArraySetter = defineComponent({
 	name: 'TreeArraySetter',
 	inheritAttrs: false,
 	props: {
-		value: Array,
+		value: null,
 		field: {
 			type: Object as PropType<IPublicModelSettingField>,
 		},
@@ -121,15 +167,19 @@ export const TreeArraySetter = defineComponent({
 					? (props.groupSetter as any)?.initialValue
 					: (props.childrenSetter as any)?.initialValue;
 			const defaultValue =
-				initialValue ||
+				initialValue &&
 				(typeof initialValue === 'function'
-					? initialValue(toRaw(props.field!))
+					? initialValue(props.field)
 					: initialValue);
-			data.value.push({
+
+			const oldArr = cloneDeep(props.field?.getValue()) || [];
+			oldArr.push({
 				...defaultValue,
 				_DATA_TYPE: type,
 			});
-			props.onChange?.(data.value);
+			data.value = [...oldArr];
+
+			props.onChange?.(oldArr);
 
 			// 添加延时以确保 DOM 已更新
 			setTimeout(() => {
@@ -270,12 +320,12 @@ export const TreeArraySetter = defineComponent({
 										? (props.groupSetter as any)?.initialValue
 										: (props.childrenSetter as any)?.initialValue;
 								const defaultValue =
-									initialValue ||
+									initialValue &&
 									(typeof initialValue === 'function'
 										? initialValue(props.field)
 										: initialValue);
 
-								const newItem = get(newData, path);
+								const newItem = get(newData, path) || [];
 								newItem.push({
 									...defaultValue,
 									_DATA_TYPE: type,
