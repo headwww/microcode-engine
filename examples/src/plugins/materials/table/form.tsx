@@ -1,8 +1,8 @@
 import { computed, nextTick, onMounted, reactive, ref, Ref, watch } from 'vue';
 import { VxeGridInstance } from 'vxe-table';
 import { VxeForm, VxeFormProps } from 'vxe-pc-ui';
-import { cloneDeep, omit } from 'lodash';
-import { Button, Tooltip } from 'ant-design-vue';
+import { cloneDeep, isUndefined, omit } from 'lodash';
+import { Button, Tabs, Tooltip } from 'ant-design-vue';
 import {
 	CloseOutlined,
 	LeftOutlined,
@@ -10,7 +10,8 @@ import {
 	RollbackOutlined,
 	SwapOutlined,
 } from '@ant-design/icons-vue';
-import { TableProps } from './types';
+import { eachTree, mapTree } from 'xe-utils';
+import { FormItemProps, TableProps } from './types';
 
 export function useTableForm(
 	tableInstance: Ref<(VxeGridInstance & HTMLDivElement) | undefined>,
@@ -39,28 +40,82 @@ export function useTableForm(
 				height: '100%',
 				zIndex: 10,
 				backgroundColor: 'white',
-				padding: '20px',
+				padding: '6px',
 				overflow: 'auto',
 			}}
 		>
-			<VxeForm {...props.formConfig} items={formItems.value} {...formOptions} />
+			<Tabs size="small">
+				{formTabs.value.map((tab) => (
+					<Tabs.TabPane tab={tab?.title} key={tab.id}>
+						<VxeForm
+							{...props.formConfig}
+							border={
+								isUndefined(props.formConfig?.border)
+									? true
+									: props.formConfig?.border
+							}
+							items={tab.formItems}
+							rules={rules.value}
+							{...formOptions}
+						/>
+					</Tabs.TabPane>
+				))}
+			</Tabs>
 		</div>
 	);
 
-	const formItems = computed(
-		() =>
-			props.formItems?.map((item) => ({
-				...omit(item, ['property']),
-				field: item.property?.fieldName,
-				itemRender: {
-					name: 'LtEntityRenderFormEdit',
-					props: {
-						// formatter
-						__formatter: 'LtEntityRenderFormEdit',
-					},
-				},
-			})) || []
-	);
+	const formTabs = computed(() => {
+		const tabs = props.formTabs || [];
+		return tabs.map((tab) => {
+			const items = mapTree(tab.formItems, (item) => {
+				if (item._DATA_TYPE === 'children') {
+					return {
+						...omit(
+							item,
+							'property',
+							'dataType',
+							'editType',
+							'dateFormatter',
+							'codeSize',
+							'isTextarea',
+							'showCodeValue',
+							'timeFormatter',
+							'digits',
+							'boolOptions',
+							'enumOptions',
+							'codeType',
+							'tipContent',
+							'enableFilter'
+						),
+						field: item.property?.fieldName,
+						itemRender: useFormItemRender(item),
+					};
+				}
+				return item;
+			});
+
+			return {
+				...tab,
+				formItems: items,
+			};
+		});
+	});
+
+	const rules = computed(() => {
+		const { formTabs } = props;
+		const editRules: Record<string, any> = {};
+		formTabs?.forEach((tab) => {
+			eachTree(tab.formItems, (item) => {
+				if (item?._DATA_TYPE === 'children') {
+					if (item.validConfig && item.property?.fieldName) {
+						editRules[item.property?.fieldName] =
+							item.validConfig.filter(Boolean);
+					}
+				}
+			});
+		});
+		return editRules;
+	});
 
 	onMounted(() => {
 		nextTick(() => {
@@ -288,4 +343,180 @@ export function useTableForm(
 		renderSwitchButton,
 		switchButtonStyle,
 	};
+}
+
+function useFormItemRender(item: FormItemProps) {
+	const { editType, property, dataType } = item;
+
+	const topFieldTypeFlag = property?.topFieldTypeFlag;
+
+	if (topFieldTypeFlag === '1') {
+		return {
+			name: 'LtEntityRenderFormEdit',
+			props: {
+				__formatter: useCellFormat(item),
+				...getProps(item),
+				editDataConfig: item?.editDataConfig,
+				editColumns: item?.editColumns,
+			},
+		};
+	}
+	if (editType === 'text') {
+		return {
+			name: 'LtTextRenderFormEdit',
+			props: {
+				__formatter: useCellFormat(item),
+				...getProps(item),
+			},
+		};
+	}
+	if (editType === 'number') {
+		return {
+			name: 'LtNumberRenderFormEdit',
+			props: {
+				__formatter: useCellFormat(item),
+				...getProps(item),
+			},
+		};
+	}
+	if (editType === 'boolean') {
+		return {
+			name: 'LtBooleanRenderFormEdit',
+			props: {
+				__formatter: useCellFormat(item),
+				...getProps(item),
+			},
+		};
+	}
+	if (editType === 'select') {
+		return {
+			__formatter: useCellFormat(item),
+			name: 'LtSelectRenderFormEdit',
+			props: {
+				__formatter: useCellFormat(item),
+				...getProps(item),
+			},
+		};
+	}
+	if (editType === 'date') {
+		return {
+			name: 'LtDateRenderFormEdit',
+			props: {
+				__formatter: useCellFormat(item),
+				...getProps(item),
+			},
+		};
+	}
+	if (editType === 'time') {
+		return {
+			name: 'LtTimeRenderFormEdit',
+			props: {
+				__formatter: useCellFormat(item),
+				...getProps(item),
+			},
+		};
+	}
+
+	// 禁用编辑 放在在底部判断
+	if (editType === 'disabledEdit') {
+		return {
+			name: dataType === 'code' ? 'LtTextRenderCode' : 'LtReadOnlyForm',
+			props: {
+				__formatter: useCellFormat(item),
+				...getProps(item),
+			},
+		};
+	}
+}
+
+function getProps(column: FormItemProps) {
+	const {
+		dataType = 'text',
+		isTextarea,
+		boolOptions,
+		enumOptions,
+		codeType,
+		codeSize,
+		showCodeValue,
+		dateFormatter = 'YYYY-MM-DD HH:mm:ss',
+		timeFormatter = 'HH:mm:ss',
+	} = column;
+	let props: any = {};
+	if (dataType === 'text') {
+		props = {
+			isTextarea,
+		};
+	}
+	if (dataType === 'code') {
+		props = {
+			codeType,
+			codeSize,
+			showCodeValue,
+		};
+	}
+	if (dataType === 'boolean') {
+		props = {
+			options: boolOptions || [],
+		};
+	}
+	if (dataType === 'enum') {
+		props = {
+			options: enumOptions || [],
+		};
+	}
+	if (dataType === 'date') {
+		props = {
+			dateFormatter,
+		};
+	}
+	if (dataType === 'time') {
+		props = {
+			timeFormatter,
+		};
+	}
+
+	return {
+		dataType,
+		...props,
+	};
+}
+
+function useCellFormat(column: FormItemProps) {
+	const {
+		dataType,
+		dateFormatter,
+		timeFormatter,
+		digits,
+		boolOptions,
+		enumOptions,
+	} = column;
+
+	let formatter = null;
+	if (dataType === 'date') {
+		formatter = [];
+		formatter.push('LtDateFormatter');
+		formatter.push(dateFormatter);
+	}
+	if (dataType === 'time') {
+		formatter = [];
+		formatter.push('LtDateFormatter');
+		formatter.push(timeFormatter);
+	}
+	if (dataType === 'number') {
+		formatter = [];
+		formatter.push('LtFixedUnitFormatter');
+		formatter.push(digits);
+	}
+	if (dataType === 'boolean') {
+		formatter = [];
+		formatter.push('LtOptionFormatter');
+		formatter.push(boolOptions);
+	}
+	if (dataType === 'enum') {
+		formatter = [];
+		formatter.push('LtOptionFormatter');
+		formatter.push(enumOptions);
+	}
+
+	return formatter;
 }

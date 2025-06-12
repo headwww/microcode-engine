@@ -20,7 +20,7 @@ import {
 	TableOutlined,
 	UploadOutlined,
 } from '@ant-design/icons-vue';
-import { eachTree, mapTree } from 'xe-utils';
+import { eachTree, mapTree, uniq } from 'xe-utils';
 import { useCellEdit, useCellFormat, useCellRender, useFilter } from './render';
 import { useArea } from './area';
 import './style.scss';
@@ -527,14 +527,25 @@ export default defineComponent({
 
 		// 返回给父组件的参数
 		const params = computed(() => {
-			const { targetClass, columns } = props;
+			const { targetClass, columns, formTabs } = props;
 
-			const queryPath: string[] = [];
+			let queryPath: string[] = [];
 			eachTree(columns, (item) => {
 				if (item?._DATA_TYPE === 'children') {
 					queryPath.push(item.property?.fieldName);
 				}
 			});
+
+			formTabs?.forEach((tab) => {
+				eachTree(tab.formItems, (item) => {
+					if (item?._DATA_TYPE === 'children') {
+						queryPath.push(item.property?.fieldName);
+					}
+				});
+			});
+
+			// 去重
+			queryPath = uniq(queryPath.filter(Boolean));
 
 			if (pagerConfig?.enabled) {
 				return {

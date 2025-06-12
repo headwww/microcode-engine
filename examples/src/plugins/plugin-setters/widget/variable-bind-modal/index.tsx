@@ -243,7 +243,7 @@ export const VariableBindModal = defineComponent({
 					footer={renderFooter()}
 					v-model:open={visible.value}
 				>
-					<div class="variable-modal-wrapper">
+					<div class="variable-modal-wrapper" data-id="mtc-popup-overlay">
 						<div class="variable-modal-body">
 							<div class="variable-left-container">
 								<div class="variable-modal-title">变量列表</div>

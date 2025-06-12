@@ -25,9 +25,9 @@ export default defineComponent({
 							content: () => (
 								<Fragment>
 									{props.type === 'qrCode' ? (
-										<QRCode value={props.code} />
+										<QRCode value={props.code || 'N/A'} />
 									) : (
-										<BarCode value={props.code || ''} />
+										<BarCode value={props.code || 'N/A'} />
 									)}
 								</Fragment>
 							),

@@ -5,6 +5,7 @@ import {
 	VxeTablePropTypes,
 	VxeFormProps,
 	VxeFormItemProps,
+	VxeFormPropTypes,
 } from 'vxe-table';
 import { ExtractPropTypes, PropType } from 'vue';
 import { PropertySelectorValue } from '../property-selector/types';
@@ -121,18 +122,115 @@ export const tableProps = {
 	formConfig: {
 		type: Object as PropType<VxeFormProps>,
 	},
-	formItems: {
-		type: Array as PropType<FormItemProps[]>,
+	formTabs: {
+		type: Array as PropType<FormTabProps[]>,
 	},
 } as const;
 
 export type TableProps = ExtractPropTypes<typeof tableProps>;
 
+export interface FormTabProps {
+	title?: string;
+	id: string;
+	formItems?: FormItemProps[];
+}
+
 export interface FormItemProps extends VxeFormItemProps {
+	[key: string]: any;
 	/**
 	 * 属性配置
 	 */
 	property?: PropertySelectorValue;
+
+	/**
+	 * 数据类型 渲染非编辑状态时显示的样式
+	 * text-文本 link-链接 number-数字 boolean-布尔 date-日期 time-时间 enum-枚举 entity-实体 code-条码-二维码
+	 */
+	dataType?: 'text' | 'number' | 'boolean' | 'date' | 'time' | 'enum' | 'code';
+
+	editType?:
+		| 'text'
+		| 'number'
+		| 'boolean'
+		| 'select'
+		| 'date'
+		| 'time'
+		| 'disabledEdit'
+		| string;
+
+	/**
+	 * 是否为textarea
+	 */
+	isTextarea?: boolean;
+
+	/**
+	 * 当dataType为date时，格式化
+	 */
+	dateFormatter?: string;
+
+	/**
+	 * 当dataType为time时，格式化
+	 */
+	timeFormatter?: string;
+
+	/**
+	 * 当dataType为number时，保留几位小数
+	 */
+	digits?: number;
+
+	/**
+	 * 当dataType为boolean时，true和false对应的显示的文本
+	 */
+
+	boolOptions?: Array<Options>;
+
+	/**
+	 * 当dataType为select时，枚举对应的显示的文本
+	 */
+	enumOptions?: Array<Options>;
+
+	/**
+	 * 当整个字段是实体字段是例如corp.name，则需要使用实体编辑
+	 */
+	editDataConfig?: EntitySelectorProps['dataConfig'];
+
+	/**
+	 * 实体筛选器和实体选择器需要的列配置
+	 */
+	filterDataConfig?: EntitySelectorProps['dataConfig'];
+
+	/**
+	 * 实体编辑器需要的列配置
+	 */
+	editColumns?: EntitySelectorProps['columns'];
+
+	/**
+	 * 当dataType为code时，使用二维码还是条形码
+	 */
+	codeType?: 'qrCode' | 'barCode';
+
+	/**
+	 * 当dataType为code时，二维码的大小
+	 */
+	codeSize?: number;
+
+	/**
+	 * 当dataType为code时，是否显示条码值
+	 */
+	showCodeValue?: boolean;
+
+	/**
+	 * 校验配置,产生这种配置
+	 * [{ required: true, message: '必须填写' }]
+	 */
+	validConfig?: Array<VxeFormPropTypes.Rules>;
+
+	/**
+	 * 实体筛选器和实体选择器需要的列配置
+	 */
+	filterColumns?: EntitySelectorProps['columns'];
+
+	children?: FormItemProps[];
 }
 
 /**

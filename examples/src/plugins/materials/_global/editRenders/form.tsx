@@ -5,14 +5,16 @@ import {
 	Select,
 	Switch,
 	TimePicker as ATimePicker,
+	QRCode,
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
-import { assign, get, set } from 'lodash';
+import { assign, get, isUndefined, set } from 'lodash';
 import { computed, defineComponent, PropType } from 'vue';
 import { VxeGlobalRendererHandles, VxeUI } from 'vxe-pc-ui';
 import { objectEach } from 'xe-utils';
 import EntitySelector from '../../entity-selector';
 import { formatTableCell } from '../utils';
+import BarCode from '../../bar-code';
 
 function getOnName(type: string) {
 	return `on${type.substring(0, 1).toLocaleUpperCase()}${type.substring(1)}`;
@@ -248,21 +250,82 @@ const TimePicker = defineComponent({
 
 VxeUI.renderer.mixin({
 	// 只读模式
-	// LtReadOnlyForm: {
-	// 	renderFormItemContent: renderEditRender(Input, {
-	// 		style: {
-	// 			width: '100%',
-	// 		},
-	// 		allowClear: true,
-	// 	}),
-	// },
+	LtReadOnlyForm: {
+		renderFormItemContent: (renderOpts, params) => {
+			const props = renderOpts.props;
+			const { data, field, item } = params;
+			let cellValue = get(data, field);
+
+			cellValue = formatTableCell({
+				cellValue,
+				row: data,
+				column: {
+					...item,
+					params: {
+						formatter: props?.__formatter,
+					},
+				},
+			});
+
+			return <span style="user-select: text;">{cellValue}</span>;
+		},
+	},
+	LtTextRenderCode: {
+		renderFormItemContent: (renderOpts, params) => {
+			const { props } = renderOpts;
+
+			const { data, field } = params;
+			const codeType = props?.codeType || 'qrCode';
+			const showValue = isUndefined(props?.showCodeValue)
+				? true
+				: props?.showCodeValue; // 默认显示值
+
+			const cellValue = get(data, field);
+
+			return codeType === 'qrCode' ? (
+				<div style="display: inline-block;">
+					<div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+						<QRCode size={props?.codeSize} value={cellValue || 'N/A'} />
+						{showValue && (
+							<span style="user-select: text">{cellValue || 'N/A'}</span>
+						)}
+					</div>
+				</div>
+			) : (
+				<div style="display: inline-block;">
+					<BarCode
+						options={{
+							fontSize: 14,
+							width: 1.5,
+							height: props?.codeSize,
+							displayValue: showValue,
+						}}
+						value={cellValue || 'N/A'}
+					/>
+				</div>
+			);
+		},
+	},
 	LtTextRenderFormEdit: {
-		renderFormItemContent: renderEditRender(Input, {
-			style: {
-				width: '100%',
-			},
-			allowClear: true,
-		}),
+		renderFormItemContent: (renderOpts, params) => {
+			const { props } = renderOpts;
+			const isTextarea = props?.isTextarea;
+
+			if (isTextarea) {
+				return renderEditRender(Input.TextArea, {
+					style: {
+						width: '100%',
+					},
+				})(renderOpts, params);
+			}
+
+			return renderEditRender(Input, {
+				style: {
+					width: '100%',
+				},
+				allowClear: true,
+			})(renderOpts, params);
+		},
 	},
 	LtNumberRenderFormEdit: {
 		renderFormItemContent: renderEditRender(InputNumber, {
@@ -335,14 +398,14 @@ VxeUI.renderer.mixin({
 					onClear={() => {
 						const splitList = field.split('.');
 						if (splitList.length > 1) {
-							set(data, field, null);
+							set(data, splitList[0], null);
 							$form?.updateStatus(params);
 						}
 					}}
 					onRadioChange={(v) => {
 						const splitList = field.split('.');
 						if (splitList.length > 1) {
-							set(data, field, v?.row);
+							set(data, splitList[0], v?.row);
 							$form?.updateStatus(params);
 						}
 					}}

@@ -193,7 +193,7 @@ export const EventBindModal = defineComponent({
 				zIndex={1100}
 				v-model:open={open.value}
 			>
-				<div class="mtc-event-bind-modal">
+				<div class="mtc-event-bind-modal" data-id="mtc-popup-overlay">
 					<div class="mtc-action-selector">
 						<div class="mtc-action-title">事件列表</div>
 						<div class="mtc-action-selector-inner">

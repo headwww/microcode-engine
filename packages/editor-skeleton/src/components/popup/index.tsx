@@ -154,13 +154,21 @@ export const PopupContent = defineComponent({
 		return () => {
 			const id = uniqueId('ball');
 
-			// TODO 存在问题
 			return (
 				<Popover
 					destroyTooltipOnHide
 					open={visible.value}
 					onUpdate:open={(value) => {
-						visible.value = value;
+						// 如果出现从Popover打开的弹窗，则给这个弹窗的父级添加data-id="mtc-popup-overlay"
+						// 当弹窗被聚焦时候Popover不会被关闭
+						const elements = document.querySelectorAll(
+							'[data-id="mtc-popup-overlay"]'
+						);
+						if (elements.length > 0) {
+							visible.value = true;
+						} else {
+							visible.value = value;
+						}
 					}}
 					overlayClassName="mtc-popup-overlay"
 					overlayInnerStyle={{

@@ -10,6 +10,7 @@ import {
 	ref,
 	toRaw,
 	watch,
+	nextTick,
 } from 'vue';
 import { createSettingFieldView } from '@arvin-shu/microcode-editor-skeleton';
 import { settingFieldSymbol } from '@arvin-shu/microcode-shell';
@@ -88,6 +89,11 @@ export const TreeArraySetter = defineComponent({
 	inheritAttrs: false,
 	props: {
 		value: null,
+		// 处理嵌套时候路径偏移 截取path的个数
+		pathSegmentCount: {
+			type: Number,
+			default: 1,
+		},
 		field: {
 			type: Object as PropType<IPublicModelSettingField>,
 		},
@@ -178,11 +184,10 @@ export const TreeArraySetter = defineComponent({
 				_DATA_TYPE: type,
 			});
 			data.value = [...oldArr];
-
 			props.onChange?.(oldArr);
 
 			// 添加延时以确保 DOM 已更新
-			setTimeout(() => {
+			nextTick(() => {
 				const bodyElement = document.querySelector(
 					'.mtc-tree-array-setter-body'
 				);
@@ -205,6 +210,8 @@ export const TreeArraySetter = defineComponent({
 					{props.value && props.value.length !== 0 ? (
 						<NestedComponent
 							root={true}
+							key={fields.value?.length}
+							pathSegmentCount={props.pathSegmentCount}
 							v-model:value={data.value}
 							fields={fields.value}
 							field={props.field}
@@ -220,8 +227,9 @@ export const TreeArraySetter = defineComponent({
 									// 同级拖拽
 									if (changeGroup.value.length === 1) {
 										const propsValue = cloneDeep(props.field?.getValue()) || [];
-										const path = clone(toRaw(changeGroup.value[0]).path);
-										path.shift();
+										const path = clone(toRaw(changeGroup.value[0]).path).slice(
+											props.pathSegmentCount
+										);
 										let newArr = [];
 										if (path.length > 0) {
 											newArr = moveItem(
@@ -232,7 +240,7 @@ export const TreeArraySetter = defineComponent({
 											set(propsValue, path, newArr);
 											data.value = [...propsValue];
 										} else {
-											newArr = moveItem(props.value, oldIndex, newIndex);
+											newArr = moveItem(propsValue, oldIndex, newIndex);
 											data.value = [...newArr];
 										}
 										props.onChange?.(data.value);
@@ -245,12 +253,14 @@ export const TreeArraySetter = defineComponent({
 										const arr = cloneDeep(props.field?.getValue()) || [];
 
 										// 获取新增的位置
-										const newPath = clone(toRaw(changeGroup.value[0]).path);
+										const newPath = clone(
+											toRaw(changeGroup.value[0]).path
+										).slice(props.pathSegmentCount);
 										// 获取移除的位置
-										const oldPath = clone(toRaw(changeGroup.value[1]).path);
+										const oldPath = clone(
+											toRaw(changeGroup.value[1]).path
+										).slice(props.pathSegmentCount);
 
-										newPath.shift();
-										oldPath.shift();
 										// 如果新增的位置长度小于移除的位置，则是从子往父拖拽，先处理移除再处理新增
 										if (newPath.length < oldPath.length) {
 											// 先从原位置获取要移动的项
@@ -314,7 +324,7 @@ export const TreeArraySetter = defineComponent({
 								props.onChange?.(data.value);
 							}}
 							onAdd={(path, type) => {
-								const newData = cloneDeep(data.value);
+								const newData = cloneDeep(props.field?.getValue());
 								const initialValue =
 									type === 'group'
 										? (props.groupSetter as any)?.initialValue
@@ -377,6 +387,10 @@ const NestedComponent = defineComponent({
 	name: 'NestedComponent',
 	emits: ['update:value'],
 	props: {
+		pathSegmentCount: {
+			type: Number,
+			default: 1,
+		},
 		value: Array as PropType<any[]>,
 		fields: Array as PropType<ITreeArrayItem[]>,
 		rootField: Object as PropType<IPublicModelSettingField>,
@@ -410,8 +424,7 @@ const NestedComponent = defineComponent({
 		});
 
 		function onAdd(field: IPublicModelSettingField, type: string) {
-			const path = clone(toRaw(field).path);
-			path.shift();
+			const path = clone(toRaw(field).path).slice(props.pathSegmentCount);
 			props.onAdd?.(path.join('.'), type);
 		}
 
@@ -503,6 +516,7 @@ const NestedComponent = defineComponent({
 							{item._DATA_TYPE === 'group' && (
 								<NestedComponent
 									v-model:value={item.children}
+									pathSegmentCount={props.pathSegmentCount}
 									fields={obj?.children}
 									groupField={obj?.childrenField}
 									onSort={props.onSort}
