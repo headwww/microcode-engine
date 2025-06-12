@@ -245,6 +245,8 @@ export interface ActionConfig {
 	fixed?: 'left' | 'right' | 'none';
 	actions?: Array<{
 		title: string;
+		// 校验类型 全表校验，选中行校验，不校验
+		validate?: 'full' | 'checked' | 'none';
 		onAction?: () => void;
 		onDisabled?: (params: any) => boolean;
 	}>;
@@ -457,6 +459,8 @@ export interface ButtonOption {
 	type?: 'link' | 'default' | 'primary' | 'ghost' | 'dashed' | 'text';
 	icon?: string;
 	onClick?: (params?: any) => void;
+	// 校验类型 全表校验，选中行校验，不校验
+	validate?: 'full' | 'checked' | 'none';
 	disabled?: (params?: any) => boolean;
 	loading?: boolean;
 	// 下拉菜单
@@ -464,6 +468,8 @@ export interface ButtonOption {
 		id: string;
 		label: string;
 		icon?: string;
+		// 校验类型 全表校验，选中行校验，不校验
+		validate?: 'full' | 'checked' | 'none';
 		onClick?: (params: any) => void;
 		disabled?: (params: any) => boolean;
 		[key: string]: any;

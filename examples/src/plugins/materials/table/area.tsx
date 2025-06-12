@@ -363,7 +363,9 @@ export function useArea(
 
 			if (colid) {
 				const col = tableInstance.value?.getColumnById(colid);
+
 				if (
+					col?.fixed !== undefined ||
 					col?.type === 'checkbox' ||
 					col?.type === 'radio' ||
 					col?.type === 'seq'

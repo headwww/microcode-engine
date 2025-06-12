@@ -255,6 +255,53 @@ export default defineComponent({
 			return null;
 		});
 
+		// 全表触发，选中行触发，不触发
+		// 全表触发就不需要考虑选中行触发和表单触发，
+		// 选中行触发判断当前是表单模式还是表格模式，表格模式用表格模式的校验。表单模式用表单模式的校验
+		const validate = (type: 'full' | 'checked', fn?: () => void) => {
+			if (type === 'full') {
+				tableRef.value?.fullValidate().then((params) => {
+					if (!params) {
+						// 全表触发，没有错误，则执行回调
+						fn?.();
+					} else {
+						message.error('全表校验失败！');
+					}
+				});
+			} else {
+				if (showForm.value) {
+					// 表单模式
+					const arr: Promise<any>[] = [];
+
+					Object.keys(formRefs.value).forEach((key) => {
+						arr.push(formRefs.value[key].validate());
+					});
+
+					Promise.all(arr).then((params) => {
+						const error = params.filter(Boolean);
+						if (!error.length) {
+							fn?.();
+						} else {
+							message.error('表单校验失败！');
+						}
+					});
+				} else {
+					const checkboxRecords = tableRef.value?.getCheckboxRecords() || [];
+					const radioRecord = tableRef.value?.getRadioRecord()
+						? [tableRef.value?.getRadioRecord()]
+						: [];
+					const records = [...checkboxRecords, ...radioRecord];
+					tableRef.value?.validate(records).then((params) => {
+						if (!params) {
+							fn?.();
+						} else {
+							message.error('选中行校验失败！');
+						}
+					});
+				}
+			}
+		};
+
 		// 按钮渲染
 		const renderButtons = () => (
 			<div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -267,7 +314,15 @@ export default defineComponent({
 								type={type}
 								loading={loading}
 								disabled={item.disabled?.(params.value)}
-								onClick={() => item.onClick?.(params.value)}
+								onClick={() => {
+									if (!item.validate || item.validate === 'none') {
+										item.onClick?.(params.value);
+									} else {
+										validate(item.validate, () => {
+											item.onClick?.(params.value);
+										});
+									}
+								}}
 							>
 								{item.label}
 							</Button>
@@ -279,7 +334,13 @@ export default defineComponent({
 						label: item.label,
 						title: item.label,
 						onClick: () => {
-							item.onClick?.(params.value);
+							if (!item?.validate || item?.validate === 'none') {
+								item.onClick?.(params.value);
+							} else {
+								validate(item?.validate, () => {
+									item.onClick?.(params.value);
+								});
+							}
 						},
 						disabled: item.disabled?.(params.value),
 					}));
@@ -659,13 +720,16 @@ export default defineComponent({
 			renderFormTools,
 			showForm,
 			openForm,
+			formRefs,
 		} = useTableForm(tableRef, props);
 
 		expose({
 			$table: () => tableRef.value,
+			$forms: () => formRefs.value,
 			getParams: () => params.value,
 		});
 
+		// 验证
 		return () => (
 			<div style={{ height: '100%', overflow: 'hidden', position: 'relative' }}>
 				{props.__designMode === 'design' && renderSwitchButton()}

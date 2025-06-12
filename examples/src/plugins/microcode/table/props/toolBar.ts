@@ -113,6 +113,35 @@ export default [
 											},
 										},
 										{
+											name: 'validate',
+											title: {
+												label: '按钮校验',
+												tip: '全表触发就不需要考虑选中行触发和表单触发，选中行触发判断当前是表单模式还是表格模式，表格模式用表格模式的校验。表单模式用表单模式的校验',
+											},
+											condition: (target: any) =>
+												target.getParent().getPropValue('mode') === 'button',
+											setter: {
+												componentName: 'SelectSetter',
+												initialValue: 'none',
+												props: {
+													options: [
+														{
+															title: '不校验',
+															value: 'none',
+														},
+														{
+															title: '全表校验',
+															value: 'full',
+														},
+														{
+															title: '选中校验',
+															value: 'checked',
+														},
+													],
+												},
+											},
+										},
+										{
 											name: 'onClick',
 											title: '点击事件',
 											propType: 'function',
@@ -164,6 +193,33 @@ export default [
 																		propType: 'string',
 																		isRequired: true,
 																		setter: 'StringSetter',
+																	},
+																	{
+																		name: 'validate',
+																		title: {
+																			label: '按钮校验',
+																			tip: '全表触发就不需要考虑选中行触发和表单触发，选中行触发判断当前是表单模式还是表格模式，表格模式用表格模式的校验。表单模式用表单模式的校验',
+																		},
+																		setter: {
+																			componentName: 'SelectSetter',
+																			initialValue: 'none',
+																			props: {
+																				options: [
+																					{
+																						title: '不校验',
+																						value: 'none',
+																					},
+																					{
+																						title: '全表校验',
+																						value: 'full',
+																					},
+																					{
+																						title: '选中校验',
+																						value: 'checked',
+																					},
+																				],
+																			},
+																		},
 																	},
 																	{
 																		name: 'onClick',

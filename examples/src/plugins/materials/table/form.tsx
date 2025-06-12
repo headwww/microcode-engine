@@ -1,6 +1,6 @@
 import { computed, nextTick, onMounted, reactive, ref, Ref, watch } from 'vue';
 import { VxeGridInstance } from 'vxe-table';
-import { VxeForm, VxeFormProps } from 'vxe-pc-ui';
+import { VxeForm, VxeFormInstance, VxeFormProps } from 'vxe-pc-ui';
 import { cloneDeep, isUndefined, omit } from 'lodash';
 import { Button, Tabs, Tooltip } from 'ant-design-vue';
 import {
@@ -48,6 +48,11 @@ export function useTableForm(
 				{formTabs.value.map((tab) => (
 					<Tabs.TabPane tab={tab?.title} key={tab.id}>
 						<VxeForm
+							ref={(el: VxeFormInstance) => {
+								if (el) {
+									formRefs.value[tab.id] = el;
+								}
+							}}
 							{...props.formConfig}
 							border={
 								isUndefined(props.formConfig?.border)
@@ -63,6 +68,8 @@ export function useTableForm(
 			</Tabs>
 		</div>
 	);
+
+	const formRefs = ref<Record<string, VxeFormInstance>>({});
 
 	const formTabs = computed(() => {
 		const tabs = props.formTabs || [];
@@ -342,6 +349,7 @@ export function useTableForm(
 		renderFormTools,
 		renderSwitchButton,
 		switchButtonStyle,
+		formRefs,
 	};
 }
 

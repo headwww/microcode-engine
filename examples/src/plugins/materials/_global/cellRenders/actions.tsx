@@ -8,6 +8,8 @@ export default defineComponent({
 			Array<{
 				// 按钮名称
 				title: string;
+				// 按钮校验
+				validate?: 'full' | 'checked' | 'none';
 				// 按钮点击事件
 				onAction?: (params: any) => void;
 				// 是否可触发回调函数
