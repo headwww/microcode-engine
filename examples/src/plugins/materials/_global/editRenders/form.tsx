@@ -169,36 +169,28 @@ const showTimeFormat = (format: string) => {
 };
 
 const DataPicker = defineComponent({
+	emits: ['update:value'],
+	inheritAttrs: false,
 	props: {
 		renderOpts: {
 			type: Object as PropType<VxeGlobalRendererHandles.RenderFormItemContentOptions>,
 			required: true,
 		},
-		params: {
-			type: Object as PropType<VxeGlobalRendererHandles.RenderFormItemContentParams>,
-			required: true,
-		},
+		value: null,
 	},
-	setup(props) {
-		const { renderOpts, params } = props;
-		const { data, field, $form } = params;
+	setup(props, { emit }) {
+		const { renderOpts } = props;
+
 		const picker = getPickerType(renderOpts.props?.dateFormatter);
 		const showTime = showTimeFormat(renderOpts.props?.dateFormatter);
 
 		const value = computed({
-			get: () => {
-				const cellValue = get(data, field);
-				return cellValue ? dayjs(cellValue) : undefined;
-			},
+			get: () => props.value,
 			set: (value) => {
-				if (value == null) {
-					set(data, field, null);
-				} else {
-					set(data, field, value.valueOf());
-				}
-				$form?.updateStatus(params);
+				emit('update:value', value);
 			},
 		});
+
 		return () => (
 			<ADatePicker
 				picker={picker}
@@ -211,34 +203,24 @@ const DataPicker = defineComponent({
 });
 
 const TimePicker = defineComponent({
+	emits: ['update:value'],
 	props: {
 		renderOpts: {
 			type: Object as PropType<VxeGlobalRendererHandles.RenderFormItemContentOptions>,
 			required: true,
 		},
-		params: {
-			type: Object as PropType<VxeGlobalRendererHandles.RenderFormItemContentParams>,
-			required: true,
-		},
+		value: null,
 	},
-	setup(props) {
-		const { renderOpts, params } = props;
-		const { data, field, $form } = params;
+	setup(props, { emit }) {
+		const { renderOpts } = props;
 
 		const value = computed({
-			get: () => {
-				const cellValue = get(data, field);
-				return cellValue ? dayjs(cellValue) : undefined;
-			},
+			get: () => props.value,
 			set: (value) => {
-				if (value == null) {
-					set(data, field, null);
-				} else {
-					set(data, field, value.valueOf());
-				}
-				$form?.updateStatus(params);
+				emit('update:value', value);
 			},
 		});
+
 		return () => (
 			<ATimePicker
 				format={renderOpts.props?.timeFormatter}
@@ -356,14 +338,48 @@ VxeUI.renderer.mixin({
 		}),
 	},
 	LtDateRenderFormEdit: {
-		renderFormItemContent: (renderOpts, params) => (
-			<DataPicker renderOpts={renderOpts} params={params}></DataPicker>
-		),
+		renderFormItemContent: (renderOpts, params) => {
+			const { data, field, $form } = params;
+			const cellValue = get(data, field);
+			const value = cellValue ? dayjs(cellValue) : undefined;
+
+			return (
+				<DataPicker
+					renderOpts={renderOpts}
+					value={value}
+					onUpdate:value={(v) => {
+						if (v == null) {
+							set(data, field, null);
+						} else {
+							set(data, field, v.valueOf());
+						}
+						$form?.updateStatus(params);
+					}}
+				></DataPicker>
+			);
+		},
 	},
 	LtTimeRenderFormEdit: {
-		renderFormItemContent: (renderOpts, params) => (
-			<TimePicker renderOpts={renderOpts} params={params}></TimePicker>
-		),
+		renderFormItemContent: (renderOpts, params) => {
+			const { data, field, $form } = params;
+			const cellValue = get(data, field);
+			const value = cellValue ? dayjs(cellValue) : undefined;
+
+			return (
+				<TimePicker
+					renderOpts={renderOpts}
+					value={value}
+					onUpdate:value={(v) => {
+						if (v == null) {
+							set(data, field, null);
+						} else {
+							set(data, field, v.valueOf());
+						}
+						$form?.updateStatus(params);
+					}}
+				></TimePicker>
+			);
+		},
 	},
 	LtEntityRenderFormEdit: {
 		renderFormItemContent: (renderOpts, params) => {
