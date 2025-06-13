@@ -86,6 +86,7 @@ export default defineComponent({
 				width={props.width}
 				centered={props.centered}
 				onOk={props.onOk}
+				maskClosable={false}
 				onCancel={props.onCancel}
 			>
 				<div style={{ height: props.height }}>{slots.default?.()}</div>

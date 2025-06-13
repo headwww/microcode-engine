@@ -9,6 +9,7 @@ export { default as Split } from './split';
 export { default as LtPage } from './page';
 export { default as Modal } from './modal';
 export { default as Tabs } from './tabs';
+export { default as EntitySelect } from './entity-select';
 export {
 	Typography,
 	TypographyText,

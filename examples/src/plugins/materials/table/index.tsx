@@ -416,7 +416,7 @@ export default defineComponent({
 						}}
 					></Button>
 				</Tooltip>
-				<Tooltip title="切换表单">
+				<Tooltip title="列设置">
 					<Button
 						icon={<TableOutlined />}
 						style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}

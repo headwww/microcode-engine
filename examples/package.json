@@ -25,6 +25,7 @@
 		"@arvin-shu/microcode-theme": "workspace:^",
 		"@ckpack/vue-color": "^1.6.0",
 		"@types/qs": "^6.9.18",
+		"@vueuse/core": "^13.3.0",
 		"acorn": "^8.14.0",
 		"ant-design-vue": "^4.2.5",
 		"axios": "^1.7.9",

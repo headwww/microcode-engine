@@ -17,6 +17,7 @@ import { http } from '../../../utils/http';
 import { useCellFormat, useCellRender } from '../table/render';
 import './style.scss';
 
+// 给table编辑使用的
 export default defineComponent({
 	name: 'LtEntitySelector',
 	props: entitySelectorProps,

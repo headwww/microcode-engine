@@ -14,6 +14,7 @@ import split from './split/meta';
 import page from './page/meta';
 import modal from './modal/meta';
 import tabs from './tabs/meta';
+import entitySelect from './entity-select/meta';
 
 export default [
 	form,
@@ -21,6 +22,7 @@ export default [
 	input,
 	inputNumber,
 	inputTextArea,
+	entitySelect,
 	button,
 	typographyText,
 	gridRow,

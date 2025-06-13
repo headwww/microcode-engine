@@ -49,7 +49,7 @@ export const entitySelectorProps = {
 
 	// 关联查询
 	relationFunc: {
-		type: Object as PropType<(params: any) => string>,
+		type: Function as PropType<(params: any) => string>,
 	},
 };
 
