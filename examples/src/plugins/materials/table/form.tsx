@@ -131,7 +131,7 @@ export function useTableForm(
 				return;
 			}
 			tableWrapper.value = tableElement.querySelector(
-				'.vxe-table--viewport-wrapper'
+				'.vxe-table--layout-wrapper'
 			);
 			if (tableWrapper.value && formWrapper.value) {
 				tableWrapper.value.appendChild(formWrapper.value);
