@@ -577,7 +577,9 @@ export default [
 													(item: any) => item?.targetClass === topFieldType
 												);
 
-												const tInfo = JSON.parse(entitySelectorItem.tInfo);
+												const tInfo = entitySelectorItem
+													? JSON.parse(entitySelectorItem.tInfo)
+													: {};
 
 												// 当选择的不是实体字段的时候数据类型在文本，数字，布尔，枚举，条码中选择
 												const fieldType = value?.fieldType;

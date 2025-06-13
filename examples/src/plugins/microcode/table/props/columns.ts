@@ -611,6 +611,8 @@ export default [
 									setter: 'PropertySetter',
 									extraProps: {
 										setValue: (target: any, value: any) => {
+											console.log(value);
+
 											// 根据列字段来确定数据类型和编辑类型
 											if (value.topFieldTypeFlag === '1') {
 												// 当选择的是实体字段的时候数据类型在实体选择器中选择
@@ -623,7 +625,9 @@ export default [
 													(item: any) => item?.targetClass === topFieldType
 												);
 
-												const tInfo = JSON.parse(entitySelectorItem.tInfo);
+												const tInfo = entitySelectorItem
+													? JSON.parse(entitySelectorItem.tInfo)
+													: {};
 
 												// 当选择的不是实体字段的时候数据类型在文本，数字，布尔，枚举，条码中选择
 												const fieldType = value?.fieldType;
