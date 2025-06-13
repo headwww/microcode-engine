@@ -1,25 +1,7 @@
 import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import { VxeGrid, VxeGridInstance, VxeUI } from 'vxe-table';
 import { get, isArray, omit } from 'lodash-es';
-import {
-	Button,
-	Divider,
-	Tooltip,
-	Menu,
-	Dropdown,
-	message,
-} from 'ant-design-vue';
-import {
-	DownloadOutlined,
-	FullscreenExitOutlined,
-	FullscreenOutlined,
-	PaperClipOutlined,
-	PrinterOutlined,
-	ReloadOutlined,
-	SearchOutlined,
-	TableOutlined,
-	UploadOutlined,
-} from '@ant-design/icons-vue';
+import { Button, Menu, Dropdown, message } from 'ant-design-vue';
 import { eachTree, mapTree, uniq } from 'xe-utils';
 import { useCellEdit, useCellFormat, useCellRender, useFilter } from './render';
 import { useArea } from './area';
@@ -27,6 +9,7 @@ import './style.scss';
 import { formatTableCell } from '../_global/utils';
 import { useTableForm } from './form';
 import { ColumnProps, tableProps } from './types';
+import { useTableTools } from './tools';
 
 // 字符，数字，布尔，日期（日期格式，时间选择器），枚举，实体（数据源，），
 // 图片先支持二维码打印
@@ -255,6 +238,51 @@ export default defineComponent({
 			return null;
 		});
 
+		// 返回给父组件的参数
+		const params = computed(() => {
+			const { targetClass, columns, formTabs } = props;
+
+			let queryPath: string[] = [];
+			eachTree(columns, (item) => {
+				if (item?._DATA_TYPE === 'children') {
+					queryPath.push(item.property?.fieldName);
+				}
+			});
+
+			formTabs?.forEach((tab) => {
+				eachTree(tab.formItems, (item) => {
+					if (item?._DATA_TYPE === 'children') {
+						queryPath.push(item.property?.fieldName);
+					}
+				});
+			});
+
+			// 去重
+			queryPath = uniq(queryPath.filter(Boolean));
+
+			if (pagerConfig?.enabled) {
+				return {
+					$table: tableRef.value,
+					pagerConfig: {
+						pageSize: pagerConfig?.pageSize,
+						pageNo: (pagerConfig?.currentPage ?? 1) - 1,
+						rowCountEnabled: true,
+					},
+					condition: {
+						targetClass,
+						queryPath,
+					},
+				};
+			}
+			return {
+				$table: tableRef.value,
+				condition: {
+					targetClass,
+					queryPath,
+				},
+			};
+		});
+
 		// 全表触发，选中行触发，不触发
 		// 全表触发就不需要考虑选中行触发和表单触发，
 		// 选中行触发判断当前是表单模式还是表格模式，表格模式用表格模式的校验。表单模式用表单模式的校验
@@ -361,89 +389,7 @@ export default defineComponent({
 			</div>
 		);
 
-		// 工具栏渲染
-		const renderTools = () => (
-			<div>
-				<Button
-					type="text"
-					style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
-					icon={<UploadOutlined />}
-				>
-					导入
-				</Button>
-				<Button
-					type="text"
-					style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
-					icon={<DownloadOutlined />}
-				>
-					导出
-				</Button>
-				<Button
-					type="text"
-					style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
-					icon={<PrinterOutlined />}
-				>
-					打印
-				</Button>
-				<Button
-					type="text"
-					style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
-					icon={<PaperClipOutlined />}
-				>
-					附件
-				</Button>
-				<Divider type="vertical" />
-				<Tooltip title="搜索">
-					<Button
-						icon={<SearchOutlined />}
-						style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
-						type="text"
-					></Button>
-				</Tooltip>
-				<Tooltip title="点击刷新，单击右键重置筛选并刷新">
-					<Button
-						icon={<ReloadOutlined />}
-						style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
-						type="text"
-						onClick={() => {
-							props.onRefresh?.(params.value);
-						}}
-						onContextmenu={(e: any) => {
-							e.preventDefault();
-							// 右键点击事件，可以调用另一个方法
-							props.onRefresh?.(params.value);
-							tableRef.value?.clearFilter();
-						}}
-					></Button>
-				</Tooltip>
-				<Tooltip title="列设置">
-					<Button
-						icon={<TableOutlined />}
-						style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
-						type="text"
-						onClick={() => {
-							tableRef.value?.openCustom();
-						}}
-					></Button>
-				</Tooltip>
-				<Tooltip title={tableRef.value?.isMaximized() ? '还原' : '全屏'}>
-					<Button
-						type="text"
-						icon={
-							tableRef.value?.isMaximized() ? (
-								<FullscreenExitOutlined />
-							) : (
-								<FullscreenOutlined />
-							)
-						}
-						style={{ opacity: 0.6, fontWeight: 600, padding: '4px 6px' }}
-						onClick={() => {
-							tableRef.value?.zoom();
-						}}
-					></Button>
-				</Tooltip>
-			</div>
-		);
+		const { renderTools } = useTableTools(tableRef, props, params);
 
 		// 右键菜单配置
 		const menuConfig = computed(() => ({
@@ -499,7 +445,7 @@ export default defineComponent({
 					[
 						{
 							code: 'REVERT_ALL',
-							name: '还原',
+							name: '撤销',
 						},
 						{
 							code: 'CLOSE_SELECTION',
@@ -585,51 +531,6 @@ export default defineComponent({
 					break;
 			}
 		};
-
-		// 返回给父组件的参数
-		const params = computed(() => {
-			const { targetClass, columns, formTabs } = props;
-
-			let queryPath: string[] = [];
-			eachTree(columns, (item) => {
-				if (item?._DATA_TYPE === 'children') {
-					queryPath.push(item.property?.fieldName);
-				}
-			});
-
-			formTabs?.forEach((tab) => {
-				eachTree(tab.formItems, (item) => {
-					if (item?._DATA_TYPE === 'children') {
-						queryPath.push(item.property?.fieldName);
-					}
-				});
-			});
-
-			// 去重
-			queryPath = uniq(queryPath.filter(Boolean));
-
-			if (pagerConfig?.enabled) {
-				return {
-					$table: tableRef.value,
-					pagerConfig: {
-						pageSize: pagerConfig?.pageSize,
-						pageNo: (pagerConfig?.currentPage ?? 1) - 1,
-						rowCountEnabled: true,
-					},
-					condition: {
-						targetClass,
-						queryPath,
-					},
-				};
-			}
-			return {
-				$table: tableRef.value,
-				condition: {
-					targetClass,
-					queryPath,
-				},
-			};
-		});
 
 		// 数据
 		const data = computed({

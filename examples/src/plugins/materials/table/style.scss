@@ -62,3 +62,11 @@
 		animation: moveCopyCellBorder 0.5s linear infinite;
 	}
 }
+
+.vxe-tools--wrapper {
+	.ant-btn {
+		.anticon + span {
+			margin-inline-start: 6px;
+		}
+	}
+}
