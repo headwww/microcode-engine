@@ -285,6 +285,7 @@ export default defineComponent({
 					height: '325px',
 					zIndex: 1010,
 				}}
+				placement="bottomLeft"
 				overlayInnerStyle={{ padding: '0px' }}
 				content={renderTable()}
 				onOpenChange={(v) => {

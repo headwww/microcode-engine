@@ -7,6 +7,7 @@ import {
 	onMounted,
 	reactive,
 	watch,
+	nextTick,
 } from 'vue';
 import { VxeGrid, VxeGridInstance, VxeGridProps } from 'vxe-table';
 import { debounce, get, omit } from 'lodash-es';
@@ -351,6 +352,21 @@ export default defineComponent({
 			getTableInstance: () => tableRef.value,
 		});
 
+		const inputWidth = ref<string>('auto');
+		const inputRef = ref<any>(); // 新增 inputRef
+
+		watch(
+			inputRef,
+			(el) => {
+				if (el) {
+					nextTick(() => {
+						inputWidth.value = `${el.$el.offsetWidth}px`;
+					});
+				}
+			},
+			{ immediate: true }
+		);
+
 		return () => {
 			const { mode, placeholder } = props;
 
@@ -367,25 +383,34 @@ export default defineComponent({
 						</Fragment>
 					) : (
 						<Popover
-							open={open.value}
-							onClick={(e: any) => e.stopPropagation()}
-							placement="bottomLeft"
+							v-model:open={open.value}
+							trigger="click"
 							arrow={false}
-							overlayStyle={{ width: '450px', height: '325px', zIndex: 1010 }}
+							placement="bottomLeft"
+							overlayStyle={{
+								width: inputWidth.value,
+								height: '325px',
+								zIndex: 1010,
+							}}
 							overlayInnerStyle={{ padding: '0px' }}
 							content={renderTable()}
 							onOpenChange={(v) => {
+								if (!v) {
+									inputValue.value = props.inputValue;
+								}
 								v && sendRequest('');
 							}}
 						>
 							<Input
+								ref={inputRef}
 								v-model:value={inputValue.value}
-								onFocus={() => {
-									open.value = true;
-									sendRequest('');
-								}}
 								placeholder={placeholder}
 								allowClear={false}
+								onFocus={() => {
+									nextTick(() => {
+										inputWidth.value = `${inputRef.value.$el.offsetWidth}px`;
+									});
+								}}
 								suffix={renderSuffix()}
 							/>
 						</Popover>
