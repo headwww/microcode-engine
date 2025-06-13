@@ -412,11 +412,30 @@ export default defineComponent({
 				body: {
 					options: [
 						addItems,
-						[{ code: 'REFRESH', name: '刷新' }],
-						[{ code: 'OPEN_FORM', name: '切换到表单' }],
+						[
+							{
+								code: 'REFRESH',
+								name: '刷新',
+								prefixConfig: {
+									icon: 'vxe-icon-refresh',
+								},
+							},
+						],
+						[
+							{
+								code: 'OPEN_FORM',
+								name: '切换到表单',
+								prefixConfig: {
+									icon: 'vxe-icon-feedback',
+								},
+							},
+						],
 						[
 							{
 								name: '复制',
+								prefixConfig: {
+									icon: 'vxe-icon-copy',
+								},
 								children: [
 									{
 										code: 'COPY_AREA',
@@ -429,6 +448,9 @@ export default defineComponent({
 							},
 							{
 								name: '粘贴',
+								prefixConfig: {
+									icon: 'vxe-icon-paste',
+								},
 								children: [
 									{
 										code: 'PASTE_AREA',
@@ -452,10 +474,16 @@ export default defineComponent({
 							{
 								code: 'REVERT_ALL',
 								name: '撤销',
+								prefixConfig: {
+									icon: 'vxe-icon-undo',
+								},
 							},
 							{
 								code: 'CLOSE_SELECTION',
 								name: '取消选区',
+								prefixConfig: {
+									icon: 'vxe-icon-square',
+								},
 							},
 						],
 					],
