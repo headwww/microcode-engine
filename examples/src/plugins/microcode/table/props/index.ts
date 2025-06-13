@@ -13,6 +13,7 @@ import pagerProps from './pager';
 import footerProps from './footer';
 import treeProps from './tree';
 import formProps from './form';
+import menuProps from './menu';
 
 export default [
 	...basicProps,
@@ -20,6 +21,7 @@ export default [
 	...formProps,
 	...toolBarProps,
 	...actionsProps,
+	...menuProps,
 	...footerProps,
 	...rowSelectorProps,
 	...pagerProps,

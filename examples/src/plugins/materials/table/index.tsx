@@ -392,69 +392,91 @@ export default defineComponent({
 		const { renderTools } = useTableTools(tableRef, props, params);
 
 		// 右键菜单配置
-		const menuConfig = computed(() => ({
-			header: {
-				options: [
-					[
-						{ code: 'HIDDEN_COLUMN', name: '隐藏列' },
-						{ code: 'RESET_COLUMN', name: '取消隐藏' },
-						{ code: 'CLEAR_SORT', name: '清除排序(当前列)' },
-						{ code: 'CLEAR_ALL_SORT', name: '清除排序(全部)' },
-						{ code: 'RESET_FILTER', name: '重置筛选' },
+		const menuConfig = computed(() => {
+			const addItems =
+				props.menuItems?.map((item) => ({
+					...omit(item, 'onClick', 'onDisabled'),
+				})) || [];
+			return {
+				header: {
+					options: [
+						[
+							{ code: 'HIDDEN_COLUMN', name: '隐藏列' },
+							{ code: 'RESET_COLUMN', name: '取消隐藏' },
+							{ code: 'CLEAR_SORT', name: '清除排序(当前列)' },
+							{ code: 'CLEAR_ALL_SORT', name: '清除排序(全部)' },
+							{ code: 'RESET_FILTER', name: '重置筛选' },
+						],
 					],
-				],
-			},
-			body: {
-				options: [
-					[{ code: 'REFRESH', name: '刷新' }],
-					[{ code: 'OPEN_FORM', name: '切换到表单' }],
-					[
-						{
-							name: '复制',
-							children: [
-								{
-									code: 'COPY_AREA',
-									name: '复制(ctrl+c)',
-									disabled: !hasSelection.value,
-								},
-								{ code: 'COPY_TEXT', name: '文本复制(单元格)' },
-								{ code: 'COPY_ROW', name: '复制(行)' },
-							],
-						},
-						{
-							name: '粘贴',
-							children: [
-								{
-									code: 'PASTE_AREA',
-									name: '粘贴(ctrl+v)',
-									disabled: !copyAreaData.value,
-								},
-								{
-									code: 'PASTE_ROW',
-									name: '粘贴(行)',
-									disabled: !copyRowData.value,
-								},
-								{
-									code: 'PASTE_ROW_SELECT',
-									name: '粘贴到选中行',
-									disabled: !copyRowData.value,
-								},
-							],
-						},
+				},
+				body: {
+					options: [
+						addItems,
+						[{ code: 'REFRESH', name: '刷新' }],
+						[{ code: 'OPEN_FORM', name: '切换到表单' }],
+						[
+							{
+								name: '复制',
+								children: [
+									{
+										code: 'COPY_AREA',
+										name: '复制(ctrl+c)',
+										disabled: !hasSelection.value,
+									},
+									{ code: 'COPY_TEXT', name: '文本复制(单元格)' },
+									{ code: 'COPY_ROW', name: '复制(行)' },
+								],
+							},
+							{
+								name: '粘贴',
+								children: [
+									{
+										code: 'PASTE_AREA',
+										name: '粘贴(ctrl+v)',
+										disabled: !copyAreaData.value,
+									},
+									{
+										code: 'PASTE_ROW',
+										name: '粘贴(行)',
+										disabled: !copyRowData.value,
+									},
+									{
+										code: 'PASTE_ROW_SELECT',
+										name: '粘贴到选中行',
+										disabled: !copyRowData.value,
+									},
+								],
+							},
+						],
+						[
+							{
+								code: 'REVERT_ALL',
+								name: '撤销',
+							},
+							{
+								code: 'CLOSE_SELECTION',
+								name: '取消选区',
+							},
+						],
 					],
-					[
-						{
-							code: 'REVERT_ALL',
-							name: '撤销',
-						},
-						{
-							code: 'CLOSE_SELECTION',
-							name: '取消选区',
-						},
-					],
-				],
-			},
-		}));
+				},
+
+				visibleMethod(params: any) {
+					const { options } = params;
+					options.forEach((list: any) => {
+						list.forEach((item: any) => {
+							props.menuItems?.forEach((menu) => {
+								if (item.code === menu.code) {
+									item.disabled = menu.onDisabled?.(params.value);
+									item.visible = menu.onVisible?.(params.value);
+								}
+							});
+						});
+					});
+					return true;
+				},
+			};
+		});
 
 		const {
 			renderArea,
@@ -530,6 +552,11 @@ export default defineComponent({
 					pasteArea();
 					break;
 			}
+			props.menuItems?.forEach((item) => {
+				if (item.code === menu.code) {
+					item.onClick?.(params.value);
+				}
+			});
 		};
 
 		// 数据

@@ -76,6 +76,9 @@ export const tableProps = {
 			}
 		>,
 	},
+	menuItems: {
+		type: Array as PropType<MenuItem[]>,
+	},
 	actionConfig: {
 		type: Object as PropType<ActionConfig>,
 	},
@@ -133,6 +136,14 @@ export interface FormTabProps {
 	title?: string;
 	id: string;
 	formItems?: FormItemProps[];
+}
+
+export interface MenuItem {
+	code?: string;
+	name?: string;
+	onClick?: (params: any) => void;
+	onDisabled?: (params: any) => boolean;
+	onVisible?: (params: any) => boolean;
 }
 
 export interface FormItemProps extends VxeFormItemProps {
