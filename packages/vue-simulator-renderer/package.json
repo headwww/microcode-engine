@@ -1,30 +1,30 @@
 {
-    "name": "@arvin-shu/microcode-vue-simulator-renderer",
-    "version": "1.0.9",
-    "description": "microcode vue simulator renderer",
-    "main": "lib/index.js",
-    "module": "es/index.js",
-    "jsdelivr": "dist/js/index.js",
-    "unpkg": "dist/js/index.js",
-    "files": [
-        "lib",
-        "es",
-        "dist"
-    ],
-    "style": "dist/css/index.css",
-    "scripts": {
-        "build": "cross-env ORIGINAL_CWD=$PWD BUILD_UMD=true COPY_THEME=true UMD_NAME='SimulatorRenderer' pnpm --filter ../../build-scripts run start",
-        "clear": "rm -rf dist"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "@arvin-shu/microcode-renderer-core": "^1.0.17",
-        "@arvin-shu/microcode-types": "^1.0.4",
-        "@arvin-shu/microcode-utils": "^1.0.4",
-        "lodash-es": "^4.17.21",
-        "vue": "^3.5.8",
-        "vue-router": "^4.4.5"
-    }
+	"name": "@arvin-shu/microcode-vue-simulator-renderer",
+	"version": "1.0.10",
+	"description": "microcode vue simulator renderer",
+	"main": "lib/index.js",
+	"module": "es/index.js",
+	"jsdelivr": "dist/js/index.js",
+	"unpkg": "dist/js/index.js",
+	"files": [
+		"lib",
+		"es",
+		"dist"
+	],
+	"style": "dist/css/index.css",
+	"scripts": {
+		"build": "cross-env ORIGINAL_CWD=$PWD BUILD_UMD=true COPY_THEME=true UMD_NAME='SimulatorRenderer' pnpm --filter ../../build-scripts run start",
+		"clear": "rm -rf dist"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@arvin-shu/microcode-renderer-core": "^1.0.18",
+		"@arvin-shu/microcode-types": "^1.0.4",
+		"@arvin-shu/microcode-utils": "^1.0.4",
+		"lodash-es": "^4.17.21",
+		"vue": "^3.5.8",
+		"vue-router": "^4.4.5"
+	}
 }
