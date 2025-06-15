@@ -172,11 +172,7 @@ export const Hoc = defineComponent({
 		return () => {
 			const comp = toRaw(props.__comp);
 			const scope = toRaw(props.__scope);
-			const vnodeProps = {
-				...props.__vnodeProps,
-				// TODO 这里需要优化，
-				__designMode: props.__designMode,
-			};
+			const vnodeProps = { ...props.__vnodeProps };
 			const compProps = splitLeafProps(attrs)[1];
 			if (isRootNode && !showNode.value) return null;
 

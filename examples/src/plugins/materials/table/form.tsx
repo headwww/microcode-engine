@@ -1,4 +1,13 @@
-import { computed, nextTick, onMounted, reactive, ref, Ref, watch } from 'vue';
+import {
+	computed,
+	inject,
+	nextTick,
+	onMounted,
+	reactive,
+	ref,
+	Ref,
+	watch,
+} from 'vue';
 import { VxeGridInstance } from 'vxe-table';
 import { VxeForm, VxeFormInstance, VxeFormProps } from 'vxe-pc-ui';
 import { cloneDeep, isUndefined, omit } from 'lodash';
@@ -316,6 +325,8 @@ export function useTableForm(
 	);
 
 	// 添加切换按钮的样式
+	const designMode = inject<string>('__designMode', 'live');
+
 	const switchButtonStyle = computed(() => ({
 		position: 'absolute',
 		top: '8px',
@@ -326,7 +337,7 @@ export function useTableForm(
 		borderRadius: '16px',
 		backgroundColor: '#fff',
 		boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-		display: props.__designMode === 'design' ? 'block' : 'none',
+		display: designMode === 'design' ? 'block' : 'none',
 	}));
 
 	// 渲染切换按钮
@@ -343,6 +354,7 @@ export function useTableForm(
 		</Button>
 	);
 	return {
+		designMode,
 		renderForm,
 		showForm,
 		openForm,

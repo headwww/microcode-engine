@@ -186,6 +186,8 @@ export const Renderer = defineComponent({
 
 		expose({ runtimeScope });
 
+		provide('__designMode', props.designMode);
+
 		const renderContent = () => {
 			const { components } = rendererContext;
 			const {

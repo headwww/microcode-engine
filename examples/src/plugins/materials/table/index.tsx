@@ -677,6 +677,7 @@ export default defineComponent({
 			showForm,
 			openForm,
 			formRefs,
+			designMode,
 		} = useTableForm(tableRef, props);
 
 		expose({
@@ -688,7 +689,7 @@ export default defineComponent({
 		// 验证
 		return () => (
 			<div style={{ height: '100%', overflow: 'hidden', position: 'relative' }}>
-				{props.__designMode === 'design' && renderSwitchButton()}
+				{designMode === 'design' && renderSwitchButton()}
 				{renderForm()}
 				{/*  渲染区域 复制粘贴选区等操作 */}
 				{renderArea()}

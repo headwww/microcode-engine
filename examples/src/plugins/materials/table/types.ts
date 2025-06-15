@@ -12,10 +12,6 @@ import { PropertySelectorValue } from '../property-selector/types';
 import { EntitySelectorProps } from '../entity-selector/types';
 
 export const tableProps = {
-	__designMode: {
-		type: String as PropType<'design' | 'live'>,
-		default: 'live',
-	},
 	tableId: {
 		type: String as PropType<string>,
 	},
