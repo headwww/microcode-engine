@@ -3,7 +3,6 @@ import { Button as AntButton } from 'ant-design-vue';
 
 export default defineComponent({
 	name: 'LtButton',
-	inheritAttrs: false,
 	props: {
 		href: {
 			type: String,
