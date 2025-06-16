@@ -39,6 +39,7 @@ export function debounce<T extends () => unknown>(
 			}
 		};
 	}
+	// eslint-disable-next-line func-names
 	return function (this: unknown) {
 		if (timerId) {
 			clearTimeout(timerId);

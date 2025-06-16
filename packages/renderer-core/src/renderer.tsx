@@ -200,7 +200,7 @@ export const Renderer = defineComponent({
 				passProps,
 				appHelper,
 			} = props;
-			const { value: schema } = schemaRef;
+			const schema = schemaRef.value;
 
 			if (!schema) return null;
 

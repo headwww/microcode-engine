@@ -5,6 +5,7 @@ import {
 	IPublicTypeNodeSchema,
 } from '@arvin-shu/microcode-types';
 import {
+	Comment,
 	Component,
 	ComponentPublicInstance,
 	computed,

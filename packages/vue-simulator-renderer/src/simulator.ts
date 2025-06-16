@@ -508,53 +508,106 @@ function createSimulatorRenderer() {
 
 	const instId = ref();
 
+	// disposeFunctions.push(
+	// 	host.watchEffect(async () => {
+	// 		const { router } = simulator;
+
+	// 		documentInstances.value = host.project.documents.map((doc: any) => {
+	// 			let documentInstance: any = documentInstanceMap.get(doc.id);
+	// 			if (!documentInstance) {
+	// 				documentInstance = createDocumentInstance(
+	// 					{
+	// 						id: doc.id,
+	// 						getNode: doc?.getNode?.bind(doc),
+	// 						export: doc?.export?.bind(doc),
+	// 						exportSchema: doc?.exportSchema?.bind(doc),
+	// 					},
+	// 					context
+	// 				) as any;
+	// 				documentInstanceMap.set(doc.id, documentInstance as any);
+	// 			} else if (router.hasRoute(documentInstance.id)) {
+	// 				router.removeRoute(documentInstance.id);
+	// 			}
+	// 			router.addRoute({
+	// 				name: documentInstance.id,
+	// 				path: documentInstance.path,
+	// 				meta: {},
+	// 				component: Renderer,
+	// 				props: ((doc, sim) => () => ({
+	// 					simulator: sim,
+	// 					documentInstance: doc,
+	// 				}))(documentInstance, simulator),
+	// 			});
+	// 			return documentInstance;
+	// 		});
+
+	// 		router.getRoutes().forEach((route: any) => {
+	// 			const id = route.name as string;
+	// 			const hasDoc = documentInstances.value.some((doc) => doc.id === id);
+	// 			if (!hasDoc) {
+	// 				router.removeRoute(id);
+	// 				documentInstanceMap.delete(id);
+	// 			}
+	// 		});
+
+	// 		const inst = simulator.getCurrentDocument();
+	// 		if (inst) {
+	// 			instId.value = inst.id;
+	// 		}
+	// 	})
+	// );
+
+	// 不使用watchEffect使用vue自带的watch
 	disposeFunctions.push(
-		host.watchEffect(async () => {
-			const { router } = simulator;
-
-			documentInstances.value = host.project.documents.map((doc: any) => {
-				let documentInstance: any = documentInstanceMap.get(doc.id);
-				if (!documentInstance) {
-					documentInstance = createDocumentInstance(
-						{
-							id: doc.id,
-							getNode: doc?.getNode?.bind(doc),
-							export: doc?.export?.bind(doc),
-							exportSchema: doc?.exportSchema?.bind(doc),
-						},
-						context
-					) as any;
-					documentInstanceMap.set(doc.id, documentInstance as any);
-				} else if (router.hasRoute(documentInstance.id)) {
-					router.removeRoute(documentInstance.id);
-				}
-				router.addRoute({
-					name: documentInstance.id,
-					path: documentInstance.path,
-					meta: {},
-					component: Renderer,
-					props: ((doc, sim) => () => ({
-						simulator: sim,
-						documentInstance: doc,
-					}))(documentInstance, simulator),
+		watch(
+			() => host.project.documents,
+			() => {
+				const { router } = simulator;
+				documentInstances.value = host.project.documents.map((doc: any) => {
+					let documentInstance: any = documentInstanceMap.get(doc.id);
+					if (!documentInstance) {
+						documentInstance = createDocumentInstance(
+							{
+								id: doc.id,
+								getNode: doc?.getNode?.bind(doc),
+								export: doc?.export?.bind(doc),
+								exportSchema: doc?.exportSchema?.bind(doc),
+							},
+							context
+						) as any;
+						documentInstanceMap.set(doc.id, documentInstance as any);
+					} else if (router.hasRoute(documentInstance.id)) {
+						router.removeRoute(documentInstance.id);
+					}
+					router.addRoute({
+						name: documentInstance.id,
+						path: documentInstance.path,
+						meta: {},
+						component: Renderer,
+						props: ((doc, sim) => () => ({
+							simulator: sim,
+							documentInstance: doc,
+						}))(documentInstance, simulator),
+					});
+					return documentInstance;
 				});
-				return documentInstance;
-			});
 
-			router.getRoutes().forEach((route: any) => {
-				const id = route.name as string;
-				const hasDoc = documentInstances.value.some((doc) => doc.id === id);
-				if (!hasDoc) {
-					router.removeRoute(id);
-					documentInstanceMap.delete(id);
+				router.getRoutes().forEach((route: any) => {
+					const id = route.name as string;
+					const hasDoc = documentInstances.value.some((doc) => doc.id === id);
+					if (!hasDoc) {
+						router.removeRoute(id);
+						documentInstanceMap.delete(id);
+					}
+				});
+
+				const inst = simulator.getCurrentDocument();
+				if (inst) {
+					instId.value = inst.id;
 				}
-			});
-
-			const inst = simulator.getCurrentDocument();
-			if (inst) {
-				instId.value = inst.id;
-			}
-		})
+			},
+			{ immediate: true }
+		)
 	);
 
 	watch(

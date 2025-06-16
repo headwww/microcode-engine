@@ -116,7 +116,7 @@ const transform: AxiosTransform = {
 
 export const http = new LTAxios({
 	// 基础请求地址
-	baseURL: '/ltApi',
+	baseURL: '/',
 	// 配置公共请求头
 	headers: {
 		'Content-Type': ContentTypeEnum.JSON,
