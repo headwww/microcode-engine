@@ -307,8 +307,8 @@ export class Node<Schema extends IPublicTypeNodeSchema = IPublicTypeNodeSchema>
 
 	private _conditionGroup = ref<IExclusiveGroup | null>(null);
 
-	get conditionGroup() {
-		return this._conditionGroup.value as any;
+	get conditionGroup(): any {
+		return this._conditionGroup.value;
 	}
 
 	private purged = false;

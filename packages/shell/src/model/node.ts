@@ -19,7 +19,7 @@ import {
 	IPublicTypePropsList,
 	IPublicTypePropsMap,
 } from '@arvin-shu/microcode-types';
-import { VNode } from 'vue';
+import { toRaw, VNode } from 'vue';
 import { documentSymbol, nodeSymbol } from '../symbols';
 import { NodeChildren as ShellNodeChildren } from './node-children';
 import { Prop as ShellProp } from './prop';
@@ -332,8 +332,9 @@ export class Node implements IPublicModelNode {
 	}
 
 	static create(
-		node: InnerNode | IPublicModelNode | null | undefined
+		n: InnerNode | IPublicModelNode | null | undefined
 	): IPublicModelNode | null {
+		const node = toRaw(n);
 		if (!node) {
 			return null;
 		}

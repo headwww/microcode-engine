@@ -155,7 +155,7 @@ export class EventBus implements IEventBus {
  */
 export const createModuleEventBus = (
 	moduleName: string,
-	maxListeners?: number
+	maxListeners: number = 200
 ): IEventBus => {
 	const emitter = new EventEmitter();
 	if (maxListeners) {

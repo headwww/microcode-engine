@@ -343,10 +343,10 @@ export class TreeNode {
 	}
 
 	expandParents() {
-		let p = this.node.parent;
+		let p = toRaw(this.node.parent);
 		while (p) {
 			this.tree.getTreeNode(p).setExpanded(true);
-			p = p.parent;
+			p = toRaw(p.parent);
 		}
 	}
 

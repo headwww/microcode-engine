@@ -159,11 +159,17 @@ const plugin = (ctx: IPublicModelPluginContext, options: any) => ({
 			}
 		});
 
+		/**
+		 * 监听文档变化
+		 */
 		project.onChangeDocument((document: IPublicModelDocumentModel) => {
 			if (!document) {
 				return;
 			}
 			const { selection } = document;
+			/**
+			 * 从设计页面点击节点，监听选中节点变化
+			 */
 			selection?.onSelectionChange(() => {
 				const selectedNodes = selection?.getNodes();
 				if (!selectedNodes || selectedNodes.length === 0) {

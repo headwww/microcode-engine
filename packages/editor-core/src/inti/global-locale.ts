@@ -100,7 +100,7 @@ class GlobalLocale {
 	});
 
 	constructor() {
-		this.emitter.setMaxListeners(0);
+		this.emitter.setMaxListeners(200);
 	}
 
 	setLocale(locale: string) {
