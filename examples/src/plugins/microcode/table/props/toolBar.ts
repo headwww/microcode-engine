@@ -145,7 +145,13 @@ export default [
 											name: 'onClick',
 											title: '点击事件',
 											propType: 'function',
-											setter: 'FunctionSetter',
+											setter: {
+												componentName: 'FunctionSetter',
+												props: {
+													template:
+														'onClick(extParams){\n// params参数为：{$table:VxeGridInstance,condition:Condition}\n\n}',
+												},
+											},
 											condition: (target: any) =>
 												target.getParent().getPropValue('mode') === 'button',
 										},

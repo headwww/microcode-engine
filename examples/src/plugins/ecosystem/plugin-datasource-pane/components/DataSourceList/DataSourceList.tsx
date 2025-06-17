@@ -86,7 +86,25 @@ export const DataSourceList = defineComponent({
 							{props.draggable && (
 								<MoveIcon class="datasource-list-item-handle move"></MoveIcon>
 							)}
-							<span style="margin-left: 8px">{item.id}</span>
+							<div class="datasource-list-item-title-content">
+								<span class="datasource-list-item-title-content-text">
+									{item.description}
+								</span>
+								<div>
+									<span
+										class="datasource-list-item-title-content-text"
+										style="font-size: 12px; color: #999; opacity: 0.8"
+									>
+										ID：
+									</span>
+									<span
+										class="datasource-list-item-title-content-text"
+										style="font-size: 12px; color: #999"
+									>
+										{item.id}
+									</span>
+								</div>
+							</div>
 						</div>
 						<div class="datasource-list-item-actions">
 							<EditIcon
