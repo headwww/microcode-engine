@@ -15,6 +15,7 @@ import page from './page/meta';
 import modal from './modal/meta';
 import tabs from './tabs/meta';
 import entitySelect from './entity-select/meta';
+import drawer from './drawer/meta';
 
 export default [
 	form,
@@ -34,4 +35,5 @@ export default [
 	page,
 	modal,
 	tabs,
+	drawer,
 ];

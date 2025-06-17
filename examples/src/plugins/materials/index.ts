@@ -10,6 +10,7 @@ export { default as LtPage } from './page';
 export { default as Modal } from './modal';
 export { default as Tabs } from './tabs';
 export { default as EntitySelect } from './entity-select';
+export { default as Drawer } from './drawer';
 export {
 	Typography,
 	TypographyText,
