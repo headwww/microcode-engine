@@ -1,6 +1,6 @@
 {
     "name": "@arvin-shu/microcode-vue-simulator-renderer",
-    "version": "1.0.11",
+    "version": "1.0.12",
     "description": "microcode vue simulator renderer",
     "main": "lib/index.js",
     "module": "es/index.js",
