@@ -29,7 +29,7 @@ export default [
 				function uniqueId(prefix = '') {
 					return `${prefix}${(guid++).toString(36).toLowerCase()}`;
 				}
-				return uniqueId('lt_modal_');
+				return uniqueId('lt_table_');
 			},
 			componentName: 'StringSetter',
 			props: {

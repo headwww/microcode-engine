@@ -639,7 +639,7 @@ export default [
 													}));
 													updateColumns(
 														'enum',
-														entitySelectorItem?.id || 'disabledEdit',
+														entitySelectorItem?.id || 'customEntity',
 														{
 															editDataConfig: tInfo?.dataConfig,
 															editColumns: tInfo?.columns,
@@ -653,7 +653,7 @@ export default [
 														case 'java.lang.Integer':
 															updateColumns(
 																'number',
-																entitySelectorItem?.id || 'disabledEdit',
+																entitySelectorItem?.id || 'customEntity',
 																{
 																	editDataConfig: tInfo?.dataConfig,
 																	editColumns: tInfo?.columns,
@@ -666,7 +666,7 @@ export default [
 														case 'java.lang.Long':
 															updateColumns(
 																'number',
-																entitySelectorItem?.id || 'disabledEdit',
+																entitySelectorItem?.id || 'customEntity',
 																{
 																	editDataConfig: tInfo?.dataConfig,
 																	editColumns: tInfo?.columns,
@@ -679,7 +679,7 @@ export default [
 														case 'java.math.BigDecimal':
 															updateColumns(
 																'number',
-																entitySelectorItem?.id || 'disabledEdit',
+																entitySelectorItem?.id || 'customEntity',
 																{
 																	editDataConfig: tInfo?.dataConfig,
 																	editColumns: tInfo?.columns,
@@ -692,7 +692,7 @@ export default [
 														case 'java.lang.Boolean':
 															updateColumns(
 																'boolean',
-																entitySelectorItem?.id || 'disabledEdit',
+																entitySelectorItem?.id || 'customEntity',
 																{
 																	editDataConfig: tInfo?.dataConfig,
 																	editColumns: tInfo?.columns,
@@ -717,7 +717,7 @@ export default [
 														case 'java.util.Date':
 															updateColumns(
 																'date',
-																entitySelectorItem?.id || 'disabledEdit',
+																entitySelectorItem?.id || 'customEntity',
 																{
 																	editDataConfig: tInfo?.dataConfig,
 																	editColumns: tInfo?.columns,
@@ -730,7 +730,7 @@ export default [
 														default:
 															updateColumns(
 																'text',
-																entitySelectorItem?.id || 'disabledEdit',
+																entitySelectorItem?.id || 'customEntity',
 																{
 																	editDataConfig: tInfo?.dataConfig,
 																	editColumns: tInfo?.columns,
@@ -1001,6 +1001,7 @@ export default [
 													'select',
 													'date',
 													'time',
+													'customEntity',
 												].includes(value)
 											) {
 												updateColumns();

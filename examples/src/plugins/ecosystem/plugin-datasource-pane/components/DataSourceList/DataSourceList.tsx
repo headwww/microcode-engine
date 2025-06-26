@@ -90,7 +90,7 @@ export const DataSourceList = defineComponent({
 								<span class="datasource-list-item-title-content-text">
 									{item.description}
 								</span>
-								<div>
+								<div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
 									<span
 										class="datasource-list-item-title-content-text"
 										style="font-size: 12px; color: #999; opacity: 0.8"

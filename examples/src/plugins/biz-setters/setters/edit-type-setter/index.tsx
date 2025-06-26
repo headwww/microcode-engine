@@ -66,6 +66,10 @@ export const EditTypeSetter = defineComponent({
 					label: '时间选择器',
 					value: 'time',
 				},
+				{
+					label: '自定义实体选择器',
+					value: 'customEntity',
+				},
 				...options,
 			];
 		});

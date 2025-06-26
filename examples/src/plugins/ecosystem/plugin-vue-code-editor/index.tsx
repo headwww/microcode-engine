@@ -18,7 +18,7 @@ const InitVueCodeEditor = (
 				description: intlNode('FunctionPanel'),
 			},
 			panelProps: {
-				width: '600px',
+				width: '800px',
 				title: intlNode('FunctionPanel'),
 			},
 			content: (

@@ -129,8 +129,13 @@ export function useCellEdit(column: ColumnProps) {
 
 	const topFieldTypeFlag = property?.topFieldTypeFlag;
 
+	// 禁用编辑
+	if (editType === 'disabledEdit') {
+		return null;
+	}
+
 	// 如果当前字段是这样的corp.name，则需要使用实体编辑
-	if (topFieldTypeFlag === '1') {
+	if (topFieldTypeFlag === '1' || editType === 'customEntity') {
 		return {
 			name: 'LtEntityRenderTableEdit',
 			props: {
@@ -175,11 +180,6 @@ export function useCellEdit(column: ColumnProps) {
 			name: 'LtTimeRenderTableEdit',
 			props: getProps(column),
 		};
-	}
-
-	// 禁用编辑 放在在底部判断
-	if (editType === 'disabledEdit') {
-		return null;
 	}
 
 	return {

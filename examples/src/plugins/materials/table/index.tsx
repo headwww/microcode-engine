@@ -167,11 +167,9 @@ export default defineComponent({
 				// 虚拟滚动 只通过一个virtualScroll参数来控制 默认开启
 				virtualYConfig: {
 					enabled: virtualScroll,
-					gt: 0,
 				},
 				virtualXConfig: {
 					enabled: virtualScroll,
-					gt: 0,
 				},
 				height: 'auto',
 				tooltipConfig: {
@@ -689,10 +687,6 @@ export default defineComponent({
 		// 验证
 		return () => (
 			<div style={{ height: '100%', overflow: 'hidden', position: 'relative' }}>
-				{designMode === 'design' && renderSwitchButton()}
-				{renderForm()}
-				{/*  渲染区域 复制粘贴选区等操作 */}
-				{renderArea()}
 				<VxeGrid
 					id={props.tableId}
 					ref={tableRef}
@@ -708,7 +702,9 @@ export default defineComponent({
 								}
 							: pagerConfig
 					}
-					treeConfig={props.treeConfig}
+					treeConfig={
+						props.treeConfig?.transform === false ? undefined : props.treeConfig
+					}
 					columns={columns.value}
 					data={data.value}
 					seqConfig={seqConfig.value}
@@ -738,6 +734,10 @@ export default defineComponent({
 						tools: () => (showForm.value ? renderFormTools() : renderTools()),
 					}}
 				</VxeGrid>
+				{designMode === 'design' && renderSwitchButton()}
+				{renderForm()}
+				{/*  渲染区域 复制粘贴选区等操作 */}
+				{renderArea()}
 			</div>
 		);
 	},

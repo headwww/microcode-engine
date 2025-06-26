@@ -2,7 +2,7 @@
  * @Author: shuwen 1243889238@qq.com
  * @Date: 2025-04-17 18:39:54
  * @LastEditors: shuwen 1243889238@qq.com
- * @LastEditTime: 2025-06-16 23:13:52
+ * @LastEditTime: 2025-06-25 09:25:00
  * @FilePath: /microcode-engine/examples/vite.config.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -23,7 +23,7 @@ export default defineConfig({
 	},
 	server: {
 		host: '0.0.0.0',
-		port: 9099,
+		port: 9098,
 		open: true, // 自动打开浏览器
 		proxy: {
 			'/api': {

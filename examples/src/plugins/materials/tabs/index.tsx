@@ -1,5 +1,5 @@
 import { Tabs } from 'ant-design-vue';
-import { defineComponent, PropType, ref } from 'vue';
+import { computed, defineComponent, nextTick, PropType, ref } from 'vue';
 import './style.scss';
 
 type TabItem = {
@@ -10,13 +10,16 @@ type TabItem = {
 
 export default defineComponent({
 	name: 'LtTabs',
-	inheritAttrs: false,
+	emits: ['update:activeKey'],
 	props: {
 		items: {
 			type: Array as PropType<TabItem[]>,
 			default: () => [],
 		},
 		defaultActiveKey: {
+			type: String,
+		},
+		activeKey: {
 			type: String,
 		},
 		size: {
@@ -34,16 +37,37 @@ export default defineComponent({
 			type: Function as PropType<(params?: any) => void>,
 		},
 	},
-	setup(props) {
-		const activeKey = ref(props.defaultActiveKey);
+	setup(props, { emit }) {
+		const innerActiveKey = ref(props.defaultActiveKey);
+
+		const activeKey = computed({
+			get() {
+				return props.activeKey !== undefined
+					? props.activeKey
+					: innerActiveKey.value;
+			},
+			set(value) {
+				emit('update:activeKey', value);
+			},
+		});
 
 		return () => (
 			<Tabs
 				prefixCls={props.full ? 'lt-tabs-full' : ''}
 				size={props.size}
 				v-model:activeKey={activeKey.value}
-				onChange={props.onChange}
-				onTabClick={props.onTabClick}
+				onChange={(key) => {
+					emit('update:activeKey', key);
+					nextTick(() => {
+						props.onChange?.(key);
+					});
+				}}
+				onTabClick={(key) => {
+					emit('update:activeKey', key);
+					nextTick(() => {
+						props.onTabClick?.(key);
+					});
+				}}
 			>
 				{props.items?.map((item) => (
 					<Tabs.TabPane tab={item.label} key={item.key}>

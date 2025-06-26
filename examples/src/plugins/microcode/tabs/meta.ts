@@ -69,6 +69,14 @@ export default {
 				},
 			},
 			{
+				name: 'v-model:activeKey',
+				title: {
+					label: '双向绑定',
+					tip: '双向绑定选中面板的key',
+				},
+				setter: 'VariableSetter',
+			},
+			{
 				name: 'defaultActiveKey',
 				title: {
 					label: '初始选中',

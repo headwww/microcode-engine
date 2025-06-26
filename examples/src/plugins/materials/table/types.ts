@@ -64,6 +64,9 @@ export const tableProps = {
 	},
 	columnConfig: {
 		type: Object as PropType<VxeTablePropTypes.ColumnConfig>,
+		default: () => ({
+			resizable: true,
+		}),
 	},
 	rowConfig: {
 		type: Object as PropType<

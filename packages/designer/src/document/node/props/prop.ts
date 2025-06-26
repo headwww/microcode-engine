@@ -182,8 +182,12 @@ export class Prop implements IProp {
 			return this.value.value;
 		}
 		if (this.type === 'slot') {
+			if (!this._slotNode) {
+				return JSON.stringify({});
+			}
+
 			return JSON.stringify(
-				this._slotNode!.export(IPublicEnumTransformStage.Save)
+				this._slotNode.export(IPublicEnumTransformStage.Save)
 			);
 		}
 		// 如果已经存在code，则返回code，否则返回value的JSON字符串
