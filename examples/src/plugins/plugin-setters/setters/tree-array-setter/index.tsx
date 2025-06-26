@@ -354,7 +354,13 @@ export const TreeArraySetter = defineComponent({
 				<Dropdown>
 					{{
 						default: () => (
-							<Button class="mtc-tree-array-setter-add" type="text">
+							<Button
+								class="mtc-tree-array-setter-add"
+								type="text"
+								onClick={() => {
+									onAdd('children');
+								}}
+							>
 								添加一项 +
 							</Button>
 						),
