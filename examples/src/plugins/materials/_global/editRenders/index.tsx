@@ -35,12 +35,17 @@ interface RenderOptions {
 			color?: string;
 			[key: string]: any;
 		}>;
+		onLinkClick?: (params: any) => void;
 	};
 }
 
 // 渲染器配置
 const renderConfig = {
-	link: (value: any) => <LtLinkRenderTableCell>{value}</LtLinkRenderTableCell>,
+	link: (value: any, props: RenderOptions['props'], params?: any) => (
+		<LtLinkRenderTableCell params={params} onLinkClick={props?.onLinkClick}>
+			{value}
+		</LtLinkRenderTableCell>
+	),
 	code: (value: any, props: RenderOptions['props']) => (
 		<LtCodeRenderTableCell code={value?.toString()} type={props.codeType} />
 	),
@@ -81,7 +86,7 @@ function renderCellContent(
 	const renderer =
 		renderConfig[dataType as keyof typeof renderConfig] || renderConfig.default;
 
-	return renderer(cellValue, renderOpts.props);
+	return renderer(cellValue, renderOpts.props, params);
 }
 
 function getCellEditFilterProps(

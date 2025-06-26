@@ -4,6 +4,7 @@ import { Modal as OriginalModal } from 'ant-design-vue';
 export default defineComponent({
 	name: 'LtModal',
 	inheritAttrs: false,
+	emits: ['open', 'close'],
 	props: {
 		// eslint-disable-next-line vue/prop-name-casing
 		title: {
@@ -28,7 +29,7 @@ export default defineComponent({
 			type: Function as PropType<() => void>,
 		},
 	},
-	setup(props, { slots, expose }) {
+	setup(props, { slots, expose, emit }) {
 		const designMode = inject<string>('__designMode', 'live');
 
 		const open = ref(designMode === 'design');
@@ -63,11 +64,13 @@ export default defineComponent({
 		function openModal(data?: any) {
 			open.value = true;
 			params.value = data;
+			emit('open', data);
 		}
 
 		function closeModal() {
 			open.value = false;
 			params.value = undefined;
+			emit('close');
 		}
 
 		expose({

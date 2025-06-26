@@ -25,7 +25,7 @@ export default {
 						visible: true,
 						type: 'checkbox',
 						width: 60,
-						trigger: 'row',
+						trigger: 'cell',
 						highlight: true,
 						range: true,
 						showHeader: true,
