@@ -26,6 +26,7 @@ import '@arvin-shu/microcode-theme/src/index.scss';
 import 'ant-design-vue/dist/reset.css';
 import './plugins/materials/_global';
 import './plugin-render-antd.scss';
+import router from './router';
 
 window.Vue = Vue;
 VxeUIAll.use(VxeUIPluginRenderAntd);
@@ -73,6 +74,7 @@ await init(preference, {
 		// `http://127.0.0.1:8080/dist/dist/js/index.js?t=${Date.now()}`,
 		// `http://192.168.1.59:8080/dist/dist/js/index.js?t=${Date.now()}`,
 	],
-} as any);
+} as any); // 引入你创建的路由实例
+app.use(router);
 
 app.mount('#app');

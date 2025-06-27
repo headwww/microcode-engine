@@ -1,4 +1,3 @@
-import { WalletFilled } from '@ant-design/icons-vue';
 import {
 	IPublicEnumTransformStage,
 	IPublicModelPluginContext,
@@ -43,20 +42,6 @@ const InitSkeleton = (ctx: IPublicModelPluginContext) => ({
 			area: 'topArea',
 			type: 'Widget',
 			content: <Preview />,
-		});
-
-		skeleton.add({
-			area: 'leftArea',
-			type: 'Dock',
-			name: 'opener',
-			props: {
-				icon: <WalletFilled />, // Icon 组件实例
-				align: 'bottom',
-				onClick() {
-					// 打开外部链接
-					window.open('http://www.ltscm.com.cn/');
-				},
-			},
 		});
 
 		// skeleton.add({
