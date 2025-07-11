@@ -10,6 +10,7 @@ import {
 	runTask,
 	withTaskName,
 } from './src';
+import { readFile, writeFile } from 'fs/promises';
 
 /**
  * 复制主题
@@ -28,10 +29,24 @@ export const copyTheme = async () => {
 /**
  * 复制描述文件
  */
+// export const copyDescriptions = async () => {
+// 	Promise.all([
+// 		copyFile(`${getDir()}/package.json`, `${getDir()}/dist/package.json`),
+// 	]);
+// };
+
 export const copyDescriptions = async () => {
-	Promise.all([
-		copyFile(`${getDir()}/package.json`, `${getDir()}/dist/package.json`),
-	]);
+	const src = `${getDir()}/package.json`;
+	const dest = `${getDir()}/dist/package.json`;
+
+	const pkgStr = await readFile(src, 'utf-8');
+	const pkg = JSON.parse(pkgStr);
+
+	// 修改 main 和 module 字段
+	pkg.main = 'lib/index.js';
+	pkg.module = 'es/index.js';
+
+	await writeFile(dest, JSON.stringify(pkg, null, 2), 'utf-8');
 };
 
 export default series(

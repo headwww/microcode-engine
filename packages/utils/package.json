@@ -21,7 +21,6 @@
 	"license": "ISC",
 	"dependencies": {
 		"eventemitter2": "^6.4.9",
-		"lodash-es": "^4.17.21",
-		"vue": "^3.5.8"
+		"lodash-es": "^4.17.21"
 	}
 }
