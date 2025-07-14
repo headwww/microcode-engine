@@ -42,9 +42,11 @@ export const copyDescriptions = async () => {
 	const pkgStr = await readFile(src, 'utf-8');
 	const pkg = JSON.parse(pkgStr);
 
-	// 修改 main 和 module 字段
-	pkg.main = 'lib/index.js';
-	pkg.module = 'es/index.js';
+	if (!process.env.BUILD_THEME) {
+		// 修改 main 和 module 字段
+		pkg.main = 'lib/index.js';
+		pkg.module = 'es/index.js';
+	}
 
 	await writeFile(dest, JSON.stringify(pkg, null, 2), 'utf-8');
 };
