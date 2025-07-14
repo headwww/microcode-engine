@@ -1,5 +1,11 @@
 # @arvin-shu/microcode-utils
 
+## 1.1.2
+
+### Patch Changes
+
+- 8df46e7: 测试依赖打包
+
 ## 1.1.1
 
 ### Patch Changes
