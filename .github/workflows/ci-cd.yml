@@ -35,8 +35,11 @@ jobs:
         run: pnpm install --frozen-lockfile # 安装所有项目依赖
 
       # ====== 关键调试步骤 ======
-      - name: 🕵️ Show .npmrc
-        run: cat ~/.npmrc
+      - name: 🕵️ Show npm config userconfig path
+        run: npm config get userconfig
+
+      - name: 🕵️ Show .npmrc (actual)
+        run: cat $(npm config get userconfig)
 
       - name: 🕵️ Check npm registry
         run: npm config get registry
@@ -68,7 +71,8 @@ jobs:
       - name: 🚀 Publish packages (changesets)
         if: steps.changesets_version.outputs.has_changes == 'true' # 只有当有版本变更时才执行发布
         run: npx changeset publish --access public # **这里添加了 --access public**
-        # 这里不再需要 NODE_AUTH_TOKEN，因为 setup-node 已经配置了 .npmrc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: ⬆️ Push changes back to main branch
         if: steps.changesets_version.outputs.has_changes == 'true' # 只有当有版本变更时才推回
