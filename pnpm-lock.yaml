@@ -464,8 +464,8 @@ importers:
   packages/vue-simulator-renderer:
     dependencies:
       '@arvin-shu/microcode-renderer-core':
-        specifier: ^1.0.20
-        version: 1.0.20(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
+        specifier: ^1.0.21
+        version: 1.0.21(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
       '@arvin-shu/microcode-types':
         specifier: ^1.0.6
         version: 1.0.6
@@ -527,6 +527,9 @@ packages:
 
   '@arvin-shu/microcode-renderer-core@1.0.20':
     resolution: {integrity: sha512-1zdwdHPkhI/GkgxE0HyS3Ah7iJetFwV13hu7KrC/KqdKwkkfDuSxPoY8lrr0qTJG1alsp4Hhx541Bf8lxpD+7g==}
+
+  '@arvin-shu/microcode-renderer-core@1.0.21':
+    resolution: {integrity: sha512-S7yEWRgsekR24FtLqCC4DizqXw3P4y8UVow09lufuO8hMH7GHRhiFXlSOvX4HCesYnPoceccBxf7HrerQ40j8Q==}
 
   '@arvin-shu/microcode-shell@1.0.0':
     resolution: {integrity: sha512-WbEUmxX4Da9cEo4f9IZVIa5k3csFk44nWQga1RMCtPh3XewFfeNKLXdFKjFzVpAw7SxZo8iTDiu++ahstyBIkw==}
@@ -5322,6 +5325,17 @@ snapshots:
       - monaco-editor
 
   '@arvin-shu/microcode-renderer-core@1.0.20(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
+    dependencies:
+      '@arvin-shu/microcode-datasource-engine': 1.0.3
+      '@arvin-shu/microcode-datasource-types': 1.0.1
+      '@arvin-shu/microcode-designer': 1.0.12(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
+      '@arvin-shu/microcode-types': 1.0.6
+      intl-messageformat: 10.7.16
+    transitivePeerDependencies:
+      - ant-design-vue
+      - reflect-metadata
+
+  '@arvin-shu/microcode-renderer-core@1.0.21(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
     dependencies:
       '@arvin-shu/microcode-datasource-engine': 1.0.3
       '@arvin-shu/microcode-datasource-types': 1.0.1
