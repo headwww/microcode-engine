@@ -11,6 +11,7 @@
 		"clear": "./scripts/clear.sh"
 	},
 	"devDependencies": {
+		"@changesets/cli": "^2.29.5",
 		"@commitlint/cli": "^19.5.0",
 		"@commitlint/config-conventional": "^19.5.0",
 		"@types/eslint": "^8",
