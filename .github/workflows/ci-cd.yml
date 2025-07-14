@@ -24,7 +24,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20' # 推荐使用 LTS 版本
-          # cache: 'pnpm' # 移除了这里的 cache，因为 pnpm 会单独安装
+          registry-url: 'https://registry.npmjs.org/' # 指向 npm 官方 registry
+          scope: '@arvin-shu' # 替换为你的 npm scope，例如：@your-org。如果你的包没有scope，可以省略此行。
+          token: ${{ secrets.NPM_TOKEN }} # 使用你的 npm token 进行认证
 
       - name: 📥 Install pnpm
         run: npm install -g pnpm@10.13.1 # 全局安装 pnpm
@@ -53,9 +55,10 @@ jobs:
       - name: 🚀 Publish packages (changesets)
         if: steps.changesets_version.outputs.has_changes == 'true' # 只有当有版本变更时才执行发布
         run: npx changeset publish # 按依赖顺序自动发布
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # npm token，用于发布到 npm
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # changesets 可能需要此token来推送到仓库
+        # 这里不再需要 NODE_AUTH_TOKEN，因为 setup-node 已经配置了 .npmrc
+        # env:
+        #   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ⬆️ Push changes back to main branch
         if: steps.changesets_version.outputs.has_changes == 'true' # 只有当有版本变更时才推回
