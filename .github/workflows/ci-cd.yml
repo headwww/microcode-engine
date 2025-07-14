@@ -54,11 +54,8 @@ jobs:
 
       - name: 🚀 Publish packages (changesets)
         if: steps.changesets_version.outputs.has_changes == 'true' # 只有当有版本变更时才执行发布
-        run: npx changeset publish # 按依赖顺序自动发布
+        run: npx changeset publish --access public # **这里添加了 --access public**
         # 这里不再需要 NODE_AUTH_TOKEN，因为 setup-node 已经配置了 .npmrc
-        # env:
-        #   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ⬆️ Push changes back to main branch
         if: steps.changesets_version.outputs.has_changes == 'true' # 只有当有版本变更时才推回
