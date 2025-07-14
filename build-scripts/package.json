@@ -1,6 +1,7 @@
 {
 	"name": "build-scripts",
 	"version": "1.0.0",
+	"private": true,
 	"description": "",
 	"scripts": {
 		"start": "gulp --require ./node_modules/@esbuild-kit/cjs-loader -f gulpfile.ts"
