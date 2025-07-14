@@ -1,6 +1,6 @@
 {
 	"name": "@arvin-shu/microcode-renderer-core",
-	"version": "1.0.21",
+	"version": "1.0.22",
 	"description": "",
 	"main": "lib/index.js",
 	"module": "es/index.js",
@@ -23,7 +23,7 @@
 	"dependencies": {
 		"@arvin-shu/microcode-datasource-engine": "^1.0.3",
 		"@arvin-shu/microcode-datasource-types": "^1.0.1",
-		"@arvin-shu/microcode-designer": "^1.0.12",
+		"@arvin-shu/microcode-designer": "^1.0.13",
 		"@arvin-shu/microcode-types": "^1.0.6",
 		"intl-messageformat": "^10.7.3"
 	}
