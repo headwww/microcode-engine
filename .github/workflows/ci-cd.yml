@@ -34,6 +34,19 @@ jobs:
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile # 安装所有项目依赖
 
+      # ====== 关键调试步骤 ======
+      - name: 🕵️ Show .npmrc
+        run: cat ~/.npmrc
+
+      - name: 🕵️ Check npm registry
+        run: npm config get registry
+
+      - name: 🕵️ Who am I
+        run: npx npm whoami
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # ========================
+
       - name: 🏷️ Version packages (changesets)
         id: changesets_version
         run: |
