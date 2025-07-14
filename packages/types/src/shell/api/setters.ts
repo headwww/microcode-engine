@@ -1,7 +1,4 @@
-import {
-	IPublicTypeCustomView,
-	IPublicTypeRegisteredSetter,
-} from '@arvin-shu/microcode-types';
+import { IPublicTypeCustomView, IPublicTypeRegisteredSetter } from '../type';
 import { VNode } from 'vue';
 
 export interface IPublicApiSetters {
