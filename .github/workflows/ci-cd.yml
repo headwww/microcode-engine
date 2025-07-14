@@ -26,6 +26,11 @@ jobs:
           node-version: '20' # 推荐使用 LTS 版本
           cache: 'pnpm' # 缓存 pnpm 依赖
 
+      - name: 🟢 Setup pnpm
+          uses: pnpm/action-setup@v2
+          with:
+            version: 10.13.1
+
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile # 安装所有项目依赖
 
