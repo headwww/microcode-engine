@@ -24,12 +24,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20' # 推荐使用 LTS 版本
-          cache: 'pnpm' # 缓存 pnpm 依赖
+          # cache: 'pnpm' # 移除了这里的 cache，因为 pnpm 会单独安装
 
-      - name: 🟢 Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 10.13.1
+      - name: 📥 Install pnpm
+        run: npm install -g pnpm@10.13.1 # 全局安装 pnpm
 
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile # 安装所有项目依赖
@@ -47,28 +45,24 @@ jobs:
             echo "::set-output name=has_changes::false"
           fi
         env:
-          # GITHUB_TOKEN 是 GitHub Actions 默认提供的，用于权限操作，例如推送到仓库
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # changesets 可能需要此token来推送到仓库
 
       - name: 📦 Full build
         run: pnpm build # 对所有包进行全量 build
 
       - name: 🚀 Publish packages (changesets)
-        # 只有当 'changesets_version' 步骤的输出 'has_changes' 为 'true' 时才执行发布
-        if: steps.changesets_version.outputs.has_changes == 'true'
+        if: steps.changesets_version.outputs.has_changes == 'true' # 只有当有版本变更时才执行发布
         run: npx changeset publish # 按依赖顺序自动发布
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # npm token，用于发布到 npm
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # changesets 可能需要此token来推送到仓库
 
       - name: ⬆️ Push changes back to main branch
-        # 只有当 'changesets_version' 步骤的输出 'has_changes' 为 'true' 时才推回
-        if: steps.changesets_version.outputs.has_changes == 'true'
+        if: steps.changesets_version.outputs.has_changes == 'true' # 只有当有版本变更时才推回
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          # 使用 [skip ci] 避免本次推送再次触发 CI 循环
           git commit -m "chore: release changes [skip ci]" # 提交版本和changelog文件
           git push
         env:
