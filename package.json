@@ -44,13 +44,6 @@
 	},
 	"dependencies": {
 		"@ant-design/icons-vue": "^7.0.1",
-		"@arvin-shu/microcode-designer": "workspace:^",
-		"@arvin-shu/microcode-editor-core": "workspace:^",
-		"@arvin-shu/microcode-editor-skeleton": "workspace:^",
-		"@arvin-shu/microcode-engine": "workspace:^",
-		"@arvin-shu/microcode-shell": "workspace:^",
-		"@arvin-shu/microcode-types": "workspace:^",
-		"@arvin-shu/microcode-utils": "workspace:^",
 		"ant-design-vue": "^4.2.5",
 		"lodash": "^4.17.21",
 		"lodash-es": "^4.17.21"
