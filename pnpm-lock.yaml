@@ -404,20 +404,20 @@ importers:
   packages/renderer-core:
     dependencies:
       '@arvin-shu/microcode-datasource-engine':
-        specifier: ^1.0.3
+        specifier: ^1.0.4
         version: 1.0.4
       '@arvin-shu/microcode-datasource-types':
         specifier: ^1.0.1
         version: 1.0.1
       '@arvin-shu/microcode-designer':
-        specifier: ^1.0.13
-        version: 1.0.13(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
+        specifier: ^1.0.14
+        version: 1.0.14(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-types':
-        specifier: ^1.0.6
+        specifier: ^1.0.7
         version: 1.0.7
       intl-messageformat:
-        specifier: ^10.7.3
-        version: 10.7.7
+        specifier: ^10.7.16
+        version: 10.7.16
 
   packages/shell:
     dependencies:
@@ -509,11 +509,6 @@ packages:
 
   '@arvin-shu/microcode-datasource-types@1.0.1':
     resolution: {integrity: sha512-GN044RjxHtITeevQx/llZSHNOb0u4ro20qnMl/yiJRVs05/y7jF4GOl8Wfc+fJmwcdcbagiim9v7wRjhUDw/yQ==}
-
-  '@arvin-shu/microcode-designer@1.0.13':
-    resolution: {integrity: sha512-hNQTpIr3hW04+3cdr1Y1CEYwT7YjIhPKgqB9snlyHYrzKiQv96IyiQ1kz5aSdWrBtFeKVNQqD3cvI7N19e8zRQ==}
-    peerDependencies:
-      ant-design-vue: '*'
 
   '@arvin-shu/microcode-designer@1.0.14':
     resolution: {integrity: sha512-b24dPToscw0IRAn6TVvTWGsc/TUq6hO/sN69m26pCUz83fVcZBJXs9Ti3nxZGb+bVUbyqDAn03zNWz9PCg/DwA==}
@@ -5295,18 +5290,6 @@ snapshots:
       lodash-es: 4.17.21
 
   '@arvin-shu/microcode-datasource-types@1.0.1': {}
-
-  '@arvin-shu/microcode-designer@1.0.13(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
-    dependencies:
-      '@arvin-shu/microcode-editor-core': 1.0.6(reflect-metadata@0.2.2)
-      '@arvin-shu/microcode-types': 1.0.7
-      '@arvin-shu/microcode-utils': 1.1.4
-      ant-design-vue: 4.2.6(vue@3.5.17(typescript@5.8.2))
-      lodash-es: 4.17.21
-      ric-shim: 1.0.1
-      semver: 7.7.2
-    transitivePeerDependencies:
-      - reflect-metadata
 
   '@arvin-shu/microcode-designer@1.0.14(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)':
     dependencies:
