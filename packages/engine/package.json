@@ -1,6 +1,6 @@
 {
 	"name": "@arvin-shu/microcode-engine",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"description": "",
 	"main": "src/engine-core.ts",
 	"module": "src/engine-core.ts",
@@ -17,11 +17,11 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"@arvin-shu/microcode-designer": "^1.0.15",
-		"@arvin-shu/microcode-editor-core": "^1.0.7",
-		"@arvin-shu/microcode-editor-skeleton": "^1.0.11",
-		"@arvin-shu/microcode-shell": "^1.0.4",
+		"@arvin-shu/microcode-designer": "^1.0.16",
+		"@arvin-shu/microcode-editor-core": "^1.0.8",
+		"@arvin-shu/microcode-editor-skeleton": "^1.0.12",
+		"@arvin-shu/microcode-shell": "^1.0.5",
 		"@arvin-shu/microcode-types": "^1.0.8",
-		"@arvin-shu/microcode-utils": "^1.1.5"
+		"@arvin-shu/microcode-utils": "^1.1.6"
 	}
 }
