@@ -1,6 +1,6 @@
 {
 	"name": "@arvin-shu/microcode-designer",
-	"version": "1.0.14",
+	"version": "1.0.15",
 	"description": "microcode designer",
 	"main": "src/index.ts",
 	"module": "src/index.ts",
@@ -20,9 +20,9 @@
 		"ant-design-vue": "*"
 	},
 	"dependencies": {
-		"@arvin-shu/microcode-editor-core": "^1.0.6",
-		"@arvin-shu/microcode-types": "^1.0.7",
-		"@arvin-shu/microcode-utils": "^1.1.4",
+		"@arvin-shu/microcode-editor-core": "^1.0.7",
+		"@arvin-shu/microcode-types": "^1.0.8",
+		"@arvin-shu/microcode-utils": "^1.1.5",
 		"lodash-es": "^4.17.21",
 		"ric-shim": "^1.0.1",
 		"semver": "^7.6.3"

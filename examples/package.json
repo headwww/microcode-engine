@@ -1,6 +1,6 @@
 {
 	"name": "@arvin-shu/microcode-examples",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"private": true,
 	"description": "",
 	"main": "index.js",
@@ -22,7 +22,7 @@
 	"dependencies": {
 		"@arvin-shu/microcode-datasource-types": "^1.0.1",
 		"@arvin-shu/microcode-plugin-base-monaco-editor": "^1.0.0",
-		"@arvin-shu/microcode-renderer-core": "^1.0.17",
+		"@arvin-shu/microcode-renderer-core": "^1.0.24",
 		"@arvin-shu/microcode-theme": "workspace:^",
 		"@arvin-shu/microcode-designer": "workspace:^",
 		"@arvin-shu/microcode-editor-core": "workspace:^",

@@ -1,6 +1,6 @@
 {
 	"name": "@arvin-shu/microcode-theme",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "microcode主题",
 	"main": "index.css",
 	"style": "index.css",
