@@ -334,11 +334,11 @@ importers:
   packages/editor-core:
     dependencies:
       '@arvin-shu/microcode-types':
-        specifier: ^1.0.6
-        version: 1.0.6
+        specifier: ^1.0.7
+        version: 1.0.7
       '@arvin-shu/microcode-utils':
-        specifier: ^1.1.3
-        version: 1.1.3
+        specifier: ^1.1.4
+        version: 1.1.4
       eventemitter2:
         specifier: ^6.4.9
         version: 6.4.9
@@ -403,7 +403,7 @@ importers:
     dependencies:
       '@arvin-shu/microcode-datasource-engine':
         specifier: ^1.0.3
-        version: 1.0.3
+        version: 1.0.4
       '@arvin-shu/microcode-datasource-types':
         specifier: ^1.0.1
         version: 1.0.1
@@ -412,7 +412,7 @@ importers:
         version: 1.0.13(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-types':
         specifier: ^1.0.6
-        version: 1.0.6
+        version: 1.0.7
       intl-messageformat:
         specifier: ^10.7.3
         version: 10.7.7
@@ -502,8 +502,8 @@ packages:
   '@antfu/utils@0.7.10':
     resolution: {integrity: sha512-+562v9k4aI80m1+VuMHehNJWLOFjBnXn3tdOitzD0il5b7smkSBal4+a3oKiQTbrwMmN/TBUMDvbdoWDehgOww==}
 
-  '@arvin-shu/microcode-datasource-engine@1.0.3':
-    resolution: {integrity: sha512-37Dz9Y/MFIgyscU3bn0lLBSsYzt6oLe4Uuy7XG7XHmwfLEsH3/rUKLhoy4zSHlUUzn+zkIUZOtxtBBxqg3JhCg==}
+  '@arvin-shu/microcode-datasource-engine@1.0.4':
+    resolution: {integrity: sha512-SWpH3h0hxTbHlBizgzRgiq/BJj3x7kDlDbKT1+O6EPpV8jq6pW3qxrIMEc528BIgP6QESuiB8tWEe+Vu6S737g==}
 
   '@arvin-shu/microcode-datasource-types@1.0.1':
     resolution: {integrity: sha512-GN044RjxHtITeevQx/llZSHNOb0u4ro20qnMl/yiJRVs05/y7jF4GOl8Wfc+fJmwcdcbagiim9v7wRjhUDw/yQ==}
@@ -547,6 +547,9 @@ packages:
 
   '@arvin-shu/microcode-utils@1.1.3':
     resolution: {integrity: sha512-E3YhFvvbPCCKftsq37fgpze2FmcS3Ujd6o40k46/ZUCWcGq/IdGhs4aZSj6drtzmPifLwRY5nKYpvnuab7JUkQ==}
+
+  '@arvin-shu/microcode-utils@1.1.4':
+    resolution: {integrity: sha512-Hdj3LkRX4j3xLdBvHVx7VYnueeQaKJMH8ExwrkhNdxiZJPvMMaIHxjovAkeSRvxULMEVBzku4e7iTOihOKoA8w==}
 
   '@babel/code-frame@7.26.2':
     resolution: {integrity: sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ==}
@@ -1437,21 +1440,25 @@ packages:
     resolution: {integrity: sha512-dMHO0PG0KYVeLxCOsmE7HMsdVmvovYPp+2k00Mp/PTu9HqbmFPdYaWbbDs0g+tqePL8u+Q7+bEMX7gUFGPFP2Q==}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-resolver/binding-linux-arm64-musl@2.0.1':
     resolution: {integrity: sha512-J0O5YbVZ+ioDH7e9VhHnqEEj140iHDB5KdxNIfRbPWa3nVuRrWDeBztk8239Yi1Mjb0tGp1m1arGU/XmlEar0A==}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@oxc-resolver/binding-linux-x64-gnu@2.0.1':
     resolution: {integrity: sha512-5nGiVH3R0p8SxHN47hd0bwtCDxdeWlQ6z1UO1U3wx6LfBwqSKbsuL1r5Z/+izBOEAtON1QQlpDBUaoCQMCyduQ==}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-resolver/binding-linux-x64-musl@2.0.1':
     resolution: {integrity: sha512-abG5WmO2ZgkQTTfRZItFatzo9d+KYuePJ68cp1sJ/gHlNTliE+/6XepTggmRm85+8ehexjjceldvNdj80j6Gjg==}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@oxc-resolver/binding-wasm32-wasi@2.0.1':
     resolution: {integrity: sha512-CES19bgvEETC1YkpdJSFFrprtZ5L7VaoxR5ZVNUJrpCAM6WVPMhjev2NXLfgzbaHOBJo6lL4jnTDCtRPwzoYQw==}
@@ -1497,36 +1504,42 @@ packages:
     engines: {node: '>= 10.0.0'}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@parcel/watcher-linux-arm-musl@2.5.0':
     resolution: {integrity: sha512-6uHywSIzz8+vi2lAzFeltnYbdHsDm3iIB57d4g5oaB9vKwjb6N6dRIgZMujw4nm5r6v9/BQH0noq6DzHrqr2pA==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@parcel/watcher-linux-arm64-glibc@2.5.0':
     resolution: {integrity: sha512-BfNjXwZKxBy4WibDb/LDCriWSKLz+jJRL3cM/DllnHH5QUyoiUNEp3GmL80ZqxeumoADfCCP19+qiYiC8gUBjA==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@parcel/watcher-linux-arm64-musl@2.5.0':
     resolution: {integrity: sha512-S1qARKOphxfiBEkwLUbHjCY9BWPdWnW9j7f7Hb2jPplu8UZ3nes7zpPOW9bkLbHRvWM0WDTsjdOTUgW0xLBN1Q==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@parcel/watcher-linux-x64-glibc@2.5.0':
     resolution: {integrity: sha512-d9AOkusyXARkFD66S6zlGXyzx5RvY+chTP9Jp0ypSTC9d4lzyRs9ovGf/80VCxjKddcUvnsGwCHWuF2EoPgWjw==}
     engines: {node: '>= 10.0.0'}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@parcel/watcher-linux-x64-musl@2.5.0':
     resolution: {integrity: sha512-iqOC+GoTDoFyk/VYSFHwjHhYrk8bljW6zOhPuhi5t9ulqiYq1togGJB5e3PwYVFFfeVgc6pbz3JdQyDoBszVaA==}
     engines: {node: '>= 10.0.0'}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@parcel/watcher-win32-arm64@2.5.0':
     resolution: {integrity: sha512-twtft1d+JRNkM5YbmexfcH/N4znDtjgysFaV9zvZmmJezQsKpkfLYJ+JFV3uygugK6AtIM2oADPkB2AdhBrNig==}
@@ -1648,46 +1661,55 @@ packages:
     resolution: {integrity: sha512-6npqOKEPRZkLrMcvyC/32OzJ2srdPzCylJjiTJT2c0bwwSGm7nz2F9mNQ1WrAqCBZROcQn91Fno+khFhVijmFA==}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.27.2':
     resolution: {integrity: sha512-V9Xg6eXtgBtHq2jnuQwM/jr2mwe2EycnopO8cbOvpzFuySCGtKlPCI3Hj9xup/pJK5Q0388qfZZy2DqV2J8ftw==}
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.27.2':
     resolution: {integrity: sha512-uCFX9gtZJoQl2xDTpRdseYuNqyKkuMDtH6zSrBTA28yTfKyjN9hQ2B04N5ynR8ILCoSDOrG/Eg+J2TtJ1e/CSA==}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.27.2':
     resolution: {integrity: sha512-/PU9P+7Rkz8JFYDHIi+xzHabOu9qEWR07L5nWLIUsvserrxegZExKCi2jhMZRd0ATdboKylu/K5yAXbp7fYFvA==}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-powerpc64le-gnu@4.27.2':
     resolution: {integrity: sha512-eCHmol/dT5odMYi/N0R0HC8V8QE40rEpkyje/ZAXJYNNoSfrObOvG/Mn+s1F/FJyB7co7UQZZf6FuWnN6a7f4g==}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-gnu@4.27.2':
     resolution: {integrity: sha512-DEP3Njr9/ADDln3kNi76PXonLMSSMiCir0VHXxmGSHxCxDfQ70oWjHcJGfiBugzaqmYdTC7Y+8Int6qbnxPBIQ==}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-s390x-gnu@4.27.2':
     resolution: {integrity: sha512-NHGo5i6IE/PtEPh5m0yw5OmPMpesFnzMIS/lzvN5vknnC1sXM5Z/id5VgcNPgpD+wHmIcuYYgW+Q53v+9s96lQ==}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.27.2':
     resolution: {integrity: sha512-PaW2DY5Tan+IFvNJGHDmUrORadbe/Ceh8tQxi8cmdQVCCYsLoQo2cuaSj+AU+YRX8M4ivS2vJ9UGaxfuNN7gmg==}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.27.2':
     resolution: {integrity: sha512-dOlWEMg2gI91Qx5I/HYqOD6iqlJspxLcS4Zlg3vjk1srE67z5T2Uz91yg/qA8sY0XcwQrFzWWiZhMNERylLrpQ==}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-win32-arm64-msvc@4.27.2':
     resolution: {integrity: sha512-euMIv/4x5Y2/ImlbGl88mwKNXDsvzbWUlT7DFky76z2keajCtcbAsN9LUdmk31hAoVmJJYSThgdA0EsPeTr1+w==}
@@ -5271,10 +5293,10 @@ snapshots:
 
   '@antfu/utils@0.7.10': {}
 
-  '@arvin-shu/microcode-datasource-engine@1.0.3':
+  '@arvin-shu/microcode-datasource-engine@1.0.4':
     dependencies:
       '@arvin-shu/microcode-datasource-types': 1.0.1
-      '@arvin-shu/microcode-types': 1.0.6
+      '@arvin-shu/microcode-types': 1.0.7
       lodash-es: 4.17.21
 
   '@arvin-shu/microcode-datasource-types@1.0.1': {}
@@ -5283,7 +5305,7 @@ snapshots:
     dependencies:
       '@arvin-shu/microcode-editor-core': 1.0.5(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-types': 1.0.7
-      '@arvin-shu/microcode-utils': 1.1.3
+      '@arvin-shu/microcode-utils': 1.1.4
       ant-design-vue: 4.2.6(vue@3.5.17(typescript@5.8.2))
       lodash-es: 4.17.21
       ric-shim: 1.0.1
@@ -5333,10 +5355,10 @@ snapshots:
 
   '@arvin-shu/microcode-renderer-core@1.0.20(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
     dependencies:
-      '@arvin-shu/microcode-datasource-engine': 1.0.3
+      '@arvin-shu/microcode-datasource-engine': 1.0.4
       '@arvin-shu/microcode-datasource-types': 1.0.1
       '@arvin-shu/microcode-designer': 1.0.12(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
-      '@arvin-shu/microcode-types': 1.0.6
+      '@arvin-shu/microcode-types': 1.0.7
       intl-messageformat: 10.7.16
     transitivePeerDependencies:
       - ant-design-vue
@@ -5344,10 +5366,10 @@ snapshots:
 
   '@arvin-shu/microcode-renderer-core@1.0.22(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
     dependencies:
-      '@arvin-shu/microcode-datasource-engine': 1.0.3
+      '@arvin-shu/microcode-datasource-engine': 1.0.4
       '@arvin-shu/microcode-datasource-types': 1.0.1
       '@arvin-shu/microcode-designer': 1.0.13(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
-      '@arvin-shu/microcode-types': 1.0.7
+      '@arvin-shu/microcode-types': 1.0.6
       intl-messageformat: 10.7.16
     transitivePeerDependencies:
       - ant-design-vue
@@ -5379,6 +5401,12 @@ snapshots:
   '@arvin-shu/microcode-utils@1.1.3':
     dependencies:
       '@arvin-shu/microcode-types': 1.0.6
+      eventemitter2: 6.4.9
+      lodash-es: 4.17.21
+
+  '@arvin-shu/microcode-utils@1.1.4':
+    dependencies:
+      '@arvin-shu/microcode-types': 1.0.7
       eventemitter2: 6.4.9
       lodash-es: 4.17.21
 
