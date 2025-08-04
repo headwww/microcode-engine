@@ -208,9 +208,6 @@ importers:
       '@arvin-shu/microcode-plugin-base-monaco-editor':
         specifier: ^1.0.0
         version: 1.0.0(monaco-editor@0.52.2)
-      '@arvin-shu/microcode-renderer-core':
-        specifier: ^1.0.23
-        version: 1.0.23(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
       '@arvin-shu/microcode-shell':
         specifier: workspace:^
         version: link:../packages/shell/dist
