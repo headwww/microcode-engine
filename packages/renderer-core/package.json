@@ -1,6 +1,6 @@
 {
 	"name": "@arvin-shu/microcode-renderer-core",
-	"version": "1.0.24",
+	"version": "1.0.23",
 	"description": "",
 	"main": "lib/index.js",
 	"module": "es/index.js",
