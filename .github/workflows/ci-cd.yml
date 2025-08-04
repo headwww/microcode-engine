@@ -69,23 +69,8 @@ jobs:
         run: pnpm build # 对所有包进行全量 build
 
       - name: 🚀 Publish packages (changesets)
-        if: steps.changesets_version.outputs.has_changes == 'true'
-        run: |
-          PUBLISHED_PACKAGES=$(npx changeset status --json | jq -r '.releases[].name')
-          for pkg in $PUBLISHED_PACKAGES; do
-            PKG_NAME="${pkg##*/}"
-            PKG_PATH="packages/$PKG_NAME"
-            DIST_PATH="$PKG_PATH/dist"
-            CHANGELOG_PATH="$PKG_PATH/CHANGELOG.md"
-            if [ -d "$DIST_PATH" ] && [ -f "$CHANGELOG_PATH" ]; then
-              echo "Publishing package $PKG_NAME from $DIST_PATH (changelog exists)"
-              cd "$DIST_PATH"
-              npm publish --access public
-              cd - # 返回原目录
-            else
-              echo "Skip $PKG_NAME: dist 或 changelog 不存在"
-            fi
-          done
+        if: steps.changesets_version.outputs.has_changes == 'true' # 只有当有版本变更时才执行发布
+        run: npx changeset publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
