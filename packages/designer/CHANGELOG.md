@@ -1,5 +1,14 @@
 # @arvin-shu/microcode-designer
 
+## 1.0.17
+
+### Patch Changes
+
+- 28ed8f6: 再次测试打包
+- Updated dependencies [28ed8f6]
+  - @arvin-shu/microcode-editor-core@1.0.9
+  - @arvin-shu/microcode-utils@1.1.7
+
 ## 1.0.16
 
 ### Patch Changes

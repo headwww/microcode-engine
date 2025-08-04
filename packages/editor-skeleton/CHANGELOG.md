@@ -1,5 +1,16 @@
 # @arvin-shu/microcode-editor-skeleton
 
+## 1.0.13
+
+### Patch Changes
+
+- 28ed8f6: 再次测试打包
+- Updated dependencies [28ed8f6]
+  - @arvin-shu/microcode-designer@1.0.17
+  - @arvin-shu/microcode-editor-core@1.0.9
+  - @arvin-shu/microcode-shell@1.0.6
+  - @arvin-shu/microcode-utils@1.1.7
+
 ## 1.0.12
 
 ### Patch Changes
