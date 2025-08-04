@@ -195,16 +195,16 @@ importers:
         version: 1.0.1
       '@arvin-shu/microcode-designer':
         specifier: workspace:^
-        version: link:../packages/designer
+        version: link:../packages/designer/dist
       '@arvin-shu/microcode-editor-core':
         specifier: workspace:^
-        version: link:../packages/editor-core
+        version: link:../packages/editor-core/dist
       '@arvin-shu/microcode-editor-skeleton':
         specifier: workspace:^
-        version: link:../packages/editor-skeleton
+        version: link:../packages/editor-skeleton/dist
       '@arvin-shu/microcode-engine':
         specifier: workspace:^
-        version: link:../packages/engine
+        version: link:../packages/engine/dist
       '@arvin-shu/microcode-plugin-base-monaco-editor':
         specifier: ^1.0.0
         version: 1.0.0(monaco-editor@0.52.2)
@@ -213,16 +213,16 @@ importers:
         version: 1.0.23(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-shell':
         specifier: workspace:^
-        version: link:../packages/shell
+        version: link:../packages/shell/dist
       '@arvin-shu/microcode-theme':
         specifier: workspace:^
-        version: link:../packages/theme
+        version: link:../packages/theme/dist
       '@arvin-shu/microcode-types':
         specifier: workspace:^
-        version: link:../packages/types
+        version: link:../packages/types/dist
       '@arvin-shu/microcode-utils':
         specifier: workspace:^
-        version: link:../packages/utils
+        version: link:../packages/utils/dist
       '@ckpack/vue-color':
         specifier: ^1.6.0
         version: 1.6.0(vue@3.5.17(typescript@5.8.2))
@@ -330,6 +330,7 @@ importers:
       '@types/semver':
         specifier: ^7.5.8
         version: 7.7.0
+    publishDirectory: dist
 
   packages/editor-core:
     dependencies:
@@ -358,6 +359,7 @@ importers:
       '@types/store':
         specifier: ^2.0.5
         version: 2.0.5
+    publishDirectory: dist
 
   packages/editor-skeleton:
     dependencies:
@@ -379,6 +381,7 @@ importers:
       ant-design-vue:
         specifier: '*'
         version: 4.2.6(vue@3.5.17(typescript@5.8.2))
+    publishDirectory: dist
 
   packages/engine:
     dependencies:
@@ -400,6 +403,7 @@ importers:
       '@arvin-shu/microcode-utils':
         specifier: ^1.1.7
         version: 1.1.7
+    publishDirectory: dist
 
   packages/renderer-core:
     dependencies:
@@ -418,6 +422,7 @@ importers:
       intl-messageformat:
         specifier: ^10.7.16
         version: 10.7.16
+    publishDirectory: dist
 
   packages/shell:
     dependencies:
@@ -436,8 +441,10 @@ importers:
       '@arvin-shu/microcode-utils':
         specifier: ^1.1.7
         version: 1.1.7
+    publishDirectory: dist
 
-  packages/theme: {}
+  packages/theme:
+    publishDirectory: dist
 
   packages/types:
     dependencies:
@@ -450,6 +457,7 @@ importers:
       strict-event-emitter-types:
         specifier: ^2.0.0
         version: 2.0.0
+    publishDirectory: dist
 
   packages/utils:
     dependencies:
@@ -462,6 +470,7 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
+    publishDirectory: dist
 
   packages/vue-simulator-renderer:
     dependencies:
@@ -483,6 +492,7 @@ importers:
       vue-router:
         specifier: ^4.5.1
         version: 4.5.1(vue@3.5.17(typescript@5.8.2))
+    publishDirectory: dist
 
 packages:
 
