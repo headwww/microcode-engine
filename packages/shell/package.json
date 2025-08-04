@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
 	"name": "@arvin-shu/microcode-shell",
 	"version": "1.0.5",
 	"description": "microcode shell",
@@ -28,3 +29,33 @@
 		"@arvin-shu/microcode-utils": "^1.1.7"
 	}
 }
+=======
+    "name": "@arvin-shu/microcode-shell",
+    "version": "1.0.6",
+    "description": "microcode shell",
+    "main": "src/index.ts",
+    "module": "src/index.ts",
+    "files": [
+        "lib",
+        "es"
+    ],
+    "scripts": {
+        "build": "cross-env ORIGINAL_CWD=$PWD pnpm --filter ../../build-scripts run start",
+        "clear": "rm -rf dist"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@arvin-shu/microcode-designer": "^1.0.17",
+        "@arvin-shu/microcode-editor-core": "^1.0.9",
+        "@arvin-shu/microcode-editor-skeleton": "^1.0.13",
+        "@arvin-shu/microcode-types": "^1.0.8",
+        "@arvin-shu/microcode-utils": "^1.1.8"
+    }
+}
+>>>>>>> d6305c1295e693eeb0b25423663b122454a5cb5b

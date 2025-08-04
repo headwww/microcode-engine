@@ -1,6 +1,6 @@
 {
 	"name": "@arvin-shu/microcode-utils",
-	"version": "1.1.7",
+	"version": "1.1.8",
 	"description": "microcode工具库",
 	"main": "src/index.ts",
 	"module": "src/index.ts",
