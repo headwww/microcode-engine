@@ -1,30 +1,30 @@
 {
-	"name": "@arvin-shu/microcode-renderer-core",
-	"version": "1.0.23",
-	"description": "",
-	"main": "lib/index.js",
-	"module": "es/index.js",
-	"files": [
-		"lib",
-		"es",
-		"dist"
-	],
-	"scripts": {
-		"build": "cross-env ORIGINAL_CWD=$PWD BUILD_UMD=true COPY_THEME=true UMD_NAME='MicrocodeRendererCore' pnpm --filter ../../build-scripts run start",
-		"clear": "rm -rf dist"
-	},
-	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org/"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"dependencies": {
-		"@arvin-shu/microcode-datasource-engine": "^1.0.5",
-		"@arvin-shu/microcode-datasource-types": "^1.0.1",
-		"@arvin-shu/microcode-designer": "^1.0.15",
-		"@arvin-shu/microcode-types": "^1.0.8",
-		"intl-messageformat": "^10.7.16"
-	}
+    "name": "@arvin-shu/microcode-renderer-core",
+    "version": "1.0.23",
+    "description": "",
+    "main": "lib/index.js",
+    "module": "es/index.js",
+    "files": [
+        "lib",
+        "es",
+        "dist"
+    ],
+    "scripts": {
+        "build": "cross-env ORIGINAL_CWD=$PWD BUILD_UMD=true COPY_THEME=true UMD_NAME='MicrocodeRendererCore' pnpm --filter ../../build-scripts run start",
+        "clear": "rm -rf dist"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@arvin-shu/microcode-datasource-engine": "^1.0.5",
+        "@arvin-shu/microcode-datasource-types": "^1.0.1",
+        "@arvin-shu/microcode-designer": "^1.0.16",
+        "@arvin-shu/microcode-types": "^1.0.8",
+        "intl-messageformat": "^10.7.16"
+    }
 }

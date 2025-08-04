@@ -210,7 +210,7 @@ importers:
         version: 1.0.0(monaco-editor@0.52.2)
       '@arvin-shu/microcode-renderer-core':
         specifier: ^1.0.23
-        version: 1.0.23(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
+        version: 1.0.23(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-shell':
         specifier: workspace:^
         version: link:../packages/shell
@@ -312,8 +312,8 @@ importers:
         specifier: ^1.0.8
         version: 1.0.8
       '@arvin-shu/microcode-utils':
-        specifier: ^1.1.6
-        version: 1.1.6
+        specifier: ^1.1.7
+        version: 1.1.7
       ant-design-vue:
         specifier: '*'
         version: 4.2.6(vue@3.5.17(typescript@5.8.2))
@@ -337,8 +337,8 @@ importers:
         specifier: ^1.0.8
         version: 1.0.8
       '@arvin-shu/microcode-utils':
-        specifier: ^1.1.6
-        version: 1.1.6
+        specifier: ^1.1.7
+        version: 1.1.7
       eventemitter2:
         specifier: ^6.4.9
         version: 6.4.9
@@ -374,8 +374,8 @@ importers:
         specifier: ^1.0.8
         version: 1.0.8
       '@arvin-shu/microcode-utils':
-        specifier: ^1.1.6
-        version: 1.1.6
+        specifier: ^1.1.7
+        version: 1.1.7
       ant-design-vue:
         specifier: '*'
         version: 4.2.6(vue@3.5.17(typescript@5.8.2))
@@ -398,8 +398,8 @@ importers:
         specifier: ^1.0.8
         version: 1.0.8
       '@arvin-shu/microcode-utils':
-        specifier: ^1.1.6
-        version: 1.1.6
+        specifier: ^1.1.7
+        version: 1.1.7
 
   packages/renderer-core:
     dependencies:
@@ -410,8 +410,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       '@arvin-shu/microcode-designer':
-        specifier: ^1.0.15
-        version: 1.0.15(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
+        specifier: ^1.0.16
+        version: 1.0.16(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-types':
         specifier: ^1.0.8
         version: 1.0.8
@@ -434,8 +434,8 @@ importers:
         specifier: ^1.0.8
         version: 1.0.8
       '@arvin-shu/microcode-utils':
-        specifier: ^1.1.6
-        version: 1.1.6
+        specifier: ^1.1.7
+        version: 1.1.7
 
   packages/theme: {}
 
@@ -467,7 +467,7 @@ importers:
     dependencies:
       '@arvin-shu/microcode-renderer-core':
         specifier: ^1.0.23
-        version: 1.0.23(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
+        version: 1.0.23(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-types':
         specifier: ^1.0.8
         version: 1.0.8
@@ -553,8 +553,8 @@ packages:
   '@arvin-shu/microcode-utils@1.1.5':
     resolution: {integrity: sha512-9aS69KIv73ENEO3bdFdXpS22XERQTVs9W8Z5YLCoYpIOrconBHlqStytY2ouy5uA/6zl+noF+hJf6CF3OSmgkg==}
 
-  '@arvin-shu/microcode-utils@1.1.6':
-    resolution: {integrity: sha512-dWOFRh4/T7YSGAT2btmbP8UM9f2hTklRciM41n55q/jFDO5IQpZvG7mC9gqgZ0uhFCDJFmd+fxwh5ElGgqs7Kg==}
+  '@arvin-shu/microcode-utils@1.1.7':
+    resolution: {integrity: sha512-bokAfSciIlzGfxy5KwDePCPypHQHLJBrYqu3G77IgBrSy4cnl640i70AdJD7K+WN6Hw62SQ8fEt4FM92aOvhYw==}
 
   '@babel/code-frame@7.26.2':
     resolution: {integrity: sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ==}
@@ -5296,11 +5296,11 @@ snapshots:
 
   '@arvin-shu/microcode-datasource-types@1.0.1': {}
 
-  '@arvin-shu/microcode-designer@1.0.15(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
+  '@arvin-shu/microcode-designer@1.0.15(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)':
     dependencies:
       '@arvin-shu/microcode-editor-core': 1.0.8(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-types': 1.0.8
-      '@arvin-shu/microcode-utils': 1.1.6
+      '@arvin-shu/microcode-utils': 1.1.7
       ant-design-vue: 4.2.6(vue@3.5.17(typescript@5.8.2))
       lodash-es: 4.17.21
       ric-shim: 1.0.1
@@ -5312,7 +5312,7 @@ snapshots:
     dependencies:
       '@arvin-shu/microcode-editor-core': 1.0.8(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-types': 1.0.8
-      '@arvin-shu/microcode-utils': 1.1.6
+      '@arvin-shu/microcode-utils': 1.1.7
       ant-design-vue: 4.2.6(vue@3.5.17(typescript@5.8.2))
       lodash-es: 4.17.21
       ric-shim: 1.0.1
@@ -5323,7 +5323,7 @@ snapshots:
   '@arvin-shu/microcode-editor-core@1.0.8(reflect-metadata@0.2.2)':
     dependencies:
       '@arvin-shu/microcode-types': 1.0.8
-      '@arvin-shu/microcode-utils': 1.1.6
+      '@arvin-shu/microcode-utils': 1.1.7
       eventemitter2: 6.4.9
       intl-messageformat: 10.7.16
       lodash-es: 4.17.21
@@ -5338,7 +5338,7 @@ snapshots:
       '@arvin-shu/microcode-editor-core': 1.0.8(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-shell': 1.0.5(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-types': 1.0.8
-      '@arvin-shu/microcode-utils': 1.1.6
+      '@arvin-shu/microcode-utils': 1.1.7
       ant-design-vue: 4.2.6(vue@3.5.17(typescript@5.8.2))
     transitivePeerDependencies:
       - reflect-metadata
@@ -5348,7 +5348,7 @@ snapshots:
       '@arvin-shu/microcode-editor-core': 1.0.8(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-shell': 1.0.2(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-types': 1.0.8
-      '@arvin-shu/microcode-utils': 1.1.6
+      '@arvin-shu/microcode-utils': 1.1.7
       ant-design-vue: 4.2.6(vue@3.5.17(typescript@5.8.2))
     transitivePeerDependencies:
       - reflect-metadata
@@ -5359,11 +5359,11 @@ snapshots:
     transitivePeerDependencies:
       - monaco-editor
 
-  '@arvin-shu/microcode-renderer-core@1.0.23(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
+  '@arvin-shu/microcode-renderer-core@1.0.23(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)':
     dependencies:
       '@arvin-shu/microcode-datasource-engine': 1.0.5
       '@arvin-shu/microcode-datasource-types': 1.0.1
-      '@arvin-shu/microcode-designer': 1.0.15(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
+      '@arvin-shu/microcode-designer': 1.0.15(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-types': 1.0.8
       intl-messageformat: 10.7.16
     transitivePeerDependencies:
@@ -5376,7 +5376,7 @@ snapshots:
       '@arvin-shu/microcode-editor-core': 1.0.8(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-editor-skeleton': 1.0.8(@arvin-shu/microcode-shell@1.0.2(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2))(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-types': 1.0.8
-      '@arvin-shu/microcode-utils': 1.1.6
+      '@arvin-shu/microcode-utils': 1.1.7
     transitivePeerDependencies:
       - ant-design-vue
       - reflect-metadata
@@ -5387,7 +5387,7 @@ snapshots:
       '@arvin-shu/microcode-editor-core': 1.0.8(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-editor-skeleton': 1.0.12(@arvin-shu/microcode-shell@1.0.5(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2))(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-types': 1.0.8
-      '@arvin-shu/microcode-utils': 1.1.6
+      '@arvin-shu/microcode-utils': 1.1.7
     transitivePeerDependencies:
       - ant-design-vue
       - reflect-metadata
@@ -5404,7 +5404,7 @@ snapshots:
       eventemitter2: 6.4.9
       lodash-es: 4.17.21
 
-  '@arvin-shu/microcode-utils@1.1.6':
+  '@arvin-shu/microcode-utils@1.1.7':
     dependencies:
       '@arvin-shu/microcode-types': 1.0.8
       eventemitter2: 6.4.9
