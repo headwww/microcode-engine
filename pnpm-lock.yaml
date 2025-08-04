@@ -210,7 +210,7 @@ importers:
         version: 1.0.0(monaco-editor@0.52.2)
       '@arvin-shu/microcode-renderer-core':
         specifier: ^1.0.17
-        version: 1.0.20(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
+        version: 1.0.20(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-shell':
         specifier: workspace:^
         version: link:../packages/shell
@@ -466,14 +466,14 @@ importers:
   packages/vue-simulator-renderer:
     dependencies:
       '@arvin-shu/microcode-renderer-core':
-        specifier: ^1.0.22
-        version: 1.0.22(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
+        specifier: ^1.0.23
+        version: 1.0.23(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
       '@arvin-shu/microcode-types':
-        specifier: ^1.0.6
-        version: 1.0.6
+        specifier: ^1.0.7
+        version: 1.0.7
       '@arvin-shu/microcode-utils':
-        specifier: ^1.1.3
-        version: 1.1.3
+        specifier: ^1.1.4
+        version: 1.1.4
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
@@ -530,8 +530,8 @@ packages:
   '@arvin-shu/microcode-renderer-core@1.0.20':
     resolution: {integrity: sha512-1zdwdHPkhI/GkgxE0HyS3Ah7iJetFwV13hu7KrC/KqdKwkkfDuSxPoY8lrr0qTJG1alsp4Hhx541Bf8lxpD+7g==}
 
-  '@arvin-shu/microcode-renderer-core@1.0.22':
-    resolution: {integrity: sha512-fCt9K2f+VLIqp7X8e32I0sG0iMcYmENNKBQEJNNwp3JGW9BcVHctlTQiJOmFWYa2T7RGqlZxA+D/KQURzCcyog==}
+  '@arvin-shu/microcode-renderer-core@1.0.23':
+    resolution: {integrity: sha512-YmXf36bj4o5nBHatsZDNYAvL3ZbTUZoj+Os9Y1G92pRZ3T3aA5hhAPJD+yXeQNfcdpycDFKzd0AIoJTZpagdXQ==}
 
   '@arvin-shu/microcode-shell@1.0.2':
     resolution: {integrity: sha512-x+BC7lHxIzWKk4ySRwUR+JYpjgthi1ryt/TZH2+9dI2+UebcvAK5gygPvFdR2DKGYTS3NMWusL4CgQQt2D1gUg==}
@@ -539,14 +539,8 @@ packages:
   '@arvin-shu/microcode-shell@1.0.3':
     resolution: {integrity: sha512-kW4gEcp7rpbpnm6dP62+UqxhcjgNRsjXLYlxJCaSHmbBAmNqdEd/o7y6iYn0mks6qIg470hiA8omDaisDxmD8g==}
 
-  '@arvin-shu/microcode-types@1.0.6':
-    resolution: {integrity: sha512-PugjdTj1VOl3x8KnqfuR9FUS0pTeXJ56bbEGi7p2TQoX+DbcRE3DKA0toTwYOOKiXlMg+YMmJQpKK/aTFysJCQ==}
-
   '@arvin-shu/microcode-types@1.0.7':
     resolution: {integrity: sha512-H5AFBp7xawRRSBUJFFfrWqE3+4QeSZ821Ud02fBQKGmqqmwzwlaKUYuGtxjutnLV1XJW+3l9sMVOX/HORWs0zw==}
-
-  '@arvin-shu/microcode-utils@1.1.3':
-    resolution: {integrity: sha512-E3YhFvvbPCCKftsq37fgpze2FmcS3Ujd6o40k46/ZUCWcGq/IdGhs4aZSj6drtzmPifLwRY5nKYpvnuab7JUkQ==}
 
   '@arvin-shu/microcode-utils@1.1.4':
     resolution: {integrity: sha512-Hdj3LkRX4j3xLdBvHVx7VYnueeQaKJMH8ExwrkhNdxiZJPvMMaIHxjovAkeSRvxULMEVBzku4e7iTOihOKoA8w==}
@@ -5343,7 +5337,7 @@ snapshots:
     transitivePeerDependencies:
       - monaco-editor
 
-  '@arvin-shu/microcode-renderer-core@1.0.20(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
+  '@arvin-shu/microcode-renderer-core@1.0.20(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)':
     dependencies:
       '@arvin-shu/microcode-datasource-engine': 1.0.4
       '@arvin-shu/microcode-datasource-types': 1.0.1
@@ -5354,12 +5348,12 @@ snapshots:
       - ant-design-vue
       - reflect-metadata
 
-  '@arvin-shu/microcode-renderer-core@1.0.22(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
+  '@arvin-shu/microcode-renderer-core@1.0.23(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
     dependencies:
       '@arvin-shu/microcode-datasource-engine': 1.0.4
       '@arvin-shu/microcode-datasource-types': 1.0.1
       '@arvin-shu/microcode-designer': 1.0.14(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
-      '@arvin-shu/microcode-types': 1.0.6
+      '@arvin-shu/microcode-types': 1.0.7
       intl-messageformat: 10.7.16
     transitivePeerDependencies:
       - ant-design-vue
@@ -5387,23 +5381,11 @@ snapshots:
       - ant-design-vue
       - reflect-metadata
 
-  '@arvin-shu/microcode-types@1.0.6':
-    dependencies:
-      '@arvin-shu/microcode-datasource-types': 1.0.1
-      eventemitter2: 6.4.9
-      strict-event-emitter-types: 2.0.0
-
   '@arvin-shu/microcode-types@1.0.7':
     dependencies:
       '@arvin-shu/microcode-datasource-types': 1.0.1
       eventemitter2: 6.4.9
       strict-event-emitter-types: 2.0.0
-
-  '@arvin-shu/microcode-utils@1.1.3':
-    dependencies:
-      '@arvin-shu/microcode-types': 1.0.6
-      eventemitter2: 6.4.9
-      lodash-es: 4.17.21
 
   '@arvin-shu/microcode-utils@1.1.4':
     dependencies:
