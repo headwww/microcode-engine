@@ -24,7 +24,7 @@
 	"dependencies": {
 		"@arvin-shu/microcode-datasource-engine": "^1.0.5",
 		"@arvin-shu/microcode-datasource-types": "^1.0.1",
-		"@arvin-shu/microcode-designer": "^1.0.16",
+		"@arvin-shu/microcode-designer": "^1.0.17",
 		"@arvin-shu/microcode-types": "^1.0.8",
 		"intl-messageformat": "^10.7.16"
 	}
