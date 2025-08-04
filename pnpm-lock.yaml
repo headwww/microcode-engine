@@ -452,8 +452,8 @@ importers:
   packages/utils:
     dependencies:
       '@arvin-shu/microcode-types':
-        specifier: ^1.0.6
-        version: 1.0.6
+        specifier: ^1.0.7
+        version: 1.0.7
       eventemitter2:
         specifier: ^6.4.9
         version: 6.4.9
@@ -541,6 +541,9 @@ packages:
 
   '@arvin-shu/microcode-types@1.0.6':
     resolution: {integrity: sha512-PugjdTj1VOl3x8KnqfuR9FUS0pTeXJ56bbEGi7p2TQoX+DbcRE3DKA0toTwYOOKiXlMg+YMmJQpKK/aTFysJCQ==}
+
+  '@arvin-shu/microcode-types@1.0.7':
+    resolution: {integrity: sha512-H5AFBp7xawRRSBUJFFfrWqE3+4QeSZ821Ud02fBQKGmqqmwzwlaKUYuGtxjutnLV1XJW+3l9sMVOX/HORWs0zw==}
 
   '@arvin-shu/microcode-utils@1.1.3':
     resolution: {integrity: sha512-E3YhFvvbPCCKftsq37fgpze2FmcS3Ujd6o40k46/ZUCWcGq/IdGhs4aZSj6drtzmPifLwRY5nKYpvnuab7JUkQ==}
@@ -5279,7 +5282,7 @@ snapshots:
   '@arvin-shu/microcode-designer@1.0.12(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
     dependencies:
       '@arvin-shu/microcode-editor-core': 1.0.5(reflect-metadata@0.2.2)
-      '@arvin-shu/microcode-types': 1.0.6
+      '@arvin-shu/microcode-types': 1.0.7
       '@arvin-shu/microcode-utils': 1.1.3
       ant-design-vue: 4.2.6(vue@3.5.17(typescript@5.8.2))
       lodash-es: 4.17.21
@@ -5344,7 +5347,7 @@ snapshots:
       '@arvin-shu/microcode-datasource-engine': 1.0.3
       '@arvin-shu/microcode-datasource-types': 1.0.1
       '@arvin-shu/microcode-designer': 1.0.13(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
-      '@arvin-shu/microcode-types': 1.0.6
+      '@arvin-shu/microcode-types': 1.0.7
       intl-messageformat: 10.7.16
     transitivePeerDependencies:
       - ant-design-vue
@@ -5362,6 +5365,12 @@ snapshots:
       - reflect-metadata
 
   '@arvin-shu/microcode-types@1.0.6':
+    dependencies:
+      '@arvin-shu/microcode-datasource-types': 1.0.1
+      eventemitter2: 6.4.9
+      strict-event-emitter-types: 2.0.0
+
+  '@arvin-shu/microcode-types@1.0.7':
     dependencies:
       '@arvin-shu/microcode-datasource-types': 1.0.1
       eventemitter2: 6.4.9
