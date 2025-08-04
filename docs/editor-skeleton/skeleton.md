@@ -30,7 +30,7 @@ const demoPlugin = (ctx: IPublicModelPluginContext, options: any) => ({
 			name: 'DemoSkeleton',
 			area: 'topArea',
 			type: 'Widget',
-			content:<div>DemoPane</div>,
+			content:<div></div>,
 		});
 	},
 });

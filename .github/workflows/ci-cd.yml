@@ -70,7 +70,16 @@ jobs:
 
       - name: 🚀 Publish packages (changesets)
         if: steps.changesets_version.outputs.has_changes == 'true' # 只有当有版本变更时才执行发布
-        run: npx changeset publish --access public # **这里添加了 --access public**
+        run: |
+          # 遍历所有包，到每个包的dist目录下执行publish
+          for package in packages/*/; do
+            if [ -d "${package}dist" ]; then
+              echo "Publishing package from ${package}dist"
+              cd "${package}dist"
+              npm publish --access public
+              cd ../../../
+            fi
+          done
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
