@@ -8,6 +8,7 @@ pnpm  --filter @arvin-shu/microcode-types\
   --filter @arvin-shu/microcode-editor-core\
   --filter @arvin-shu/microcode-editor-skeleton\
   --filter @arvin-shu/microcode-designer\
+  --filter @arvin-shu/microcode-renderer-core\
   --filter @arvin-shu/microcode-vue-simulator-renderer\
   --filter @arvin-shu/microcode-engine\
   --stream run build 
