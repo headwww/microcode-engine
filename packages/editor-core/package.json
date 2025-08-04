@@ -1,6 +1,6 @@
 {
 	"name": "@arvin-shu/microcode-editor-core",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"description": "",
 	"main": "src/index.ts",
 	"module": "src/index.ts",
@@ -17,7 +17,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"@arvin-shu/microcode-types": "^1.0.8",
-		"@arvin-shu/microcode-utils": "^1.1.7",
+		"@arvin-shu/microcode-utils": "^1.1.9",
 		"eventemitter2": "^6.4.9",
 		"intl-messageformat": "^10.7.7",
 		"lodash-es": "^4.17.21",
