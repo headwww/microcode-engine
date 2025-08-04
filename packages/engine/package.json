@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
 	"name": "@arvin-shu/microcode-engine",
 	"version": "1.0.8",
 	"description": "",
@@ -31,31 +30,3 @@
 		"registry": "https://registry.npmjs.org/"
 	}
 }
-=======
-    "name": "@arvin-shu/microcode-engine",
-    "version": "1.0.9",
-    "description": "",
-    "main": "src/engine-core.ts",
-    "module": "src/engine-core.ts",
-    "files": [
-        "dist",
-        "es",
-        "lib"
-    ],
-    "scripts": {
-        "build": "cross-env ORIGINAL_CWD=$PWD BUILD_UMD=true COPY_THEME=true UMD_NAME='ArvinMicrocodeEngine' pnpm --filter ../../build-scripts run start",
-        "clear": "rm -rf dist"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "@arvin-shu/microcode-designer": "^1.0.17",
-        "@arvin-shu/microcode-editor-core": "^1.0.9",
-        "@arvin-shu/microcode-editor-skeleton": "^1.0.13",
-        "@arvin-shu/microcode-shell": "^1.0.6",
-        "@arvin-shu/microcode-types": "^1.0.8",
-        "@arvin-shu/microcode-utils": "^1.1.8"
-    }
-}
->>>>>>> d6305c1295e693eeb0b25423663b122454a5cb5b
