@@ -1,10 +1,10 @@
 import { createContent, uniqueId } from '@arvin-shu/microcode-utils';
 import { computed, h, Ref, ref, VNode } from 'vue';
-import { getEvent } from '@arvin-shu/microcode-shell';
 import { IWidget } from './widget';
 import { ISkeleton } from '../skeleton';
 import { DockConfig } from '../types';
 import { DockView, WidgetView } from '../components/widget-views';
+import { getEvent } from '../event-shell';
 
 export class Dock implements IWidget {
 	readonly isWidget = true;

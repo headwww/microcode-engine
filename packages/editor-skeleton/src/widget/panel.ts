@@ -9,7 +9,7 @@ import {
 	IPublicTypeTitleContent,
 } from '@arvin-shu/microcode-types';
 import { createContent, uniqueId } from '@arvin-shu/microcode-utils';
-import { getEvent } from '@arvin-shu/microcode-shell';
+import { getEvent } from '../event-shell';
 import { WidgetContainer } from './widget-container';
 import { composeTitle, ISkeleton, isPanelDock, IWidget, PanelDock } from '..';
 import { PanelView, TitledPanelView } from '../components/widget-views';

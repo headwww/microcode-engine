@@ -8,3 +8,4 @@ export * from './components/field';
 export * from './layouts';
 export * from './area';
 export * from './register-defaults';
+export * from './event-shell';

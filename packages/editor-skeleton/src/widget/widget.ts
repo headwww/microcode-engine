@@ -4,7 +4,7 @@ import {
 	IPublicTypeTitleContent,
 } from '@arvin-shu/microcode-types';
 import { createContent, uniqueId } from '@arvin-shu/microcode-utils';
-import { getEvent } from '@arvin-shu/microcode-shell';
+import { getEvent } from '../event-shell';
 import { ISkeleton } from '../skeleton';
 import { WidgetConfig } from '../types';
 import { WidgetView } from '../components/widget-views';
