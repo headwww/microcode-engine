@@ -22,7 +22,7 @@ import 'vxe-table/lib/style.css';
 import './mock-umd';
 
 import './rest.scss';
-import '@arvin-shu/microcode-theme/src/index.scss';
+import '@arvin-shu/microcode-theme/index.css';
 import 'ant-design-vue/dist/reset.css';
 import './plugins/materials/_global';
 import './plugin-render-antd.scss';

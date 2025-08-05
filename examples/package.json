@@ -30,6 +30,7 @@
 		"@arvin-shu/microcode-shell": "workspace:^",
 		"@arvin-shu/microcode-types": "workspace:^",
 		"@arvin-shu/microcode-utils": "workspace:^",
+		"@arvin-shu/microcode-renderer-core": "workspace:^",
 		"@ckpack/vue-color": "^1.6.0",
 		"@types/qs": "^6.9.18",
 		"@vueuse/core": "^13.3.0",

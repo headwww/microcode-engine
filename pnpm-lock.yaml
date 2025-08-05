@@ -208,6 +208,9 @@ importers:
       '@arvin-shu/microcode-plugin-base-monaco-editor':
         specifier: ^1.0.0
         version: 1.0.0(monaco-editor@0.52.2)
+      '@arvin-shu/microcode-renderer-core':
+        specifier: workspace:^
+        version: link:../packages/renderer-core/dist
       '@arvin-shu/microcode-shell':
         specifier: workspace:^
         version: link:../packages/shell/dist
@@ -274,6 +277,103 @@ importers:
       vue-router:
         specifier: ^4.4.5
         version: 4.4.5(vue@3.5.17(typescript@5.8.2))
+      vxe-pc-ui:
+        specifier: ^4.5.22
+        version: 4.5.22(vue@3.5.17(typescript@5.8.2))
+      vxe-table:
+        specifier: ^4.13.3
+        version: 4.13.3(vue@3.5.17(typescript@5.8.2))
+      xe-utils:
+        specifier: ^3.7.4
+        version: 3.7.4
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.1.4
+        version: 5.2.0(vite@5.4.11(@types/node@22.9.0)(sass@1.81.0))(vue@3.5.17(typescript@5.8.2))
+      '@vitejs/plugin-vue-jsx':
+        specifier: ^4.0.1
+        version: 4.1.0(vite@5.4.11(@types/node@22.9.0)(sass@1.81.0))(vue@3.5.17(typescript@5.8.2))
+      vite:
+        specifier: ^5.4.8
+        version: 5.4.11(@types/node@22.9.0)(sass@1.81.0)
+      vite-plugin-eslint:
+        specifier: ^1.8.1
+        version: 1.8.1(eslint@8.57.1)(vite@5.4.11(@types/node@22.9.0)(sass@1.81.0))
+      vite-plugin-stylelint:
+        specifier: ^5.3.1
+        version: 5.3.1(postcss@8.5.6)(rollup@4.27.2)(stylelint@16.10.0(typescript@5.8.2))(vite@5.4.11(@types/node@22.9.0)(sass@1.81.0))
+
+  examples_test:
+    dependencies:
+      '@arvin-shu/microcode-datasource-types':
+        specifier: ^1.0.1
+        version: 1.0.1
+      '@arvin-shu/microcode-engine':
+        specifier: ^1.0.9
+        version: 1.0.9(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
+      '@arvin-shu/microcode-plugin-base-monaco-editor':
+        specifier: ^1.0.0
+        version: 1.0.0(monaco-editor@0.52.2)
+      '@arvin-shu/microcode-renderer-core':
+        specifier: workspace:^
+        version: link:../packages/renderer-core/dist
+      '@arvin-shu/microcode-theme':
+        specifier: workspace:^
+        version: link:../packages/theme/dist
+      '@ckpack/vue-color':
+        specifier: ^1.6.0
+        version: 1.6.0(vue@3.5.17(typescript@5.8.2))
+      '@types/qs':
+        specifier: ^6.9.18
+        version: 6.9.18
+      '@vueuse/core':
+        specifier: ^13.3.0
+        version: 13.3.0(vue@3.5.17(typescript@5.8.2))
+      acorn:
+        specifier: ^8.14.0
+        version: 8.14.1
+      ant-design-vue:
+        specifier: ^4.2.5
+        version: 4.2.6(vue@3.5.17(typescript@5.8.2))
+      axios:
+        specifier: ^1.7.9
+        version: 1.7.9
+      clipboard:
+        specifier: ^2.0.11
+        version: 2.0.11
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.13
+      element-plus:
+        specifier: ^2.9.3
+        version: 2.9.3(vue@3.5.17(typescript@5.8.2))
+      eventemitter2:
+        specifier: ^6.4.9
+        version: 6.4.9
+      js-beautify:
+        specifier: ^1.15.4
+        version: 1.15.4
+      jsbarcode:
+        specifier: ^3.11.6
+        version: 3.11.6
+      magic-string:
+        specifier: ^0.30.17
+        version: 0.30.17
+      qs:
+        specifier: ^6.14.0
+        version: 6.14.0
+      ric-shim:
+        specifier: ^1.0.1
+        version: 1.0.1
+      short-uuid:
+        specifier: ^5.2.0
+        version: 5.2.0
+      vue-draggable-plus:
+        specifier: ^0.6.0
+        version: 0.6.0(@types/sortablejs@1.15.8)
+      vue-router:
+        specifier: ^4.4.5
+        version: 4.5.1(vue@3.5.17(typescript@5.8.2))
       vxe-pc-ui:
         specifier: ^4.5.22
         version: 4.5.22(vue@3.5.17(typescript@5.8.2))
@@ -472,8 +572,8 @@ importers:
   packages/vue-simulator-renderer:
     dependencies:
       '@arvin-shu/microcode-renderer-core':
-        specifier: ^1.0.23
-        version: 1.0.23(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
+        specifier: ^1.0.24
+        version: 1.0.24(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-types':
         specifier: ^1.0.8
         version: 1.0.8
@@ -537,11 +637,14 @@ packages:
       '@arvin-shu/microcode-shell': '*'
       ant-design-vue: '*'
 
+  '@arvin-shu/microcode-engine@1.0.9':
+    resolution: {integrity: sha512-Bh5Bl8Y/XwWmJ9VYTVpV5qVVoLymcZFfYoCOhzsgIjQYDZ38qn01C4WMyqfvHtL38Y0pfMDq4ylxXZSwyZrjkQ==}
+
   '@arvin-shu/microcode-plugin-base-monaco-editor@1.0.0':
     resolution: {integrity: sha512-iIdFJ2hxe+72sirL5JmZft02+KuH1IDZuezy58VqFq17jY9t9X3VwsT21M3fMeInK7Cylw78XP7OdmP0PwHL9g==}
 
-  '@arvin-shu/microcode-renderer-core@1.0.23':
-    resolution: {integrity: sha512-YmXf36bj4o5nBHatsZDNYAvL3ZbTUZoj+Os9Y1G92pRZ3T3aA5hhAPJD+yXeQNfcdpycDFKzd0AIoJTZpagdXQ==}
+  '@arvin-shu/microcode-renderer-core@1.0.24':
+    resolution: {integrity: sha512-cgV8x41w1sYI1fZcPvz+0l6KUE8Cv+1szNeYZYVamhLSc+YBjedfPh/UMxFOTdR4YWtDha1iXYPjhZsa5UnoZQ==}
 
   '@arvin-shu/microcode-shell@1.0.2':
     resolution: {integrity: sha512-x+BC7lHxIzWKk4ySRwUR+JYpjgthi1ryt/TZH2+9dI2+UebcvAK5gygPvFdR2DKGYTS3NMWusL4CgQQt2D1gUg==}
@@ -671,10 +774,6 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
-
-  '@babel/runtime@7.26.0':
-    resolution: {integrity: sha512-FDSOghenHTiToteC/QRlv2q3DhPZ/oOXTBoirfWNx1Cx3TMVcGWQtMMmQcSvb/JjpNeGzx8Pq/b4fKEJuWm1sw==}
-    engines: {node: '>=6.9.0'}
 
   '@babel/runtime@7.28.2':
     resolution: {integrity: sha512-KHp2IflsnGywDjBWDkR9iEqiWSpc8GIi0lgTT3mOElT0PP1tG26P4tmFI2YvAdzgq9RGyoHZQEIEdZy6Ec5xCA==}
@@ -3861,9 +3960,6 @@ packages:
     resolution: {integrity: sha512-oN3Bcd7ZVt+0VGEs7402qR/tjgjbM7kPlH/z7ufJnzTLVBzXJITRHOJiwMmmYMgZfdoWQsfQcY+iKlxiBppnMA==}
     engines: {node: '>=16.14.0'}
 
-  magic-string@0.30.12:
-    resolution: {integrity: sha512-Ea8I3sQMVXr8JhN4z+H/d8zwo+tYDgHE9+5G4Wnrwhs0gaK9fXTKx0Tw5Xwsd/bCPTTZNRAdpyzvoeORe9LYpw==}
-
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
 
@@ -4385,9 +4481,6 @@ packages:
   reflect-metadata@0.2.2:
     resolution: {integrity: sha512-urBwgfrvVP/eAyXx4hluJivBKzuEbSQs9rKWCrCkbSxNv8mxPcUZKeuoF3Uy4mJl3Lwprp6yy5/39VWigZ4K6Q==}
 
-  regenerator-runtime@0.14.1:
-    resolution: {integrity: sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==}
-
   regexp.prototype.flags@1.5.3:
     resolution: {integrity: sha512-vqlC04+RQoFalODCbCumG2xIOvapzVMHwsyIGM/SIE8fRhFFsXeH8/QQ+s0T0kDAhKc4k30s73/0ydkHQz6HlQ==}
     engines: {node: '>= 0.4'}
@@ -4566,10 +4659,6 @@ packages:
 
   side-channel-weakmap@1.0.2:
     resolution: {integrity: sha512-WPS/HvHQTYnHisLo9McqBHOJk2FkHO/tlpvldyrnem4aeQp4hai3gythswg6p01oSoTl58rcpiFAjF2br2Ak2A==}
-    engines: {node: '>= 0.4'}
-
-  side-channel@1.0.6:
-    resolution: {integrity: sha512-fDW/EZ6Q9RiO8eFG8Hj+7u/oW+XrPTIChwCOM2+th2A6OblDtYYIpve9m+KvI9Z4C9qSEXlaGR6bTEYHReuglA==}
     engines: {node: '>= 0.4'}
 
   side-channel@1.1.0:
@@ -5333,6 +5422,17 @@ snapshots:
     transitivePeerDependencies:
       - reflect-metadata
 
+  '@arvin-shu/microcode-editor-skeleton@1.0.13(@arvin-shu/microcode-shell@1.0.6(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2))))(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
+    dependencies:
+      '@arvin-shu/microcode-designer': 1.0.17(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
+      '@arvin-shu/microcode-editor-core': 1.0.9(reflect-metadata@0.2.2)
+      '@arvin-shu/microcode-shell': 1.0.6(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
+      '@arvin-shu/microcode-types': 1.0.8
+      '@arvin-shu/microcode-utils': 1.1.9
+      ant-design-vue: 4.2.6(vue@3.5.17(typescript@5.8.2))
+    transitivePeerDependencies:
+      - reflect-metadata
+
   '@arvin-shu/microcode-editor-skeleton@1.0.8(@arvin-shu/microcode-shell@1.0.2(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2))(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)':
     dependencies:
       '@arvin-shu/microcode-editor-core': 1.0.9(reflect-metadata@0.2.2)
@@ -5343,13 +5443,25 @@ snapshots:
     transitivePeerDependencies:
       - reflect-metadata
 
+  '@arvin-shu/microcode-engine@1.0.9(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
+    dependencies:
+      '@arvin-shu/microcode-designer': 1.0.17(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
+      '@arvin-shu/microcode-editor-core': 1.0.9(reflect-metadata@0.2.2)
+      '@arvin-shu/microcode-editor-skeleton': 1.0.13(@arvin-shu/microcode-shell@1.0.6(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2))))(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
+      '@arvin-shu/microcode-shell': 1.0.6(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
+      '@arvin-shu/microcode-types': 1.0.8
+      '@arvin-shu/microcode-utils': 1.1.9
+    transitivePeerDependencies:
+      - ant-design-vue
+      - reflect-metadata
+
   '@arvin-shu/microcode-plugin-base-monaco-editor@1.0.0(monaco-editor@0.52.2)':
     dependencies:
       '@monaco-editor/loader': 1.4.0(monaco-editor@0.52.2)
     transitivePeerDependencies:
       - monaco-editor
 
-  '@arvin-shu/microcode-renderer-core@1.0.23(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
+  '@arvin-shu/microcode-renderer-core@1.0.24(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)':
     dependencies:
       '@arvin-shu/microcode-datasource-engine': 1.0.5
       '@arvin-shu/microcode-datasource-types': 1.0.1
@@ -5365,6 +5477,17 @@ snapshots:
       '@arvin-shu/microcode-designer': 1.0.17(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-editor-core': 1.0.9(reflect-metadata@0.2.2)
       '@arvin-shu/microcode-editor-skeleton': 1.0.8(@arvin-shu/microcode-shell@1.0.2(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2))(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
+      '@arvin-shu/microcode-types': 1.0.8
+      '@arvin-shu/microcode-utils': 1.1.9
+    transitivePeerDependencies:
+      - ant-design-vue
+      - reflect-metadata
+
+  '@arvin-shu/microcode-shell@1.0.6(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
+    dependencies:
+      '@arvin-shu/microcode-designer': 1.0.17(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))(reflect-metadata@0.2.2)
+      '@arvin-shu/microcode-editor-core': 1.0.9(reflect-metadata@0.2.2)
+      '@arvin-shu/microcode-editor-skeleton': 1.0.13(@arvin-shu/microcode-shell@1.0.6(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2))))(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
       '@arvin-shu/microcode-types': 1.0.8
       '@arvin-shu/microcode-utils': 1.1.9
     transitivePeerDependencies:
@@ -5402,7 +5525,7 @@ snapshots:
 
   '@babel/code-frame@7.26.2':
     dependencies:
-      '@babel/helper-validator-identifier': 7.25.9
+      '@babel/helper-validator-identifier': 7.27.1
       js-tokens: 4.0.0
       picocolors: 1.1.1
 
@@ -5416,10 +5539,10 @@ snapshots:
       '@babel/helper-compilation-targets': 7.25.9
       '@babel/helper-module-transforms': 7.26.0(@babel/core@7.26.0)
       '@babel/helpers': 7.26.0
-      '@babel/parser': 7.26.2
+      '@babel/parser': 7.28.0
       '@babel/template': 7.25.9
       '@babel/traverse': 7.25.9
-      '@babel/types': 7.26.0
+      '@babel/types': 7.28.0
       convert-source-map: 2.0.0
       debug: 4.3.7
       gensync: 1.0.0-beta.2
@@ -5430,15 +5553,15 @@ snapshots:
 
   '@babel/generator@7.26.2':
     dependencies:
-      '@babel/parser': 7.26.2
-      '@babel/types': 7.26.0
+      '@babel/parser': 7.28.0
+      '@babel/types': 7.28.0
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
       jsesc: 3.0.2
 
   '@babel/helper-annotate-as-pure@7.25.9':
     dependencies:
-      '@babel/types': 7.26.0
+      '@babel/types': 7.28.0
 
   '@babel/helper-compilation-targets@7.25.9':
     dependencies:
@@ -5464,14 +5587,14 @@ snapshots:
   '@babel/helper-member-expression-to-functions@7.25.9':
     dependencies:
       '@babel/traverse': 7.25.9
-      '@babel/types': 7.26.0
+      '@babel/types': 7.28.0
     transitivePeerDependencies:
       - supports-color
 
   '@babel/helper-module-imports@7.25.9':
     dependencies:
       '@babel/traverse': 7.25.9
-      '@babel/types': 7.26.0
+      '@babel/types': 7.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -5479,14 +5602,14 @@ snapshots:
     dependencies:
       '@babel/core': 7.26.0
       '@babel/helper-module-imports': 7.25.9
-      '@babel/helper-validator-identifier': 7.25.9
+      '@babel/helper-validator-identifier': 7.27.1
       '@babel/traverse': 7.25.9
     transitivePeerDependencies:
       - supports-color
 
   '@babel/helper-optimise-call-expression@7.25.9':
     dependencies:
-      '@babel/types': 7.26.0
+      '@babel/types': 7.28.0
 
   '@babel/helper-plugin-utils@7.25.9': {}
 
@@ -5502,7 +5625,7 @@ snapshots:
   '@babel/helper-skip-transparent-expression-wrappers@7.25.9':
     dependencies:
       '@babel/traverse': 7.25.9
-      '@babel/types': 7.26.0
+      '@babel/types': 7.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -5519,11 +5642,11 @@ snapshots:
   '@babel/helpers@7.26.0':
     dependencies:
       '@babel/template': 7.25.9
-      '@babel/types': 7.26.0
+      '@babel/types': 7.28.0
 
   '@babel/parser@7.26.2':
     dependencies:
-      '@babel/types': 7.26.0
+      '@babel/types': 7.28.0
 
   '@babel/parser@7.28.0':
     dependencies:
@@ -5550,25 +5673,21 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/runtime@7.26.0':
-    dependencies:
-      regenerator-runtime: 0.14.1
-
   '@babel/runtime@7.28.2': {}
 
   '@babel/template@7.25.9':
     dependencies:
       '@babel/code-frame': 7.26.2
-      '@babel/parser': 7.26.2
-      '@babel/types': 7.26.0
+      '@babel/parser': 7.28.0
+      '@babel/types': 7.28.0
 
   '@babel/traverse@7.25.9':
     dependencies:
       '@babel/code-frame': 7.26.2
       '@babel/generator': 7.26.2
-      '@babel/parser': 7.26.2
+      '@babel/parser': 7.28.0
       '@babel/template': 7.25.9
-      '@babel/types': 7.26.0
+      '@babel/types': 7.28.0
       debug: 4.3.7
       globals: 11.12.0
     transitivePeerDependencies:
@@ -6233,14 +6352,14 @@ snapshots:
 
   '@manypkg/find-root@1.1.0':
     dependencies:
-      '@babel/runtime': 7.26.0
+      '@babel/runtime': 7.28.2
       '@types/node': 12.20.55
       find-up: 4.1.0
       fs-extra: 8.1.0
 
   '@manypkg/get-packages@1.1.3':
     dependencies:
-      '@babel/runtime': 7.26.0
+      '@babel/runtime': 7.28.2
       '@changesets/types': 4.1.0
       '@manypkg/find-root': 1.1.0
       fs-extra: 8.1.0
@@ -6385,7 +6504,7 @@ snapshots:
       estree-walker: 2.0.2
       fdir: 6.4.2(picomatch@4.0.2)
       is-reference: 1.2.1
-      magic-string: 0.30.12
+      magic-string: 0.30.17
       picomatch: 4.0.2
     optionalDependencies:
       rollup: 4.27.2
@@ -6409,7 +6528,7 @@ snapshots:
   '@rollup/plugin-replace@6.0.1(rollup@4.27.2)':
     dependencies:
       '@rollup/pluginutils': 5.1.3(rollup@4.27.2)
-      magic-string: 0.30.12
+      magic-string: 0.30.17
     optionalDependencies:
       rollup: 4.27.2
 
@@ -6687,7 +6806,7 @@ snapshots:
 
   '@vue-macros/api@0.13.0(rollup@4.27.2)(vue@3.5.17(typescript@5.8.2))':
     dependencies:
-      '@babel/types': 7.26.0
+      '@babel/types': 7.28.0
       '@vue-macros/common': 1.15.0(rollup@4.27.2)(vue@3.5.17(typescript@5.8.2))
       oxc-resolver: 2.0.1
     transitivePeerDependencies:
@@ -6878,7 +6997,7 @@ snapshots:
       '@vue-macros/common': 1.15.0(rollup@4.27.2)(vue@3.5.17(typescript@5.8.2))
       '@vue/compiler-core': 3.5.13
       '@vue/shared': 3.5.17
-      magic-string: 0.30.12
+      magic-string: 0.30.17
       unplugin: 1.16.0
       vue: 3.5.17(typescript@5.8.2)
     transitivePeerDependencies:
@@ -6965,7 +7084,7 @@ snapshots:
       '@babel/plugin-syntax-jsx': 7.25.9(@babel/core@7.26.0)
       '@babel/template': 7.25.9
       '@babel/traverse': 7.25.9
-      '@babel/types': 7.26.0
+      '@babel/types': 7.28.0
       '@vue/babel-helper-vue-transform-on': 1.2.5
       '@vue/babel-plugin-resolve-type': 1.2.5(@babel/core@7.26.0)
       html-tags: 3.3.1
@@ -6981,14 +7100,14 @@ snapshots:
       '@babel/core': 7.26.0
       '@babel/helper-module-imports': 7.25.9
       '@babel/helper-plugin-utils': 7.25.9
-      '@babel/parser': 7.26.2
+      '@babel/parser': 7.28.0
       '@vue/compiler-sfc': 3.5.17
     transitivePeerDependencies:
       - supports-color
 
   '@vue/compiler-core@3.5.13':
     dependencies:
-      '@babel/parser': 7.26.2
+      '@babel/parser': 7.28.0
       '@vue/shared': 3.5.13
       entities: 4.5.0
       estree-walker: 2.0.2
@@ -7305,7 +7424,7 @@ snapshots:
 
   ast-walker-scope@0.6.2:
     dependencies:
-      '@babel/parser': 7.26.2
+      '@babel/parser': 7.28.0
       ast-kit: 1.3.1
 
   astral-regex@2.0.0: {}
@@ -8702,7 +8821,7 @@ snapshots:
     dependencies:
       es-errors: 1.3.0
       hasown: 2.0.2
-      side-channel: 1.0.6
+      side-channel: 1.1.0
 
   interpret@3.1.1: {}
 
@@ -9078,10 +9197,6 @@ snapshots:
     dependencies:
       magic-string: 0.30.17
 
-  magic-string@0.30.12:
-    dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.0
-
   magic-string@0.30.17:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
@@ -9143,7 +9258,7 @@ snapshots:
 
   mlly@1.7.3:
     dependencies:
-      acorn: 8.14.0
+      acorn: 8.14.1
       pathe: 1.1.2
       pkg-types: 1.2.1
       ufo: 1.5.4
@@ -9560,8 +9675,6 @@ snapshots:
 
   reflect-metadata@0.2.2: {}
 
-  regenerator-runtime@0.14.1: {}
-
   regexp.prototype.flags@1.5.3:
     dependencies:
       call-bind: 1.0.7
@@ -9766,13 +9879,6 @@ snapshots:
       get-intrinsic: 1.3.0
       object-inspect: 1.13.3
       side-channel-map: 1.0.1
-
-  side-channel@1.0.6:
-    dependencies:
-      call-bind: 1.0.7
-      es-errors: 1.3.0
-      get-intrinsic: 1.2.4
-      object-inspect: 1.13.3
 
   side-channel@1.1.0:
     dependencies:
@@ -10332,7 +10438,7 @@ snapshots:
 
   unplugin@1.16.0:
     dependencies:
-      acorn: 8.14.0
+      acorn: 8.14.1
       webpack-virtual-modules: 0.6.2
 
   update-browserslist-db@1.1.1(browserslist@4.24.2):
@@ -10461,7 +10567,7 @@ snapshots:
   vite@5.4.11(@types/node@22.9.0)(sass@1.81.0):
     dependencies:
       esbuild: 0.21.5
-      postcss: 8.4.49
+      postcss: 8.5.6
       rollup: 4.27.2
     optionalDependencies:
       '@types/node': 22.9.0

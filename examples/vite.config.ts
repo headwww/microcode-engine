@@ -13,7 +13,14 @@ import eslintPlugin from 'vite-plugin-eslint';
 import stylelitPlugin from 'vite-plugin-stylelint';
 
 export default defineConfig({
-	plugins: [vue(), vueJsx(), eslintPlugin(), stylelitPlugin()],
+	plugins: [
+		vue(),
+		vueJsx(),
+		eslintPlugin({
+			exclude: ['node_modules', 'dist', '**/dist/**'], // 明确排除打包目录
+		}),
+		stylelitPlugin(),
+	],
 	css: {
 		preprocessorOptions: {
 			scss: {
