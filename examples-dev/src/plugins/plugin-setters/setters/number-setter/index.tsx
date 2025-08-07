@@ -33,7 +33,7 @@ export const NumberSetter = defineComponent({
 			get() {
 				return props.value;
 			},
-			set(val: string) {
+			set(val: number) {
 				emit('change', !val ? 0 : val);
 			},
 		});
