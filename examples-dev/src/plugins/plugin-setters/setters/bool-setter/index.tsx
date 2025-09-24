@@ -15,7 +15,7 @@ export const BoolSetter = defineComponent({
 			get() {
 				return props.value;
 			},
-			set(val: string) {
+			set(val: boolean) {
 				emit('change', val);
 			},
 		});
