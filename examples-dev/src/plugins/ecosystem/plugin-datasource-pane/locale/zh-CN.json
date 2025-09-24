@@ -1,6 +1,0 @@
-{
-	"Binded: {expr}": "已绑定: {expr}",
-	"DataSource": "数据源",
-	"Create": "创建",
-	"ExistUnsavedDataSource": "存在未保存的数据源，请先保存！"
-}
