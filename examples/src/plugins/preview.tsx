@@ -1,4 +1,4 @@
-import { defineComponent, ref, watch, Suspense } from 'vue';
+import { defineComponent, ref, watch, Suspense, onMounted } from 'vue';
 import { Button, Drawer } from 'ant-design-vue';
 import MicrocodeRenderer from '@arvin-shu/microcode-renderer-core';
 import { IPublicEnumTransformStage } from '@arvin-shu/microcode-types';
@@ -53,6 +53,12 @@ export const Preview = defineComponent({
 			components.value = await buildComponents(libraryMap, componentsMap);
 		}
 
+		const rendererRef = ref<any>();
+
+		onMounted(() => {
+			console.log(components.value);
+		});
+
 		return () => (
 			<div>
 				<Button
@@ -73,12 +79,26 @@ export const Preview = defineComponent({
 						open.value = false;
 					}}
 				>
+					<Button
+						onClick={() => {
+							console.log(rendererRef.value?.runtimeScope?.__scope);
+							console.log(rendererRef.value);
+						}}
+					>
+						点击
+					</Button>
 					{components.value && (
 						<Suspense>
 							<MicrocodeRenderer
+								ref={rendererRef}
 								schema={schema.value}
 								components={{
 									...components.value,
+								}}
+								scope={{
+									$formdata: {
+										shuwen: 'sdsdsds',
+									},
 								}}
 								appHelper={appHelper}
 								requestHandlersMap={{

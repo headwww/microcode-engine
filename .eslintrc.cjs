@@ -43,8 +43,6 @@ module.exports = {
     },
     rules: {
         'import/no-extraneous-dependencies': 0,
-        'no-param-reassing': 0,
-        'vue/multi-word-commponent-names': 0,
         'vue/attribute-hyphenation': 0,
         'vue/v-on-event-hyphenation': 0,
         'import/no-unresolved': 0,
@@ -87,8 +85,10 @@ module.exports = {
         "no-new-func": 0,
         "no-dupe-class-members": 0,
         "prefer-destructuring": 0,
+        "func-names": 0,
         "guard-for-in": 0,
-        "prefer-spread": 0,
+        "no-script-url": 0,
         "no-template-curly-in-string": 0,
+        "prefer-spread": 0
     },
 }

@@ -40,7 +40,8 @@
 		"stylelint-config-standard-scss": "^13.1.0",
 		"stylelint-scss": "^6.7.0",
 		"typescript": "^5.5.4",
-		"vue": "^3.5.17"
+		"vue": "^3.5.17",
+		"vue-eslint-parser": "^10.2.0"
 	},
 	"dependencies": {
 		"@ant-design/icons-vue": "^7.0.1",

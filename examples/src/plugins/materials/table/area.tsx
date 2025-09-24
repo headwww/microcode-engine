@@ -2,7 +2,6 @@ import {
 	computed,
 	CSSProperties,
 	nextTick,
-	onMounted,
 	onUnmounted,
 	reactive,
 	Ref,
@@ -101,9 +100,15 @@ export function useArea(
 		}
 	);
 
-	onMounted(() => {
-		bindView();
-		addListener();
+	// 监听 grid 实例，确保它可用
+	watch(tableInstance, (newVal) => {
+		if (newVal) {
+			// nextTick 确保 DOM 元素存在
+			nextTick(() => {
+				bindView();
+				addListener();
+			});
+		}
 	});
 
 	let mutationObserver: MutationObserver | null = null;
@@ -346,7 +351,6 @@ export function useArea(
 	 * @param event 鼠标事件
 	 */
 	function handleMousedown(event: MouseEvent) {
-		event.preventDefault();
 		tableInstance.value?.closeMenu();
 		if (event.button === 0) {
 			// 激活当前表格
@@ -365,7 +369,8 @@ export function useArea(
 				const col = tableInstance.value?.getColumnById(colid);
 
 				if (
-					col?.fixed !== undefined ||
+					col?.fixed === 'left' ||
+					col?.fixed === 'right' ||
 					col?.type === 'checkbox' ||
 					col?.type === 'radio' ||
 					col?.type === 'seq'
