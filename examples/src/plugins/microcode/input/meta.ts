@@ -25,6 +25,16 @@ export default {
 				title: '输入值',
 				setter: 'StringSetter',
 			},
+			// {
+			// 	name: 'value',
+			// 	title: '输入值',
+			// 	setter: 'StringSetter',
+			// },
+			// {
+			// 	name: 'onUpdate:value',
+			// 	title: '输入值',
+			// 	setter: 'FunctionSetter',
+			// },
 			{
 				name: 'allowClear',
 				title: { label: '支持清除', tip: '是否允许清除' },
