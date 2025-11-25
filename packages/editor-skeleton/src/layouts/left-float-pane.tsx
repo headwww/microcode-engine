@@ -29,10 +29,9 @@ export const LeftFloatPane = defineComponent({
 		let dispose: () => void;
 
 		onMounted(() => {
-			const { area } = props;
-			if (area) {
+			if (props.area) {
 				const triggerClose = (e: any) => {
-					if (!area.visible) return;
+					if (!props.area?.visible) return;
 					// 当 MouseEvent 的 target 为「插入占位符」时，不关闭当前 panel
 					if (e.originalEvent?.target?.classList.contains('insertion')) return;
 					// 假如当前操作 target 祖先节点中有属性 data-keep-visible-while-dragging="true" 代表该 target 所属 panel
@@ -41,19 +40,22 @@ export const LeftFloatPane = defineComponent({
 						'div[data-keep-visible-while-dragging="true"]'
 					);
 					if (panelElem) return;
-					area.setVisible(false);
+					props.area.setVisible(false);
 				};
 
-				area.skeleton.editor.eventBus.on('designer.drag', triggerClose);
+				props.area.skeleton.editor.eventBus.on('designer.drag', triggerClose);
 
 				dispose = () => {
-					area.skeleton.editor.removeListener('designer.drag', triggerClose);
+					props.area?.skeleton.editor.removeListener(
+						'designer.drag',
+						triggerClose
+					);
 				};
 
 				const project: IPublicApiProject | undefined =
-					area.skeleton.editor.get('project');
+					props.area.skeleton.editor.get('project');
 
-				focusing = area.skeleton.focusTracker.create({
+				focusing = props.area.skeleton.focusTracker.create({
 					range: (e: MouseEvent) => {
 						const target = e.target as HTMLElement;
 						if (!target) {
@@ -98,7 +100,7 @@ export const LeftFloatPane = defineComponent({
 							return true;
 						}
 						// 在非left区域及获得panel激活后再次点击也需要失去焦点隐藏
-						const docks = toRaw(area.current.value)?.getAssocDocks();
+						const docks = toRaw(props.area?.current.value)?.getAssocDocks();
 						if (docks && docks?.length) {
 							return docks.some((dock: any) =>
 								dock.getDOMNode().el.contains(target)
@@ -107,10 +109,10 @@ export const LeftFloatPane = defineComponent({
 						return false;
 					},
 					onEsc: () => {
-						area.setVisible(false);
+						props.area?.setVisible(false);
 					},
 					onBlur: () => {
-						area.setVisible(false);
+						props.area?.setVisible(false);
 					},
 				});
 
