@@ -1,5 +1,13 @@
 # @arvin-shu/microcode-editor-skeleton
 
+## 1.0.14
+
+### Patch Changes
+
+- 89be1a6: 修复editor-skeleton中显示隐藏面板的bug
+- Updated dependencies [89be1a6]
+  - @arvin-shu/microcode-shell@1.0.7
+
 ## 1.0.13
 
 ### Patch Changes
