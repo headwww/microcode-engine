@@ -25,28 +25,25 @@ export const Workbench = defineComponent({
 
 		provide(SkeletonKey, props.skeleton!);
 
-		return () => {
-			const { className, skeleton, topAreaItemClassName } = props;
-			return (
-				<div class={['mtc-workbench', className]}>
-					<TopArea
-						area={skeleton?.topArea}
-						itemClassName={topAreaItemClassName}
-					></TopArea>
-					<div class="mtc-workbench-body">
-						<LeftArea area={skeleton?.leftArea}></LeftArea>
-						<LeftFloatPane area={skeleton?.leftFloatArea}></LeftFloatPane>
-						<LeftFixedPane area={skeleton?.leftFixedArea}></LeftFixedPane>
-						<div class="mtc-workbench-center">
-							<Toolbar area={skeleton?.toolbar} />
-							<MainArea area={skeleton?.mainArea}></MainArea>
-							<BottomArea area={skeleton?.bottomArea}></BottomArea>
-						</div>
-						<RightArea area={skeleton?.rightArea}></RightArea>
+		return () => (
+			<div class={['mtc-workbench', props.className]}>
+				<TopArea
+					area={props.skeleton?.topArea}
+					itemClassName={props.topAreaItemClassName}
+				></TopArea>
+				<div class="mtc-workbench-body">
+					<LeftArea area={props.skeleton?.leftArea}></LeftArea>
+					<LeftFloatPane area={props.skeleton?.leftFloatArea}></LeftFloatPane>
+					<LeftFixedPane area={props.skeleton?.leftFixedArea}></LeftFixedPane>
+					<div class="mtc-workbench-center">
+						<Toolbar area={props.skeleton?.toolbar} />
+						<MainArea area={props.skeleton?.mainArea}></MainArea>
+						<BottomArea area={props.skeleton?.bottomArea}></BottomArea>
 					</div>
-					<TipContainer></TipContainer>
+					<RightArea area={props.skeleton?.rightArea}></RightArea>
 				</div>
-			);
-		};
+				<TipContainer></TipContainer>
+			</div>
+		);
 	},
 });

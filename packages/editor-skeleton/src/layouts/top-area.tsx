@@ -10,20 +10,22 @@ export const TopArea = defineComponent({
 	},
 	setup(props) {
 		return () => {
-			const { area, itemClassName, className } = props;
-			if (area?.isEmpty()) {
+			if (props.area?.isEmpty()) {
 				return <Fragment></Fragment>;
 			}
 			return (
 				<div
 					class={{
-						[className || '']: !!className,
+						[props.className || '']: !!props.className,
 						'mtc-top-area': true,
 						'engine-actionpane': true,
-						'mtc-area-visible': area?.visible.value,
+						'mtc-area-visible': props.area?.visible.value,
 					}}
 				>
-					<Contents area={area} itemClassName={itemClassName}></Contents>
+					<Contents
+						area={props.area}
+						itemClassName={props.itemClassName}
+					></Contents>
 				</div>
 			);
 		};
@@ -38,11 +40,10 @@ const Contents = defineComponent({
 	},
 	setup(props) {
 		return () => {
-			const { area, itemClassName } = props;
 			const left: any[] = [];
 			const center: any[] = [];
 			const right: any[] = [];
-			area?.container.items
+			props.area?.container.items
 				.slice()
 				.sort((a, b) => {
 					const index1 = a.config?.index || 0;
@@ -51,7 +52,7 @@ const Contents = defineComponent({
 				})
 				.forEach((item) => {
 					const content = (
-						<div class={itemClassName} key={`top-area-${item.name}`}>
+						<div class={props.itemClassName} key={`top-area-${item.name}`}>
 							{item.content}
 						</div>
 					);

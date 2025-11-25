@@ -70,9 +70,7 @@ await init(preference, {
 	supportVariableGlobally: true,
 	enableCanvasLock: true,
 	simulatorUrl: [
-		// `http://${window.location.host}/scripts/simulator/js/index.min.js`,
-		`http://127.0.0.1:8080/dist/dist/js/index.js?t=${Date.now()}`,
-		// `http://192.168.1.59:8080/dist/dist/js/index.js?t=${Date.now()}`,
+		`http://192.168.1.145:5555/microcode-vue-simulator-renderer@1.0.20/index.min.js`,
 	],
 } as any); // 引入你创建的路由实例
 app.use(router);

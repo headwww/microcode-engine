@@ -139,8 +139,7 @@ export const LeftFloatPane = defineComponent({
 		});
 
 		return () => {
-			const { area } = props;
-			const width = area?.current.value?.config.props?.width;
+			const width = props.area?.current.value?.config.props?.width;
 
 			const style = width
 				? {
@@ -153,11 +152,11 @@ export const LeftFloatPane = defineComponent({
 					ref={shell}
 					class={{
 						'mtc-left-float-pane': true,
-						'mtc-area-visible': area?.visible.value,
+						'mtc-area-visible': props.area?.visible.value,
 					}}
 					style={style}
 				>
-					{area?.container.items.map((panel) => panel.content)}
+					{props.area?.container.items.map((panel) => panel.content)}
 				</div>
 			);
 		};

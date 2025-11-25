@@ -8,14 +8,10 @@ export const MainArea = defineComponent({
 		area: Object as PropType<Area<any, Panel | Widget>>,
 	},
 	setup(props) {
-		return () => {
-			const { area } = props;
-
-			return (
-				<div class="mtc-main-area engine-workspacepane">
-					{area?.container.items.map((item) => item.content)}
-				</div>
-			);
-		};
+		return () => (
+			<div class="mtc-main-area engine-workspacepane">
+				{props.area?.container.items.map((item) => item.content)}
+			</div>
+		);
 	},
 });

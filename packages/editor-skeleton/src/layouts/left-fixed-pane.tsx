@@ -14,8 +14,7 @@ export const LeftFixedPane = defineComponent({
 			props.area?.skeleton.editor.get('designer').touchOffsetObserver();
 		});
 		return () => {
-			const { area } = props;
-			const width = area?.current.value?.config.props?.width;
+			const width = props.area?.current.value?.config.props?.width;
 
 			const style = width
 				? {
@@ -27,11 +26,11 @@ export const LeftFixedPane = defineComponent({
 				<div
 					class={{
 						'mtc-left-fixed-pane': true,
-						'mtc-area-visible': area?.visible.value,
+						'mtc-area-visible': props.area?.visible.value,
 					}}
 					style={style}
 				>
-					{area?.container.items.map((panel) => panel.content)}
+					{props.area?.container.items.map((panel) => panel.content)}
 				</div>
 			);
 		};

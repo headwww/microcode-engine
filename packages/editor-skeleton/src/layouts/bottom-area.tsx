@@ -9,8 +9,7 @@ export const BottomArea = defineComponent({
 	},
 	setup(props) {
 		return () => {
-			const { area } = props;
-			if (area?.isEmpty()) {
+			if (props.area?.isEmpty()) {
 				return <Fragment></Fragment>;
 			}
 
@@ -18,10 +17,10 @@ export const BottomArea = defineComponent({
 				<div
 					class={{
 						'mtc-bottom-area': true,
-						'mtc-area-visible': area?.visible.value,
+						'mtc-area-visible': props.area?.visible.value,
 					}}
 				>
-					{area?.container.items.map((item) => item.content)}
+					{props.area?.container.items.map((item) => item.content)}
 				</div>
 			);
 		};

@@ -31,6 +31,8 @@ const config: EditorConfig = {
 			const projectSchema = localStorage.getItem('lt_microcode_project')
 				? JSON.parse(localStorage.getItem('lt_microcode_project') || '{}')
 				: schema;
+			console.log(projectSchema);
+
 			project.importSchema(projectSchema as any);
 		},
 		destroy: (e: any) => {

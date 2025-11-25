@@ -30,8 +30,8 @@ export default defineConfig({
 	},
 	server: {
 		host: '0.0.0.0',
-		port: 9099,
-		// port: 9098,
+		// port: 9099,
+		port: 9098,
 		open: true, // 自动打开浏览器
 		proxy: {
 			'/api': {

@@ -8,8 +8,7 @@ export const Toolbar = defineComponent({
 	},
 	setup(props) {
 		return () => {
-			const { area } = props;
-			if (area?.isEmpty()) {
+			if (props.area?.isEmpty()) {
 				return <Fragment></Fragment>;
 			}
 
@@ -17,7 +16,7 @@ export const Toolbar = defineComponent({
 			const center: any[] = [];
 			const right: any[] = [];
 
-			area?.container.items.forEach((item) => {
+			props.area?.container.items.forEach((item) => {
 				if (item.align === 'center') {
 					center.push(item.content);
 				} else if (item.align === 'right') {
@@ -30,7 +29,7 @@ export const Toolbar = defineComponent({
 				<div
 					class={{
 						'mtc-toolbar': true,
-						'mtc-area-visible': area?.visible.value,
+						'mtc-area-visible': props.area?.visible.value,
 					}}
 				>
 					<div class="mtc-toolbar-left">{left}</div>
