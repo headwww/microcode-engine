@@ -478,8 +478,8 @@ importers:
   packages/vue-simulator-renderer:
     dependencies:
       '@arvin-shu/microcode-renderer-core':
-        specifier: ^1.0.24
-        version: 1.0.24(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
+        specifier: ^1.0.25
+        version: 1.0.25(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))
       '@arvin-shu/microcode-types':
         specifier: ^1.0.8
         version: 1.0.8
@@ -540,8 +540,8 @@ packages:
   '@arvin-shu/microcode-plugin-base-monaco-editor@1.0.0':
     resolution: {integrity: sha512-iIdFJ2hxe+72sirL5JmZft02+KuH1IDZuezy58VqFq17jY9t9X3VwsT21M3fMeInK7Cylw78XP7OdmP0PwHL9g==}
 
-  '@arvin-shu/microcode-renderer-core@1.0.24':
-    resolution: {integrity: sha512-cgV8x41w1sYI1fZcPvz+0l6KUE8Cv+1szNeYZYVamhLSc+YBjedfPh/UMxFOTdR4YWtDha1iXYPjhZsa5UnoZQ==}
+  '@arvin-shu/microcode-renderer-core@1.0.25':
+    resolution: {integrity: sha512-OoqqTGc+HYNOM47UGmFwIdWbp/GJWiMUoZJthHNss/pJOsB9uCqK+nOmo2AVx1OQgxhCeJ4CDnvR1dgjXDIu0w==}
 
   '@arvin-shu/microcode-shell@1.0.2':
     resolution: {integrity: sha512-x+BC7lHxIzWKk4ySRwUR+JYpjgthi1ryt/TZH2+9dI2+UebcvAK5gygPvFdR2DKGYTS3NMWusL4CgQQt2D1gUg==}
@@ -5368,7 +5368,7 @@ snapshots:
     transitivePeerDependencies:
       - monaco-editor
 
-  '@arvin-shu/microcode-renderer-core@1.0.24(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
+  '@arvin-shu/microcode-renderer-core@1.0.25(ant-design-vue@4.2.6(vue@3.5.17(typescript@5.8.2)))':
     dependencies:
       '@arvin-shu/microcode-datasource-engine': 1.0.5
       '@arvin-shu/microcode-datasource-types': 1.0.1
