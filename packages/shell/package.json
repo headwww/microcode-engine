@@ -1,6 +1,6 @@
 {
 	"name": "@arvin-shu/microcode-shell",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"description": "microcode shell",
 	"main": "src/index.ts",
 	"module": "src/index.ts",
@@ -23,7 +23,7 @@
 	"dependencies": {
 		"@arvin-shu/microcode-designer": "^1.0.17",
 		"@arvin-shu/microcode-editor-core": "^1.0.9",
-		"@arvin-shu/microcode-editor-skeleton": "^1.0.14",
+		"@arvin-shu/microcode-editor-skeleton": "^1.0.15",
 		"@arvin-shu/microcode-types": "^1.0.8",
 		"@arvin-shu/microcode-utils": "^1.1.9"
 	}

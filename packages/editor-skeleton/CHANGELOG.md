@@ -1,5 +1,13 @@
 # @arvin-shu/microcode-editor-skeleton
 
+## 1.0.15
+
+### Patch Changes
+
+- 1c4fafd: @arvin-shu/microcode-editor-skeleton 继续修正
+- Updated dependencies [1c4fafd]
+  - @arvin-shu/microcode-shell@1.0.8
+
 ## 1.0.14
 
 ### Patch Changes
