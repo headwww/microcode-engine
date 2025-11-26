@@ -1,5 +1,11 @@
 # @arvin-shu/microcode-engine
 
+## 1.0.12
+
+### Patch Changes
+
+- 771f601: MicrocodeWorkbench改为defineComponent方式
+
 ## 1.0.11
 
 ### Patch Changes

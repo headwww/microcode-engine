@@ -1,6 +1,6 @@
 {
 	"name": "@arvin-shu/microcode-engine",
-	"version": "1.0.11",
+	"version": "1.0.12",
 	"description": "",
 	"main": "src/engine-core.ts",
 	"module": "src/engine-core.ts",
