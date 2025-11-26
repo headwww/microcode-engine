@@ -34,7 +34,7 @@ import {
 	IPublicTypePluginMeta,
 } from '@arvin-shu/microcode-types';
 import { Logger } from '@arvin-shu/microcode-utils';
-import { h } from 'vue';
+import { defineComponent, h } from 'vue';
 import { defaultPanelRegistry } from './inner-plugins/default-panel-registry';
 import { componentMetaParser } from './inner-plugins/component-meta-parser';
 import { shellModelFactory } from './modules/shell-model-factory';
@@ -147,8 +147,18 @@ export async function init(
 	engineConfig.setEngineOptions(options as any);
 }
 
-const MicrocodeWorkbench = h(Workbench, {
-	skeleton: innerSkeleton,
+// const MicrocodeWorkbench = h(Workbench, {
+// 	skeleton: innerSkeleton,
+// });
+
+const MicrocodeWorkbench = defineComponent({
+	name: 'MicrocodeWorkbench',
+	setup() {
+		return () =>
+			h(Workbench, {
+				skeleton: innerSkeleton,
+			});
+	},
 });
 
 window.ArvinMicrocodeEngine = {
